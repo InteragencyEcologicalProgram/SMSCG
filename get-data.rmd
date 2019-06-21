@@ -1,0 +1,189 @@
+---
+title: "Historical Data"
+output: html_document
+---
+
+```{r message = FALSE}
+library(tidyverse)
+library(lubridate)
+library(wqpr)
+library(wqptools)
+```
+
+# Query
+
+```{r}
+results.raw = wqp_list_all() %>%
+  filter(
+    str_detect(station_name, "Hunter|Collinsville|National|Bel|Mont"),
+    str_detect(analyte_name, "SC|Fluoresence|Turbidity|Temp"),
+    str_detect(reading_type_name, "Time Series")
+  ) %>%
+  right_join(wqp_result(.$result_id,
+    version = .$result_id), by = c("result_id", "version"))
+```
+
+# Format
+
+```{r}
+results = results.raw %>%
+  select(Station = station_name, Constituent = analyte_name,
+    Units = unit_name, Datetime = time, Value = value, Flag = qaqc_flag_id) %>%
+    mutate(
+      Station = str_replace(Station, "Montezuma Slough at", 
+        "Montezuma Slough at Roaring River"),
+      Station = str_replace(Station, "Beldons",
+        "Beldens Landing"),
+      Analyte = case_when(
+        str_detect(Constituent, "SC") ~ "Salinity",
+        str_detect(Constituent, "Fluoresence") ~ "Fluorescence",
+        str_detect(Constituent, "Temp") ~ "Temperature",
+        str_detect(Constituent, "Turbidity") ~ "Turbidity",
+        TRUE ~ NA_character_
+      ),
+      Value = if_else(Analyte == "Salinity", ec_to_psu(Value), Value),
+      Units = if_else(Analyte == "Salinity", "PSU", Units),
+    )
+```
+
+# Cleanup
+
+```{r}
+results.clean = results %>%
+  arrange(Datetime) %>%
+  group_by(Station, Analyte) %>%
+  mutate(
+    gap.test = gap_test(Datetime, "15 mins"),
+    spike.test = case_when(
+      Analyte == "Fluorescence" ~ spike_test(Value, c(5, 10)),
+      Analyte == "Salinity" ~ spike_test(Value, c(0.5, 1.0)),
+      Analyte == "Temperature" ~ spike_test(Value, c(0.5, 1.0)),
+      TRUE ~ 1L
+    ),
+    range.test = case_when(
+      Analyte == "Salinity" ~ range_test(Value, c(0.1, 15), c(0.01, 20)),
+      Analyte == "Temperature" ~ range_test(Value, c(0, 30), c(-0.5, 50)),
+      TRUE ~ 1L
+    ),
+    agg.test = aggregate_tests(gap.test, spike.test, range.test),
+    Flag = case_when(
+      agg.test > 1L ~ "X",
+      (agg.test == 1L) & (Flag == "U") ~ "P",
+      TRUE ~ Flag
+    ),
+    Value = if_else(Flag %in% c("X", "M", "A"), NA_real_, Value)
+  ) %>%
+  ungroup()
+```
+
+# Fill
+
+```{r}
+results.filled = results.clean %>%
+  arrange(Station, Analyte, Datetime) %>%
+  group_by(Station, Analyte) %>%
+  mutate(
+    Flag = if_else((Flag %in% c("X", "M")) & (blocksize(Flag) < 12), 
+      "I", Flag),
+    Value = gapfill_kalman(Value, mask = (Flag == "I"))
+  ) %>%
+  ungroup()
+```
+
+# Aggregate
+
+```{r}
+historical.timeseries = results.filled 
+
+historical.hourly = historical.timeseries %>%
+  mutate(Datetime = round_date(Datetime, "hour")) %>%
+  group_by(Station, Analyte, Datetime) %>%
+  summarize(
+    Flag = aggregate_flags(Flag),
+    Count = sum(!is.na(Value)),
+    Value = mean(Value),
+    Value = if_else(!is.finite(Value), NA_real_, Value)
+  ) %>%
+  mutate(Smooth = smooth_godin(Value, "1 hours")) %>%
+  ungroup() 
+
+historical.daily = historical.hourly %>%
+  group_by(Station, Analyte, Datetime = as_date(Datetime)) %>%
+  mutate(
+    Count = sum(!is.na(Value)),
+    Value = if_else(Count < 7, NA_real_, Value)
+  ) %>%
+  summarize(
+    Count = sum(!is.na(Value)),
+    Min = min(Value, na.rm = TRUE),
+    Max = max(Value, na.rm = TRUE),
+    Mean = mean(Value, na.rm = TRUE),
+    Smooth = mean(Smooth, na.rm = TRUE),
+    Variance = var(Value, na.rm = TRUE),
+    Range = Max - Min,
+    Median = median(Smooth, na.rm = TRUE),
+    Lquant = quantile(Value, 0.25, na.rm = TRUE),
+    Uquant = quantile(Value, 0.75, na.rm = TRUE),
+    IQR = IQR(Value, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+historical.weekly = historical.hourly %>%
+  group_by(Station, Analyte, Year = year(Datetime),
+    Month = month(Datetime), Week = week(Datetime)) %>%
+  mutate(
+    Count = sum(!is.na(Value)),
+    Value = if_else(Count < 7, NA_real_, Value)
+  ) %>%
+  summarize(
+    Count = sum(!is.na(Value)),
+    Min = min(Value, na.rm = TRUE),
+    Max = max(Value, na.rm = TRUE),
+    Mean = mean(Value, na.rm = TRUE),
+    Smooth = mean(Smooth, na.rm = TRUE),
+    Variance = var(Value, na.rm = TRUE),
+    Range = Max - Min,
+    Median = median(Smooth, na.rm = TRUE),
+    Lquant = quantile(Value, 0.25, na.rm = TRUE),
+    Uquant = quantile(Value, 0.75, na.rm = TRUE),
+    IQR = IQR(Value, na.rm = TRUE)
+  ) %>%
+  ungroup()
+```
+
+```{r}
+save(historical.timeseries, historical.hourly, historical.daily,
+  historical.weekly, file = "waterquality.RData")
+```
+
+```{r}
+histop.file = "ops.xlsx"
+
+histop = read_excel(histop.file) %>%
+  arrange(START) %>%
+  mutate(
+    DURATION = STOP - START,
+    TIMESINCE = START - lag(STOP, 1, default = 0),
+    ) %>%
+    filter(DURATION > 10, TIMESINCE > 30) %>%
+    mutate(ID = row_number())
+
+
+op.series = tibble(
+  Datetime = seq(min(histop$START), max(histop$STOP), by = "15 min")
+) %>%
+  left_join(
+    map2_dfr(histop$START, histop$STOP,
+    ~ tibble(Datetime = seq(.x, .y, by = "15 min"), Operating = TRUE)),
+    by = "Datetime"
+  ) %>%
+  replace_na(list(Operating = FALSE))
+
+op.daily = op.series %>%
+  group_by(Date = as_date(Datetime)) %>%
+  summarize(Operating = any(Operating))
+```
+
+```{r}
+save(op.series, op.daily, histop, file = "operations.RData")
+```
