@@ -7,6 +7,8 @@ library(lme4)
 library(lmerTest)
 library(lubridate)
 library(visreg)
+library(pscl)
+library(MASS)
 
 #FMWT data is avaialable here: ftp://ftp.wildlife.ca.gov/TownetFallMidwaterTrawl/FMWT%20Data/
 #I will eventually remember how to automatically download it,
@@ -58,14 +60,15 @@ load("~/salinity control gates/SMSCG/waterquality.RData")
 FMWT_DSm$Date = as.Date(FMWT_DSm$Date)
 op.daily$Date = as.Date(op.daily$Date)
 FMWT_DSmg = merge(FMWT_DSm, op.daily, by = "Date", all.x = T)
+FMWT_DSmg$julian = yday(FMWT_DSmg$Date)
 
 #quick exploritory plots
 op.daily$julian = yday(op.daily$Date)
 ggplot(op.daily, aes(x=julian, fill = Operating)) + geom_bar(stat = "Count")
 ggplot(op.daily, aes(x=Date, fill = Operating)) + geom_bar(stat = "Count")
 
-#now with fish, first just the time we have gate data
-FMWT_DSmg2 = filter(FMWT_DSmg, !is.na(Operating))
+#now with fish, first just the time we have gate data, and just the fall because we have more trawls in the fall
+FMWT_DSmg2 = filter(FMWT_DSmg, !is.na(Operating), julian >200)
 ggplot(FMWT_DSmg2, aes(x = Operating, y = log(CPUE+1))) + geom_boxplot()
 
 #try catch instead of CPUE
@@ -93,8 +96,7 @@ summary(dsglm2)
 summary(dsglm3)
 
 #maybe a hurdle model
-library(pscl)
-library(MASS)
+
 dshurdle = hurdle(catch~ Station + Operating + TopEC, data = FMWT_DSmg2)
 summary(dshurdle)
 
@@ -105,3 +107,79 @@ dshurdle3 = hurdle(catch~ Station + Operating + TopEC, dist = "negbin", data = F
 summary(dshurdle3)
 #I'm not quite sure why the EC is giving me NAs
 
+#a zero-inflated model might be better
+dszinb = zeroinfl(round(CPUE)~ Station + Operating + TopEC, dist = "negbin", data = FMWT_DSmg2)
+summary(dszinb)
+
+dszip = zeroinfl(round(CPUE)~ Station + Operating, dist = "poisson", data = FMWT_DSmg2)
+summary(dszip)
+dszip2 = zeroinfl(catch~ Station + Operating, dist = "poisson", data = FMWT_DSmg2)
+summary(dszip2)
+
+############################################################################################################
+#There is probably some wierd stuff going on with an interaction between gate operations and date too.
+#I'm not exactly sure how to account for it.
+
+dszip3 = zeroinfl(catch~ Station + Operating*julian, dist = "poisson", data = FMWT_DSmg2)
+summary(dszip3)
+visreg(dszip3)
+visreg(dszip3, xvar = "julian", by = "Operating")
+
+dsglm2 = glm(catch~ Station + Operating*julian+ TopEC, family = quasipoisson, data = FMWT_DSmg2) 
+summary(dsglm2)
+visreg(dsglm2)
+visreg(dsglm2, xvar = "julian", by = "Operating")
+#bleh
+
+#let's try plotting that
+ggplot(FMWT_DSmg2, aes(x = julian, y = catch)) + geom_point() + facet_wrap(~Operating) + 
+  geom_smooth(method = "glm", method.args = list(family = "poisson"))+ coord_cartesian(ylim = c(-1, 20))
+
+###########################################################################################################
+
+#Maybe a binomial model of smelt presence/absence would be more informative.
+
+FMWT_DSmg2$DS = as.logical(FMWT_DSmg2$catch)
+dsb = glm(DS~ Station + Operating*julian+ TopEC, family = binomial, data = FMWT_DSmg2) 
+summary(dsb)
+visreg(dsb)
+visreg(dsb, xvar = "julian", by = "Operating")
+#No. Definitely not.
+
+dsb = glm(DS~ Station + Operating+TopEC, family = binomial, data = FMWT_DSmg2) 
+summary(dsb)
+visreg(dsb)
+visreg(dsb, xvar = "julian", by = "Operating")
+
+
+#is salinity correlated to day of the year?
+sal = lm(TopEC~julian, data = FMWT_DSmg2)
+summary(sal)
+sal2 = lm(TopEC~Operating*julian, data = FMWT_DSmg2)
+summary(sal2)
+#OK, now I'm just confused. Maybe station 608 is throwing us off?
+sal2 = lm(TopEC~Operating*julian, data = filter(FMWT_DSmg2, Station != 608))
+summary(sal2)
+
+#block by statin
+sal3 = lm(TopEC~Operating*julian + Station, data = FMWT_DSmg2)
+summary(sal3)
+
+
+ggplot(data = FMWT_DSmg2, aes(x=julian, y=TopEC)) + facet_wrap(~Operating) + geom_point()
+#Some of those conductivity values look way off. I'm going to check against the water quality from the sondes
+
+histday = filter(historical.daily, Analyte == "Salinity", Station == "(S-49)  Beldens Landing")
+FMWT_DSmg2 = mutate(FMWT_DSmg2, salinity = TopEC*0.64/1000, Datetime = Date)
+FMWTwSal = merge(filter(FMWT_DSmg2, Station != 608), histday[,-1], by = "Datetime")
+
+ggplot(FMWTwSal2, aes(x=salinity, y= Mean, color = Station)) + 
+  geom_point() + xlab("Salinity from Sonde at Beldens") +
+  ylab("Salinity measured by FMWT")
+#so it's close, but not great.
+
+FMWTwSal2 = merge(FMWT_DSmg2, histday[,-1], by = "Datetime")
+sal4 = lm(Mean~Operating*julian, data = FMWTwSal2)
+summary(sal4)
+
+                 
