@@ -169,17 +169,85 @@ summary(sal3)
 ggplot(data = FMWT_DSmg2, aes(x=julian, y=TopEC)) + facet_wrap(~Operating) + geom_point()
 #Some of those conductivity values look way off. I'm going to check against the water quality from the sondes
 
-histday = filter(historical.daily, Analyte == "Salinity", Station == "(S-49)  Beldens Landing")
+histday = filter(historical.daily, Analyte == "Salinity")
 FMWT_DSmg2 = mutate(FMWT_DSmg2, salinity = TopEC*0.64/1000, Datetime = Date)
 FMWTwSal = merge(filter(FMWT_DSmg2, Station != 608), histday[,-1], by = "Datetime")
 
-ggplot(FMWTwSal2, aes(x=salinity, y= Mean, color = Station)) + 
+ggplot(FMWTwSal, aes(x=salinity, y= Mean, color = Station)) + 
   geom_point() + xlab("Salinity from Sonde at Beldens") +
   ylab("Salinity measured by FMWT")
 #so it's close, but not great.
 
+
+FMWT_DSmg2$fishStation = FMWT_DSmg2$Station
+FMWT_DSmg2$Station[which(FMWT_DSmg2$Station == 608)] = "(S-71)  Montezuma Slough at Roaring River"
+FMWT_DSmg2$Station[which(FMWT_DSmg2$Station == 606)] = "(S-49)  Beldens Landing"
+FMWT_DSmg2$Station[which(FMWT_DSmg2$Station == 605)] = "(S-54)  Hunter Cut" 
+
 FMWTwSal2 = merge(FMWT_DSmg2, histday[,-1], by = "Datetime")
-sal4 = lm(Mean~Operating*julian, data = FMWTwSal2)
+
+ggplot(FMWTwSal2, aes(x=salinity, y= Mean, color = Station)) + 
+  geom_point() + ylab("Salinity from nearest Sonde") +
+  xlab("Salinity measured by FMWT") + geom_smooth(method = lm)
+#so it's close, but not great.
+
+sal4 = lm(Mean~Operating*julian + Station, data = FMWTwSal2)
 summary(sal4)
 
-                 
+############################################################################################
+#rerun our catch models with the sonde salinity
+
+dszip3 = zeroinfl(catch~ Station + Operating*julian + Mean, dist = "poisson", data = FMWTwSal2)
+summary(dszip3)
+visreg(dszip3)
+visreg(dszip3, xvar = "julian", by = "Operating")
+
+dsglm2 = glm(catch~ Station + Operating*julian+ Mean, family = quasipoisson, data = FMWTwSal2) 
+summary(dsglm2)
+visreg(dsglm2)
+visreg(dsglm2, xvar = "julian", by = "Operating")
+#bleh
+
+dsnb2 = glm.nb(catch~ Station + Operating*julian+ Mean,  data = FMWTwSal2) 
+summary(dsnb2)
+visreg(dsnb2)
+visreg(dsnb2, xvar = "julian", by = "Operating")
+
+dshurdle = hurdle(catch~ Station + Operating*julian + Mean, data = FMWTwSal2)
+summary(dshurdle)
+
+dshurdle = hurdle(catch~ Station + Operating*julian + Mean, dist  ="negbin", data = FMWTwSal2)
+summary(dshurdle)
+#So the hurdle model (with a poisson) and zero-inflated poisson have lots of significant stars,
+#the negative binomial and quazipoisson do not.
+
+############################################################################################
+#we had lower catch in some years than others, let's put year in there too
+
+dszip3 = zeroinfl(catch~ Station + Operating*julian + Mean + Year, dist = "poisson", data = FMWTwSal2)
+summary(dszip3)
+visreg(dszip3)
+visreg(dszip3, xvar = "julian", by = "Operating")
+
+dsglm2 = glm(catch~ Station + Operating*julian+ Mean + Year, family = quasipoisson, data = FMWTwSal2) 
+summary(dsglm2)
+visreg(dsglm2)
+visreg(dsglm2, xvar = "julian", by = "Operating")
+#bleh
+
+dsnb2 = glm.nb(catch~ Station + Operating*julian+ Mean + Year,  data = FMWTwSal2) 
+summary(dsnb2)
+visreg(dsnb2)
+visreg(dsnb2, xvar = "julian", by = "Operating")
+
+dshurdle = hurdle(catch~ Station + Operating*julian + Mean + Year, data = FMWTwSal2)
+summary(dshurdle)
+
+dshurdle2 = hurdle(catch~ Station + Operating*julian + Mean + Year, dist  ="negbin", data = FMWTwSal2)
+summary(dshurdle2)
+#Putting the year affect in there makes it less cute
+
+# Do not write in your report or paper that you used a quasi-Poisson distribution. Just say that
+#you did a Poisson GLM, detected overdispersion, and corrected the standard errors
+#using a quasi-GLM model where the variance is given by φ × μ, where μ is the
+#mean and φ the dispersion parameter. Zuur et al. 2009
