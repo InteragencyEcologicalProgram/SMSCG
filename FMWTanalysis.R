@@ -197,49 +197,32 @@ summary(sal4)
 ############################################################################################
 #rerun our catch models with the sonde salinity
 
-dszip3 = zeroinfl(catch~ Station + Operating*julian + Mean, dist = "poisson", data = FMWTwSal2)
-summary(dszip3)
-visreg(dszip3)
-visreg(dszip3, xvar = "julian", by = "Operating")
-
-dsglm2 = glm(catch~ Station + Operating*julian+ Mean, family = quasipoisson, data = FMWTwSal2) 
-summary(dsglm2)
-visreg(dsglm2)
-visreg(dsglm2, xvar = "julian", by = "Operating")
-#bleh
-
-dsnb2 = glm.nb(catch~ Station + Operating*julian+ Mean,  data = FMWTwSal2) 
-summary(dsnb2)
-visreg(dsnb2)
-visreg(dsnb2, xvar = "julian", by = "Operating")
-
-dshurdle = hurdle(catch~ Station + Operating*julian + Mean, data = FMWTwSal2)
-summary(dshurdle)
-
-dshurdle = hurdle(catch~ Station + Operating*julian + Mean, dist  ="negbin", data = FMWTwSal2)
-summary(dshurdle)
-#So the hurdle model (with a poisson) and zero-inflated poisson have lots of significant stars,
-#the negative binomial and quazipoisson do not.
-
-############################################################################################
 #we had lower catch in some years than others, let's put year in there too
 
+#I don't really want to use the quasi-poisson version, or plain old neg binomial, because of the zero-inflation problem.
+dsglm2 = glm(catch~ Station + Operating*julian+ Mean + Year, family = quasipoisson, data = FMWTwSal2) 
+summary(dsglm2)
+
+dsnb2 = glm.nb(catch~ Station + Operating*julian+ Mean + Year,  data = FMWTwSal2) 
+summary(dsnb2)
+
+#The zero-inflated model might help with teh overdispersion too.
 dszip3 = zeroinfl(catch~ Station + Operating*julian + Mean + Year, dist = "poisson", data = FMWTwSal2)
 summary(dszip3)
 visreg(dszip3)
 visreg(dszip3, xvar = "julian", by = "Operating")
 
-dsglm2 = glm(catch~ Station + Operating*julian+ Mean + Year, family = quasipoisson, data = FMWTwSal2) 
-summary(dsglm2)
-visreg(dsglm2)
-visreg(dsglm2, xvar = "julian", by = "Operating")
-#bleh
+dszip4 = zeroinfl(catch~ Station + Operating*julian + Mean + Year, dist = "negbin", data = FMWTwSal2)
+summary(dszip4)
+visreg(dszip4)
+visreg(dszip4, xvar = "julian", by = "Operating")
 
-dsnb2 = glm.nb(catch~ Station + Operating*julian+ Mean + Year,  data = FMWTwSal2) 
-summary(dsnb2)
-visreg(dsnb2)
-visreg(dsnb2, xvar = "julian", by = "Operating")
+#compare the zeroinflated models with a likelihood ratio test to see if we've delt with the overdispersion
+library(lmtest)
+lrtest(dszip3, dszip4)
+#it's telling me I'm still overdisperssed, I should use the negative binomial version
 
+#hurdle models don't differentiate between "false" zeros, and "real" zeros, so I don't really want that.
 dshurdle = hurdle(catch~ Station + Operating*julian + Mean + Year, data = FMWTwSal2)
 summary(dshurdle)
 
@@ -251,3 +234,36 @@ summary(dshurdle2)
 #you did a Poisson GLM, detected overdispersion, and corrected the standard errors
 #using a quasi-GLM model where the variance is given by φ × μ, where μ is the
 #mean and φ the dispersion parameter. Zuur et al. 2009
+
+#####################################################################################################
+#OK, so I need a zero-inflated negative binomial model. Which is best?
+dszip4 = zeroinfl(catch~ Station + Operating*julian + 
+                    Mean + Year, dist = "negbin", data = FMWTwSal2)
+dszip4a = zeroinfl(catch~ Station + Operating+julian + 
+                    Mean + Year, dist = "negbin", data = FMWTwSal2)
+dszip4b = zeroinfl(catch~ Station + julian + Mean +
+                    Year, dist = "negbin", data = FMWTwSal2)
+dszip4c = zeroinfl(catch~ Station + Operating*julian + 
+                    Mean, dist = "negbin", data = FMWTwSal2)
+dszip4d = zeroinfl(catch~ Station +   Operating +
+                     Year, dist = "negbin", data = FMWTwSal2)
+dszip4e = zeroinfl(catch~ Station +  Mean +
+                     Year, dist = "negbin", data = FMWTwSal2)
+dszip4f = zeroinfl(catch~ Station +  julian, dist = "negbin", data = FMWTwSal2)
+
+dszip4g = zeroinfl(catch~ Station +  Mean, dist = "negbin", data = FMWTwSal2)
+
+dszip4g = zeroinfl(catch~ Year + Mean, dist = "negbin", data = FMWTwSal2)
+
+dszip4g = zeroinfl(catch~ julian+Operating + Year, dist = "negbin", data = FMWTwSal2)
+
+
+AIC(dszip4, dszip4a,dszip4b, dszip4c, dszip4d, dszip4e, dszip4f, dszip4g)
+#the model with Station, salinity, and year is the best so far.
+summary(dszip4e)
+#but I don't know why we have NAs for the "year" standard error
+foo = vcov(dszip4e)
+diag(vcov(dszip4e))
+sqrt(diag(vcov(dszip4e)))
+#Apparently it's because I have a negative number on the diagonal of my vcov matrix
+#but I don't knwo what causes that.
