@@ -1,0 +1,169 @@
+---
+title: "FMWT_SMSCG"
+author: "Rosemary Hartman"
+date: "7/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+library(readxl)
+library(lme4)
+library(lmerTest)
+library(lubridate)
+library(visreg)
+library(pscl)
+library(MASS)
+```
+
+In the Delta Smelt Resiliancy strategy, there is the idea we can change the operation of the Suisun Marsh Salinity control gates to improve habitat in the marsh for Delta Smelt. I was curious if there were any trends between historical gate operations and presence of Delta Smelt in the Marsh. Therefore, I decided to compare catch of Delta Smelt in the marsh during the fall (when the gates are most frequently operated) with gate operations.
+
+First I did some data manipulation to get the gate operation data lined up with the Delta Smelt Catch from the Fall Midwater Trawl, and I calculated CPUE.
+
+FMWT data is avaialable here: ftp://ftp.wildlife.ca.gov/TownetFallMidwaterTrawl/FMWT%20Data/
+Michael Koohafman gave me the gate operation data.
+
+
+```{r data upload}
+#uplaod the fish catch data
+                   
+FMWT <- read_excel("FMWT 1967-2018 Catch Matrix_updated.xlsx", sheet = "FlatFile", 
+                   col_types = c("numeric","date", "numeric", "text", "date",  
+                                 "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", 
+                                 "numeric", "numeric", "text", "text", "text", rep("numeric", times =112)))
+
+#put it in long format instead of wide
+FMWTl = gather(FMWT, key = "Species", value = "catch", `Aequorea spp.`:`Yellowfin Goby`)
+
+#rename all the stupid names
+#names(FMWTl)
+names(FMWTl) = c("Year" ,"Date","Survey","Station", "StartTime","Index", 
+                 "TopTemp", "TopEC","BottomEC","Turb",
+                 "Secchi" , "Depthft","TowVolume","Tide","TowDirection",
+                 "Weather","Microcystis","Wave", "Species" , "catch" )
+
+#Ideally, we'd do this analysis on CPUE instead of raw catch
+#They didn't caculate volumes until later, so I'll use the average
+#volume per station for the older tows
+
+#first replace any zero volumes with NAs, because zero volumes don't make sense
+FMWTl$TowVolume[which(FMWTl$TowVolume==0)] = NA
+
+#Calculate the average volume
+meanvol = group_by(FMWTl, Station) %>% summarize(mvol = mean(TowVolume, na.rm = T))
+FMWTl2 = merge(FMWTl, meanvol)
+FMWTl2$TowVolume[which(is.na(FMWTl2$TowVolume))] = FMWTl2$mvol[which(is.na(FMWTl2$TowVolume))]
+
+#Calculate CPUE 
+FMWTl2 = mutate(FMWTl2, CPUE = catch*TowVolume)
+
+#For starters, I'll just look at Delta Smelt
+FMWT_DS = filter(FMWTl2, Species == "Delta Smelt")
+
+#Just Delta Smelt from the stations in MOntezuma Slough
+FMWT_DSm = filter(FMWT_DS, Station == 605 |Station == 606| Station == 608 )
+
+#Let's filter it so that we just look at 1999-2011. The Delta Smelt catch from 
+#2012-2017 was so low it's just going to throw things off
+
+FMWT_DSm = filter(FMWT_DSm, Year < 2012)
+
+#load the water quality and gate operations data
+load("~/salinity control gates/SMSCG/operations.RData")
+load("~/salinity control gates/SMSCG/waterquality.RData")
+
+#merge the gate operations with the fish data
+FMWT_DSm$Date = as.Date(FMWT_DSm$Date)
+op.daily$Date = as.Date(op.daily$Date)
+FMWT_DSmg = merge(FMWT_DSm, op.daily, by = "Date", all.x = T)
+
+#make a new variable for "day of the year"
+FMWT_DSmg$julian = yday(FMWT_DSmg$Date)
+
+#Operation is a factor, not a number
+FMWT_DSmg$Operating = as.factor(FMWT_DSmg$Operating)
+
+```
+
+Now for some quick exploritory plots of the data. Look at when the gates are usually operated and what the fish catch was like when they are or are not operated.
+
+```{r plots, echo = TRUE}
+
+#when are the gates operated?
+op.daily$julian = yday(op.daily$Date)
+ggplot(op.daily, aes(x=julian, fill = Operating)) + geom_bar(stat = "Count")
+ggplot(op.daily, aes(x=Date, fill = Operating)) + geom_bar(stat = "Count")
+
+#now with fish, first just the time we have gate data, and just the fall because we have more trawls in the fall
+FMWT_DSmg2 = filter(FMWT_DSmg, !is.na(Operating), julian >200)
+#Log CPUE versus gate operations
+ggplot(FMWT_DSmg2, aes(x = Operating, y = log(CPUE+1))) + geom_boxplot()
+
+#try log catch instead of CPUE
+ggplot(FMWT_DSmg2, aes(x = Operating, y = log(catch+1))) + geom_boxplot()
+
+#seperate by station
+ggplot(FMWT_DSmg2, aes(x = Operating, y = log(catch+1))) + geom_boxplot() + facet_wrap(~Station)
+
+
+```
+
+Let's run some models to see whether there are statisticall more smelt when the gates are operating. Other things are probably involved too, such as year, water year type, salinity, station, day of the year, etc. I'll run several models and rank them with AICc to see which is best.
+
+It took me a long time to figure out what type of model to run. Delta smelt catch data is "count data", so theoretically it should follow a poisson distribution. However, my preliminary analysis showed it is highly overdisperssed and has WAY more zeros than a normal Poisson distribution. Therefore, after much discussion, research, statistics textbooks, and false starts, I settled on a zero-inflated negative binomial model.
+
+I used the salinity from the nearest sonde rather than the salinity measured by FMWT, because some of the CDFW data was suspect (much higher or much lower than would be expected for that time of year). Michael Koohafman also gave me that data.
+
+
+```{r models}
+
+#first some data manipulation to get the sonde salinity organized
+histday = filter(historical.daily, Analyte == "Salinity")
+FMWT_DSmg2 = mutate(FMWT_DSmg2, salinity = TopEC*0.64/1000, Datetime = Date)
+FMWT_DSmg2$fishStation = FMWT_DSmg2$Station
+FMWT_DSmg2$Station[which(FMWT_DSmg2$Station == 608)] = "(S-71)  Montezuma Slough at Roaring River"
+FMWT_DSmg2$Station[which(FMWT_DSmg2$Station == 606)] = "(S-49)  Beldens Landing"
+FMWT_DSmg2$Station[which(FMWT_DSmg2$Station == 605)] = "(S-54)  Hunter Cut" 
+FMWT_DSmg2 = mutate(FMWT_DSmg2, Datetime = Date)
+
+FMWTwSal2 = unique(merge(FMWT_DSmg2, histday))
+
+ggplot(FMWTwSal2, aes(x=salinity, y= Mean, color = Station)) + 
+  geom_point() + ylab("Salinity from nearest Sonde") +
+  xlab("Salinity measured by FMWT") + geom_smooth(method = lm)
+#so it's close, but not great.
+
+############################################################################################
+
+dszip4a = zeroinfl(catch~ Station + Operating+julian + 
+                     Mean + Year, dist = "negbin", data = FMWTwSal2)
+dszip4b = zeroinfl(catch~ Station + julian + Mean +
+                     Year, dist = "negbin", data = FMWTwSal2)
+dszip4c = zeroinfl(catch~ Station + Operating*julian + 
+                     Mean, dist = "negbin", data = FMWTwSal2)
+dszip4e = zeroinfl(catch~ Station +  Mean +
+                     Year, dist = "negbin", data = FMWTwSal2)
+dszip4f = zeroinfl(catch~ Station +  julian, dist = "negbin", data = FMWTwSal2)
+
+dszip4g = zeroinfl(catch~ Station +  Mean, dist = "negbin", data = FMWTwSal2)
+
+dszip4h = zeroinfl(catch~ Year + Mean, dist = "negbin", data = FMWTwSal2)
+
+AIC( dszip4a, dszip4b,dszip4c,  dszip4e,dszip4f, dszip4g, dszip4h)
+
+#best model
+summary(dszip4a)
+
+#Here are the partial residual plots for the best model. 
+#Partial residual plots show you the effect of each factor when the effects of the
+#other factors have been accounted for. 
+visreg(dszip4a)
+
+
+```
+
+Those partial-residual plots look good!!! Though the "year" effect is still having problems. I've got negative values in my variance-covariance matrix which makes it impossible to calculate standard errors or p-values. 
+Also, I'm not sure what all those computational singularities were about.
+
+

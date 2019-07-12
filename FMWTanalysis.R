@@ -38,6 +38,9 @@ names(FMWTl) = c("Year" ,"Date","Survey","Station", "StartTime","Index",
 #first replace any zero volumes with NAs, because zero volumes don't make sense
 FMWTl$TowVolume[which(FMWTl$TowVolume==0)] = NA
 
+#we may want to analyze year as a factor instead of continuous
+FMWTl$Year2 = as.factor(FMWTl$Year)
+
 meanvol = group_by(FMWTl, Station) %>% summarize(mvol = mean(TowVolume, na.rm = T))
 FMWTl2 = merge(FMWTl, meanvol)
 FMWTl2$TowVolume[which(is.na(FMWTl2$TowVolume))] = FMWTl2$mvol[which(is.na(FMWTl2$TowVolume))]
@@ -61,6 +64,7 @@ FMWT_DSm$Date = as.Date(FMWT_DSm$Date)
 op.daily$Date = as.Date(op.daily$Date)
 FMWT_DSmg = merge(FMWT_DSm, op.daily, by = "Date", all.x = T)
 FMWT_DSmg$julian = yday(FMWT_DSmg$Date)
+FMWT_DSmg$Operating = as.factor(FMWT_DSmg$Operating)
 
 #quick exploritory plots
 op.daily$julian = yday(op.daily$Date)
@@ -183,8 +187,9 @@ FMWT_DSmg2$fishStation = FMWT_DSmg2$Station
 FMWT_DSmg2$Station[which(FMWT_DSmg2$Station == 608)] = "(S-71)  Montezuma Slough at Roaring River"
 FMWT_DSmg2$Station[which(FMWT_DSmg2$Station == 606)] = "(S-49)  Beldens Landing"
 FMWT_DSmg2$Station[which(FMWT_DSmg2$Station == 605)] = "(S-54)  Hunter Cut" 
+FMWT_DSmg2 = mutate(FMWT_DSmg2, Datetime = Date)
 
-FMWTwSal2 = merge(FMWT_DSmg2, histday[,-1], by = "Datetime")
+FMWTwSal2 = unique(merge(FMWT_DSmg2, histday))
 
 ggplot(FMWTwSal2, aes(x=salinity, y= Mean, color = Station)) + 
   geom_point() + ylab("Salinity from nearest Sonde") +
@@ -267,3 +272,51 @@ diag(vcov(dszip4e))
 sqrt(diag(vcov(dszip4e)))
 #Apparently it's because I have a negative number on the diagonal of my vcov matrix
 #but I don't knwo what causes that.
+
+tots = group_by(FMWTwSal2, Year, Station) %>% summarise(tot = sum(catch))
+
+# I think it is because there was zero catch in later years
+
+FMWTwSal3 = filter(FMWTwSal2, Year < 2012)
+##########################################################################################
+
+dszip4 = zeroinfl(catch~ Station + Operating*julian + 
+                    Mean + Year, dist = "negbin", data = FMWTwSal3)
+dszip4a = zeroinfl(catch~ Station + Operating+julian + 
+                     Mean + Year, dist = "negbin", data = FMWTwSal3)
+dszip4b = zeroinfl(catch~ Station + julian + Mean +
+                     Year, dist = "negbin", data = FMWTwSal3)
+dszip4c = zeroinfl(catch~ Station + Operating*julian + 
+                     Mean, dist = "negbin", data = FMWTwSal3)
+dszip4d = zeroinfl(catch~ Station +   Operating +
+                     Year, dist = "negbin", data = FMWTwSal3)
+dszip4e = zeroinfl(catch~ Station +  Mean +
+                     Year, dist = "negbin", data = FMWTwSal3)
+dszip4f = zeroinfl(catch~ Station +  julian, dist = "negbin", data = FMWTwSal3)
+
+dszip4g = zeroinfl(catch~ Station +  Mean, dist = "negbin", data = FMWTwSal3)
+
+dszip4h = zeroinfl(catch~ Year + Mean, dist = "negbin", data = FMWTwSal3)
+
+dszip4i = zeroinfl(catch~ julian+Operating + Year, dist = "negbin", data = FMWTwSal3)
+
+
+AIC( dszip4a, dszip4b,dszip4c,  dszip4e,dszip4f, dszip4g, dszip4h)
+
+#best model
+summary(dszip4a)
+visreg(dszip4a)
+#Those partial-residual plots look good!!!
+#though the "year" effect is still having problems. 
+#Also, I'm not sure what all those computational singularities were about.
+
+
+##################################################################################################
+#Other thoughts:
+#Maybe look at "before" verusus "after" gate operations instead of "operating" versus "not operating"?
+
+#Add wateryear type rather than just "year"?
+
+#Do we have gate data from before 1999?
+
+
