@@ -2,7 +2,9 @@
 title: "FMWT_SMSCG"
 author: "Rosemary Hartman"
 date: "7/12/2019"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -116,7 +118,7 @@ It took me a long time to figure out what type of model to run. Delta smelt catc
 I used the salinity from the nearest sonde rather than the salinity measured by FMWT, because some of the CDFW data was suspect (much higher or much lower than would be expected for that time of year). Michael Koohafman also gave me that data.
 
 
-```{r models}
+```{r datamanip, include = FALSE}
 
 #first some data manipulation to get the sonde salinity organized
 histday = filter(historical.daily, Analyte == "Salinity")
@@ -129,6 +131,9 @@ FMWT_DSmg2 = mutate(FMWT_DSmg2, Datetime = Date)
 
 FMWTwSal2 = unique(merge(FMWT_DSmg2, histday))
 
+```
+If you plot the salinity measured by the sonde versus the boat, it's not great
+```{r salinity, echo = T}
 ggplot(FMWTwSal2, aes(x=salinity, y= Mean, color = Station)) + 
   geom_point() + ylab("Salinity from nearest Sonde") +
   xlab("Salinity measured by FMWT") + geom_smooth(method = lm)
@@ -136,6 +141,9 @@ ggplot(FMWTwSal2, aes(x=salinity, y= Mean, color = Station)) +
 
 ############################################################################################
 
+```
+Now for some models. 
+```{r models}
 dszip4a = zeroinfl(catch~ Station + Operating+julian + 
                      Mean + Year, dist = "negbin", data = FMWTwSal2)
 dszip4b = zeroinfl(catch~ Station + julian + Mean +
@@ -153,11 +161,14 @@ dszip4h = zeroinfl(catch~ Year + Mean, dist = "negbin", data = FMWTwSal2)
 AIC( dszip4a, dszip4b,dszip4c,  dszip4e,dszip4f, dszip4g, dszip4h)
 
 #best model
-summary(dszip4a)
+tab = summary(dszip4a)
 
-#Here are the partial residual plots for the best model. 
-#Partial residual plots show you the effect of each factor when the effects of the
-#other factors have been accounted for. 
+
+```
+Here are the partial residual plots for the best model. 
+Partial residual plots show you the effect of each factor when the effects of the
+other factors have been accounted for. 
+```{r prplots}
 visreg(dszip4a)
 
 

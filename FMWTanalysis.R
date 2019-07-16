@@ -59,6 +59,23 @@ FMWT_DSm = filter(FMWT_DS, Station == 605 |Station == 606| Station == 608 )
 load("~/salinity control gates/SMSCG/operations.RData")
 load("~/salinity control gates/SMSCG/waterquality.RData")
 
+
+#Change the "operating" values so there are fewer groups
+op.daily = op.daily %>% mutate(Operating = case_when(
+  str_detect(Operating, "(Operating normally)|(Operating with one or more gates closed)") ~ "Operating",
+  str_detect(Operating, "(Operating with special conditions)|(Operating with one or more gates open)|(Operating with flashboards out)") ~ "Operating partially",
+  str_detect(Operating, "(Open$)|(Open with flashboards in)|(Open with one or more gates closed)") ~ "Open",
+  str_detect(Operating, "(Closed with flashboards in)|(Closed with flashboards out)") ~ "Closed"
+))
+
+op.daily = op.daily %>% mutate(Operating2 = case_when(
+  str_detect(Operating, "(Operating normally)|(Operating with one or more gates closed)") ~ "Operating",
+  str_detect(Operating, "(Operating with special conditions)|(Operating with one or more gates open)|(Operating with flashboards out)") ~ "Operating",
+  str_detect(Operating, "(Open$)|(Open with flashboards in)|(Open with one or more gates closed)") ~ "Open",
+  str_detect(Operating, "(Closed with flashboards in)|(Closed with flashboards out)") ~ "Operating"
+))
+
+
 #merge the gate operations with the fish data
 FMWT_DSm$Date = as.Date(FMWT_DSm$Date)
 op.daily$Date = as.Date(op.daily$Date)
@@ -320,3 +337,6 @@ visreg(dszip4a)
 #Do we have gate data from before 1999?
 
 
+
+dszip5 = zeroinfl(catch~ Station*Operating, dist = "negbin", data = FMWTwSal2)
+visreg(dszip5, by = "Station", xvar = "Operating")
