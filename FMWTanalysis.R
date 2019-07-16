@@ -61,6 +61,15 @@ load("~/salinity control gates/SMSCG/waterquality.RData")
 
 
 #Change the "operating" values so there are fewer groups
+<<<<<<< HEAD
+=======
+op.daily = op.daily %>% mutate(Operating = case_when(
+  str_detect(Operating, "(Operating normally)|(Operating with one or more gates closed)") ~ "Operating",
+  str_detect(Operating, "(Operating with special conditions)|(Operating with one or more gates open)|(Operating with flashboards out)") ~ "Operating partially",
+  str_detect(Operating, "(Open$)|(Open with flashboards in)|(Open with one or more gates closed)") ~ "Open",
+  str_detect(Operating, "(Closed with flashboards in)|(Closed with flashboards out)") ~ "Closed"
+))
+>>>>>>> 36096207523a99303a8bb1f81f6696924bb2323c
 
 op.daily = op.daily %>% mutate(Operating2 = case_when(
   str_detect(Operating, "(Operating normally)|(Operating with one or more gates closed)") ~ "Operating",
@@ -69,12 +78,15 @@ op.daily = op.daily %>% mutate(Operating2 = case_when(
   str_detect(Operating, "(Closed with flashboards in)|(Closed with flashboards out)") ~ "Operating"
 ))
 
+<<<<<<< HEAD
 op.daily = op.daily %>% mutate(Operating = case_when(
   str_detect(Operating, "(Operating normally)|(Operating with one or more gates closed)") ~ "Operating",
   str_detect(Operating, "(Operating with special conditions)|(Operating with one or more gates open)|(Operating with flashboards out)") ~ "Operating partially",
   str_detect(Operating, "(Open$)|(Open with flashboards in)|(Open with one or more gates closed)") ~ "Open",
   str_detect(Operating, "(Closed with flashboards in)|(Closed with flashboards out)") ~ "Closed"
 ))
+=======
+>>>>>>> 36096207523a99303a8bb1f81f6696924bb2323c
 
 #merge the gate operations with the fish data
 FMWT_DSm$Date = as.Date(FMWT_DSm$Date)
@@ -366,4 +378,10 @@ summary(dszip5)
 visreg(dszip5)
 visreg(dszip5, xvar = "julian", by = "Operating2")
 
+<<<<<<< HEAD
 summary(dszip5a)
+=======
+
+dszip5 = zeroinfl(catch~ Station*Operating, dist = "negbin", data = FMWTwSal2)
+visreg(dszip5, by = "Station", xvar = "Operating")
+>>>>>>> 36096207523a99303a8bb1f81f6696924bb2323c
