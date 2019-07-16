@@ -59,17 +59,34 @@ FMWT_DSm = filter(FMWT_DS, Station == 605 |Station == 606| Station == 608 )
 load("~/salinity control gates/SMSCG/operations.RData")
 load("~/salinity control gates/SMSCG/waterquality.RData")
 
+
+#Change the "operating" values so there are fewer groups
+
+op.daily = op.daily %>% mutate(Operating2 = case_when(
+  str_detect(Operating, "(Operating normally)|(Operating with one or more gates closed)") ~ "Operating",
+  str_detect(Operating, "(Operating with special conditions)|(Operating with one or more gates open)|(Operating with flashboards out)") ~ "Operating",
+  str_detect(Operating, "(Open$)|(Open with flashboards in)|(Open with one or more gates closed)") ~ "Open",
+  str_detect(Operating, "(Closed with flashboards in)|(Closed with flashboards out)") ~ "Operating"
+))
+
+op.daily = op.daily %>% mutate(Operating = case_when(
+  str_detect(Operating, "(Operating normally)|(Operating with one or more gates closed)") ~ "Operating",
+  str_detect(Operating, "(Operating with special conditions)|(Operating with one or more gates open)|(Operating with flashboards out)") ~ "Operating partially",
+  str_detect(Operating, "(Open$)|(Open with flashboards in)|(Open with one or more gates closed)") ~ "Open",
+  str_detect(Operating, "(Closed with flashboards in)|(Closed with flashboards out)") ~ "Closed"
+))
+
 #merge the gate operations with the fish data
 FMWT_DSm$Date = as.Date(FMWT_DSm$Date)
 op.daily$Date = as.Date(op.daily$Date)
 FMWT_DSmg = merge(FMWT_DSm, op.daily, by = "Date", all.x = T)
 FMWT_DSmg$julian = yday(FMWT_DSmg$Date)
-FMWT_DSmg$Operating = as.factor(FMWT_DSmg$Operating)
+FMWT_DSmg$Operating2 = as.factor(FMWT_DSmg$Operating2)
 
 #quick exploritory plots
 op.daily$julian = yday(op.daily$Date)
-ggplot(op.daily, aes(x=julian, fill = Operating)) + geom_bar(stat = "Count")
-ggplot(op.daily, aes(x=Date, fill = Operating)) + geom_bar(stat = "Count")
+ggplot(op.daily, aes(x=julian, fill = Operating2)) + geom_bar(stat = "Count")
+ggplot(op.daily, aes(x=Date, fill = Operating2)) + geom_bar(stat = "Count")
 
 #now with fish, first just the time we have gate data, and just the fall because we have more trawls in the fall
 FMWT_DSmg2 = filter(FMWT_DSmg, !is.na(Operating), julian >200)
@@ -78,7 +95,7 @@ ggplot(FMWT_DSmg2, aes(x = Operating, y = log(CPUE+1))) + geom_boxplot()
 #try catch instead of CPUE
 ggplot(FMWT_DSmg2, aes(x = Operating, y = log(catch+1))) + geom_boxplot()
 
-ggplot(FMWT_DSmg2, aes(x = Operating, y = log(catch+1))) + geom_boxplot() + facet_wrap(~Station)
+ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(catch+1))) + geom_boxplot() + facet_wrap(~month(Date), scales = "free_x")
 
 #model it
 dsglm = glm(catch~ Station + Operating + TopEC, family = poisson, data = FMWT_DSmg2)
@@ -136,7 +153,7 @@ visreg(dsglm2, xvar = "julian", by = "Operating")
 #bleh
 
 #let's try plotting that
-ggplot(FMWT_DSmg2, aes(x = julian, y = catch)) + geom_point() + facet_wrap(~Operating) + 
+ggplot(FMWT_DSmg2, aes(x = julian, y = catch)) + geom_point() + facet_wrap(~Operating2) + 
   geom_smooth(method = "glm", method.args = list(family = "poisson"))+ coord_cartesian(ylim = c(-1, 20))
 
 ###########################################################################################################
@@ -144,7 +161,7 @@ ggplot(FMWT_DSmg2, aes(x = julian, y = catch)) + geom_point() + facet_wrap(~Oper
 #Maybe a binomial model of smelt presence/absence would be more informative.
 
 FMWT_DSmg2$DS = as.logical(FMWT_DSmg2$catch)
-dsb = glm(DS~ Station + Operating*julian+ TopEC, family = binomial, data = FMWT_DSmg2) 
+dsb = glm(DS~ Station + Operating2*julian+ TopEC, family = binomial, data = FMWT_DSmg2) 
 summary(dsb)
 visreg(dsb)
 visreg(dsb, xvar = "julian", by = "Operating")
@@ -174,8 +191,8 @@ ggplot(data = FMWT_DSmg2, aes(x=julian, y=TopEC)) + facet_wrap(~Operating) + geo
 #Some of those conductivity values look way off. I'm going to check against the water quality from the sondes
 
 histday = filter(historical.daily, Analyte == "Salinity")
-FMWT_DSmg2 = mutate(FMWT_DSmg2, salinity = TopEC*0.64/1000, Datetime = Date)
-FMWTwSal = merge(filter(FMWT_DSmg2, Station != 608), histday[,-1], by = "Datetime")
+FMWT_DSmg2a = mutate(FMWT_DSmg2, salinity = TopEC*0.64/1000, Datetime = Date)
+FMWTwSal = merge(filter(FMWT_DSmg2a, Station != 608), histday[,-1], by = "Datetime")
 
 ggplot(FMWTwSal, aes(x=salinity, y= Mean, color = Station)) + 
   geom_point() + xlab("Salinity from Sonde at Beldens") +
@@ -319,4 +336,34 @@ visreg(dszip4a)
 
 #Do we have gate data from before 1999?
 
+#now use years 1986-2012, with salinity data from FMWT
+FMWT_DSmg2 = filter(FMWT_DSmg2, Year <2012)
 
+dszip5 = zeroinfl(catch~ Station + Operating2*julian + 
+                    TopEC + Year, dist = "negbin", data = FMWT_DSmg2)
+dszip5a = zeroinfl(catch~ Station + Operating2+julian + 
+                     TopEC + Year, dist = "negbin", data = FMWT_DSmg2)
+dszip5b = zeroinfl(catch~ Station + julian + TopEC +
+                     Year, dist = "negbin", data = FMWT_DSmg2)
+dszip5c = zeroinfl(catch~ Station + Operating2*julian + 
+                     TopEC, dist = "negbin", data = FMWT_DSmg2)
+dszip5d = zeroinfl(catch~ Station +   Operating2 +
+                     Year, dist = "negbin", data = FMWT_DSmg2)
+dszip5e = zeroinfl(catch~ Station +  TopEC +
+                     Year, dist = "negbin", data = FMWT_DSmg2)
+dszip5f = zeroinfl(catch~ Station +  julian, dist = "negbin", data = FMWT_DSmg2)
+
+dszip5g = zeroinfl(catch~ Station +  TopEC, dist = "negbin", data = FMWT_DSmg2)
+
+dszip5h = zeroinfl(catch~ Year + TopEC, dist = "negbin", data = FMWT_DSmg2)
+
+dszip5i = zeroinfl(catch~ julian+Operating2 + Year, dist = "negbin", data = FMWT_DSmg2)
+
+
+AIC(dszip5, dszip5a,dszip5b, dszip5e, dszip5f, dszip5g,  dszip5h,  dszip5i)
+summary(dszip5)
+
+visreg(dszip5)
+visreg(dszip5, xvar = "julian", by = "Operating2")
+
+summary(dszip5a)
