@@ -61,15 +61,7 @@ load("~/salinity control gates/SMSCG/waterquality.RData")
 
 
 #Change the "operating" values so there are fewer groups
-<<<<<<< HEAD
-=======
-op.daily = op.daily %>% mutate(Operating = case_when(
-  str_detect(Operating, "(Operating normally)|(Operating with one or more gates closed)") ~ "Operating",
-  str_detect(Operating, "(Operating with special conditions)|(Operating with one or more gates open)|(Operating with flashboards out)") ~ "Operating partially",
-  str_detect(Operating, "(Open$)|(Open with flashboards in)|(Open with one or more gates closed)") ~ "Open",
-  str_detect(Operating, "(Closed with flashboards in)|(Closed with flashboards out)") ~ "Closed"
-))
->>>>>>> 36096207523a99303a8bb1f81f6696924bb2323c
+
 
 op.daily = op.daily %>% mutate(Operating2 = case_when(
   str_detect(Operating, "(Operating normally)|(Operating with one or more gates closed)") ~ "Operating",
@@ -78,15 +70,14 @@ op.daily = op.daily %>% mutate(Operating2 = case_when(
   str_detect(Operating, "(Closed with flashboards in)|(Closed with flashboards out)") ~ "Operating"
 ))
 
-<<<<<<< HEAD
+
 op.daily = op.daily %>% mutate(Operating = case_when(
   str_detect(Operating, "(Operating normally)|(Operating with one or more gates closed)") ~ "Operating",
   str_detect(Operating, "(Operating with special conditions)|(Operating with one or more gates open)|(Operating with flashboards out)") ~ "Operating partially",
   str_detect(Operating, "(Open$)|(Open with flashboards in)|(Open with one or more gates closed)") ~ "Open",
   str_detect(Operating, "(Closed with flashboards in)|(Closed with flashboards out)") ~ "Closed"
 ))
-=======
->>>>>>> 36096207523a99303a8bb1f81f6696924bb2323c
+
 
 #merge the gate operations with the fish data
 FMWT_DSm$Date = as.Date(FMWT_DSm$Date)
@@ -101,7 +92,7 @@ ggplot(op.daily, aes(x=julian, fill = Operating2)) + geom_bar(stat = "Count")
 ggplot(op.daily, aes(x=Date, fill = Operating2)) + geom_bar(stat = "Count")
 
 #now with fish, first just the time we have gate data, and just the fall because we have more trawls in the fall
-FMWT_DSmg2 = filter(FMWT_DSmg, !is.na(Operating), julian >200)
+FMWT_DSmg2 = filter(FMWT_DSmg, !is.na(Operating), julian >200, Year < 2012)
 ggplot(FMWT_DSmg2, aes(x = Operating, y = log(CPUE+1))) + geom_boxplot()
 
 #try catch instead of CPUE
@@ -363,7 +354,7 @@ dszip5d = zeroinfl(catch~ Station +   Operating2 +
                      Year, dist = "negbin", data = FMWT_DSmg2)
 dszip5e = zeroinfl(catch~ Station +  TopEC +
                      Year, dist = "negbin", data = FMWT_DSmg2)
-dszip5f = zeroinfl(catch~ Station +  julian, dist = "negbin", data = FMWT_DSmg2)
+dszip5f = zeroinfl(catch~ Station +  julian + Operating2, dist = "negbin", data = FMWT_DSmg2)
 
 dszip5g = zeroinfl(catch~ Station +  TopEC, dist = "negbin", data = FMWT_DSmg2)
 
@@ -372,16 +363,12 @@ dszip5h = zeroinfl(catch~ Year + TopEC, dist = "negbin", data = FMWT_DSmg2)
 dszip5i = zeroinfl(catch~ julian+Operating2 + Year, dist = "negbin", data = FMWT_DSmg2)
 
 
-AIC(dszip5, dszip5a,dszip5b, dszip5e, dszip5f, dszip5g,  dszip5h,  dszip5i)
+AIC(dszip5, dszip5a,dszip5b, dszip5f, dszip5h,  dszip5i)
 summary(dszip5)
 
 visreg(dszip5)
 visreg(dszip5, xvar = "julian", by = "Operating2")
+visreg(dszip5, xvar = "Operating2", by = "julian")
 
-<<<<<<< HEAD
 summary(dszip5a)
-=======
-
-dszip5 = zeroinfl(catch~ Station*Operating, dist = "negbin", data = FMWTwSal2)
-visreg(dszip5, by = "Station", xvar = "Operating")
->>>>>>> 36096207523a99303a8bb1f81f6696924bb2323c
+visreg(dszip5a)
