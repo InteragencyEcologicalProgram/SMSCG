@@ -75,6 +75,19 @@ FMWT_DSm = filter(FMWT_DSm, Year < 2012)
 load("~/salinity control gates/SMSCG/operations.RData")
 load("~/salinity control gates/SMSCG/waterquality.RData")
 
+
+
+#Change the "operating" values so there are fewer groups
+
+
+op.daily = op.daily %>% mutate(Operating2 = case_when(
+  str_detect(Operating, "(Operating normally)|(Operating with one or more gates closed)") ~ "Operating",
+  str_detect(Operating, "(Operating with special conditions)|(Operating with one or more gates open)|(Operating with flashboards out)") ~ "Operating",
+  str_detect(Operating, "(Open$)|(Open with flashboards in)|(Open with one or more gates closed)") ~ "Open",
+  str_detect(Operating, "(Closed with flashboards in)|(Closed with flashboards out)") ~ "Operating"
+))
+
+
 #merge the gate operations with the fish data
 FMWT_DSm$Date = as.Date(FMWT_DSm$Date)
 op.daily$Date = as.Date(op.daily$Date)
@@ -94,19 +107,22 @@ Now for some quick exploritory plots of the data. Look at when the gates are usu
 
 #when are the gates operated?
 op.daily$julian = yday(op.daily$Date)
-ggplot(op.daily, aes(x=julian, fill = Operating)) + geom_bar(stat = "Count")
-ggplot(op.daily, aes(x=Date, fill = Operating)) + geom_bar(stat = "Count")
+ggplot(op.daily, aes(x=julian, fill = Operating2)) + geom_bar(stat = "Count")
+ggplot(op.daily, aes(x=Date, fill = Operating2)) + geom_bar(stat = "Count")
 
 #now with fish, first just the time we have gate data, and just the fall because we have more trawls in the fall
-FMWT_DSmg2 = filter(FMWT_DSmg, !is.na(Operating), julian >200)
+FMWT_DSmg2 = filter(FMWT_DSmg, !is.na(Operating2), julian >200)
 #Log CPUE versus gate operations
-ggplot(FMWT_DSmg2, aes(x = Operating, y = log(CPUE+1))) + geom_boxplot()
+ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(CPUE+1))) + geom_boxplot()
 
 #try log catch instead of CPUE
-ggplot(FMWT_DSmg2, aes(x = Operating, y = log(catch+1))) + geom_boxplot()
+ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(catch+1))) + geom_boxplot()
 
 #seperate by station
-ggplot(FMWT_DSmg2, aes(x = Operating, y = log(catch+1))) + geom_boxplot() + facet_wrap(~Station)
+ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(catch+1))) + geom_boxplot() + facet_wrap(~Station)
+
+#seperate by month
+ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(catch+1))) + geom_boxplot() + facet_wrap(~month(Date))
 
 
 ```
@@ -132,7 +148,7 @@ FMWT_DSmg2 = mutate(FMWT_DSmg2, Datetime = Date)
 FMWTwSal2 = unique(merge(FMWT_DSmg2, histday))
 
 ```
-If you plot the salinity measured by the sonde versus the boat, it's not great
+If you plot the salinity measured by the sonde versus the boat, it's not great. However, we only have sonde salinity since about 1999, so we'll have to use FMWT salinity for older data.
 ```{r salinity, echo = T}
 ggplot(FMWTwSal2, aes(x=salinity, y= Mean, color = Station)) + 
   geom_point() + ylab("Salinity from nearest Sonde") +
@@ -144,24 +160,29 @@ ggplot(FMWTwSal2, aes(x=salinity, y= Mean, color = Station)) +
 ```
 Now for some models. 
 ```{r models}
-dszip4a = zeroinfl(catch~ Station + Operating+julian + 
-                     Mean + Year, dist = "negbin", data = FMWTwSal2)
-dszip4b = zeroinfl(catch~ Station + julian + Mean +
-                     Year, dist = "negbin", data = FMWTwSal2)
-dszip4c = zeroinfl(catch~ Station + Operating*julian + 
-                     Mean, dist = "negbin", data = FMWTwSal2)
-dszip4e = zeroinfl(catch~ Station +  Mean +
-                     Year, dist = "negbin", data = FMWTwSal2)
-dszip4f = zeroinfl(catch~ Station +  julian, dist = "negbin", data = FMWTwSal2)
+dszip4 = zeroinfl(catch~ fishStation + Operating2*julian + 
+                     TopEC + Year, dist = "negbin", data = FMWT_DSmg2)
 
-dszip4g = zeroinfl(catch~ Station +  Mean, dist = "negbin", data = FMWTwSal2)
 
-dszip4h = zeroinfl(catch~ Year + Mean, dist = "negbin", data = FMWTwSal2)
+dszip4a = zeroinfl(catch~ fishStation + Operating2+julian + 
+                     TopEC + Year, dist = "negbin", data = FMWT_DSmg2)
+dszip4b = zeroinfl(catch~ fishStation + julian + TopEC +
+                     Year, dist = "negbin", data = FMWT_DSmg2)
+dszip4c = zeroinfl(catch~ fishStation + Operating2*julian + 
+                     TopEC, dist = "negbin", data = FMWT_DSmg2)
+dszip4e = zeroinfl(catch~ fishStation +  TopEC +
+                     Operating2, dist = "negbin", data = FMWT_DSmg2)
+dszip4f = zeroinfl(catch~ fishStation +  julian, dist = "negbin", data = FMWT_DSmg2)
 
-AIC( dszip4a, dszip4b,dszip4c,  dszip4e,dszip4f, dszip4g, dszip4h)
+dszip4h = zeroinfl(catch~ Year + TopEC, dist = "negbin", data = FMWT_DSmg2)
 
-#best model
-tab = summary(dszip4a)
+dszip4i = zeroinfl(catch~ Year + TopEC + Operating2 + julian, dist = "negbin", data = FMWT_DSmg2)
+
+
+AIC(dszip4, dszip4a, dszip4b,dszip4c,  dszip4e,dszip4f, dszip4i, dszip4h)
+
+#The top four models are all really close
+summary(dszip4a)
 
 
 ```
