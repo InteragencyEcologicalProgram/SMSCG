@@ -97,7 +97,11 @@ FMWT_DSmg = merge(FMWT_DSm, op.daily, by = "Date", all.x = T)
 FMWT_DSmg$julian = yday(FMWT_DSmg$Date)
 
 #Operation is a factor, not a number
-FMWT_DSmg$Operating = as.factor(FMWT_DSmg$Operating)
+FMWT_DSmg$Operating2 = as.factor(FMWT_DSmg$Operating2)
+
+#I also want to add teh water year type
+wtryrtype <- read_excel("wtryrtype.xlsx")
+wtryrtype = mutate(wtryrtype)
 
 ```
 
@@ -182,7 +186,7 @@ dszip4i = zeroinfl(catch~ Year + TopEC + Operating2 + julian, dist = "negbin", d
 AIC(dszip4, dszip4a, dszip4b,dszip4c,  dszip4e,dszip4f, dszip4i, dszip4h)
 
 #The top four models are all really close
-summary(dszip4a)
+summary(dszip4)
 
 
 ```

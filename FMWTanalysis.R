@@ -71,13 +71,6 @@ op.daily = op.daily %>% mutate(Operating2 = case_when(
 ))
 
 
-op.daily = op.daily %>% mutate(Operating = case_when(
-  str_detect(Operating, "(Operating normally)|(Operating with one or more gates closed)") ~ "Operating",
-  str_detect(Operating, "(Operating with special conditions)|(Operating with one or more gates open)|(Operating with flashboards out)") ~ "Operating partially",
-  str_detect(Operating, "(Open$)|(Open with flashboards in)|(Open with one or more gates closed)") ~ "Open",
-  str_detect(Operating, "(Closed with flashboards in)|(Closed with flashboards out)") ~ "Closed"
-))
-
 
 #merge the gate operations with the fish data
 FMWT_DSm$Date = as.Date(FMWT_DSm$Date)
@@ -93,10 +86,10 @@ ggplot(op.daily, aes(x=Date, fill = Operating2)) + geom_bar(stat = "Count")
 
 #now with fish, first just the time we have gate data, and just the fall because we have more trawls in the fall
 FMWT_DSmg2 = filter(FMWT_DSmg, !is.na(Operating), julian >200, Year < 2012)
-ggplot(FMWT_DSmg2, aes(x = Operating, y = log(CPUE+1))) + geom_boxplot()
+ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(CPUE+1))) + geom_boxplot()
 
 #try catch instead of CPUE
-ggplot(FMWT_DSmg2, aes(x = Operating, y = log(catch+1))) + geom_boxplot()
+ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(catch+1))) + geom_boxplot()
 
 ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(catch+1))) + geom_boxplot() + facet_wrap(~month(Date), scales = "free_x")
 
@@ -140,20 +133,6 @@ summary(dszip)
 dszip2 = zeroinfl(catch~ Station + Operating, dist = "poisson", data = FMWT_DSmg2)
 summary(dszip2)
 
-############################################################################################################
-#There is probably some wierd stuff going on with an interaction between gate operations and date too.
-#I'm not exactly sure how to account for it.
-
-dszip3 = zeroinfl(catch~ Station + Operating*julian, dist = "poisson", data = FMWT_DSmg2)
-summary(dszip3)
-visreg(dszip3)
-visreg(dszip3, xvar = "julian", by = "Operating")
-
-dsglm2 = glm(catch~ Station + Operating*julian+ TopEC, family = quasipoisson, data = FMWT_DSmg2) 
-summary(dsglm2)
-visreg(dsglm2)
-visreg(dsglm2, xvar = "julian", by = "Operating")
-#bleh
 
 #let's try plotting that
 ggplot(FMWT_DSmg2, aes(x = julian, y = catch)) + geom_point() + facet_wrap(~Operating2) + 
@@ -174,20 +153,6 @@ dsb = glm(DS~ Station + Operating+TopEC, family = binomial, data = FMWT_DSmg2)
 summary(dsb)
 visreg(dsb)
 visreg(dsb, xvar = "julian", by = "Operating")
-
-
-#is salinity correlated to day of the year?
-sal = lm(TopEC~julian, data = FMWT_DSmg2)
-summary(sal)
-sal2 = lm(TopEC~Operating*julian, data = FMWT_DSmg2)
-summary(sal2)
-#OK, now I'm just confused. Maybe station 608 is throwing us off?
-sal2 = lm(TopEC~Operating*julian, data = filter(FMWT_DSmg2, Station != 608))
-summary(sal2)
-
-#block by statin
-sal3 = lm(TopEC~Operating*julian + Station, data = FMWT_DSmg2)
-summary(sal3)
 
 
 ggplot(data = FMWT_DSmg2, aes(x=julian, y=TopEC)) + facet_wrap(~Operating) + geom_point()
@@ -261,86 +226,6 @@ summary(dshurdle2)
 #mean and φ the dispersion parameter. Zuur et al. 2009
 
 #####################################################################################################
-#OK, so I need a zero-inflated negative binomial model. Which is best?
-dszip4 = zeroinfl(catch~ Station + Operating*julian + 
-                    Mean + Year, dist = "negbin", data = FMWTwSal2)
-dszip4a = zeroinfl(catch~ Station + Operating+julian + 
-                    Mean + Year, dist = "negbin", data = FMWTwSal2)
-dszip4b = zeroinfl(catch~ Station + julian + Mean +
-                    Year, dist = "negbin", data = FMWTwSal2)
-dszip4c = zeroinfl(catch~ Station + Operating*julian + 
-                    Mean, dist = "negbin", data = FMWTwSal2)
-dszip4d = zeroinfl(catch~ Station +   Operating +
-                     Year, dist = "negbin", data = FMWTwSal2)
-dszip4e = zeroinfl(catch~ Station +  Mean +
-                     Year, dist = "negbin", data = FMWTwSal2)
-dszip4f = zeroinfl(catch~ Station +  julian, dist = "negbin", data = FMWTwSal2)
-
-dszip4g = zeroinfl(catch~ Station +  Mean, dist = "negbin", data = FMWTwSal2)
-
-dszip4g = zeroinfl(catch~ Year + Mean, dist = "negbin", data = FMWTwSal2)
-
-dszip4g = zeroinfl(catch~ julian+Operating + Year, dist = "negbin", data = FMWTwSal2)
-
-
-AIC(dszip4, dszip4a,dszip4b, dszip4c, dszip4d, dszip4e, dszip4f, dszip4g)
-#the model with Station, salinity, and year is the best so far.
-summary(dszip4e)
-#but I don't know why we have NAs for the "year" standard error
-foo = vcov(dszip4e)
-diag(vcov(dszip4e))
-sqrt(diag(vcov(dszip4e)))
-#Apparently it's because I have a negative number on the diagonal of my vcov matrix
-#but I don't knwo what causes that.
-
-tots = group_by(FMWTwSal2, Year, Station) %>% summarise(tot = sum(catch))
-
-# I think it is because there was zero catch in later years
-
-FMWTwSal3 = filter(FMWTwSal2, Year < 2012)
-##########################################################################################
-
-dszip4 = zeroinfl(catch~ Station + Operating*julian + 
-                    Mean + Year, dist = "negbin", data = FMWTwSal3)
-dszip4a = zeroinfl(catch~ Station + Operating+julian + 
-                     Mean + Year, dist = "negbin", data = FMWTwSal3)
-dszip4b = zeroinfl(catch~ Station + julian + Mean +
-                     Year, dist = "negbin", data = FMWTwSal3)
-dszip4c = zeroinfl(catch~ Station + Operating*julian + 
-                     Mean, dist = "negbin", data = FMWTwSal3)
-dszip4d = zeroinfl(catch~ Station +   Operating +
-                     Year, dist = "negbin", data = FMWTwSal3)
-dszip4e = zeroinfl(catch~ Station +  Mean +
-                     Year, dist = "negbin", data = FMWTwSal3)
-dszip4f = zeroinfl(catch~ Station +  julian, dist = "negbin", data = FMWTwSal3)
-
-dszip4g = zeroinfl(catch~ Station +  Mean, dist = "negbin", data = FMWTwSal3)
-
-dszip4h = zeroinfl(catch~ Year + Mean, dist = "negbin", data = FMWTwSal3)
-
-dszip4i = zeroinfl(catch~ julian+Operating + Year, dist = "negbin", data = FMWTwSal3)
-
-
-AIC( dszip4a, dszip4b,dszip4c,  dszip4e,dszip4f, dszip4g, dszip4h)
-
-#best model
-summary(dszip4a)
-visreg(dszip4a)
-#Those partial-residual plots look good!!!
-#though the "year" effect is still having problems. 
-#Also, I'm not sure what all those computational singularities were about.
-
-
-##################################################################################################
-#Other thoughts:
-#Maybe look at "before" verusus "after" gate operations instead of "operating" versus "not operating"?
-
-#Add wateryear type rather than just "year"?
-
-#Do we have gate data from before 1999?
-
-#now use years 1986-2012, with salinity data from FMWT
-FMWT_DSmg2 = filter(FMWT_DSmg2, Year <2012)
 
 dszip5 = zeroinfl(catch~ Station + Operating2*julian + 
                     TopEC + Year, dist = "negbin", data = FMWT_DSmg2)
@@ -363,7 +248,7 @@ dszip5h = zeroinfl(catch~ Year + TopEC, dist = "negbin", data = FMWT_DSmg2)
 dszip5i = zeroinfl(catch~ julian+Operating2 + Year, dist = "negbin", data = FMWT_DSmg2)
 
 
-AIC(dszip5, dszip5a,dszip5b, dszip5f, dszip5h,  dszip5i)
+AIC(dszip5, dszip5a, dszip5c, dszip5b, dszip5f, dszip5h,  dszip5i)
 summary(dszip5)
 
 visreg(dszip5)
@@ -372,3 +257,100 @@ visreg(dszip5, xvar = "Operating2", by = "julian")
 
 summary(dszip5a)
 visreg(dszip5a)
+
+##################################################################################
+#Let's try adding in water year type.
+
+yrtyp = read_excel("wtryrtype.xlsx")
+
+#Year type should be an ordered factor
+yrtyp$`Yr-type` = factor(yrtyp$`Yr-type`, levels = c("C", "D", "BN", "AN", "W"), ordered = T)
+
+#Make "WY" match the "Year" comlum of the FMWT dataset
+yrtyp = mutate(yrtyp, Year = WY, WY = NULL)
+
+#Ted recommended lumping these into groups instead of using all the year types
+yrtyp = mutate(yrtyp, YT2 = `Yr-type`) 
+yrtyp$YT2[which(yrtyp$YT2 == "C")] = "D"
+yrtyp$YT2[which(yrtyp$YT2 == "BN")] = "D"
+
+#attatch the year types to the data
+
+FMWT_DSmg3 = merge(FMWT_DSmg2, yrtyp, by = "Year")
+yrtyp$YT2[which(yrtyp$YT2 == "AN")] = "W"
+
+#Rerun the models with water year type
+
+
+dszip6 = zeroinfl(catch~ Station + Operating2*julian + YT2 +
+                    TopEC +  Year, dist = "negbin", data = FMWT_DSmg3, na.action = "na.fail")
+dszip6a = zeroinfl(catch~ Station + Operating2+julian + 
+                     TopEC + Year + YT2, dist = "negbin", data = FMWT_DSmg3)
+dszip6b = zeroinfl(catch~ Station + julian + TopEC +
+                     Year + YT2, dist = "negbin", data = FMWT_DSmg3)
+dszip6c = zeroinfl(catch~ Station + Operating2*julian + 
+                     TopEC + YT2, dist = "negbin", data = FMWT_DSmg3)
+dszip6d = zeroinfl(catch~ Station +   Operating2 +
+                     Year + YT2, dist = "negbin", data = FMWT_DSmg3)
+dszip6e = zeroinfl(catch~ Station +  TopEC +
+                     Year + YT2, dist = "negbin", data = FMWT_DSmg3)
+dszip6f = zeroinfl(catch~ Station +  julian + Operating2 + YT2, dist = "negbin", data = FMWT_DSmg3)
+
+dszip6g = zeroinfl(catch~ Station +  TopEC + YT2, dist = "negbin", data = FMWT_DSmg3)
+
+dszip6h = zeroinfl(catch~ Year + TopEC + YT2, dist = "negbin", data = FMWT_DSmg3)
+
+dszip6i = zeroinfl(catch~ julian+Operating2 + Year + YT2, dist = "negbin", data = FMWT_DSmg3)
+
+dszip6j = zeroinfl(catch~ Station + Operating2*julian + 
+                    TopEC + YT2, dist = "negbin", data = FMWT_DSmg3)
+dszip6k = zeroinfl(catch~ Station + Operating2+julian + 
+                     TopEC + YT2, dist = "negbin", data = FMWT_DSmg3)
+dszip6m = zeroinfl(catch~ Station + Operating2+ 
+                     TopEC + YT2, dist = "negbin", data = FMWT_DSmg3)
+
+dszip6l = zeroinfl(catch~ Station + julian + TopEC +
+                      YT2, dist = "negbin", data = FMWT_DSmg3)
+dszip6n = zeroinfl(catch~ Station +   Operating2 +
+                      YT2, dist = "negbin", data = FMWT_DSmg3)
+dszip6o = zeroinfl(catch~ Station +  TopEC +
+                    YT2, dist = "negbin", data = FMWT_DSmg3)
+dszip6q = zeroinfl(catch~ Station +  TopEC + YT2, dist = "negbin", data = FMWT_DSmg3)
+
+dszip6r = zeroinfl(catch~ TopEC + YT2, dist = "negbin", data = FMWT_DSmg3)
+
+dszip6s = zeroinfl(catch~ julian+Operating2 + YT2, dist = "negbin", data = FMWT_DSmg3)
+
+foo = AIC(dszip6, dszip6a, dszip6c, dszip6b, dszip6f, dszip6h,  dszip6i, dszip5, dszip6j, dszip6k, dszip6l, 
+    dszip6n, dszip6o, dszip6q, dszip6r, dszip6s,
+    dszip5a, dszip5c, dszip5b, dszip5f, dszip5h,  dszip5i)
+
+library(MuMIn)
+drezip = dredge(dszip6)
+
+foo = foo[order(foo$AIC),]
+foo
+summary(dszip6a)
+visreg(dszip6a)
+
+summary(dszip6k)
+visreg(dszip6k)
+
+summary(dszip6m)
+visreg(dszip6m)
+
+########################################################################################
+#The effect of operations seems to decline in Decembr for some reason, maybe because
+#everything is really fresh. I might try to see if there is a better relationship with jus
+#September-November
+
+FMWT_DSmg3a = filter(FMWT_DSmg3, julian <320)
+dszip7 = zeroinfl(catch~ Station + Operating2*julian + YT2 +
+                    TopEC +  Year, dist = "negbin", data = FMWT_DSmg3a, na.action = "na.fail")
+drezip2 = dredge(dszip7)
+
+drezip7best = zeroinfl(catch~ Operating2*julian + YT2 +
+                          Year, dist = "negbin", data = FMWT_DSmg3a, na.action = "na.fail")
+summary(drezip7best)
+visreg(drezip7best)
+visreg(drezip7best, by = "Operating2", xvar = "julian")
