@@ -9,6 +9,7 @@ library(lubridate)
 library(visreg)
 library(pscl)
 library(MASS)
+library(MuMIn)
 
 #FMWT data is avaialable here: ftp://ftp.wildlife.ca.gov/TownetFallMidwaterTrawl/FMWT%20Data/
 #I will eventually remember how to automatically download it,
@@ -79,24 +80,21 @@ FMWT_DSmg = merge(FMWT_DSm, op.daily, by = "Date", all.x = T)
 FMWT_DSmg$julian = yday(FMWT_DSmg$Date)
 FMWT_DSmg$Operating2 = as.factor(FMWT_DSmg$Operating2)
 
-#quick exploritory plots
-op.daily$julian = yday(op.daily$Date)
-ggplot(op.daily, aes(x=julian, fill = Operating2)) + geom_bar(stat = "Count")
-ggplot(op.daily, aes(x=Date, fill = Operating2)) + geom_bar(stat = "Count")
+#ggplot(op.daily, aes(x=julian, fill = Operating2)) + geom_bar(stat = "Count")
+#ggplot(op.daily, aes(x=Date, fill = Operating2)) + geom_bar(stat = "Count")
+  ggplot(op.daily, aes(x=julian, fill = Operating2)) + geom_bar(stat = "Count", position = "fill") +
+    facet_wrap(.~Year, scales = "free") + scale_y_discrete(breaks = NULL)
 
 #now with fish, first just the time we have gate data, and just the fall because we have more trawls in the fall
 FMWT_DSmg2 = filter(FMWT_DSmg, !is.na(Operating), julian >200, Year < 2012)
 ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(CPUE+1))) + geom_boxplot()
 
+ggplot(FMWT_DSmg2, aes(x=catch)) + geom_histogram()
+
 #try catch instead of CPUE
-ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(catch+1))) + geom_boxplot()
+#ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(catch+1))) + geom_boxplot()
 
-ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(catch+1))) + geom_boxplot() + facet_wrap(~month(Date), scales = "free_x")
-
-#model it
-dsglm = glm(catch~ Station + Operating + TopEC, family = poisson, data = FMWT_DSmg2)
-summary(dsglm)
-visreg(dsglm)
+#ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(catch+1))) + geom_boxplot() + facet_wrap(~month(Date), scales = "free_x")
 
 #But we are probably zero-inflated and probably overdisperssed too.
 #look at overdispersion
@@ -108,52 +106,9 @@ pchisq(summary(dsglm2)$dispersion * dsglm$df.residual, dsglm$df.residual, lower 
 dsglm3 = glm(round(CPUE)~ Station + Operating + TopEC, family = quasipoisson, data = FMWT_DSmg2) 
 summary(dsglm3)$dispersion # dispersion coefficient
 #CPUE is even worse
-
-summary(dsglm2)
-summary(dsglm3)
-
 #maybe a hurdle model
 
-dshurdle = hurdle(catch~ Station + Operating + TopEC, data = FMWT_DSmg2)
-summary(dshurdle)
-
-#might be better with a negative binomial model for the CPUE
-dshurdle2 = hurdle(round(CPUE)~ Station + Operating + TopEC, dist = "negbin", data = FMWT_DSmg2)
-summary(dshurdle2)
-dshurdle3 = hurdle(catch~ Station + Operating + TopEC, dist = "negbin", data = FMWT_DSmg2)
-summary(dshurdle3)
-#I'm not quite sure why the EC is giving me NAs
-
-#a zero-inflated model might be better
-dszinb = zeroinfl(round(CPUE)~ Station + Operating + TopEC, dist = "negbin", data = FMWT_DSmg2)
-summary(dszinb)
-
-dszip = zeroinfl(round(CPUE)~ Station + Operating, dist = "poisson", data = FMWT_DSmg2)
-summary(dszip)
-dszip2 = zeroinfl(catch~ Station + Operating, dist = "poisson", data = FMWT_DSmg2)
-summary(dszip2)
-
-
-#let's try plotting that
-ggplot(FMWT_DSmg2, aes(x = julian, y = catch)) + geom_point() + facet_wrap(~Operating2) + 
-  geom_smooth(method = "glm", method.args = list(family = "poisson"))+ coord_cartesian(ylim = c(-1, 20))
-
 ###########################################################################################################
-
-#Maybe a binomial model of smelt presence/absence would be more informative.
-
-FMWT_DSmg2$DS = as.logical(FMWT_DSmg2$catch)
-dsb = glm(DS~ Station + Operating2*julian+ TopEC, family = binomial, data = FMWT_DSmg2) 
-summary(dsb)
-visreg(dsb)
-visreg(dsb, xvar = "julian", by = "Operating")
-#No. Definitely not.
-
-dsb = glm(DS~ Station + Operating+TopEC, family = binomial, data = FMWT_DSmg2) 
-summary(dsb)
-visreg(dsb)
-visreg(dsb, xvar = "julian", by = "Operating")
-
 
 ggplot(data = FMWT_DSmg2, aes(x=julian, y=TopEC)) + facet_wrap(~Operating) + geom_point()
 #Some of those conductivity values look way off. I'm going to check against the water quality from the sondes
@@ -185,24 +140,25 @@ sal4 = lm(Mean~Operating*julian + Station, data = FMWTwSal2)
 summary(sal4)
 
 ############################################################################################
-#rerun our catch models with the sonde salinity
+#unfortunatley, we can't sure sonde salnity for the whole
+#dataset
 
 #we had lower catch in some years than others, let's put year in there too
 
 #I don't really want to use the quasi-poisson version, or plain old neg binomial, because of the zero-inflation problem.
-dsglm2 = glm(catch~ Station + Operating*julian+ Mean + Year, family = quasipoisson, data = FMWTwSal2) 
+dsglm2 = glm(catch~ Station + Operating2*julian+ TopEC + Year, family = quasipoisson, data = FMWT_DSmg2) 
 summary(dsglm2)
 
-dsnb2 = glm.nb(catch~ Station + Operating*julian+ Mean + Year,  data = FMWTwSal2) 
+dsnb2 = glm.nb(catch~ Station + Operating2*julian+ TopEC + Year,  data = FMWT_DSmg2) 
 summary(dsnb2)
 
 #The zero-inflated model might help with teh overdispersion too.
-dszip3 = zeroinfl(catch~ Station + Operating*julian + Mean + Year, dist = "poisson", data = FMWTwSal2)
+dszip3 = zeroinfl(catch~ Operating2*julian + TopEC + Year, dist = "poisson", data = FMWT_DSmg2)
 summary(dszip3)
 visreg(dszip3)
 visreg(dszip3, xvar = "julian", by = "Operating")
 
-dszip4 = zeroinfl(catch~ Station + Operating*julian + Mean + Year, dist = "negbin", data = FMWTwSal2)
+dszip4 = zeroinfl(catch~ Station + Operating2+julian + TopEC + Year, dist = "negbin", data = FMWT_DSmg2)
 summary(dszip4)
 visreg(dszip4)
 visreg(dszip4, xvar = "julian", by = "Operating")
@@ -248,8 +204,8 @@ dszip5h = zeroinfl(catch~ Year + TopEC, dist = "negbin", data = FMWT_DSmg2)
 dszip5i = zeroinfl(catch~ julian+Operating2 + Year, dist = "negbin", data = FMWT_DSmg2)
 
 
-AIC(dszip5, dszip5a, dszip5c, dszip5b, dszip5f, dszip5h,  dszip5i)
-summary(dszip5)
+AIC(dszip5, dszip5a, dszip5c, dszip5b, dszip5h,  dszip5i)
+summary(dszip5b)
 
 visreg(dszip5)
 visreg(dszip5, xvar = "julian", by = "Operating2")
@@ -273,11 +229,11 @@ yrtyp = mutate(yrtyp, Year = WY, WY = NULL)
 yrtyp = mutate(yrtyp, YT2 = `Yr-type`) 
 yrtyp$YT2[which(yrtyp$YT2 == "C")] = "D"
 yrtyp$YT2[which(yrtyp$YT2 == "BN")] = "D"
-
+yrtyp$YT2[which(yrtyp$YT2 == "AN")] = "W"
 #attatch the year types to the data
 
 FMWT_DSmg3 = merge(FMWT_DSmg2, yrtyp, by = "Year")
-yrtyp$YT2[which(yrtyp$YT2 == "AN")] = "W"
+
 
 #Rerun the models with water year type
 
@@ -323,7 +279,7 @@ dszip6s = zeroinfl(catch~ julian+Operating2 + YT2, dist = "negbin", data = FMWT_
 
 foo = AIC(dszip6, dszip6a, dszip6c, dszip6b, dszip6f, dszip6h,  dszip6i, dszip5, dszip6j, dszip6k, dszip6l, 
     dszip6n, dszip6o, dszip6q, dszip6r, dszip6s,
-    dszip5a, dszip5c, dszip5b, dszip5f, dszip5h,  dszip5i)
+    dszip5a, dszip5c, dszip5b,  dszip5h,  dszip5i)
 
 library(MuMIn)
 drezip = dredge(dszip6)
@@ -349,8 +305,100 @@ dszip7 = zeroinfl(catch~ Station + Operating2*julian + YT2 +
                     TopEC +  Year, dist = "negbin", data = FMWT_DSmg3a, na.action = "na.fail")
 drezip2 = dredge(dszip7)
 
-drezip7best = zeroinfl(catch~ Operating2*julian + YT2 +
-                          Year, dist = "negbin", data = FMWT_DSmg3a, na.action = "na.fail")
+drezip7best = zeroinfl(catch~ Station+Operating2+julian + YT2 + TopEC, 
+                       dist = "negbin", data = FMWT_DSmg3a, na.action = "na.fail")
 summary(drezip7best)
 visreg(drezip7best)
 visreg(drezip7best, by = "Operating2", xvar = "julian")
+#meh. Doesn't help much
+
+#####################################################################################
+#Quick plot of FMWT DS catch in montezuma slough by year
+
+tots = group_by(FMWT_DSmg2, Year) %>% summarize(catch = sum(catch))
+index = read.csv("smeltindex.csv")
+
+ggplot(tots, aes(x=Year, y= catch)) + geom_bar(stat = "identity")
+ggplot(index, aes(x=Year, y= Total)) + geom_bar(stat = "identity")
+
+#####################################################################################'
+#I'm still confused as to why we are getting a bunch of singularities. I'm going to try
+#replacing day of year with month.
+
+FMWT_DSmg3$month = month(FMWT_DSmg3$Date)
+dszip8 = zeroinfl(catch~ Station + Operating2*month + YT2 +
+                    TopEC, dist = "negbin", data = FMWT_DSmg3, na.action = "na.fail")
+drezip3 = dredge(dszip8)
+drezip3best = zeroinfl(catch~ Station + Operating2+month + YT2 +
+                         TopEC, dist = "negbin", data = FMWT_DSmg3)
+summary(drezip3best)
+#meh. Not much help.
+
+##################################################################################
+#adding X2
+X2 <- read_excel("supplemental_data_wr.1943-5452.0000617_hutton3.xlsx", sheet = "Daily")
+X2$Date = as.Date(X2$Date)
+FMWT_DSmg4 = merge(FMWT_DSmg3, X2)
+
+dszip9 = zeroinfl(catch~ Station + Operating2+ julian + YT2 +
+                    TopEC +  SacX2, dist = "negbin", data = FMWT_DSmg4, na.action = "na.fail")
+drezip4 = dredge(dszip9)
+#also not much help
+
+###########################################################################################
+#what about adding the FMWT index?
+FMWT_DSmg4 = merge(FMWT_DSmg3, index)
+
+dszip10 = zeroinfl(catch~ Station + Operating2+ julian + YT2 +
+                    TopEC +  Total, dist = "negbin", data = FMWT_DSmg4, na.action = "na.fail")
+drezip5 = dredge(dszip10)
+summary(dszip10)
+visreg(dszip10)
+
+dszip10a = zeroinfl(catch~  Operating2+  YT2 +
+                     TopEC +  Total, dist = "negbin", data = FMWT_DSmg4, na.action = "na.fail")
+#dang. Now it's not significant at all. But I'm not sure how to interpret this anyway
+
+##########################################################################################
+#whay about just dry years?
+FMWT_DSmg3b = filter(FMWT_DSmg3, YT2 == "D")
+dszip11 = zeroinfl(catch~ Station + Operating2+julian + 
+                    TopEC +  Year, dist = "negbin", data = FMWT_DSmg3b, na.action = "na.fail")
+
+drezip6 = dredge(dszip11)
+dszip11best = zeroinfl(catch~ Operating2+julian + 
+                     TopEC, dist = "negbin", data = FMWT_DSmg3b, na.action = "na.fail")
+summary(dszip11best)
+visreg(dszip11best)
+#huh
+
+summary(dszip11)
+visreg(dszip11)
+
+
+#################################################################################
+#Quick plot of year type versus gate operation
+ggplot(FMWT_DSmg3, aes(x=Operating2)) + geom_bar() + facet_wrap(~YT2)
+
+
+ops = filter(merge(op.daily, yrtyp), Year >1988, Year <2019)
+ops$Operating2 = as.factor(ops$Operating2)
+
+opsum = group_by(ops, Year, YT2) %>% summarize(ops = length(Operating2[which(Operating2 == "Operating")]))
+opsmean = group_by(opsum, YT2) %>% summarize(mean = mean(ops), se = sd(ops)/length(ops), sd = sd(ops))
+
+#plot again, better
+ggplot(opsmean, aes(x=YT2, y= mean, fill = YT2)) + geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se)) + ylab("days of operation") +
+  scale_x_discrete(name = "Year type", labels = c("Dry", "Wet"))
+
+#quick binomial model
+opmod = glm(Operating2 ~ YT2 + julian, data = ops, family = "binomial")
+summary(opmod)
+visreg(opmod)
+
+#or maybe make it easier
+opmod2 = glm(ops~ YT2, data = opsum)
+summary(opmod2)
+visreg(opmod2)
+
