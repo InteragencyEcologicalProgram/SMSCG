@@ -78,12 +78,19 @@ FMWT_DSm$Date = as.Date(FMWT_DSm$Date)
 op.daily$Date = as.Date(op.daily$Date)
 
 
+
 FMWT_DSmg = merge(FMWT_DSm, op.daily, by = "Date", all.x = T)
 FMWT_DSmg$julian = yday(FMWT_DSmg$Date)
 FMWT_DSmg$Operating2 = as.factor(FMWT_DSmg$Operating2)
+FMWT_DSmg$Vol = scale(FMWT_DSmg$TowVolume)
 
 #now with fish, first just the time we have gate data, and just the fall because we have more trawls in the fall
 FMWT_DSmg2 = filter(FMWT_DSmg, !is.na(Operating), julian >200, Year < 2012)
+
+#Now the fall data for the whole thing
+FMWT_DSmg2a = filter(FMWT_DSmg, julian >200, Year < 2012)
+op.daily$Year = year(op.daily$Date)
+op.daily$julian = yday(op.daily$Date)
 
 yrtyp = read_excel("wtryrtype.xlsx")
 
@@ -101,6 +108,7 @@ yrtyp$YT2[which(yrtyp$YT2 == "AN")] = "W"
 #attatch the year types to the data
 
 FMWT_DSmg3 = merge(FMWT_DSmg2, yrtyp, by = "Year")
+FMWT_DSmg3a = merge(FMWT_DSmg2a, yrtyp, by = "Year")
 
 
 #total catch in montezuma slough
@@ -114,6 +122,7 @@ indexl$month = factor(indexl$month, levels = c("Sept", "Oct", "Nov", "Dec"), lab
 #add the month
 
 FMWT_DSmg3$month = month(FMWT_DSmg3$Date)
+FMWT_DSmg3a$month = month(FMWT_DSmg3a$Date)
 #adding X2
 X2 <- read_excel("supplemental_data_wr.1943-5452.0000617_hutton3.xlsx", sheet = "Daily")
 X2$Date = as.Date(X2$Date)
@@ -122,12 +131,28 @@ X2$Date = as.Date(X2$Date)
 FMWT_DSmg4 = merge(FMWT_DSmg3, X2)
 FMWT_DSmg4 = merge(FMWT_DSmg4, indexl)
 
+FMWT_DSmg4x = merge(FMWT_DSmg3a, X2)
+FMWT_DSmg4x$month = month(FMWT_DSmg4x$Date)
+FMWT_DSmg4x = merge(FMWT_DSmg4x, indexl)
+
+
 #Standardize continuous variables (salinity)
 FMWT_DSmg4$ECscaled = scale(FMWT_DSmg4$TopEC)
 FMWT_DSmg4$Indexscaled = scale(FMWT_DSmg4$index)
 FMWT_DSmg4$julianscaled = scale(FMWT_DSmg4$julian)
-
+FMWT_DSmg4$Year3 = scale(FMWT_DSmg4$Year)
 
 #just the dry years
 FMWT_DSmg4a = filter(FMWT_DSmg4, YT2 == "D")
+
+
+#Standardize continuous variables (salinity)
+FMWT_DSmg4x$ECscaled = scale(FMWT_DSmg4x$TopEC)
+FMWT_DSmg4x$Indexscaled = scale(FMWT_DSmg4x$index)
+FMWT_DSmg4x$julianscaled = scale(FMWT_DSmg4x$julian)
+
+
+#just the dry years
+FMWT_DSmg4ax = filter(FMWT_DSmg4x, YT2 == "D")
+
 

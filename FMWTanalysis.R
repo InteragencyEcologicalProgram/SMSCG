@@ -76,6 +76,8 @@ op.daily = op.daily %>% mutate(Operating2 = case_when(
 #merge the gate operations with the fish data
 FMWT_DSm$Date = as.Date(FMWT_DSm$Date)
 op.daily$Date = as.Date(op.daily$Date)
+op.daily$Year = year(op.daily$Date)
+op.daily$julian = yday(op.daily$Date)
 FMWT_DSmg = merge(FMWT_DSm, op.daily, by = "Date", all.x = T)
 FMWT_DSmg$julian = yday(FMWT_DSmg$Date)
 FMWT_DSmg$Operating2 = as.factor(FMWT_DSmg$Operating2)
@@ -314,6 +316,7 @@ visreg(drezip7best, by = "Operating2", xvar = "julian")
 
 #####################################################################################
 #Quick plot of FMWT DS catch in montezuma slough by year
+
 
 tots = group_by(FMWT_DSmg2, Year) %>% summarize(catch = sum(catch))
 index = read.csv("smeltindex.csv")

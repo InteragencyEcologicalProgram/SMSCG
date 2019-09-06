@@ -17,6 +17,7 @@ library(lubridate)
 library(visreg)
 library(pscl)
 library(MASS)
+source("data manip FMWT.R")
 ```
 
 In the Delta Smelt Resiliancy strategy, there is the idea we can change the operation of the Suisun Marsh Salinity control gates to improve habitat in the marsh for Delta Smelt. I was curious if there were any trends between historical gate operations and presence of Delta Smelt in the Marsh. Therefore, I decided to compare catch of Delta Smelt in the marsh during the fall (when the gates are most frequently operated) with gate operations.
@@ -26,180 +27,155 @@ First I did some data manipulation to get the gate operation data lined up with 
 FMWT data is avaialable here: ftp://ftp.wildlife.ca.gov/TownetFallMidwaterTrawl/FMWT%20Data/
 Michael Koohafman gave me the gate operation data.
 
+First for some quick exploritory plots of the data. Look at when the gates are usually operated and what the fish catch was like when they are or are not operated.
 
-```{r data upload}
-#uplaod the fish catch data
-                   
-FMWT <- read_excel("FMWT 1967-2018 Catch Matrix_updated.xlsx", sheet = "FlatFile", 
-                   col_types = c("numeric","date", "numeric", "text", "date",  
-                                 "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", 
-                                 "numeric", "numeric", "text", "text", "text", rep("numeric", times =112)))
-
-#put it in long format instead of wide
-FMWTl = gather(FMWT, key = "Species", value = "catch", `Aequorea spp.`:`Yellowfin Goby`)
-
-#rename all the stupid names
-#names(FMWTl)
-names(FMWTl) = c("Year" ,"Date","Survey","Station", "StartTime","Index", 
-                 "TopTemp", "TopEC","BottomEC","Turb",
-                 "Secchi" , "Depthft","TowVolume","Tide","TowDirection",
-                 "Weather","Microcystis","Wave", "Species" , "catch" )
-
-#Ideally, we'd do this analysis on CPUE instead of raw catch
-#They didn't caculate volumes until later, so I'll use the average
-#volume per station for the older tows
-
-#first replace any zero volumes with NAs, because zero volumes don't make sense
-FMWTl$TowVolume[which(FMWTl$TowVolume==0)] = NA
-
-#Calculate the average volume
-meanvol = group_by(FMWTl, Station) %>% summarize(mvol = mean(TowVolume, na.rm = T))
-FMWTl2 = merge(FMWTl, meanvol)
-FMWTl2$TowVolume[which(is.na(FMWTl2$TowVolume))] = FMWTl2$mvol[which(is.na(FMWTl2$TowVolume))]
-
-#Calculate CPUE 
-FMWTl2 = mutate(FMWTl2, CPUE = catch*TowVolume)
-
-#For starters, I'll just look at Delta Smelt
-FMWT_DS = filter(FMWTl2, Species == "Delta Smelt")
-
-#Just Delta Smelt from the stations in MOntezuma Slough
-FMWT_DSm = filter(FMWT_DS, Station == 605 |Station == 606| Station == 608 )
-
-#Let's filter it so that we just look at 1999-2011. The Delta Smelt catch from 
-#2012-2017 was so low it's just going to throw things off
-
-FMWT_DSm = filter(FMWT_DSm, Year < 2012)
-
-#load the water quality and gate operations data
-load("~/salinity control gates/SMSCG/operations.RData")
-load("~/salinity control gates/SMSCG/waterquality.RData")
-
-
-
-#Change the "operating" values so there are fewer groups
-
-
-op.daily = op.daily %>% mutate(Operating2 = case_when(
-  str_detect(Operating, "(Operating normally)|(Operating with one or more gates closed)") ~ "Operating",
-  str_detect(Operating, "(Operating with special conditions)|(Operating with one or more gates open)|(Operating with flashboards out)") ~ "Operating",
-  str_detect(Operating, "(Open$)|(Open with flashboards in)|(Open with one or more gates closed)") ~ "Open",
-  str_detect(Operating, "(Closed with flashboards in)|(Closed with flashboards out)") ~ "Operating"
-))
-
-
-#merge the gate operations with the fish data
-FMWT_DSm$Date = as.Date(FMWT_DSm$Date)
-op.daily$Date = as.Date(op.daily$Date)
-FMWT_DSmg = merge(FMWT_DSm, op.daily, by = "Date", all.x = T)
-
-#make a new variable for "day of the year"
-FMWT_DSmg$julian = yday(FMWT_DSmg$Date)
-
-#Operation is a factor, not a number
-FMWT_DSmg$Operating2 = as.factor(FMWT_DSmg$Operating2)
-
-#I also want to add teh water year type
-wtryrtype <- read_excel("wtryrtype.xlsx")
-wtryrtype = mutate(wtryrtype)
-
-```
-
-Now for some quick exploritory plots of the data. Look at when the gates are usually operated and what the fish catch was like when they are or are not operated.
-
-```{r plots, echo = TRUE}
+```{r opsplots, echo = TRUE}
 
 #when are the gates operated?
-op.daily$julian = yday(op.daily$Date)
 ggplot(op.daily, aes(x=julian, fill = Operating2)) + geom_bar(stat = "Count")
-ggplot(op.daily, aes(x=Date, fill = Operating2)) + geom_bar(stat = "Count")
 
-#now with fish, first just the time we have gate data, and just the fall because we have more trawls in the fall
-FMWT_DSmg2 = filter(FMWT_DSmg, !is.na(Operating2), julian >200)
-#Log CPUE versus gate operations
+#look at it a different way
+ ggplot(op.daily, aes(x=julian, fill = Operating2)) + geom_bar(stat = "Count", position = "fill") +
+    facet_wrap(.~Year, scales = "free") + scale_y_discrete(breaks = NULL)
+```
+ How does gate operation relate to water year type?
+   I'll make a plot and run a basic model to see whether gates are operated more frequently in dry years. I've binned the five year types into "wet" and "dry"
+```{r opsplots2, echo = T}
+ops = filter(merge(op.daily, yrtyp), Year >1988, Year <2019)
+ops$Operating2 = as.factor(ops$Operating2)
+
+#summarize number of days per year the gates were operated, grouping by year type
+opsum = group_by(ops, Year, YT2) %>% summarize(ops = length(Operating2[which(Operating2 == "Operating")]))
+opsmean = group_by(opsum, YT2) %>% summarize(mean = mean(ops), se = sd(ops)/length(ops), sd = sd(ops))
+
+#plot it
+ggplot(opsmean, aes(x=YT2, y= mean, fill = YT2)) + geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se)) + ylab("days of operation") +
+  scale_x_discrete(name = "Year type", labels = c("Dry", "Wet"))
+
+#It looks like they are operated more often in dry years, but I'll stats it to check.
+opmod2 = glm(ops~ YT2, data = opsum)
+summary(opmod2)
+visreg(opmod2)
+#Yup. Definitely. 
+
+```
+Now I"ll make some basic plots of fish catch. I'll filter it to just the time period where we have gate data (1988-2011) and just the fall, since most of the FMWT data is Sep-Dec. I didn't plot 2012-2018, because the catch was too low
+```{r plotsfish, echo = T}
+
 ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(CPUE+1))) + geom_boxplot()
-
-#try log catch instead of CPUE
-ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(catch+1))) + geom_boxplot()
-
-#seperate by station
-ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(catch+1))) + geom_boxplot() + facet_wrap(~Station)
 
 #seperate by month
 ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(catch+1))) + geom_boxplot() + facet_wrap(~month(Date))
 
+#Look at smelt catch in Montezuma Slough and the FMWT index overall - do they match up?
+ggplot(tots, aes(x=Year, y= catch)) + geom_bar(stat = "identity")
+ggplot(index, aes(x=Year, y= Total)) + geom_bar(stat = "identity")
+
 
 ```
 
-Let's run some models to see whether there are statisticall more smelt when the gates are operating. Other things are probably involved too, such as year, water year type, salinity, station, day of the year, etc. I'll run several models and rank them with AICc to see which is best.
+Let's run some models to see whether there are statistically more smelt when the gates are operating. Other things are probably involved too, such as year, water year type, salinity, station, day of the year, etc. I'll run several models and rank them with AICc to see which is best.
 
 It took me a long time to figure out what type of model to run. Delta smelt catch data is "count data", so theoretically it should follow a poisson distribution. However, my preliminary analysis showed it is highly overdisperssed and has WAY more zeros than a normal Poisson distribution. Therefore, after much discussion, research, statistics textbooks, and false starts, I settled on a zero-inflated negative binomial model.
 
-I used the salinity from the nearest sonde rather than the salinity measured by FMWT, because some of the CDFW data was suspect (much higher or much lower than would be expected for that time of year). Michael Koohafman also gave me that data.
+I added the volume sampled as an offset, since I want count data rather than CPUE, but I still want to encorporate the volume's potential effect on catch. 
 
+Now for some models. Some notes:
+    - I have "scaled" all the predictor variables so that they have a mean of zero and a standard deviation of 1. This lets me compare between variables more easily.
+    - I subset the data so that it is just dry years (below normal, dry, or critical) prior to 2011
+    - I binned the gate operation into "operating" or "not", I did not make any distinction bewtween full and partial operation.
+    - EC is the conductivity measured by CDFW's boat, not the nearest WQ station.
+    - SacX2 is from Hutton et al. 
+    - If no volume of sample was available, I replaced it with the average.
+```{r models, echo = T}
 
-```{r datamanip, include = FALSE}
+#First I'll put in all the variables for a global model
+dsznb2 = zeroinfl(catch~ #catch of Delta Smelt
+                    Station+ #Station on Montezuma Slough
+                    Operating2+ #whether the gates are operating
+                    julianscaled + #Day of the Year (scaled)
+                    Indexscaled + #FMWT index (scaled)
+                    SacX2 + #sacramento river X2
+                    ECscaled + #Top electrical conductivity (scaled)
+                    offset(Vol), #volume added as an offset
+                  dist = "negbin", data = FMWT_DSmg4a, na.action = "na.fail")
 
-#first some data manipulation to get the sonde salinity organized
-histday = filter(historical.daily, Analyte == "Salinity")
-FMWT_DSmg2 = mutate(FMWT_DSmg2, salinity = TopEC*0.64/1000, Datetime = Date)
-FMWT_DSmg2$fishStation = FMWT_DSmg2$Station
-FMWT_DSmg2$Station[which(FMWT_DSmg2$Station == 608)] = "(S-71)  Montezuma Slough at Roaring River"
-FMWT_DSmg2$Station[which(FMWT_DSmg2$Station == 606)] = "(S-49)  Beldens Landing"
-FMWT_DSmg2$Station[which(FMWT_DSmg2$Station == 605)] = "(S-54)  Hunter Cut" 
-FMWT_DSmg2 = mutate(FMWT_DSmg2, Datetime = Date)
+#assess all possible models
+dreznb2 = dredge(dsznb2)
+head(dreznb2)
 
-FMWTwSal2 = unique(merge(FMWT_DSmg2, histday))
+#this was the best model
+dsznb2best = zeroinfl(catch~ Operating2+julianscaled + 
+                        ECscaled + Indexscaled+ offset(Vol),
+                      dist = "negbin", data = FMWT_DSmg4a, na.action = "na.fail")
+summary(dsznb2best)
 
-```
-If you plot the salinity measured by the sonde versus the boat, it's not great. However, we only have sonde salinity since about 1999, so we'll have to use FMWT salinity for older data.
-```{r salinity, echo = T}
-ggplot(FMWTwSal2, aes(x=salinity, y= Mean, color = Station)) + 
-  geom_point() + ylab("Salinity from nearest Sonde") +
-  xlab("Salinity measured by FMWT") + geom_smooth(method = lm)
-#so it's close, but not great.
-
-############################################################################################
-
-```
-Now for some models. 
-```{r models}
-dszip4 = zeroinfl(catch~ fishStation + Operating2*julian + 
-                     TopEC + Year, dist = "negbin", data = FMWT_DSmg2)
-
-
-dszip4a = zeroinfl(catch~ fishStation + Operating2+julian + 
-                     TopEC + Year, dist = "negbin", data = FMWT_DSmg2)
-dszip4b = zeroinfl(catch~ fishStation + julian + TopEC +
-                     Year, dist = "negbin", data = FMWT_DSmg2)
-dszip4c = zeroinfl(catch~ fishStation + Operating2*julian + 
-                     TopEC, dist = "negbin", data = FMWT_DSmg2)
-dszip4e = zeroinfl(catch~ fishStation +  TopEC +
-                     Operating2, dist = "negbin", data = FMWT_DSmg2)
-dszip4f = zeroinfl(catch~ fishStation +  julian, dist = "negbin", data = FMWT_DSmg2)
-
-dszip4h = zeroinfl(catch~ Year + TopEC, dist = "negbin", data = FMWT_DSmg2)
-
-dszip4i = zeroinfl(catch~ Year + TopEC + Operating2 + julian, dist = "negbin", data = FMWT_DSmg2)
-
-
-AIC(dszip4, dszip4a, dszip4b,dszip4c,  dszip4e,dszip4f, dszip4i, dszip4h)
-
-#The top four models are all really close
-summary(dszip4)
-
+#I can make some conditional plots to see the effect of each variable by itself.
+visreg(dsznb2best)
 
 ```
-Here are the partial residual plots for the best model. 
-Partial residual plots show you the effect of each factor when the effects of the
-other factors have been accounted for. 
-```{r prplots}
-visreg(dszip4a)
+So that model looks OK, but we should check the residuals to make sure there is no pattern. According to Zuur et al. 2009, I should plot the pearson residuals versus the fitted values and versus the predictor variables and see no pattern.
+```{r plotsresid, echo = T}
 
+tests = data.frame(DSresid = residuals(dsznb2best, type = "pearson"), 
+                   DSfit = dsznb2best$fitted.values,
+                   ops = dsznb2best$model["Operating2"],
+                   EC = dsznb2best$model["ECscaled"],
+                   Ind = dsznb2best$model["Indexscaled"],
+                   day = dsznb2best$model["julianscaled"],
+                   catch = FMWT_DSmg4a$catch)
+
+
+ggplot(data = filter(tests, catch !=0), aes(x=DSresid, y = DSfit)) + geom_point()
+ggplot(data = tests, aes(x=DSresid, y = ECscaled)) + geom_point()
+ggplot(data = tests, aes(x=DSresid, y = Operating2)) + geom_point()
+ggplot(data = tests, aes(x=DSresid, y = julianscaled)) + geom_point()
+ggplot(data = tests, aes(x=DSresid, y = Indexscaled)) + geom_point()
 
 ```
+If we've been operating the gates whenever it gets salty in the marsh, It would be ideal to see what would have happened to smelt catch in a dry year in the marsh where we didn't operate the gates.
 
-Those partial-residual plots look good!!! Though the "year" effect is still having problems. I've got negative values in my variance-covariance matrix which makes it impossible to calculate standard errors or p-values. 
-Also, I'm not sure what all those computational singularities were about.
+Fortunately, we have dtata from FMWT before the gates went into operation.
+```{r premodels, echo = T}
+
+###########################################################################################
+#can we compare pre-gate data to post-gate data?
+
+#first make a new variable for pre-gate versus post-gate
+FMWT_DSmg4ax$prepost = NA
+FMWT_DSmg4ax$prepost[which(FMWT_DSmg4ax$Year <1988)] = "pre"
+FMWT_DSmg4ax$prepost[which(is.na(FMWT_DSmg4ax$prepost))] = "post"
+
+#Take out the couple of places were we didn't have X2 values
+FMWT_DSmg4ax = filter(FMWT_DSmg4ax,!is.na(SacX2))
+
+#quick plot of smelt abundacne pre versus post
+ggplot(FMWT_DSmg4ax, aes(x=prepost, y = log(catch+1))) + geom_boxplot()
+ggplot(FMWT_DSmg4ax, aes(x=prepost, y = log(CPUE+1))) + geom_boxplot()
 
 
+#run a model with all the possible variables
+dsznb3 = zeroinfl(catch~Station + prepost + julianscaled + 
+                    ECscaled +SacX2 + Indexscaled + offset(Vol), dist = "negbin", 
+                  data = FMWT_DSmg4ax,na.action = "na.fail")
+
+#What does this one look like?
+summary(dsznb3)
+
+#Go through all the possible models
+drepp = dredge(dsznb3)
+head(drepp)
+#It liked the full model, except for the volume offset. 
+
+visreg(dsznb3,  gg = T)
+
+#Try it again without the volume offset
+dsznb4 = zeroinfl(catch~Station + prepost + julianscaled + 
+                    ECscaled +SacX2 + Indexscaled, dist = "negbin", 
+                  data = FMWT_DSmg4ax,na.action = "na.fail")
+summary(dsznb4)
+visreg(dsznb4)
+
+```
+OK, That's wierd the pre/post coefficient reversed.I think we'll stick with the offset. Anyway, It doesn't look like this is a particularly useful avenue for evaluating the gates, since Delta Smelt were a lot more common everywhere in the 70s and early 80s than they were in the 90s and 2000s
