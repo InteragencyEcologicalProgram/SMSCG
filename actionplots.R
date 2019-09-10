@@ -1,7 +1,9 @@
 #Look at some different ways of plotting the data for environmental variables during the 2018 action
 
 library(tidyverse)
+library(DataCombine)
 library(lubridate)
+library(visreg)
 
 #load the data from the sondes
 load("~/salinity control gates/SMSCG/actiondata.RData")
@@ -13,7 +15,7 @@ str(action.daily)
 p1 = ggplot(data = action.daily, aes(x = Datetime, y = Mean, color = Station))
 p1 + geom_line() + facet_wrap(~Analyte, scales = "free_y")
 
-action.daily$month = month(action.daily$Datetime)
+action.daily$Month = month(action.daily$Datetime)
 action.timeseries$Month = month(action.timeseries$Datetime)
 
 action.monthly = group_by(action.timeseries, Station, Analyte, Month) %>% summarize(Mean = mean(Value), sd = sd(Value))
@@ -145,12 +147,12 @@ p8.1 + geom_point(alpha = 0.1) +
 #now for some linear models
 lm1 = lm(Value ~ Datetime + Station, data = filter(action.timeseries, Analyte == "Fluorescence"))
 summary(lm1)
-library(visreg)
+
 visreg(lm1)
 
 #ted just wants month versus station
 action.timeseries$Month = factor(action.timeseries$Month, labels = c("July", "Aug", "Sep"))
-lm2 = lm(Value ~ Month + Station, data = filter(action.timeseries, Analyte == "Fluorescence"))
+lm2 = lm(Value ~ Month*Station, data = filter(action.timeseries, Analyte == "Fluorescence"))
 summary(lm2)
 visreg(lm2)
 
@@ -161,7 +163,7 @@ TukeyHSD(am1)
 
 #But I dont' know if we want to use the whole time series, or the daily averages, or the weekly averages!
 #look at the daily averages
-action.daily$Month = factor(action.daily$month, labels = c("Jul", "Aug", "sep"))
+action.daily$Month = factor(action.daily$Month, labels = c("Jul", "Aug", "sep"))
 am2 = aov(Mean ~ Month + Station, data = filter(action.daily, Analyte == "Fluorescence"))
 summary(am2)
 TukeyHSD(am2)
@@ -179,6 +181,8 @@ mdl.ac <- gls(Mean ~ Month*Station, data=filter(action.daily, Analyte == "Fluore
               correlation = corAR1(form=~Datetime|Station),
               na.action=na.omit)
 summary(mdl.ac)
+acf(mdl.ac$residuals)
+pacf(mdl.ac$residuals)
 
 mdl <- gls(Mean ~ Month*Station, data=filter(action.daily, Analyte == "Fluorescence"), 
               na.action=na.omit)
@@ -196,7 +200,7 @@ anova(mdl, mdl.ac)
 
 ##########################################################################################################
 #another option is putting a lag in the dependent variable
-library(DataCombine)
+
 dailyF =filter(action.daily, Analyte == "Fluorescence")
 dailyF = slide(dailyF, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagF", slideBy = -1)
 
@@ -219,6 +223,15 @@ mdllT <- lm(Mean ~ Month*Station + lagT, data= dailyTurb,
             na.action=na.omit)
 summary(mdllT)
 visreg(mdllT, xvar = "Month", by = "Station")
+acf(mdllT$residuals)
+#That's not so great. Do I need more of a lag in Turbidity?
+dailyTurb = slide(dailyTurb, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagT2", slideBy = -2)
+mdllT <- lm(Mean ~ Month*Station + lagT2, data= dailyTurb,
+            na.action=na.omit)
+summary(mdllT)
+visreg(mdllT, xvar = "Month", by = "Station")
+acf(mdllT$residuals)
+#no, that's worse
 
 #temperature
 dailyTemp =filter(action.daily, Analyte == "Temperature")
@@ -240,3 +253,39 @@ mdlls <- lm(Mean ~ Month*Station + lagT, data= dailysal,
 summary(mdlls)
 visreg(mdlls, xvar = "Month", by = "Station")
 #################################################################################################
+
+##########################################################################################################
+#OR, I could include a lag in the residuals from the origional model as a response in the later model. 
+lmF = lm(Mean~Month*Station, data = dailyF)
+resF = residuals(lmF, type = "response")
+
+dailyF = cbind(dailyF, resF) 
+dailyF = slide(dailyF, "resF", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagRes", slideBy = -1)
+
+
+mdll2 <- lm(Mean ~ Month*Station + lagRes, data= dailyF,
+           na.action=na.omit)
+summary(mdll2)
+visreg(mdll2, xvar = "Month", by = "Station")
+plot(mdll2)
+acf(mdll2$residuals)
+#the ACF plot is a little better than the lag in the dependant variable. Plus there are more significant differences.
+
+#Do it for turbidity
+lmT = lm(Mean~Month*Station, data = dailyTurb)
+resT = residuals(lmT, type = "response")
+
+dailyTurb = cbind(dailyTurb, resT) 
+dailyTurb = slide(dailyTurb, "resT", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagRes", slideBy = -1)
+
+
+mdll2T <- lm(Mean ~ Month*Station + lagRes, data= dailyTurb,
+            na.action=na.omit)
+summary(mdll2T)
+visreg(mdll2T, xvar = "Month", by = "Station")
+plot(mdll2T)
+acf(mdll2T$residuals)
+#That one doesn't look so hot.
+
+#################################################################################################
+
