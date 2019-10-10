@@ -13,6 +13,8 @@ library(visreg)
 
 #now load the data
 load("~/salinity control gates/SMSCG/actiondata.RData")
+load("~/salinity control gates/SMSCG/actiondata-october.RData")
+action.timeseries = rbind(action.timeseries, action.timeseries.october)
 
 #########################################################################################################
 #We want to see if there was any difference between the month when the gates were operating (August) and
@@ -49,7 +51,8 @@ visreg(lm1)
 #First make a new variable for "month" using the lubridate package
 action.timeseries$Month = month(action.timeseries$Datetime) 
 #now convert it to a factor
-action.timeseries$Month = factor(action.timeseries$Month, labels = c("July", "Aug", "Sep"))
+action.timeseries$Month = factor(action.timeseries$Month, labels = c("July", "Aug", "Sep", "Oct", "Nov"))
+action.timeseries = filter(action.timeseries, Month != "Nov")
 
 #try the model again
 #There will also be an interaction term between month and station, because we expect more of an
@@ -63,8 +66,9 @@ visreg(lm2, xvar = "Month", by = "Station")
 #Let's try the daily averages
 
 #need to put a "month variable in our daily data
+action.daily = rbind(action.daily, action.daily.october)
 action.daily$Month = month(action.daily$Datetime)
-action.daily$Month = factor(action.daily$Month, labels = c("Jul", "Aug", "Sep"))
+action.daily$Month = factor(action.daily$Month, labels = c("Jul", "Aug", "Sep", "Oct"))
 dailyF = filter(action.daily, Analyte == "Fluorescence")
 
 #look at the histogram again
@@ -95,6 +99,12 @@ mdl.ac <- gls(Mean ~ Month*Station, data=dailyF,
               na.action=na.omit)
 summary(mdl.ac)
 
+mdl.ac2 <- gls(Mean ~ Month*Station, data=dailyF, 
+              correlation = corARMA(form=~Datetime|Station),
+              na.action=na.omit)
+summary(mdl.ac2)
+
+
 #we want to test this versus our simple model without correlation structure
 mdl <- gls(Mean ~ Month*Station, data=dailyF, 
            na.action=na.omit)
@@ -112,44 +122,70 @@ library(DataCombine)
 
 #Use the "slide" funciton to create a new variable that is one time step off from the origional variable
 dailyF = slide(dailyF, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagF", slideBy = -1)
+dailyF = slide(dailyF, "lagF", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagF2", slideBy = -1)
+
 
 #look at the model now.
-mdll <- lm(Mean ~ Month*Station + lagF, data= dailyF)
+mdll <- lm(log(Mean) ~ Month*Station + lagF, data= dailyF)
 summary(mdll)
 visreg(mdll, xvar = "Month", by = "Station")
 plot(mdll)
 acf(mdll$residuals)
 #Much better!
 # I like the simiplicity of this version.
+#look at the model now.
+mdllx <- lm(log(Mean) ~ Month*Station + log(lagF) + log(lagF2), data= dailyF)
+summary(mdllx)
+visreg(mdllx, xvar = "Month", by = "Station")
+plot(mdllx)
+acf(mdllx$residuals)
+
 
 #Put a lag in the turbidity data
 dailyTurb =filter(action.daily, Analyte == "Turbidity")
 dailyTurb = slide(dailyTurb, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagT", slideBy = -1)
+dailyTurb = slide(dailyTurb, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagT2", slideBy = -2)
+
 
 #model the turbidity
-mdllT <- lm(Mean ~ Month*Station + lagT, data= dailyTurb)
+mdllT <- lm(log(Mean) ~ Month*Station + log(lagT) + log(lagT2), data= dailyTurb)
 summary(mdllT)
 visreg(mdllT, xvar = "Month", by = "Station")
-#no real differences. That backs up what we saw in the origional plots
+acf(mdllT$residuals)
+
 
 #put a lag in the temperature data
 dailyTemp =filter(action.daily, Analyte == "Temperature")
 dailyTemp = slide(dailyTemp, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagT", slideBy = -1)
+dailyTemp = slide(dailyTemp, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagT2", slideBy = -2)
+
 
 #model the temperature
 mdllC <- lm(Mean ~ Month*Station + lagT, data= dailyTemp)
 summary(mdllC)
 visreg(mdllC, xvar = "Month", by = "Station")
 #there was a trend towards cooler temperatures in Spetember (to be expected), but no difference between stations. 
+mdllC2 <- lm(Mean ~ Month*Station + lagT + lagT2, data= dailyTemp)
+summary(mdllC2)
+visreg(mdllC2, xvar = "Month", by = "Station")
+
+
 
 #put a lag in the salinity
 dailysal =filter(action.daily, Analyte == "Salinity")
 dailysal = slide(dailysal, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagT", slideBy = -1)
+dailysal = slide(dailysal, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagT2", slideBy = -2)
+
 
 #model the salinity
 mdlls <- lm(Mean ~ Month*Station + lagT, data= dailysal)
 summary(mdlls)
 visreg(mdlls, xvar = "Month", by = "Station")
 #We defnintely have differences in salinilty by month and by station!
+
+mdlls <- lm(Mean ~ Month*Station + lagT + lagT2, data= dailysal)
+summary(mdlls)
+visreg(mdlls, xvar = "Month", by = "Station")
+
 
 #################################################################################################

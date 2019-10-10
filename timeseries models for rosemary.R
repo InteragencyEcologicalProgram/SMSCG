@@ -7,7 +7,7 @@
 
 #First load required libraries
 library(tidyverse)
-#remotes::install_github("tidyverts/fable")
+remotes::install_github("tidyverts/fable")
 library(fable)
 library(feasts)
 
@@ -118,3 +118,8 @@ lm2 = lm(.resid ~Month*Station, data = filter(fitaug2, .model == "arima"))
 plot(lm2)
 summary(lm2)
 visreg(lm2, xvar = "Month", by = "Station")
+
+#try something different
+lm3 = gls(log(Mean) ~ Month*Station, correlation = corARMA(0.5, form =~Datetime), data = dailyF)
+summary(lm3)
+visreg(lm3, xvar = "Month", by = "Station")

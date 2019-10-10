@@ -7,6 +7,7 @@ library(visreg)
 library(pscl)
 library(MASS)
 library(MuMIn)
+library(ggthemes)
 
 
 source("data manip FMWT.R")
@@ -100,5 +101,49 @@ dsznb4 = zeroinfl(catch~Station + prepost + julianscaled +
 summary(dsznb4)
 visreg(dsznb4)
 
-```
-#I don't really know which I like better there. It lookslike the take-home message
+
+##################################################################################################
+#some graphs of smelt catch in different year types
+
+#all years
+ggplot(FMWT_DSmg2, aes(x = Operating2, y = log(CPUE+1))) + geom_boxplot()
+
+#just dry years
+ggplot(FMWT_DSmg4a, aes(x = Operating2, y = log(CPUE+1))) + geom_boxplot()
+
+#summarize for means to make a bar plot
+FMWTsumdry = group_by(FMWT_DSmg4a, Operating2) %>% summarize(mCPUE = mean(CPUE), sdCPUE = sd(CPUE), seCPUE = sdCPUE/length(CPUE))
+ggplot(FMWTsumdry, aes(x = Operating2, y = mCPUE)) + geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = mCPUE - sdCPUE, ymax = mCPUE + sdCPUE))
+#yuck
+
+#look at just the wet years
+FMWT_DSmg4wet = filter(FMWT_DSmg4, YT2 == "W")
+ggplot(FMWT_DSmg4wet, aes(x = Operating2, y = log(CPUE+1))) + geom_boxplot()
+
+#summarize for means to make a bar plot
+FMWTsumwet = group_by(FMWT_DSmg4wet, Operating2) %>% summarize(mCPUE = mean(CPUE), sdCPUE = sd(CPUE), seCPUE = sdCPUE/length(CPUE))
+ggplot(FMWTsumwet, aes(x = Operating2, y = mCPUE)) + geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = mCPUE - sdCPUE, ymax = mCPUE + sdCPUE))
+
+#facet by year type
+ggplot(FMWT_DSmg4, aes(x = Operating2, y = log(CPUE + 1))) + geom_boxplot() +
+  facet_wrap(~YT2)
+
+ggplot(FMWT_DSmg4, aes(x = YT2, y = log(catch+1))) + geom_boxplot() 
+
+
+FMWT_DSmg4$YT2 = factor(droplevels(FMWT_DSmg4$YT2), levels = c("D", "W"), labels = c("Dry Summers", "Wet Summers"))
+
+#Graph for ES conference presentation
+ggplot(FMWT_DSmg4, aes(x = Operating2, y = log(catch + 1))) + 
+  geom_boxplot(aes(fill = YT2)) +
+  scale_fill_manual(values = c(
+    "Dry Summers" = "#dfc27d",
+    "Wet Summers" = "#92c5de"),
+    name = NULL) +
+  facet_wrap(~YT2) + xlab("Salinity Control Gate Operations") +ylab("Delta Smelt Catch (log-transformed)") +
+  theme_few() + theme(text = element_text(size = 22))
+
+ggplot(FMWT_DSmg4, aes(x = julian, y = log(catch +1))) + geom_point() + geom_smooth(method = lm) +
+  theme_few() + xlab("day of year") +ylab("Delta Smelt Catch (log-transformed)") 

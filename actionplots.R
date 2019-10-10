@@ -15,8 +15,12 @@ str(action.daily)
 p1 = ggplot(data = action.daily, aes(x = Datetime, y = Mean, color = Station))
 p1 + geom_line() + facet_wrap(~Analyte, scales = "free_y")
 
+p1 = ggplot(data = action.timeseries, aes(x = Datetime, y = Value, color = Station))
+p1 + geom_line() + facet_wrap(~Analyte, scales = "free_y")
+
 action.daily$Month = month(action.daily$Datetime)
-action.timeseries$Month = month(action.timeseries$Datetime)
+action.timeseries$Month = factor(month(action.timeseries$Datetime), labels = c("Jul", "Aug", "Sep"))
+
 
 action.monthly = group_by(action.timeseries, Station, Analyte, Month) %>% summarize(Mean = mean(Value), sd = sd(Value))
 action.monthly$YT2 = "action"
@@ -25,7 +29,8 @@ p2 = ggplot(data = action.monthly, aes(x=Month, y = Mean))
 p2 + geom_bar(stat = "identity") + 
   geom_errorbar(aes(ymin = Mean + sd, ymax = Mean - sd))+
   facet_grid(Station~Analyte, scales = "free_y")
-  
+
+
 p3 = ggplot(data = action.monthly, aes(x=Month, y = Mean, fill = Station))
 p3 + geom_bar(stat = "identity", position = "dodge") + 
   geom_errorbar(aes(ymin = Mean + sd, ymax = Mean - sd), group = "Station", position = "dodge")+
@@ -64,20 +69,30 @@ alldata$Month = factor(alldata$Month, levels = c(7, 8, 9),
 alldata$Analyte = factor(alldata$Analyte, levels = c("Salinity","Temperature","Fluorescence","Turbidity"))
 
 #Graph it
+alldata$sd[which(alldata$YT2 == "action")] = NA
 p4 = ggplot(data = alldata, aes(x=Station, y = Mean, fill = YT2))
 p4 + geom_bar(stat = "identity", position = "dodge") + 
   geom_errorbar(aes(ymin = Mean + sd, ymax = Mean - sd), group = "YT2", position = "dodge")+
   facet_grid(Analyte~Month, scales = "free_y", space = "free_x")+
   scale_fill_discrete(labels = c("2018 (Below Normal)", "(1998-2017) Below Normal Years",
-                                 "(1998-2017) Above Normal Years"), name = NULL)
+                                 "(1998-2017) Above Normal Years"), name = NULL)+
+  theme(legend.position="bottom")
 
-#Graph it a different way
+#Graph it a different way ########################## THIS IS THE ONE FOR THE PAPER
 p5 = ggplot(data = alldata, aes(x=Month, y = Mean, fill = YT2))
-p5 + geom_bar(stat = "identity", position = "dodge") + 
+p5.1 = p5 + geom_bar(stat = "identity", position = "dodge") + 
   geom_errorbar(aes(ymin = Mean + sd, ymax = Mean - sd), group = "YT2", position = "dodge")+
   facet_grid(Analyte~Station, scales = "free_y", space = "free_x")+
   scale_fill_discrete(labels = c("2018 (Below Normal)", "(1998-2017) Below Normal Years",
-                                 "(1998-2017) Above Normal Years"), name = NULL)
+                                 "(1998-2017) Above Normal Years"), name = NULL)+
+  ylab("Turbidity (NTU)      Chlorophyll (ug/L)    Temperature (C)     Salinity (PSU)")+
+  theme(legend.position="bottom")
+
+p5.1
+
+ggsave(plot = p5.1, filename = "WQplot.tiff", device = "tiff", width = 6.5, height =7, units = "in", dpi = 300)
+
+
 
 #lines instead of bars
 alldata$month2 = as.numeric(alldata$Month)
