@@ -13,6 +13,8 @@ zoopB <- read_excel("FMWT_TNSZooplanktonBPUEMarch2019.xlsx",
 stas = data.frame(Station = as.character(c(513, 520, 801, 802, 606, 609, 610, "Mont", "NZ032")), 
                   Region = c(rep("River", 4), rep("Suisun Marsh", 5)))
 
+stas = mutate(stas, Region = factor(Region, levels = c("Suisun Marsh", "River")))
+
 zoopB = filter(merge(zoopB, stas, by = "Station"), Year == 2018, Month == 7 | Month ==8 | Month==9| Month==10) 
 
 #Pick out just the columns we are interested in
@@ -27,6 +29,10 @@ zoopB2= mutate(zoopB, Acartiella = ACARTELA + ASINEJUV,
 zoopB2 = zoopB2[,c(1,3,5, 67:74)]
 zoopB2$sample = 1:nrow(zoopB2)
 zoopB2$Month = factor(zoopB2$Month, labels = c("Jul", "Aug", "Sep", "Oct"))
+
+#figure out what samples/stations we might be missing
+zooptest = group_by(zoopB2, Station, Month) %>% summarize(n = length(sample))
+write.csv(zooptest, "Zoopsamples.csv", row.names = F)
 
 #now from wide to long
 zooplong = gather(zoopB2, key = "Taxa", value = "BPUE", -Station, -Month, - Year, -Region.y, -sample)

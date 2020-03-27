@@ -15,6 +15,8 @@ zoops = read_excel("FMWT TNSZooplanktonDataCPUE25Feb2019.xls", sheet = 5)
 stas = data.frame(Station = c(513, 520, 801, 802, 606, 609, 610, "Mont", "NZ032"), 
                   Region = c(rep("River", 4), rep("Suisun Marsh", 5)))
 unique(mysids$Station)
+stas = mutate(stas, Region = factor(Region, levels = c("Suisun Marsh", "River")))
+
 
 #Just the salinity control gate stations in Suisun and the Confluence in 2018
 zoops = merge(zoops, stas, by = "Station")

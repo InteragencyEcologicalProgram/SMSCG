@@ -8,6 +8,7 @@ library(DataCombine)
 library(lubridate)
 library(visreg)
 library(ggthemes)
+library(nlme)
 
 #load the data from the sondes
 load("~/salinity control gates/SMSCG/actiondata.RData")
@@ -146,15 +147,15 @@ ggsave(plot = p5.1x, filename = "salinity.tiff", device = "tiff", width = 11, he
 
 #lines instead of bars
 alldata$month2 = as.numeric(alldata$Month)
-p5.1 = ggplot(data = alldata, aes(x=month2, y = Mean,color = YT2))
+p5.1 = ggplot(data = alldata, aes(x=month2, y = Mean,color = yrtyp))
 p5.1 + geom_line() + 
-  geom_errorbar(aes(ymin = Mean + sd, ymax = Mean - sd), group = "YT2", width = 0.25)+
+  geom_errorbar(aes(ymin = Mean + sd, ymax = Mean - sd), group = "yrtyp", width = 0.25)+
   facet_grid(Analyte~Station, scales = "free_y", space = "free_x")+
   scale_color_discrete(labels = c("2018 (Below Normal)", "(1998-2017) Below Normal Years",
                                  "(1998-2017) Above Normal Years"), name = NULL)
 
 #And another way to look at it.
-qp6 = ggplot(data = alldata, aes(x=YT2, y = Mean, fill = Month))
+p6 = ggplot(data = alldata, aes(x=yrtyp, y = Mean, fill = Month))
 p6 + geom_bar(stat = "identity", position = "dodge") + 
   geom_errorbar(aes(ymin = Mean + sd, ymax = Mean - sd), group = "Month", position = "dodge")+
   facet_grid(Analyte~Station, scales = "free_y", space = "free_x")+
@@ -164,49 +165,4 @@ p6 + geom_bar(stat = "identity", position = "dodge") +
 p7 = ggplot(data = alldata, aes(x=Month, y = Mean, fill = Station))
 p7 + geom_bar(stat = "identity", position = "dodge") + 
   geom_errorbar(aes(ymin = Mean + sd, ymax = Mean - sd), group = "Month", position = "dodge")+
-  facet_grid(Analyte~YT2, scales = "free_y", space = "free_x")
-
-#one more try...
-historical.daily$month = month(historical.daily$Datetime)
-historical.daily$Year = year(historical.daily$Datetime)
-hist.daily = merge(historical.daily, yrtyp, by = "Year")[c(1:5, 8, 10, 16, 19)]
-action.daily$month = month(action.daily$Datetime)
-action.daily$Year = year(action.daily$Datetime)
-act.daily = action.daily[c(1:4, 7, 8, 15, 16)]
-act.daily$YT2 = rep("action", nrow(act.daily))
-daily = rbind(hist.daily, act.daily)
-daily$Day = day(daily$Datetime)
-daily$jDay = yday(daily$Datetime)
-
-
-
-#just the stations we are interested in
-daily = filter(daily, Station == "(C-2B)  Collinsville B" | Station == "(S-64)  National Steel" |
-                   Station =="(S-54)  Hunter Cut")
-
-daily = filter(daily, month == 7 | month ==8 | month ==9)
-daily = filter(daily, Count != 0)
-
-
-daily$Station = factor(daily$Station, levels = c("(C-2B)  Collinsville B", "(S-64)  National Steel" ,"(S-54)  Hunter Cut"),
-                         labels = c("River", "East Marsh", "West Marsh"))
-
-
-
-
-p8 = ggplot(data = daily, aes(x=Day, y = Mean, color = YT2))
-p8 + #geom_point() +
- geom_smooth(method = "lm")+
-  facet_grid(Analyte~Station + month, scales = "free_y", space = "free_x")+
-  scale_fill_discrete(labels = c("2018 (Below Normal)", "(1998-2017) Below Normal Years",
-                                 "(1998-2017) Above Normal Years"), name = NULL)
-
-p8.1 = ggplot(data = daily, aes(x=jDay, y = Mean, color = YT2))
-p8.1 + geom_point(alpha = 0.1) +
-  geom_smooth(method = "lm")+
-  facet_grid(Analyte~Station, scales = "free_y", space = "free_x")+
-  scale_color_discrete(labels = c("2018 (Below Normal)", "(1998-2017) Below Normal Years",
-                                 "(1998-2017) Above Normal Years"), name = NULL) +
-  xlab("day of year")
-
-##########################################################################################################
+  facet_grid(Analyte~yrtyp, scales = "free_y", space = "free_x")

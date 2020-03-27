@@ -56,6 +56,7 @@ FMWT_DS = filter(FMWTl2, Species == "Delta Smelt")
 #Note: I need to find out which side of the gates staion 608 is on
 FMWT_DSm = filter(FMWT_DS, Station == 605 |Station == 606| Station == 608 )
 
+
 #load the water quality and gate operations data
 load("~/salinity control gates/SMSCG/operations.RData")
 load("~/salinity control gates/SMSCG/waterquality.RData")
@@ -155,4 +156,18 @@ FMWT_DSmg4x$julianscaled = scale(FMWT_DSmg4x$julian)
 #just the dry years
 FMWT_DSmg4ax = filter(FMWT_DSmg4x, YT2 == "D")
 
+#quick plot to demonstrate something for the water year conditions report
+historical.daily$Year = year(historical.daily$Datetime)
+historical.daily$Month = month(historical.daily$Datetime)
+historical.daily$Year[which(historical.daily$Month>9)] = historical.daily$Year[which(historical.daily$Month>9)] +1
+hist.daily =merge(historical.daily, yrtyp, by = "Year")
+hist.daily$julian = yday(hist.daily$Datetime)
+hist.daily$wday = hist.daily$julian-274
+hist.daily$wday[which(hist.daily$wday<0)] = hist.daily$julian[which(hist.daily$wday<0)]+ 92
 
+ggplot(data = filter(hist.daily, Analyte == "Salinity"), aes(x = wday, y = Mean, color = YT2))+
+  geom_smooth( se = FALSE) +
+  scale_color_manual(values = c("lightblue", "lightgreen"), name = "Water Year Type", labels = c("Below Average", "Above average"))+
+  geom_point(data = filter(hist.daily, Analyte == "Salinity" & Year == 2017), aes(x = wday, y = Mean), color = "black", alpha = 0.05) +
+  geom_smooth(data = filter(hist.daily, Analyte == "Salinity" & Year == 2017), aes(x = wday, y = Mean), color = "black")+
+  ylab("Mean salinity") + xlab("Day of water year")
