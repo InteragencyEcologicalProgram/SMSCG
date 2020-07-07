@@ -3,6 +3,8 @@
 
 library(tidyverse)
 library(readxl)
+library(lubridate)
+library(RColorBrewer)
 
 #import the data
 mysids = read_excel("SMSCG MysidAmphipodCPUEJuly2019.xlsx", sheet = "Mysid CPUE")

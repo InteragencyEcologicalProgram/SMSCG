@@ -6,10 +6,14 @@
 #September 10, 2019
 
 #First load required libraries
-library(tidyverse)
-remotes::install_github("tidyverts/fable")
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+#library(tidyverse)
+#remotes::install_github("tidyverts/fable")
 library(fable)
 library(feasts)
+library(tsibble)
 
 #now load the data
 load("actiondata.RData")
@@ -55,6 +59,11 @@ fitaug = fit %>% augment()
 fitaug %>%
   ggplot() + aes(x = Datetime, y = .resid) +
   geom_line() +
+  facet_wrap(~.model)
+
+fitaug %>%
+  ggplot() + aes(x = Month, y = .resid) +
+  geom_boxplot() +
   facet_wrap(~.model)
 
 # try a forecast
@@ -123,3 +132,6 @@ visreg(lm2, xvar = "Month", by = "Station")
 lm3 = gls(log(Mean) ~ Month*Station, correlation = corARMA(0.5, form =~Datetime), data = dailyF)
 summary(lm3)
 visreg(lm3, xvar = "Month", by = "Station")
+
+
+#How do we take out both daily seasonal data and annual seasonal data?

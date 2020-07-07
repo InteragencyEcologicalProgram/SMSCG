@@ -10,14 +10,27 @@ library(tidyverse)
 library(DataCombine)
 library(lubridate)
 library(visreg)
+library(DataCombine)
 
 #now load the data
 load("~/salinity control gates/SMSCG/actiondata.RData")
 load("~/salinity control gates/SMSCG/actiondata-october.RData")
+load("~/salinity control gates/SMSCG/waterquality.RData")
 action.timeseries = rbind(action.timeseries, action.timeseries.october)
+action.daily = rbind(action.daily, action.daily.october)
+histact = rbind(dplyr::select(action.daily, Station, Analyte, Datetime, Mean), 
+                dplyr::select(historical.daily, Station, Analyte, Datetime, Mean))
+histact = mutate(histact, Year = year(Datetime), Month = month(Datetime))
+
+yrtyps = data.frame(Year= c(2005, 2006, 2017, 2002, 2009, 2016, 2018), yrtyp = c("an", "an", "an", "bn", "bn", "bn", "act"))
+
+histact2 = merge(histact, yrtyps) %>%
+  filter(Station %in% c("(C-2B)  Collinsville B" , "(S-54)  Hunter Cut", "(S-64)  National Steel"),
+         Month %in% c(7,8,9,10))
 
 #########################################################################################################
-#We want to see if there was any difference between the month when the gates were operating (August) and
+#We want to see if there was any difference between the month when the gates were operating 
+#(August) and
 #the "before" time period (July) and the "after" time period (September)
 
 #LEt's start with Chlorophyll Fluorescence
@@ -94,13 +107,13 @@ acf(am2$residuals)
 #and add a correlation structure
 
 #first do it with the daily data
-mdl.ac <- gls(Mean ~ Month*Station, data=dailyF, 
-              correlation = corAR1(form=~Datetime|Station),
+mdl.ac <- gls(Mean ~ Month, data=filter(dailyF, Station == "(S-54)  Hunter Cut" ), 
+              correlation = corAR1(form=~Datetime),
               na.action=na.omit)
 summary(mdl.ac)
 
 mdl.ac2 <- gls(Mean ~ Month*Station, data=dailyF, 
-              correlation = corARMA(form=~Datetime|Station),
+              correlation = corARMA(form=~ 1| Datetime),
               na.action=na.omit)
 summary(mdl.ac2)
 
@@ -113,12 +126,13 @@ summary(mdl)
 #see if adding autocorrelation improves the model
 anova(mdl, mdl.ac)
 acf(mdl.ac$residuals)
-#We improved the model, but we still have a lot of autocorrelation. I'm also not totally sure what the correlation
+#We improved the model, but we still have a lot of autocorrelation. 
+#I'm also not totally sure what the correlation
 #sturcture is doing.
 
 ##########################################################################################################
 #another option is putting a lag in the dependent variable
-library(DataCombine)
+
 
 #Use the "slide" funciton to create a new variable that is one time step off from the origional variable
 dailyF = slide(dailyF, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagF", slideBy = -1)
@@ -189,3 +203,50 @@ visreg(mdlls, xvar = "Month", by = "Station")
 
 
 #################################################################################################
+#add in the previous years. Just dry years? or both?
+
+
+
+#put a lag in the temperature data
+dailyTemp =filter(histact2, Analyte == "Temperature")
+dailyTemp = slide(dailyTemp, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagT", slideBy = -1)
+dailyTemp = slide(dailyTemp, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagT2", slideBy = -2)
+
+
+#model the temperature
+mdllC2 <- lm(Mean ~ Month*Station + yrtyp + lagT, data= dailyTemp)
+summary(mdllC2)
+visreg(mdllC2, xvar = "Month", by = "Station")
+
+#there was a trend towards cooler temperatures in Spetember (to be expected), but no difference between stations. 
+mdllC3 <- lm(Mean ~ Month*Station + yrtyp+ lagT + lagT2, data= dailyTemp)
+summary(mdllC3)
+visreg(mdllC3)
+visreg(mdllC3, xvar = "Month", by = "Station")
+
+
+mdllC3 <- lm(Mean ~ Month + Station + yrtyp+ lagT + lagT2, data= dailyTemp)
+summary(mdllC3)
+visreg(mdllC3)
+visreg(mdllC3, xvar = "Month", by = "Station")
+
+
+#put a lag in the salinity
+dailysal =filter(histact2, Analyte == "Salinity")
+dailysal = slide(dailysal, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagT", slideBy = -1)
+dailysal = slide(dailysal, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagT2", slideBy = -2)
+
+
+#model the salinity
+mdlls <- lm(Mean ~ Month+yrtyp*Station + lagT +lagT2, data= dailysal)
+summary(mdlls)
+visreg(mdlls, xvar = "Station", by = "yrtyp")
+visreg(mdlls)
+#We defnintely have differences in salinilty by month and by station!
+
+dailysal$month2 = as.factor(dailysal$Month)
+mdlls <- lm(Mean ~ month2*yrtyp+ Station + lagT +lagT2, data= filter(dailysal, yrtyp %in% c("act", "bn")))
+summary(mdlls)
+visreg(mdlls, xvar = "yrtyp", by = "month2")
+visreg(mdlls, xvar = "month2", by = "yrtyp")
+visreg(mdlls)

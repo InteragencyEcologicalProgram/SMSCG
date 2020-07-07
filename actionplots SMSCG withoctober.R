@@ -83,8 +83,8 @@ alldata = rbind(histsum, action.monthly)
 alldata = filter(alldata, Station == "(C-2B)  Collinsville B" | Station == "(S-64)  National Steel" |
                    Station =="(S-54)  Hunter Cut")
 
-alldata$Station = factor(alldata$Station, levels = c("(C-2B)  Collinsville B", "(S-64)  National Steel" ,"(S-54)  Hunter Cut"),
-                         labels = c("River", "East Marsh", "West Marsh"))
+alldata$Station = factor(alldata$Station, levels = c("(S-54)  Hunter Cut", "(S-64)  National Steel" ,"(C-2B)  Collinsville B"),
+                         labels = c("West Marsh", "East Marsh", "River"))
 
 alldata$Month = factor(alldata$Month, levels = c(7, 8, 9, 10),
                          labels = c("Jul", "Aug", "Sep", "Oct"))

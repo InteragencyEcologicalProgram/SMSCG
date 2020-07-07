@@ -18,7 +18,7 @@ str(action.daily)
 
 #first just some exploritory plots
 p1 = ggplot(data = action.daily, aes(x = Datetime, y = Mean, color = Station))
-p1 + geom_line() + facet_wrap(~Analyte, scales = "free_y")
+p1 + geom_line() + geom_point() + facet_wrap(~Analyte, scales = "free_y")
 
 p1 = ggplot(data = action.timeseries, aes(x = Datetime, y = Value, color = Station))
 p1 + geom_line() + facet_wrap(~Analyte, scales = "free_y")

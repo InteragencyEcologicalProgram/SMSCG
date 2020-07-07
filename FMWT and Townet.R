@@ -80,3 +80,17 @@ recentyears = as.POSIXct(c("2000-01-01", "2020-01-01"))
 p1 + coord_cartesian(xlim = recentyears, ylim = c(0,50))
 
 write.csv(SuisunSmelt2, "SuisunSmelt.csv")
+
+SuisunSmelt2$Month = month(SuisunSmelt2$Date)
+smeltmonth = group_by(SuisunSmelt2, Month) %>%
+  summarize(catch2 = mean(catch), sdcatch = sd(catch)) %>%
+  filter(Month %in% c(7,8,9,10))
+p2 = ggplot(smeltmonth, aes(x = Month, y = catch2))
+p2 + geom_bar(stat = "identity")+ geom_errorbar(aes(ymin = catch2 - secatch, ymax = catch2+secatch))
+
+SuisunSmelt3 = filter(SuisunSmelt2, Month %in% c(7,8,9,10))
+p2 = ggplot(SuisunSmelt3, aes(x = as.factor(Month), y = log(catch+1)))
+p2 + geom_boxplot()
+
+p2 = ggplot(filter(SuisunSmelt3, Year > 2000), aes(x = as.factor(Month), y = log(catch+1)))
+p2 + geom_boxplot()
