@@ -36,7 +36,8 @@ action.daily2$Month = month(action.daily2$Datetime)
 #action.timeseries$Month = factor(month(action.timeseries$Datetime), labels = c("Jul", "Aug", "Sep", "Oct"))
 
 #calculate the mean and standard deviation per month. 
-action.monthly = group_by(action.timeseries2, Station, Analyte, Month) %>% summarize(Mean = mean(Value), sd = sd(Value))
+action.monthly = group_by(action.timeseries2, Station, Analyte, Month) %>% 
+  summarize(Mean = mean(Value), sd = sd(Value), se = sd)
 action.monthly$yrtyp = "action"
 action.monthly = filter(action.monthly, Month != 11)
 
@@ -54,43 +55,46 @@ p3 + geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(Analyte~., scales = "free_y")
 
 #organize the historical data
-historical.timeseries$Year = year(historical.timeseries$Datetime)
-historical.timeseries$Month = month(historical.timeseries$Datetime)
-historical.timeseries2 = merge(historical.timeseries, yrtyps)
-historical.monthly =  group_by(filter(historical.timeseries2, !is.na(Value), Year != 2018 & Year !=2019), Station, Analyte, Month, Year, yrtyp) %>% 
-  summarize(Mean = mean(Value, na.rm = T), sd = sd(Value, na.rm=T))
+historical.daily = mutate(historical.daily, Year = year(Datetime),
+                          Month = month(Datetime))
+
+#add the year types
+historical.daily2 = merge(historical.daily, yrtyps)
+
+#Calculate the monthly means and standard deviations
+historical.monthly =  group_by(filter(historical.daily2, !is.na(Mean), Year != 2018 & Year !=2019), 
+                               Station, Analyte, Month, yrtyp) %>% 
+  summarize(Mean = mean(Mean, na.rm = T), sds = sd(Mean, na.rm=T)) %>%
+  filter(Month %in% c(7,8,9,10))
 
 #add water year type
-hist.monthly = merge(historical.monthly, yrtyps)
+#hist.monthly = merge(historical.monthly, yrtyps)
 
 #average monthly water quality
-hist.monthsum = group_by(hist.monthly, Station, Analyte, Month, yrtyp) %>% 
-  summarize(Mean2 = mean(Mean, na.rm= T), sd = sd(Mean, na.rm = T))
-hist.monthsum = rename(hist.monthsum, Mean = Mean2)
+#hist.monthsum = group_by(hist.monthly, Station, Analyte, Month, yrtyp) %>% 
+#  summarize(Mean2 = mean(Mean, na.rm= T), sd = sd(Mean, na.rm = T), se = mean(sds, na.rm = T))
+
 
 #that didn't work right. 
-histsum =  group_by(filter(historical.timeseries2, !is.na(Value), Year != 2018 & Year !=2019), Station, Analyte, Month, yrtyp) %>% 
-  summarize(Mean = mean(Value, na.rm = T), sd = sd(Value, na.rm=T))
+#histsum =  group_by(filter(historical.timeseries2, !is.na(Value), Year != 2018 & Year !=2019), Station, Analyte, Month, yrtyp) %>% 
+#  summarize(Mean = mean(Value, na.rm = T), sd = sd(Value, na.rm=T), se = mean(sds))
 
 
 #just for the months we are interested in
-histsum = filter(histsum, Month ==7 | Month ==8 |Month == 9 | Month ==10)
+#histsum = filter(histsum, Month ==7 | Month ==8 |Month == 9 | Month ==10)
 
 #put the data together
-alldata = rbind(histsum, action.monthly)
+alldata = rbind(hist.monthsum, action.monthly)
 
 # filter out just the stations we are interested in
 alldata = filter(alldata, Station == "(C-2B)  Collinsville B" | Station == "(S-64)  National Steel" |
-                   Station =="(S-54)  Hunter Cut")
-
-alldata$Station = factor(alldata$Station, levels = c("(S-54)  Hunter Cut", "(S-64)  National Steel" ,"(C-2B)  Collinsville B"),
-                         labels = c("West Marsh", "East Marsh", "River"))
-
-alldata$Month = factor(alldata$Month, levels = c(7, 8, 9, 10),
-                         labels = c("Jul", "Aug", "Sep", "Oct"))
-
-alldata$Analyte = factor(alldata$Analyte, levels = c("Salinity","Temperature","Fluorescence","Turbidity"))
-alldata$yrtyp = factor(alldata$yrtyp, levels = c("bn","an","action"))
+                   Station =="(S-54)  Hunter Cut") %>%
+  mutate(Station = factor(Station, levels = c("(S-54)  Hunter Cut", "(S-64)  National Steel" ,"(C-2B)  Collinsville B"),
+                         labels = c("West Marsh", "East Marsh", "River")),
+         Month = factor(Month, levels = c(7, 8, 9, 10),
+                         labels = c("Jul", "Aug", "Sep", "Oct")),
+         Analyte = factor(Analyte, levels = c("Salinity","Temperature","Fluorescence","Turbidity")),
+         yrtyp = factor(yrtyp, levels = c("bn","an","action")))
 
 
 #Graph it
@@ -104,10 +108,10 @@ p4 + geom_bar(stat = "identity", position = "dodge") +
   theme(legend.position="bottom")
 
 #Graph it a different way ########################## THIS IS THE ONE FOR THE PAPER
-p5 = ggplot(data = alldata, aes(x=Month, y = Mean, fill = yrtyp))
+p5 = ggplot(data = alldata, aes(x=Month, y = Meanx, fill = yrtyp))
 p5.1 = p5 + geom_bar(stat = "identity", position = "dodge", color = "black") + 
-  geom_errorbar(aes(ymin = Mean + sd, ymax = Mean - sd), group = "yrtyp", 
-              position = position_dodge(.9), width = 0.2)+
+  geom_errorbar(aes(ymin = Meanx + sd, ymax = Meanx - sd), group = "yrtyp", 
+                position = position_dodge(.9), width = .5)+
   facet_grid(Analyte~Station, scales = "free_y", space = "free_x")+
   scale_fill_manual(values = c(
     "bn" = "#dfc27d",
@@ -116,7 +120,7 @@ p5.1 = p5 + geom_bar(stat = "identity", position = "dodge", color = "black") +
     labels = c("dry summers",
                                  "wet summers","2018"), name = NULL)+
   ylab("Turbidity (NTU)      Chlorophyll (ug/L)    Temperature (C)     Salinity (PSU)")+
-  theme_few()+ theme(legend.position="bottom", strip.background.y = element_blank(),
+  theme_bw()+ theme(legend.position="bottom", strip.background.y = element_blank(),
                      strip.text.y = element_blank(), axis.title.x = element_blank())
 
 p5.1

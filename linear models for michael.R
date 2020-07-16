@@ -11,6 +11,7 @@ library(DataCombine)
 library(lubridate)
 library(visreg)
 library(DataCombine)
+library(nlme)
 
 #now load the data
 load("~/salinity control gates/SMSCG/actiondata.RData")
@@ -28,6 +29,20 @@ histact2 = merge(histact, yrtyps) %>%
   filter(Station %in% c("(C-2B)  Collinsville B" , "(S-54)  Hunter Cut", "(S-64)  National Steel"),
          Month %in% c(7,8,9,10))
 
+#add units and save just the relevent data for publication with the paper
+
+
+histact3 = mutate(histact2, unit = NA)
+histact3$unit[which(histact3$Analyte == "Salinity")] = "PSU"
+histact3$unit[which(histact3$Analyte == "Temperature")] = "celsius"
+histact3$unit[which(histact3$Analyte == "Turbidity")] = "FNU"
+histact3$unit[which(histact3$Analyte == "Fluorescence")] = "RFU"
+histact3 = mutate(histact3, Station = factor(Station, 
+                                             levels = c("(S-64)  National Steel", "(C-2B)  Collinsville B", "(S-54)  Hunter Cut"),
+                                             labels = c("National Steel", "Collinsville", "Hunter Cut")))
+
+write.csv(histact3, "WaterQuality_SMSCG_2018.csv", row.names = F)
+
 #########################################################################################################
 #We want to see if there was any difference between the month when the gates were operating 
 #(August) and
@@ -41,7 +56,7 @@ hist(filter(action.timeseries, Analyte == "Fluorescence")$Value)
 #Close, but not great
 
 #A Shapiro-wilks test is better
-shapiro.test(filter(action.timeseries, Analyte == "Fluorescence")$Value)
+#shapiro.test(filter(action.timeseries, Analyte == "Fluorescence")$Value)
 #but I guess our dataset is too big for that!
 
 #let's try a linear model and look at the diagnostic plots
@@ -212,20 +227,19 @@ dailyTemp =filter(histact2, Analyte == "Temperature")
 dailyTemp = slide(dailyTemp, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagT", slideBy = -1)
 dailyTemp = slide(dailyTemp, "Mean", TimeVar = "Datetime", GroupVar = "Station", NewVar = "lagT2", slideBy = -2)
 
-
+str(dailyTemp)
+dailyTemp$Month = as.factor(dailyTemp$Month)
 #model the temperature
-mdllC2 <- lm(Mean ~ Month*Station + yrtyp + lagT, data= dailyTemp)
+mdllC2 <- lm(Mean ~ Month*Station + yrtyp + lagT + lagT2, data= dailyTemp)
 summary(mdllC2)
+visreg(mdllC2)
 visreg(mdllC2, xvar = "Month", by = "Station")
+visreg(mdllC2, xvar = "Station", by = "Month")
 
-#there was a trend towards cooler temperatures in Spetember (to be expected), but no difference between stations. 
-mdllC3 <- lm(Mean ~ Month*Station + yrtyp+ lagT + lagT2, data= dailyTemp)
-summary(mdllC3)
-visreg(mdllC3)
-visreg(mdllC3, xvar = "Month", by = "Station")
+#National steel is slightly warmer than Collinsvill, Above normal years slightly warmer than 2018
 
 
-mdllC3 <- lm(Mean ~ Month + Station + yrtyp+ lagT + lagT2, data= dailyTemp)
+mdllC3 <- lm(Mean ~ Month*Station*yrtyp+ lagT + lagT2, data= dailyTemp)
 summary(mdllC3)
 visreg(mdllC3)
 visreg(mdllC3, xvar = "Month", by = "Station")
@@ -238,15 +252,75 @@ dailysal = slide(dailysal, "Mean", TimeVar = "Datetime", GroupVar = "Station", N
 
 
 #model the salinity
-mdlls <- lm(Mean ~ Month+yrtyp*Station + lagT +lagT2, data= dailysal)
+mdlls <- lm(Mean ~ Month*yrtyp*Station + lagT +lagT2, data= dailysal)
 summary(mdlls)
 visreg(mdlls, xvar = "Station", by = "yrtyp")
+visreg(mdlls, xvar = "yrtyp", by = "Month")
+visreg(mdlls, xvar = "Station", by = c("yrtyp", "Month"))
 visreg(mdlls)
 #We defnintely have differences in salinilty by month and by station!
 
 dailysal$month2 = as.factor(dailysal$Month)
-mdlls <- lm(Mean ~ month2*yrtyp+ Station + lagT +lagT2, data= filter(dailysal, yrtyp %in% c("act", "bn")))
+mdlls <- lm(Mean ~ month2*yrtyp*Station + lagT +lagT2, data= filter(dailysal, yrtyp %in% c("act", "bn")))
+summary(mdlls)
+visreg(mdlls, xvar = "yrtyp", by = "month2")
+visreg(mdlls, xvar = "month2", by = "yrtyp")
+visreg(mdlls, xvar = "yrtyp", by = "Station")
+visreg(mdlls)
+
+####################################################################################################################
+#Maybe, to simplify the model, we just compare National steel to historical years before and after the action.
+#Then we don't need the messy three-way interaction
+
+#here's salinity
+mdlls <- lm(Mean ~ month2*yrtyp + lagT +lagT2, data= filter(dailysal, Station == "(S-64)  National Steel"))
 summary(mdlls)
 visreg(mdlls, xvar = "yrtyp", by = "month2")
 visreg(mdlls, xvar = "month2", by = "yrtyp")
 visreg(mdlls)
+
+
+#here's temeprature
+mdllt <- lm(Mean ~ Month*yrtyp + lagT +lagT2, data= filter(dailyTemp, Station == "(S-64)  National Steel"))
+summary(mdllt)
+visreg(mdllt, xvar = "yrtyp", by = "Month")
+visreg(mdllt, xvar = "Month", by = "yrtyp")
+visreg(mdllt)
+
+########################################################################################################################
+#to make is super simple, I'll drop the above normal years. I'll 
+#also drop OCtober
+
+#here's salinity, 
+mdlls <- lm(Mean ~ month2*yrtyp + lagT +lagT2, 
+            data= filter(dailysal, Station == "(S-64)  National Steel", 
+                         month2 != 10,  
+            yrtyp %in% c("act", "bn")))
+summary(mdlls)
+visreg(mdlls, xvar = "yrtyp", by = "month2")
+visreg(mdlls, xvar = "month2", by = "yrtyp")
+visreg(mdlls)
+
+
+#here it is with above normal  years too. I don't remember why I dropped them now.
+mdlls <- lm(Mean ~ month2*yrtyp + lagT +lagT2, 
+            data= filter(dailysal, Station == "(S-64)  National Steel", 
+                         month2 != 10))
+summary(mdlls)
+visreg(mdlls, xvar = "yrtyp", by = "month2")
+visreg(mdlls, xvar = "month2", by = "yrtyp")
+visreg(mdlls)
+
+
+#here's temeprature
+dailyTemp$Month2 = as.factor(dailyTemp$Month)
+mdllt <- lm(Mean ~ Month2*yrtyp + lagT +lagT2, 
+            data= filter(dailyTemp, Station == "(S-64)  National Steel",
+                         Month != 10))
+summary(mdllt)
+visreg(mdllt, xvar = "yrtyp", by = "Station")
+visreg(mdllt, xvar = "Station", by = "yrtyp")
+visreg(mdllt)
+
+acf(mdlls$residuals)
+pacf(mdlls$residuals)

@@ -53,3 +53,38 @@ Micro$Month = factor(Micro$Month, labels = c("Jul", "Aug", "Sep", "Oct"))
 m1 = lm(Microcystis~Month*Region.y, data = Micro)
 summary(m1)             
 visreg(m1, xvar = "Month", by = "Region.y")
+
+####################################################################
+#reviewers suggested an ordered probit/logit model instead
+
+library(MASS)
+library(AER)
+
+Micro$Microcystis = as.ordered(Micro$Microcystis)
+m2 = polr(Microcystis~Month*Region.y, data = Micro)
+summary(m2)
+coeftest(m2)
+
+m3 = polr(Microcystis~Month+Region.y, method = "probit",data = Micro)
+summary(m3)
+
+coeftest(m3)
+
+#I'm going to convert it to present/absent, just to make life easier
+Micro$PA = NA
+Micro$PA[which(Micro$Microcystis=="1")] = "Absent"
+Micro$PA[which(Micro$Microcystis %in% c("2", "4"))] = "Present"
+Micro = mutate(Micro, PA = as.ordered(PA),
+               Region = factor(Region.y, levels = c("River", "Suisun Marsh")))
+
+
+m4 = glm(PA~Month+Region, family=binomial(link='logit'), data = Micro)
+summary(m4)
+
+m5 = glm(PA~Month*Region, family=binomial(link='logit'), data = Micro)
+summary(m5)
+
+m6 = glm(PA~NULL, family=binomial(link='logit'), data = Micro)
+
+library(MuMIn)
+AICc(m4, m5, m6)

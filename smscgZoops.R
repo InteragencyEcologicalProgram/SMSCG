@@ -26,9 +26,12 @@ zoopB2= mutate(zoopB, Acartiella = ACARTELA + ASINEJUV,
                 SINOCAL + EURYJUV + OTHCALJUV + SINOCALJUV + ACARJUV + DIAPTJUV + SINONAUP + EURYNAUP,
               `Other Cyclopoids` = AVERNAL + OITHDAV + OITHSIM + OTHCYCAD + OITHJUV + OTHCYCJUV,
               Other = HARPACT + OTHCOPNAUP + ALLCLADOCERA)
-zoopB2 = zoopB2[,c(1,3,5, 67:74)]
+zoopB2 = zoopB2[,c(1,3,5,6,22, 67:74)]
 zoopB2$sample = 1:nrow(zoopB2)
 zoopB2$Month = factor(zoopB2$Month, labels = c("Jul", "Aug", "Sep", "Oct"))
+
+#write a csv for publication
+write.csv(zoopB2, "plankton_2018_smscg.csv")
 
 #figure out what samples/stations we might be missing
 zooptest = group_by(zoopB2, Station, Month) %>% summarize(n = length(sample))

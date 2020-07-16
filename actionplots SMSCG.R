@@ -25,10 +25,11 @@ p1 + geom_line() + facet_wrap(~Analyte, scales = "free_y")
 
 #Now let's seperate it by motnh
 action.daily$Month = month(action.daily$Datetime)
-action.timeseries$Month = factor(month(action.timeseries$Datetime), labels = c("Jul", "Aug", "Sep"))
+action.timeseries$Month = factor(month(action.timeseries$Datetime), labels = c("Jul", "Aug", "Sep", "Oct"))
+action.timeseries$Year = year(action.timeseries$Datetime)
 
 #calculate the mean and standard deviation per month. 
-action.monthly = group_by(action.timeseries, Station, Analyte, Month) %>% summarize(Mean = mean(Value), sd = sd(Value))
+action.monthly = group_by(action.timeseries, Station, Analyte, Month) %>% summarize(Mean = mean(Value), sd = sd(Value), se = sd)
 action.monthly$YT2 = "action"
 
 #Quick bar plot of the action
@@ -47,18 +48,22 @@ p3 + geom_bar(stat = "identity", position = "dodge") +
 historical.timeseries$Month = month(historical.timeseries$Datetime)
 historical.timeseries$Year = year(historical.timeseries$Datetime)
 historical.monthly =  group_by(filter(historical.timeseries, !is.na(Value), Year != 2018 & Year !=2019), Station, Analyte, Month, Year) %>% 
-  summarize(Mean = mean(Value, na.rm = T), sd = sd(Value, na.rm=T))
+  summarize(Mean = mean(Value, na.rm = T), sd = sd(Value, na.rm=T)) 
+
+
+
 
 #add water year type
 hist.monthly = merge(historical.monthly, yrtyp)
 
 #average monthly water quality
 hist.monthsum = group_by(hist.monthly, Station, Analyte, Month, YT2) %>% 
-  summarize(Mean2 = mean(Mean), sd = sd(Mean))
+  summarize(Mean2 = mean(Mean), sd = sd(Mean), se = mean(sd))
 hist.monthsum = rename(hist.monthsum, Mean = Mean2)
 
 #just for the months we are interested in
-hist.monthsum = filter(hist.monthsum, Month ==7 | Month ==8 |Month == 9)
+hist.monthsum = filter(hist.monthsum, Month ==7 | Month ==8 |Month == 9) %>%
+  mutate(Month = factor(Month, labels = c()))
 
 #put the data together
 alldata = rbind(hist.monthsum, action.monthly)
