@@ -31,14 +31,14 @@ zoopB2$sample = 1:nrow(zoopB2)
 zoopB2$Month = factor(zoopB2$Month, labels = c("Jul", "Aug", "Sep", "Oct"))
 
 #write a csv for publication
-write.csv(zoopB2, "plankton_2018_smscg.csv")
+#write.csv(zoopB2, "plankton_2018_smscg.csv")
 
 #figure out what samples/stations we might be missing
 zooptest = group_by(zoopB2, Station, Month) %>% summarize(n = length(sample))
 write.csv(zooptest, "Zoopsamples.csv", row.names = F)
 
 #now from wide to long
-zooplong = gather(zoopB2, key = "Taxa", value = "BPUE", -Station, -Month, - Year, -Region.y, -sample)
+zooplong = gather(zoopB2, key = "Taxa", value = "BPUE", -Station, -Month, - Year, -Region.y, -sample, -Date, - Microcystis)
 
 #Now the summary version
 zoopsum = group_by(zooplong, Region.y, Month, Taxa) %>% summarize(meanB = mean(BPUE), sdB = sd(BPUE), n = length(BPUE))
@@ -57,14 +57,16 @@ b2 = b1 + geom_bar(stat = "identity", aes(fill = Taxa)) + facet_wrap(~Region.y) 
   theme_few() + theme(text = element_text(family = "sans", size = 12),
     legend.text = element_text(face = "italic"))
 
+
 b2
 
-ggsave(plot = b2, filename = "zoopsplot.tiff", device = "tiff", width = 6, height =4, units = "in", dpi = 300)
+#ggsave(plot = b2, filename = "zoopsplot.tiff", device = "tiff", width = 6, height =4, units = "in", dpi = 300)
 
 
 #####################################################################################################
 #now a glm of total BPUE
-zooptots = group_by(zooplong, Region.y, Month, Station, sample) %>% summarize(BPUE = sum(BPUE), logBPUE = log(BPUE))
+zooptots = group_by(zooplong, Region.y, Month, Station, sample) %>% 
+  summarize(BPUE = sum(BPUE), logBPUE = log(BPUE))
 zooptots$Month = factor(zooptots$Month, labels = c("Jul", "Aug", "Sep", "Oct"))
 hist(zooptots$BPUE)
 hist(zooptots$logBPUE)
@@ -77,24 +79,28 @@ shapiro.test(zooptots$BPUE)
 shapiro.test(zooptots$logBPUE)
 #with october added in with need the log-transformed data. 
 
-zlm1 = glm(BPUE~Month*Region, data = zooptots)
+zlm1 = glm(BPUE~Month*Region.y, data = zooptots)
 summary(zlm1)
 plot(zlm1)
 
-zlm2 = glm(BPUE~Month + Region, data = zooptots)
+zlm2 = glm(BPUE~Month + Region.y, data = filter(zooptots, Month != "Oct"))
 summary(zlm2)
 plot(zlm2)
 
-zlm3 = lm(logBPUE~Month*Region.y, data = zooptots)
+zlm3 = lm(logBPUE~Month*Region.y, data = filter(zooptots, Month != "Oct"))
 summary(zlm3)
 plot(zlm3)
 visreg(zlm3, xvar = "Month", by = "Region.y")
 
-zlm4 = lm(logBPUE~Month+Region.y, data = zooptots)
+zlm4 = glm(logBPUE~Month+Region.y, data = filter(zooptots, Month != "Oct"))
 summary(zlm4)
 plot(zlm4)
 visreg(zlm4)
 
+library(sjstats)
+
+a1 =aov(logBPUE~Month+Region.y, data = filter(zooptots, Month != "Oct"))
+effectsize::cohens_f(a1)
 #################################################################################################
 #What does an NMDS look like?
 

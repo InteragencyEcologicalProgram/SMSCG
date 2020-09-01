@@ -37,7 +37,7 @@ lagWQmatrix = group_by(WQmatrix, Station, Operation) %>%
 pm1 = adonis(WQmatrix[,5:7]~ Station + Operation, data = WQmatrix)
 pm1
 pm2 = pairwise.adonis(WQmatrix[,5:7], c(WQmatrix$Station))
-pm2 = pairwise.adonis(WQmatrix[,5:7], WQmatrix$Operation)
+pm3 = pairwise.adonis(WQmatrix[,5:7], WQmatrix$Operation)
 
 #try the NMDS again
 

@@ -28,6 +28,28 @@ action.timeseries2$Month = month(action.timeseries2$Datetime)
 p1 = ggplot(data = action.daily2, aes(x = Datetime, y = Mean, color = Station))
 p1 + geom_line() + facet_wrap(~Analyte, scales = "free_y")
 
+p1 = ggplot(data = filter(action.daily2, Analyte == "Turbidity"),
+            aes(x = Datetime, y = Mean, color = Station))
+p1 + 
+  annotate("rect", xmin = ymd("2018-08-02"), xmax = ymd("2018-09-06"),
+           ymax = 50, ymin = 0,
+           fill = "grey", alpha = 0.4) +
+  geom_line() + theme_bw() +
+  annotate("text", x = ymd("2018-08-15"), y = 45, label = "Action \nperiod") +
+  xlab("Date") + ylab("Daily mean turbidity (NTU)")
+
+p1s = ggplot(data = filter(action.daily2, Analyte == "Salinity"), 
+       aes(x = Datetime, y = Mean, color = Station))
+
+p1s + 
+  annotate("rect", xmin = ymd("2018-08-02"), xmax = ymd("2018-09-06"),
+           ymax = 10, ymin = 0,
+           fill = "grey", alpha = 0.4) +
+  geom_line() + theme_bw() +
+  annotate("text", x = ymd("2018-08-15"), y = 8, label = "Action \nperiod") +
+  scale_color_discrete(labels = c("River", "West Marsh", "East Marsh"))+
+  xlab("Date") + ylab("Daily mean salinity (PSU)")
+
 p1 = ggplot(data = action.timeseries, aes(x = Datetime, y = Value, color = Station))
 p1 + geom_line() + facet_wrap(~Analyte, scales = "free_y")
 

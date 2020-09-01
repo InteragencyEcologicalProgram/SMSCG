@@ -41,7 +41,7 @@ histact3 = mutate(histact3, Station = factor(Station,
                                              levels = c("(S-64)  National Steel", "(C-2B)  Collinsville B", "(S-54)  Hunter Cut"),
                                              labels = c("National Steel", "Collinsville", "Hunter Cut")))
 
-write.csv(histact3, "WaterQuality_SMSCG_2018.csv", row.names = F)
+#write.csv(histact3, "WaterQuality_SMSCG_2018.csv", row.names = F)
 
 #########################################################################################################
 #We want to see if there was any difference between the month when the gates were operating 
@@ -163,7 +163,7 @@ acf(mdll$residuals)
 #Much better!
 # I like the simiplicity of this version.
 #look at the model now.
-mdllx <- lm(log(Mean) ~ Month*Station + log(lagF) + log(lagF2), data= dailyF)
+mdllx <- glm(log(Mean) ~ Month*Station + log(lagF) + log(lagF2), data= dailyF)
 summary(mdllx)
 visreg(mdllx, xvar = "Month", by = "Station")
 plot(mdllx)
@@ -177,7 +177,7 @@ dailyTurb = slide(dailyTurb, "Mean", TimeVar = "Datetime", GroupVar = "Station",
 
 
 #model the turbidity
-mdllT <- lm(log(Mean) ~ Month*Station + log(lagT) + log(lagT2), data= dailyTurb)
+mdllT <- glm(log(Mean) ~ Month*Station + log(lagT) + log(lagT2), data= dailyTurb)
 summary(mdllT)
 visreg(mdllT, xvar = "Month", by = "Station")
 acf(mdllT$residuals)
@@ -194,7 +194,7 @@ mdllC <- lm(Mean ~ Month*Station + lagT, data= dailyTemp)
 summary(mdllC)
 visreg(mdllC, xvar = "Month", by = "Station")
 #there was a trend towards cooler temperatures in Spetember (to be expected), but no difference between stations. 
-mdllC2 <- lm(Mean ~ Month*Station + lagT + lagT2, data= dailyTemp)
+mdllC2 <- glm(Mean ~ Month*Station + lagT + lagT2, data= dailyTemp)
 summary(mdllC2)
 visreg(mdllC2, xvar = "Month", by = "Station")
 
@@ -212,7 +212,7 @@ summary(mdlls)
 visreg(mdlls, xvar = "Month", by = "Station")
 #We defnintely have differences in salinilty by month and by station!
 
-mdlls <- lm(Mean ~ Month*Station + lagT + lagT2, data= dailysal)
+mdlls <- glm(Mean ~ Month*Station + lagT + lagT2, data= dailysal)
 summary(mdlls)
 visreg(mdlls, xvar = "Month", by = "Station")
 
@@ -273,7 +273,8 @@ visreg(mdlls)
 #Then we don't need the messy three-way interaction
 
 #here's salinity
-mdlls <- lm(Mean ~ month2*yrtyp + lagT +lagT2, data= filter(dailysal, Station == "(S-64)  National Steel"))
+mdlls <- lm(Mean ~ month2*yrtyp + lagT +lagT2, 
+            data= filter(dailysal, Station == "(S-64)  National Steel"))
 summary(mdlls)
 visreg(mdlls, xvar = "yrtyp", by = "month2")
 visreg(mdlls, xvar = "month2", by = "yrtyp")
@@ -288,11 +289,11 @@ visreg(mdllt, xvar = "Month", by = "yrtyp")
 visreg(mdllt)
 
 ########################################################################################################################
-#to make is super simple, I'll drop the above normal years. I'll 
+#to make is super simple, I'll 
 #also drop OCtober
 
 #here's salinity, 
-mdlls <- lm(Mean ~ month2*yrtyp + lagT +lagT2, 
+mdlls <- glm(Mean ~ month2*yrtyp + lagT +lagT2, 
             data= filter(dailysal, Station == "(S-64)  National Steel", 
                          month2 != 10,  
             yrtyp %in% c("act", "bn")))
@@ -303,7 +304,7 @@ visreg(mdlls)
 
 
 #here it is with above normal  years too. I don't remember why I dropped them now.
-mdlls <- lm(Mean ~ month2*yrtyp + lagT +lagT2, 
+mdlls <- glm(Mean ~ month2*yrtyp + lagT +lagT2, 
             data= filter(dailysal, Station == "(S-64)  National Steel", 
                          month2 != 10))
 summary(mdlls)
@@ -314,7 +315,7 @@ visreg(mdlls)
 
 #here's temeprature
 dailyTemp$Month2 = as.factor(dailyTemp$Month)
-mdllt <- lm(Mean ~ Month2*yrtyp + lagT +lagT2, 
+mdllt <- glm(Mean ~ Month2*yrtyp + lagT +lagT2, 
             data= filter(dailyTemp, Station == "(S-64)  National Steel",
                          Month != 10))
 summary(mdllt)

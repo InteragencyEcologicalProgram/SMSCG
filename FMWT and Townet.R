@@ -213,7 +213,7 @@ p8.x +geom_point() + geom_smooth(method = "glm", method.args = list(family = "bi
   xlab("Salinity")+ ylab("Delta Smelt Presence in Suisun Marsh in July-December")
 
 #graph of allmonths, recent years only
-p8.x = ggplot(filter(SuisunSmelt2.2, Year < 2018, Year > 2000, Month %in% c(7:12)), aes(x = sal, y = PA))
+p8.x = ggplot(filter(SuisunSmelt2.2, Year > 2000, Month %in% c(7:12)), aes(x = sal, y = PA))
 p8.x +geom_point() + geom_smooth(method = "glm", method.args = list(family = "binomial"))+
   xlab("Salinity")+ ylab("Delta Smelt Presence in Suisun Marsh in July-December") + 
   facet_wrap(~Month)
@@ -240,7 +240,9 @@ p8.3 = p8.3 +geom_point() + geom_smooth(method = "glm", method.args = list(famil
   xlab("Salinity where smelt were collected (PSU)")+ 
   ylab("Delta Smelt Presence") + theme_bw() +
   theme(text = element_text(size = 16)) + coord_cartesian(xlim = c(0,12.5))+
-  scale_y_continuous(breaks = c(0,1)) + scale_x_continuous(breaks = c(0,2,4,6,8,10,12))
+  scale_y_continuous(breaks = c(0,1)) + scale_x_continuous(breaks = c(0,2,4,6,8,10,12))+
+  annotate("text", x = 1, y = .85, label = "A", size = 18)
+p8.3
 
 
 ggsave(plot = p8.3, filename = "SmetlSTN.tiff", device = "tiff", width = 7, height =7, units = "in", dpi = 300)
@@ -272,10 +274,13 @@ BeldenSalAug = filter(BeldenSal, Month == 8)
 
 ggplot(BeldenSalAug, aes(x = salinity, fill = Action)) + geom_histogram(position = "dodge")
 p9 = ggplot(BeldenSalAug, aes(x = salinity, fill = Action)) + geom_density(alpha = 0.5)+
-  theme_bw() + theme(legend.position=c(0.2, 0.8), text = element_text(size = 16)) + 
-  xlab("Salinity at Beldon's (PSU)") + 
+  theme_bw() + theme(legend.position=c(0.3, 0.85), text = element_text(size = 16)) + 
+  xlab("Salinity at Belden's Landing (PSU)") + 
   scale_fill_discrete(name = NULL) + coord_cartesian(xlim = c(0,12.5))+
-   scale_x_continuous(breaks = c(0,2,4,6,8,10,12))
+   scale_x_continuous(breaks = c(0,2,4,6,8,10,12)) +
+  annotate("text", x = 1, y = 1.9, label = "B", size = 16)
+p9
+
 
 #Daily averages
 Beldondaily = group_by(BeldenSalAug, Day, Action) %>%
@@ -294,8 +299,8 @@ ggplot()+
              method = "glm", method.args = list(family = "binomial"))+
   geom_density(data = Beldondaily, mapping = aes(x = sal, fill = Action, ..density../2.2), alpha = 0.5)+
   xlab("Salinity at Beldon's (PSU)")+ ylab("Delta Smelt Presence") + theme_bw() +
-  theme(text = element_text(size = 18)) +
-  scale_y_continuous(sec.axis = sec_axis(~.*2.2, name = "Density of Modeled Salinity at Beldons Landing"))
+  theme(text = element_text(size = 16)) +
+  scale_y_continuous(sec.axis = sec_axis(~.*2.2, name = "Density of Modeled Salinity at Belden's Landing"))
 
 #do them in two seperate plots
 
@@ -307,3 +312,99 @@ p10 = grid.arrange(p8.3, p9)
 ggsave(plot = p10, filename = "smeltsal.tiff", device = "tiff", width = 7, height =7, units = "in", dpi = 300)
 
 
+ggplot(BeldenSalAug, aes(x = salinity, fill = Action)) + geom_histogram(alpha = 0.5, position = "dodge")+
+  theme_bw() + theme(legend.position=c(0.3, 0.85), text = element_text(size = 16)) + 
+  xlab("Salinity at Belden's Landing (PSU)") + 
+  scale_fill_discrete(name = NULL) + coord_cartesian(xlim = c(0,12.5))+
+  scale_x_continuous(breaks = c(0,2,4,6,8,10,12))
+
+foo = ggplot(BeldenSalAug, aes(x = salinity, fill = Action)) + 
+  geom_histogram(alpha = 0.5, position = "dodge", bins = 10)+
+  theme_bw() + theme(legend.position=c(0.3, 0.85), text = element_text(size = 16)) + 
+  xlab("Salinity at Belden's Landing (PSU)") + 
+  scale_fill_discrete(name = NULL) + coord_cartesian(xlim = c(0,12.5))+
+  scale_x_continuous(breaks = c(0,2,4,6,8,10,12))
+
+foo2 = ggplot(BeldenSalAug, aes(x = salinity, fill = Action)) + 
+  geom_histogram(alpha = 0.5, position = "dodge", bins = 30)+
+  theme_bw() + theme(legend.position=c(0.3, 0.85), text = element_text(size = 16)) + 
+  xlab("Salinity at Belden's Landing (PSU)") + 
+  scale_fill_discrete(name = NULL) + coord_cartesian(xlim = c(0,12.5))+
+  scale_x_continuous(breaks = c(0,2,4,6,8,10,12))
+
+p11 = grid.arrange(foo, foo2)
+
+
+#######################################################
+#quickly check raw EDSM data
+
+EDSM = read.csv("EDSM_KDTR.csv")
+
+EDSM2 = mutate(EDSM, Date = ymd(Date), Year = year(Date), 
+               Month = month(Date), Week = week(Date)) %>%
+  filter(Year == 2018, Month %in% c(7,8,9,10), !is.na(Tow))
+
+
+EDSM2x = mutate(EDSM, Date = mdy(Date), Year = year(Date), 
+               Month = month(Date), Week = week(Date)) %>%
+  filter(Year == 2018, Month %in% c(7,8,9,10))
+
+
+
+EDSM3 = group_by(EDSM2, Stratum, Station, Date, Tow, Month, Year, Week) %>%
+  summarize(totcatch = length(ForkLength), 
+            DSM = length(ForkLength[which(OrganismCode == "DSM")]))
+
+EDSM4 = group_by(EDSM3, Week, Stratum, Station) %>%
+  summarize(tows = length(Tow), DSM = sum(DSM)) %>%
+  group_by(Stratum, Week) %>%
+  summarize(tows = sum(tows, na.rm = T), 
+            Stations = length(Station), DSM = sum(DSM),
+            DSMcpue = DSM/tows)
+
+EDSMwide = pivot_wider(EDSM4, id_cols = c(Week), 
+                       names_from = Stratum, values_from = DSMcpue,
+                       values_fill = 0)
+
+weeks = read.csv("weeks.csv")
+names(weeks) = c("Week", "EndWeek")
+EDSM4 = merge(EDSM4, weeks) %>%
+  mutate(EndWeek = mdy(EndWeek))
+
+library(RColorBrewer)
+
+pE = ggplot(EDSM4, aes(x = EndWeek, y = DSMcpue, fill = Stratum)) +
+ annotate("rect", xmin = ymd("2018-08-01"), xmax = ymd("2018-09-06"), 
+          ymin = 0, ymax = 1, alpha = 0.5, fill = "grey" )+
+  annotate("text", x= ymd("2018-08-15"), y = .9, label = "Action \nPeriod")+
+  geom_bar(stat = "identity") + xlab("Week of Year") +
+  scale_fill_brewer(palette = "Set1", name = "Region") +
+  ylab("Delta Smelt Catch per Trawl") +
+  theme_bw() + theme(text = element_text(size = 14))
+
+ggsave("EDSM_suisun.png", plot = pE, width = 7, height = 5, dpi = 300)
+
+
+
+EDSM2x = mutate(EDSM, Date = ymd(Date), Year = year(Date), 
+               Month = month(Date), Week = week(Date)) %>%
+  filter(Month %in% c(7,8,9,10), !is.na(Tow))
+
+
+
+EDSM3 = group_by(EDSM2x, Stratum, Station, Date, Tow, Month, Year, Week) %>%
+  summarize(totcatch = length(ForkLength), 
+            DSM = length(ForkLength[which(OrganismCode == "DSM")]))
+
+EDSM4 = group_by(EDSM3, Week, Stratum, Station, Year, Month) %>%
+  summarize(tows = length(Tow), DSM = sum(DSM)) %>%
+  group_by(Stratum, Week, Month, Year) %>%
+  summarize(tows = sum(tows, na.rm = T), 
+            Stations = length(Station), DSM = sum(DSM),
+            DSMcpue = DSM/tows)
+
+
+ggplot(EDSM4, aes(x=Month, y = DSM)) + geom_bar(stat = "identity") + facet_grid(Stratum~Year)
+
+ggplot(filter(EDSM3, Stratum=="Suisun Marsh"), aes(x=Date, y = DSM)) + 
+  geom_bar(stat = "identity") 
