@@ -1,0 +1,106 @@
+---
+title: "SMSCG action plots"
+author: "Rosie"
+date: "7/15/2020"
+output: html_document
+---
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(DataCombine)
+library(lubridate)
+library(visreg)
+library(ggthemes)
+library(nlme)
+
+```
+
+## Data loading
+Firt I loaded the data that you sent me earlier, and set up a data frame with just the years we are interested in
+
+```{r loading}
+#load the data from the sondes
+load("~/salinity control gates/SMSCG/actiondata.RData")
+load("~/salinity control gates/SMSCG/waterquality.RData")
+load("~/salinity control gates/SMSCG/actiondata-october.RData")
+
+#create a data frame of year types
+yrtyps = data.frame(an= c(2005, 2006, 2017), bn= c(2002, 2009, 2016)) %>% 
+  gather(key = "yrtyp", value = "Year")
+```
+
+Now I did a little manipulation on the action data and the historical data to put it in the right format. Then I summarized by month to calculate the standard error
+
+```{r}
+#put all the 2018 data together
+action.daily2 = rbind(action.daily, action.daily.october)
+action.daily2$Month = month(action.daily2$Datetime)
+
+action.monthly = group_by(action.daily2, Station, Analyte, Month) %>% 
+  summarize(Meanx = mean(Mean), sd = sd(Mean)) %>%
+  mutate(yrtyp = "action") %>%
+  filter(Month != 11)
+
+```
+
+Then I did the same thing for the historic data and bound the two data sets together
+
+```{r}
+
+historical.daily = mutate(historical.daily, Year = year(Datetime),
+                          Month = month(Datetime))
+
+#add the year types
+historical.daily2 = merge(historical.daily, yrtyps)
+
+#Calculate the monthly means and standard deviations
+historical.monthly =  group_by(filter(historical.daily2, !is.na(Mean), Year != 2018 & Year !=2019), 
+                               Station, Analyte, Month, yrtyp) %>% 
+  summarize(Meanx = mean(Mean, na.rm = T), sd = sd(Mean, na.rm=T)) %>%
+  filter(Month %in% c(7,8,9,10))
+
+
+alldata = rbind(historical.monthly, action.monthly)
+
+# filter out just the stations we are interested in
+alldata = filter(alldata, Station == "(C-2B)  Collinsville B" | Station == "(S-64)  National Steel" |
+                   Station =="(S-54)  Hunter Cut") %>%
+  mutate(Station = factor(Station, levels = c("(S-54)  Hunter Cut", "(S-64)  National Steel" ,"(C-2B)  Collinsville B"),
+                         labels = c("West Marsh", "East Marsh", "River")),
+         Month = factor(Month, levels = c(7, 8, 9, 10),
+                         labels = c("Jul", "Aug", "Sep", "Oct")),
+         Analyte = factor(Analyte, levels = c("Salinity","Temperature","Fluorescence","Turbidity")),
+         yrtyp = factor(yrtyp, levels = c("bn","an","action")))
+
+
+
+```
+
+
+
+## Plots
+
+
+```{r}
+
+p5 = ggplot(data = alldata, aes(x=Month, y = Meanx, fill = yrtyp))
+p5.1 = p5 + geom_bar(stat = "identity", position = "dodge", color = "black") + 
+  geom_errorbar(aes(ymin = Meanx + sd, ymax = Meanx - sd), group = "yrtyp", 
+                position = position_dodge(.9), width = .5)+
+  facet_grid(Analyte~Station, scales = "free_y", space = "free_x")+
+  scale_fill_manual(values = c(
+    "bn" = "#dfc27d",
+    "an" = "#92c5de",
+    "action" = "#e31a1c"),
+    labels = c("dry summers",
+                                 "wet summers","2018"), name = NULL)+
+  ylab("Turbidity (NTU)      Chlorophyll (ug/L)    Temperature (C)     Salinity (PSU)")+
+  theme_bw()+ theme(legend.position="bottom", strip.background.y = element_blank(),
+                     strip.text.y = element_blank(), axis.title.x = element_blank())
+
+p5.1
+
+```
+

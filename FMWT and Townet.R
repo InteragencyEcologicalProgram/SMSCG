@@ -385,7 +385,8 @@ pE = ggplot(EDSM4, aes(x = EndWeek, y = DSMcpue, fill = Stratum)) +
 ggsave("EDSM_suisun.png", plot = pE, width = 7, height = 5, dpi = 300)
 
 
-
+#################################################################
+#let's look at all years
 EDSM2x = mutate(EDSM, Date = ymd(Date), Year = year(Date), 
                Month = month(Date), Week = week(Date)) %>%
   filter(Month %in% c(7,8,9,10), !is.na(Tow))
@@ -406,5 +407,44 @@ EDSM4 = group_by(EDSM3, Week, Stratum, Station, Year, Month) %>%
 
 ggplot(EDSM4, aes(x=Month, y = DSM)) + geom_bar(stat = "identity") + facet_grid(Stratum~Year)
 
+ggplot(EDSM4, aes(x=Week, y = DSM, fill = Stratum)) + geom_bar(stat = "identity") + facet_grid(.~Year)
+
+
 ggplot(filter(EDSM3, Stratum=="Suisun Marsh"), aes(x=Date, y = DSM)) + 
   geom_bar(stat = "identity") 
+
+#################################################################################
+#import data from 2020
+EDSMx = read.csv("EDSM2012-2020.csv")
+
+EDSMxa = mutate(EDSMx, Date = as.Date(Date, format = "%d-%b-%y"), Year = year(Date), 
+               Month = month(Date), Week = week(Date)) %>%
+  filter(Month %in% c(7,8,9,10), !is.na(Tow))
+
+
+
+EDSM3a = group_by(EDSMxa, Stratum, Station, Date, Tow, Month, Year, Week) %>%
+  summarize(totcatch = length(ForkLength), 
+            DSM = length(ForkLength[which(OrganismCode == "DSM")]))
+
+
+EDSM4a = group_by(EDSM3a, Week, Stratum, Station, Year, Month) %>%
+  summarize(tows = length(Tow), DSM = sum(DSM)) %>%
+  group_by(Stratum, Week, Month, Year) %>%
+  summarize(tows = sum(tows, na.rm = T), 
+            Stations = length(Station), DSM = sum(DSM),
+            DSMcpue = DSM/tows, Tows = sum(tows)) %>%
+ungroup()
+
+ggplot(EDSM4a, aes(x=Month, y = DSM)) + geom_bar(stat = "identity") + facet_grid(Stratum~Year)
+
+ggplot(EDSM4a, aes(x=Week, y = DSM, fill = Stratum)) + geom_bar(stat = "identity") + facet_grid(.~Year)
+
+ggplot(EDSM4a, aes(x=Week, y = DSMcpue, fill = Stratum)) + 
+  geom_bar(stat = "identity") + facet_grid(.~Year) +
+  scale_x_continuous(breaks = c(26, 30, 34, 38, 42), labels = c("Jun","Jul","Aug","Sep","Oct"))
+
+ggplot(EDSM4a, aes(x=Week, y = Tows, fill = Stratum)) + 
+  geom_bar(stat = "identity") + facet_grid(.~Year) +
+  scale_x_continuous(breaks = c(26, 30, 34, 38, 42), labels = c("Jun","Jul","Aug","Sep","Oct"))
+

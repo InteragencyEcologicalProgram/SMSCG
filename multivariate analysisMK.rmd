@@ -1,0 +1,164 @@
+---
+title: "Multivariate (NMDS) Analysis"
+output: html_document
+---
+
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(vegan)
+```
+
+```{r}
+load("actiondata.RData")
+```
+
+# Mean-case, Scaled
+
+```{r}
+results.nmds = action.daily %>%
+  mutate(
+    OfInterest = case_when(
+      Analyte == "Fluorescence" ~ log(Mean),
+      Analyte == "Turbidity" ~ log(Mean),
+      Analyte == "Salinity" ~ Mean,
+      Analyte == "Temperature" ~ Mean,
+    ),
+    OfInterest = if_else(is.finite(OfInterest), OfInterest, NA_real_),
+#    Operation = factor(case_when(
+#      Datetime < as_datetime("2018-08-03") ~ "Before",
+#      Datetime < as_datetime("2018-09-08") ~ "During",
+#      TRUE ~ "After"
+#    ), c("Before", "During", "After")),
+    Operation = factor(month(Datetime), 1:12, month.abb),
+    Station = factor(Station, c("(S-54)  Hunter Cut",
+      "(S-49)  Beldens Landing", "(S-64)  National Steel",
+      "(C-2B)  Collinsville B"), c("West Marsh", "Beldens Landing",
+       "East Marsh", "River")),
+  ) %>%
+  arrange(Datetime) %>%
+  filter(between(Datetime, as_date("2018-07-01"),
+    as_date("2018-09-30"))) %>%
+  select(Datetime, Analyte, Station, OfInterest, Operation) %>%
+  spread(Analyte, OfInterest) %>%
+  mutate_if(is.numeric, ~as.vector(scale(.x))) %>%
+  nest() %>%
+  mutate(
+    nmds = map(data,
+      ~ .x %>%
+        select(-Datetime, - Station, -Operation) %>%
+        metaMDS(distance = "manhattan", autotransform = FALSE,
+          try = 50, trymax = 100)),
+    scores = map(nmds, scores),
+    envfit = map2(nmds, data, ~ envfit(ord = .x,
+      env = select(.y, - Datetime, - Station, - Operation))),
+    envload = map(envfit, ~.x$vectors$arrows %>% 
+        as_tibble(rownames = "Analyte")),
+    newdata = map2(data, scores,
+      ~ bind_cols(select(.x, Datetime, Station, Operation),
+        as_tibble(.y)) %>% group_by(Operation, Station) %>%
+        mutate(num = 1:n()) %>% ungroup())
+  )
+
+```
+
+
+## 3 groups
+
+```{r}
+
+
+results.points = results.nmds$newdata[[1]] 
+
+results.hulls = results.nmds %>%
+select(newdata) %>%
+unnest() %>%
+nest(-Station, - Operation) %>%
+mutate(
+  hull = map(data, ~ chull(select(.x, NMDS1, NMDS2))),
+  poly = map2(data, hull, ~ .x[c(.y, .y[1]),])
+) %>%
+select(Station, Operation, poly) %>%
+unnest()
+
+results.loading = results.nmds$envload[[1]]
+
+results.stress = results.nmds$nmds[[1]]$stress
+
+vec.scale = 5
+
+results.loading$Analyte[which(results.loading$Analyte == "Fluorescence")] = "Chlorophyll"
+
+ggplot(results.points) + ggthemes::theme_few(base_size = 12) +
+  geom_segment(data = results.loading,
+    aes(xend = vec.scale * NMDS1, yend = vec.scale * NMDS2, group = Analyte),
+    x = 0, y = 0, arrow = arrow(length = unit(0.1, "inches"),
+    type = "closed"), size = 1, lineend = "round",
+    color = "grey50") +
+    geom_polygon(data = results.hulls, aes(x = NMDS1, y = NMDS2,
+    color = Station, group = Station:Operation),
+    fill = NA, size = 0.5, linetype = "dotted") +
+  geom_point(aes(x = NMDS1, y = NMDS2, color = Station,
+    shape = Operation)) +
+  geom_text(data = results.loading,
+    aes(
+      x = vec.scale * (NMDS1 +
+        str_detect(Analyte, "Ch") * -0.25 +
+        str_detect(Analyte, "Sa") * -0.2 +
+        str_detect(Analyte, "Tu") * -0.175 +
+        str_detect(Analyte, "Te") * 0
+      ),
+      y = vec.scale * (NMDS2 +
+        str_detect(Analyte, "Fl") * -0.1 +
+        str_detect(Analyte, "Sa") * 0.01 +
+        str_detect(Analyte, "Tu") * -0.05 +
+        str_detect(Analyte, "Te") * -0.05
+      ),
+      label = Analyte
+    ),
+    size = 3
+  ) + 
+#  scale_shape_manual(NULL, values = c("Before" = 3,
+#    "During" = 19, "After" = 17)) +
+  scale_shape_manual(NULL, values = c("Jul" = 3,
+    "Aug" = 19, "Sep" = 17)) +
+  scale_color_manual(NULL, values = c("River" = "#1B9E77",
+    "East Marsh" = "#D95F02", "Beldens Landing" = "#fb9a99",
+    "West Marsh" = "#7570B3")) +
+  xlab("First ordinate") + ylab("Second ordinate") +
+  coord_fixed() +
+#  geom_label(x = 3.5, y = 5, label = paste("Stress =",
+#    round(results.stress, 3))) +
+  guides(
+    color = guide_legend(order = 1),
+    Shape = guide_legend(order = 0)
+  )
+
+
+ggsave("nmds-bymonth.png", width = 5, height = 5)
+```
+
+
+
+
+
+# As Paths
+
+```{r}
+
+ggplot(results.nmds$newdata[[1]]) + ggthemes::theme_few() +
+  geom_path(aes(x = NMDS1, y = NMDS2, color = Station),
+    arrow = arrow(type = "closed", length = unit(0.1, "inches"))
+  ) +
+  geom_path(aes(x = NMDS1, y = NMDS2, color = Station,
+    group = Station:Operation),
+    arrow = arrow(type = "closed", length = unit(0.1, "inches"))
+  ) +
+  scale_color_manual(NULL, values = c("Collinsville" = "#377eb8",
+    "National Steel" = "#4daf4a", "Beldens Landing" = "#fb9a99",
+    "Hunter Cut" = "#984ea3")) +
+  xlab("First ordinate") + ylab("Second ordinate") +
+  coord_fixed() 
+
+```
