@@ -98,122 +98,39 @@ plot(zlm4)
 visreg(zlm4)
 
 library(sjstats)
+library(pwr)
 
 a1 =aov(logBPUE~Month+Region.y, data = filter(zooptots, Month != "Oct"))
 effectsize::cohens_f(a1)
+
+#power to detect differences between regions
+pwr.anova.test(2, n = 25, f = 0.5, sig.level = 0.05)
+#observed power is 0.93!
+
+#What effect size can we expect with a power of 0.8?
+pwr.anova.test(2, n = 25, sig.level = 0.05, power = 0.8)
+#We can get at least f = 0.4
+
+#power to detect differences between months
+pwr.anova.test(3, n = 13, f = 0.4, sig.level = 0.05)
+#observed power is only 0.56, not great.
+
+#how many samples give us a power of 0.8?
+pwr.anova.test(3,  f = 0.4, sig.level = 0.05, power = 0.8)
+#Need at least 21 samples. 
+
+#but in the future, we'll have a longer "during" period, not just one month. 
+#It will be harder to extract seasonal trends from the action, but...
+
 #################################################################################################
 #What does an NMDS look like?
 
 library(vegan)
-zNMDS = metaMDS(zoopB2[,5:11], trymax = 50)
+zNMDS = metaMDS(zoopB2[,7:13], trymax = 50)
 zNMDS
 
+source("plotNMDS.R")
 
-results.nmds = zoopB2 %>%
-  #  na.omit() %>%
-  # mutate_if(is.numeric, ~as.vector(scale(.x))) %>%
-  nest() %>%
-  mutate(
-    nmds = map(data,
-               ~ .x %>%
-                 select(-Station, -Month, - Year, -Region.y, -sample) %>%
-                 metaMDS(distance = "bray", autotransform = FALSE,
-                         try = 50, trymax = 100)),
-    scores = map(nmds, scores),
-    envfit = map2(nmds, data, ~ envfit(ord = .x,
-                                       env = select(.y, -Station, -Month, - Year, -Region.y, -sample))),
-    envload = map(envfit, ~.x$vectors$arrows %>% 
-                    as_tibble(rownames = "Species")),
-    envfit2 = map2(nmds, data, ~ envfit(ord = .x,
-                                        env = select(.y, Month, Region.y))),
-    envload2 = map(envfit2, ~.x$factors$centroids %>% 
-                     as_tibble(rownames = "groups")),
-    newdata = map2(data, scores,
-                   ~ bind_cols(select(.x, Month, Region.y, sample),
-                               as_tibble(.y)) %>% group_by(Region.y, Month) %>%
-                     mutate(num = 1:n()) %>% ungroup())
-  )
+PlotNMDS(zNMDS, data = zoopB2, group = "Region.y")
 
-
-results.hulls = results.nmds %>%
-  select(newdata) %>%
-  unnest() %>%
-  nest(-Month, -Region.y) %>%
-  mutate(
-    hull = map(data, ~ chull(select(.x, NMDS1, NMDS2))),
-    poly = map2(data, hull, ~ .x[c(.y, .y[1]),])
-  ) %>%
-  select(Region.y, Month, poly) %>%
-  unnest()
-
-
-vec.scale = .5
-w = 8
-h = 6
-
-
-base = ggplot(results.nmds$newdata[[1]]) +
-  ggthemes::theme_few(base_size = 18) +
-  coord_fixed() +
-  #scale_color_manual(NULL, values = c("Miner" = "#377eb8",
-   #                                   "Lindsey" = "#4daf4a",
-    #                                  "Liberty" = "#984ea3"),
-    #                 breaks = c("Miner", "Lindsey", "Liberty"),
-     #                labels = c("Miner", "Lindsey", "Liberty")) +
-  #scale_fill_manual(NULL, values = c("leafpack" = "red",
-   #                                  "sweepnet" = "yellow"), 
-    #                breaks = c("leafpack", "sweepnet"),
-     #               labels = c("leaf pack", "sweep net")) +
-#  scale_shape_manual(NULL, values = c("SAV" = 10,
- #                                     "EAV" = 21, "FAV" = 19, "channel" = 2), drop = FALSE) +
-  guides(
-    color = guide_legend(order = 1),
-    fill = guide_legend(order = 1),
-    Shape = guide_legend(order = 0)
-  ) +
-  
-  geom_point(
-    data = results.nmds$newdata[[1]],
-    aes(x = NMDS1, y = NMDS2, color = Month,
-        shape = Region.y), size = 4) +
-  
-  geom_label(x = 1, y = 1, label = paste("Stress =",
-                                         round(results.nmds$nmds[[1]]$stress, 2))) +
-  theme(
-    axis.text = element_blank(),
-    axis.ticks = element_blank(),
-    axis.title = element_blank()
-  )+
-  geom_polygon(
-    data = results.hulls,
-    aes(x = NMDS1, y = NMDS2,
-        fill = Region.y, group = Region.y:Month),
-    alpha = 0.25) +
-  geom_segment(data = results.nmds$envload[[1]],
-               aes(xend = vec.scale * NMDS1, yend = vec.scale * NMDS2, group = Species),
-               x = 0, y = 0, arrow = arrow(length = unit(0.1, "inches"),
-                                           type = "closed"), size = 1, lineend = "round") +
-  geom_text(data =results.nmds$envload[[1]], aes(x= NMDS1*.55, y = NMDS2*.55, 
-                             label = Species))
-base
-
-#Not add teh "envfit" centroids
-
-#pull out results from each grouping
-envfits = results.nmds$envload2[[1]]
-targs = envfits[1:4,]
-regs = envfits[7:9,]
-samps = envfits[5:6,]
-
-species = rownames(results.nmds[[2]][[1]]$species)
-specs = as_tibble(results.nmds[[2]][[1]]$species)
-specs = cbind(species, specs)
-
-base + 
-  #geom_text(data = targs, 
-  #         aes(x= NMDS1, y = NMDS2, 
-  #            label = c("channel", "EAV", "FAV", "SAV"))) +
-  geom_text(data =specs, aes(x= MDS1, y = MDS2, 
-                             label = species))
-#That is hideous. Let's try again.
-
+PlotNMDS(zNMDS, data = zoopB2, group = "Month")

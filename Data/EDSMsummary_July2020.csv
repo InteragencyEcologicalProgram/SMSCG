@@ -1,0 +1,109 @@
+"","Stratum","Week","tows","Stations","DSM","DSMcpue"
+"1","Cache Slough LI",27,25,5,0,0
+"2","Cache Slough LI",28,20,4,0,0
+"3","Cache Slough LI",29,24,4,0,0
+"4","Cache Slough LI",30,17,5,0,0
+"5","Cache Slough LI",31,22,6,0,0
+"6","Cache Slough LI",32,24,6,0,0
+"7","Cache Slough LI",33,21,5,0,0
+"8","Cache Slough LI",34,23,6,0,0
+"9","Cache Slough LI",35,22,6,0,0
+"10","Cache Slough LI",36,25,6,0,0
+"11","Cache Slough LI",37,26,6,0,0
+"12","Cache Slough LI",38,24,6,0,0
+"13","Cache Slough LI",39,24,6,0,0
+"14","Cache Slough LI",40,29,7,0,0
+"15","Cache Slough LI",41,24,6,0,0
+"16","Cache Slough LI",42,28,7,0,0
+"17","Cache Slough LI",43,25,6,0,0
+"18","Cache Slough LI",44,24,6,0,0
+"19","Lower Sacramento",27,29,5,0,0
+"20","Lower Sacramento",28,30,5,0,0
+"21","Lower Sacramento",29,30,5,0,0
+"22","Lower Sacramento",30,24,6,0,0
+"23","Lower Sacramento",31,20,5,0,0
+"24","Lower Sacramento",32,16,4,0,0
+"25","Lower Sacramento",33,22,6,1,0.0454545454545455
+"26","Lower Sacramento",34,20,6,5,0.25
+"27","Lower Sacramento",35,24,6,0,0
+"28","Lower Sacramento",36,24,6,0,0
+"29","Lower Sacramento",37,24,6,0,0
+"30","Lower Sacramento",38,22,6,13,0.590909090909091
+"31","Lower Sacramento",39,27,7,3,0.111111111111111
+"32","Lower Sacramento",40,32,8,0,0
+"33","Lower Sacramento",41,26,7,4,0.153846153846154
+"34","Lower Sacramento",42,24,6,0,0
+"35","Lower Sacramento",43,32,8,0,0
+"36","Lower Sacramento",44,23,6,2,0.0869565217391304
+"37","Lower San Joaquin",27,30,5,0,0
+"38","Lower San Joaquin",28,24,4,0,0
+"39","Lower San Joaquin",29,36,6,0,0
+"40","Lower San Joaquin",30,24,6,0,0
+"41","Lower San Joaquin",31,24,6,0,0
+"42","Lower San Joaquin",32,24,6,0,0
+"43","Lower San Joaquin",33,21,5,0,0
+"44","Lower San Joaquin",34,25,6,0,0
+"45","Lower San Joaquin",35,24,6,0,0
+"46","Lower San Joaquin",36,24,6,0,0
+"47","Lower San Joaquin",37,24,6,0,0
+"48","Lower San Joaquin",38,24,6,0,0
+"49","Lower San Joaquin",39,24,6,0,0
+"50","Lower San Joaquin",40,28,7,0,0
+"51","Lower San Joaquin",41,28,7,0,0
+"52","Lower San Joaquin",42,24,6,0,0
+"53","Lower San Joaquin",43,29,7,0,0
+"54","Lower San Joaquin",44,12,3,0,0
+"55","Sac DW Ship Channel",27,27,5,5,0.185185185185185
+"56","Sac DW Ship Channel",28,21,4,2,0.0952380952380952
+"57","Sac DW Ship Channel",29,26,5,2,0.0769230769230769
+"58","Sac DW Ship Channel",30,20,6,6,0.3
+"59","Sac DW Ship Channel",31,8,3,4,0.5
+"60","Sac DW Ship Channel",32,20,5,2,0.1
+"61","Sac DW Ship Channel",33,22,6,5,0.227272727272727
+"62","Sac DW Ship Channel",34,24,7,3,0.125
+"63","Sac DW Ship Channel",35,24,6,7,0.291666666666667
+"64","Sac DW Ship Channel",36,24,6,0,0
+"65","Sac DW Ship Channel",37,25,7,24,0.96
+"66","Sac DW Ship Channel",38,24,6,2,0.0833333333333333
+"67","Sac DW Ship Channel",39,22,7,12,0.545454545454545
+"68","Sac DW Ship Channel",40,26,7,4,0.153846153846154
+"69","Sac DW Ship Channel",41,26,7,3,0.115384615384615
+"70","Sac DW Ship Channel",42,24,7,17,0.708333333333333
+"71","Sac DW Ship Channel",43,24,6,0,0
+"72","Sac DW Ship Channel",44,14,4,2,0.142857142857143
+"73","Suisun Bay",27,16,4,2,0.125
+"74","Suisun Bay",28,29,5,0,0
+"75","Suisun Bay",29,22,4,2,0.0909090909090909
+"76","Suisun Bay",30,20,5,0,0
+"77","Suisun Bay",31,20,5,0,0
+"78","Suisun Bay",32,25,6,0,0
+"79","Suisun Bay",33,19,5,0,0
+"80","Suisun Bay",34,24,6,0,0
+"81","Suisun Bay",35,24,6,0,0
+"82","Suisun Bay",36,20,5,0,0
+"83","Suisun Bay",37,25,7,0,0
+"84","Suisun Bay",38,28,7,0,0
+"85","Suisun Bay",39,24,6,0,0
+"86","Suisun Bay",40,24,6,0,0
+"87","Suisun Bay",41,24,6,0,0
+"88","Suisun Bay",42,24,6,0,0
+"89","Suisun Bay",43,24,6,0,0
+"90","Suisun Bay",44,12,3,0,0
+"91","Suisun Marsh",27,24,4,0,0
+"92","Suisun Marsh",28,24,4,0,0
+"93","Suisun Marsh",29,24,4,0,0
+"94","Suisun Marsh",30,20,5,0,0
+"95","Suisun Marsh",31,25,7,0,0
+"96","Suisun Marsh",32,24,6,0,0
+"97","Suisun Marsh",33,24,6,2,0.0833333333333333
+"98","Suisun Marsh",34,20,6,3,0.15
+"99","Suisun Marsh",35,24,6,0,0
+"100","Suisun Marsh",36,21,6,2,0.0952380952380952
+"101","Suisun Marsh",37,20,5,0,0
+"102","Suisun Marsh",38,24,6,0,0
+"103","Suisun Marsh",39,25,6,0,0
+"104","Suisun Marsh",40,24,6,0,0
+"105","Suisun Marsh",41,24,6,0,0
+"106","Suisun Marsh",42,24,6,0,0
+"107","Suisun Marsh",43,20,5,0,0
+"108","Suisun Marsh",44,25,7,0,0

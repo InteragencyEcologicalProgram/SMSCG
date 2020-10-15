@@ -1,0 +1,81 @@
+Salinity:
+Histogram counts in each bin for each scenario.
+    No Action = The No Action Scenario
+    SMSCG Action = 2018 SMSCG Action (Flow Action) scenario
+Histogram counts are based on the time series modeled salinity at Belden Landing.
+Divide counts by total number of counts in the corresponding period for percent of time histograms.
+
+-------------------------------------------------------------------------
+BDL, Belden Landing
+
+During the Flow Action (Summer Op)
+                       Number of Counts in Each Bin
+Bin_start   Bin_end   No Action       SMSCG Action    
+     0.00      0.50         0         0 
+     0.50      1.00         0         0 
+     1.00      1.50         0         0 
+     1.50      2.00         0        45 
+     2.00      2.50         0       483 
+     2.50      3.00         0       797 
+     3.00      3.50         0       613 
+     3.50      4.00         0      1255 
+     4.00      4.50         0        95 
+     4.50      5.00         0        20 
+     5.00      5.50         0        21 
+     5.50      6.00         0        24 
+     6.00      6.50         0        90 
+     6.50      7.00       245        52 
+     7.00      7.50      2117        57 
+     7.50      8.00      1052         0 
+     8.00      8.50       138         0 
+     8.50      9.00         0         0 
+     9.00      9.50         0         0 
+     9.50     10.00         0         0 
+
+Following the Flow Action (No Operations)
+                       Number of Counts in Each Bin
+Bin_start   Bin_end   No Action       SMSCG Action    
+     0.00      0.50         0         0 
+     0.50      1.00         0         0 
+     1.00      1.50         0         0 
+     1.50      2.00         0         0 
+     2.00      2.50         0         0 
+     2.50      3.00         0         0 
+     3.00      3.50         0         0 
+     3.50      4.00         0         6 
+     4.00      4.50         0      1049 
+     4.50      5.00         0       463 
+     5.00      5.50         0       548 
+     5.50      6.00         0       465 
+     6.00      6.50         0       500 
+     6.50      7.00         0       386 
+     7.00      7.50         0       219 
+     7.50      8.00       375       108 
+     8.00      8.50      1585         0 
+     8.50      9.00      1587         0 
+     9.00      9.50       197         0 
+     9.50     10.00         0         0 
+
+Period of normal fall operation until November 30, 2018 (Fall/Winter Op)
+                       Number of Counts in Each Bin
+Bin_start   Bin_end   No Action       SMSCG Action    
+     0.00      0.50         0         0 
+     0.50      1.00         0         0 
+     1.00      1.50         0         0 
+     1.50      2.00         0         0 
+     2.00      2.50         0         0 
+     2.50      3.00         0         0 
+     3.00      3.50         0         0 
+     3.50      4.00         0         0 
+     4.00      4.50         0         0 
+     4.50      5.00        49       399 
+     5.00      5.50      1086      1214 
+     5.50      6.00      1738      1573 
+     6.00      6.50       805       754 
+     6.50      7.00       370       354 
+     7.00      7.50        46        26 
+     7.50      8.00        14         0 
+     8.00      8.50        85         0 
+     8.50      9.00       115         0 
+     9.00      9.50        12         0 
+     9.50     10.00         0         0 

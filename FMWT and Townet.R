@@ -4,6 +4,7 @@ library(readxl)
 library(tidyverse)
 library(lubridate)
 library(wql)
+library(visreg)
 
 FMWT <- read_excel("FMWT 1967-2018 Catch Matrix_updated.xlsx", sheet = "FlatFile", 
                    col_types = c("numeric","date", "numeric", "text", "date",  
@@ -444,7 +445,15 @@ ggplot(EDSM4a, aes(x=Week, y = DSMcpue, fill = Stratum)) +
   geom_bar(stat = "identity") + facet_grid(.~Year) +
   scale_x_continuous(breaks = c(26, 30, 34, 38, 42), labels = c("Jun","Jul","Aug","Sep","Oct"))
 
-ggplot(EDSM4a, aes(x=Week, y = Tows, fill = Stratum)) + 
-  geom_bar(stat = "identity") + facet_grid(.~Year) +
+
+ggplot(EDSM4a, aes(x=Week, y = DSM, fill = Stratum)) + 
+  geom_bar(stat = "identity") + facet_grid(.~Year) + ylab("total Delta Smelt caught") +
   scale_x_continuous(breaks = c(26, 30, 34, 38, 42), labels = c("Jun","Jul","Aug","Sep","Oct"))
 
+
+towplot = ggplot(EDSM4a, aes(x=Week, y = Tows, fill = Stratum)) + 
+  geom_bar(stat = "identity") + facet_grid(.~Year) + 
+  scale_x_continuous(breaks = c(26, 30, 34, 38, 42), labels = c("Jun","Jul","Aug","Sep","Oct"))
+
+library(ggthemes)
+towplot + theme_excel_new()
