@@ -1,4 +1,7 @@
 #combine delta smelt catch for Suisun marsh from FMWT and Summer Townet
+#This was for an exploitory analysis to see how frequently smelt
+#were caught in Suisun Historically
+#Rosemary Hartman 10/14.2020
 
 library(readxl)
 library(tidyverse)
@@ -6,12 +9,14 @@ library(lubridate)
 library(wql)
 library(visreg)
 
-FMWT <- read_excel("FMWT 1967-2018 Catch Matrix_updated.xlsx", sheet = "FlatFile", 
+#FMWT catch data, downloaded from CDFW FTP site
+FMWT <- read_excel("Data/FMWT 1967-2018 Catch Matrix_updated.xlsx", sheet = "FlatFile", 
                    col_types = c("numeric","date", "numeric", "text", "date",  
                                  "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", 
                                  "numeric", "numeric", "text", "text", "text", rep("numeric", times =112)))
 
-wtryrs <- read_excel("wtryrtype.xlsx")
+#Attach water year types
+wtryrs <- read_excel("Data/wtryrtype.xlsx")
 wtryrs = rename(wtryrs, Year = WY)
 
 #put it in long format instead of wide
@@ -47,7 +52,7 @@ FMWT_DS = filter(FMWTl2, Species == "Delta Smelt", Station == 605 |Station == 60
 
 
 #Now townet
-TownetData <- read_excel("TownetData_1959-2019.xlsx",  
+TownetData <- read_excel("Data/TownetData_1959-2019.xlsx",  
                          col_types = c("numeric","numeric", "date","text",
                                        rep("numeric", 96)),
                          sheet = "CatchPerTow")
@@ -93,6 +98,7 @@ SuisunSmelt2$Month = month(SuisunSmelt2$Date)
 SuisunSmelt2.2 = merge(SuisunSmelt2, wtryrs, by = "Year")
   SuisunSmelt2.2 =  mutate(SuisunSmelt2.2, `Yrtype` = factor(`Yr-type`, levels = c("C", "D", "BN", "AN", "W")))
 
+#We are just interested in the months where we are likely to have gate actions  
 SuisunSmelt3 = filter(SuisunSmelt2.2, Month %in% c(7,8,9,10))
 p2 = ggplot(SuisunSmelt3, aes(x = as.factor(Month), y = log(catch+1)))
 p2 + geom_boxplot() + facet_wrap(~`Yrtype`)
@@ -121,7 +127,8 @@ augsmelt = filter(SuisunSmelt2.2, Month == 8)
 ausmelt = table(augsmelt$Year, augsmelt$program)
 
 ################################################################################################################
-#monthly presence/absence
+#monthly presence/absence. This was used for the logistic regression
+#of smelt presence in Ted's 2020 paper
 PAfun = function(x) {
   if (sum(x) == 0)  "absent" else "present"
 }
@@ -137,6 +144,7 @@ p4.1 = ggplot(filter(SuisunSmeltPA, Month == 8), aes(x = Yrtype, fill = PA))
 p4.1 + geom_bar(position = "fill") 
 
 #############################################################################################################
+#How does catch respond to Delta outflow?
 dayflowall = read.csv("dayflow_all.csv")
 dayflowall = mutate(dayflowall, Month = month(Date), Year = year(Date))
 
@@ -158,18 +166,22 @@ simyears = filter(augsmeltsum, out > 4700 & out <6700)
 p7 = ggplot(augsmelt, aes(x = TopEC, y = catch))
 p7 + geom_point()
 
+#Just look at smelt presence/absence in August
 augsmelt$PA = NA
 augsmelt$PA[which(augsmelt$catch == 0)] = 0
 augsmelt$PA[which(augsmelt$catch > 0)] = 1
 
+#Compare smelt presence/absence to salinity
 p8 = ggplot(augsmelt, aes(x = TopEC, y = PA))
 p8 +geom_point() + geom_smooth(method = "glm", method.args = list(family = "binomial"))
 
+#Presence/absence versus salinity binomial model
 b1 = glm(PA ~ TopEC, family = "binomial", data = augsmelt)
 summary(b1)
 visreg(b1)
 
 
+#Just do it with data prior to 2000, because of the POD
 p8.1 = ggplot(filter(augsmelt, Year < 2000), aes(x = TopEC, y = PA))
 p8.1 +geom_point() + geom_smooth(method = "glm", method.args = list(family = "binomial"))
 
@@ -335,125 +347,3 @@ foo2 = ggplot(BeldenSalAug, aes(x = salinity, fill = Action)) +
 
 p11 = grid.arrange(foo, foo2)
 
-
-#######################################################
-#quickly check raw EDSM data
-
-EDSM = read.csv("EDSM_KDTR.csv")
-
-EDSM2 = mutate(EDSM, Date = ymd(Date), Year = year(Date), 
-               Month = month(Date), Week = week(Date)) %>%
-  filter(Year == 2018, Month %in% c(7,8,9,10), !is.na(Tow))
-
-
-EDSM2x = mutate(EDSM, Date = mdy(Date), Year = year(Date), 
-               Month = month(Date), Week = week(Date)) %>%
-  filter(Year == 2018, Month %in% c(7,8,9,10))
-
-
-
-EDSM3 = group_by(EDSM2, Stratum, Station, Date, Tow, Month, Year, Week) %>%
-  summarize(totcatch = length(ForkLength), 
-            DSM = length(ForkLength[which(OrganismCode == "DSM")]))
-
-EDSM4 = group_by(EDSM3, Week, Stratum, Station) %>%
-  summarize(tows = length(Tow), DSM = sum(DSM)) %>%
-  group_by(Stratum, Week) %>%
-  summarize(tows = sum(tows, na.rm = T), 
-            Stations = length(Station), DSM = sum(DSM),
-            DSMcpue = DSM/tows)
-
-EDSMwide = pivot_wider(EDSM4, id_cols = c(Week), 
-                       names_from = Stratum, values_from = DSMcpue,
-                       values_fill = 0)
-
-weeks = read.csv("weeks.csv")
-names(weeks) = c("Week", "EndWeek")
-EDSM4 = merge(EDSM4, weeks) %>%
-  mutate(EndWeek = mdy(EndWeek))
-
-library(RColorBrewer)
-
-pE = ggplot(EDSM4, aes(x = EndWeek, y = DSMcpue, fill = Stratum)) +
- annotate("rect", xmin = ymd("2018-08-01"), xmax = ymd("2018-09-06"), 
-          ymin = 0, ymax = 1, alpha = 0.5, fill = "grey" )+
-  annotate("text", x= ymd("2018-08-15"), y = .9, label = "Action \nPeriod")+
-  geom_bar(stat = "identity") + xlab("Week of Year") +
-  scale_fill_brewer(palette = "Set1", name = "Region") +
-  ylab("Delta Smelt Catch per Trawl") +
-  theme_bw() + theme(text = element_text(size = 14))
-
-ggsave("EDSM_suisun.png", plot = pE, width = 7, height = 5, dpi = 300)
-
-
-#################################################################
-#let's look at all years
-EDSM2x = mutate(EDSM, Date = ymd(Date), Year = year(Date), 
-               Month = month(Date), Week = week(Date)) %>%
-  filter(Month %in% c(7,8,9,10), !is.na(Tow))
-
-
-
-EDSM3 = group_by(EDSM2x, Stratum, Station, Date, Tow, Month, Year, Week) %>%
-  summarize(totcatch = length(ForkLength), 
-            DSM = length(ForkLength[which(OrganismCode == "DSM")]))
-
-EDSM4 = group_by(EDSM3, Week, Stratum, Station, Year, Month) %>%
-  summarize(tows = length(Tow), DSM = sum(DSM)) %>%
-  group_by(Stratum, Week, Month, Year) %>%
-  summarize(tows = sum(tows, na.rm = T), 
-            Stations = length(Station), DSM = sum(DSM),
-            DSMcpue = DSM/tows)
-
-
-ggplot(EDSM4, aes(x=Month, y = DSM)) + geom_bar(stat = "identity") + facet_grid(Stratum~Year)
-
-ggplot(EDSM4, aes(x=Week, y = DSM, fill = Stratum)) + geom_bar(stat = "identity") + facet_grid(.~Year)
-
-
-ggplot(filter(EDSM3, Stratum=="Suisun Marsh"), aes(x=Date, y = DSM)) + 
-  geom_bar(stat = "identity") 
-
-#################################################################################
-#import data from 2020
-EDSMx = read.csv("EDSM2012-2020.csv")
-
-EDSMxa = mutate(EDSMx, Date = as.Date(Date, format = "%d-%b-%y"), Year = year(Date), 
-               Month = month(Date), Week = week(Date)) %>%
-  filter(Month %in% c(7,8,9,10), !is.na(Tow))
-
-
-
-EDSM3a = group_by(EDSMxa, Stratum, Station, Date, Tow, Month, Year, Week) %>%
-  summarize(totcatch = length(ForkLength), 
-            DSM = length(ForkLength[which(OrganismCode == "DSM")]))
-
-
-EDSM4a = group_by(EDSM3a, Week, Stratum, Station, Year, Month) %>%
-  summarize(tows = length(Tow), DSM = sum(DSM)) %>%
-  group_by(Stratum, Week, Month, Year) %>%
-  summarize(tows = sum(tows, na.rm = T), 
-            Stations = length(Station), DSM = sum(DSM),
-            DSMcpue = DSM/tows, Tows = sum(tows)) %>%
-ungroup()
-
-ggplot(EDSM4a, aes(x=Month, y = DSM)) + geom_bar(stat = "identity") + facet_grid(Stratum~Year)
-
-ggplot(EDSM4a, aes(x=Week, y = DSM, fill = Stratum)) + geom_bar(stat = "identity") + facet_grid(.~Year)
-
-ggplot(EDSM4a, aes(x=Week, y = DSMcpue, fill = Stratum)) + 
-  geom_bar(stat = "identity") + facet_grid(.~Year) +
-  scale_x_continuous(breaks = c(26, 30, 34, 38, 42), labels = c("Jun","Jul","Aug","Sep","Oct"))
-
-
-ggplot(EDSM4a, aes(x=Week, y = DSM, fill = Stratum)) + 
-  geom_bar(stat = "identity") + facet_grid(.~Year) + ylab("total Delta Smelt caught") +
-  scale_x_continuous(breaks = c(26, 30, 34, 38, 42), labels = c("Jun","Jul","Aug","Sep","Oct"))
-
-
-towplot = ggplot(EDSM4a, aes(x=Week, y = Tows, fill = Stratum)) + 
-  geom_bar(stat = "identity") + facet_grid(.~Year) + 
-  scale_x_continuous(breaks = c(26, 30, 34, 38, 42), labels = c("Jun","Jul","Aug","Sep","Oct"))
-
-library(ggthemes)
-towplot + theme_excel_new()

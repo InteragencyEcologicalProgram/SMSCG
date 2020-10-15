@@ -1,3 +1,6 @@
+#This is a helper function to plot NMDS results
+#Rosemary Hartman 10/14/2020
+
 
 PlotNMDS = function(NMDS1, # results of the NMDS you want to plot
                     data, # Environmental data (not species matrix)

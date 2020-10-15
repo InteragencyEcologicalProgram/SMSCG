@@ -1,4 +1,5 @@
-#Look at some different ways of plotting the data for environmental variables during the 2018 SMSCG action
+#Look at some different ways of plotting the data for environmental 
+#variables during the 2018 SMSCG action
 
 #Rosemary Hartman
 #23 Sep. 2019

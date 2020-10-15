@@ -1,4 +1,4 @@
-#let's take a look at the zooplankton data.
+#let's take a look at the zooplankton data from the 2018 action
 
 
 library(tidyverse)
@@ -6,7 +6,7 @@ library(readxl)
 library(ggthemes)
 
 #import the biomass data
-zoopB <- read_excel("FMWT_TNSZooplanktonBPUEMarch2019.xlsx", 
+zoopB <- read_excel("Data/FMWT_TNSZooplanktonBPUEMarch2019.xlsx", 
                     sheet = "FMWT&TNS ZP BPUE")
 
 #Now filter it so it's just the stations and time period we are interested in
@@ -35,7 +35,7 @@ zoopB2$Month = factor(zoopB2$Month, labels = c("Jul", "Aug", "Sep", "Oct"))
 
 #figure out what samples/stations we might be missing
 zooptest = group_by(zoopB2, Station, Month) %>% summarize(n = length(sample))
-write.csv(zooptest, "Zoopsamples.csv", row.names = F)
+#write.csv(zooptest, "Zoopsamples.csv", row.names = F)
 
 #now from wide to long
 zooplong = gather(zoopB2, key = "Taxa", value = "BPUE", -Station, -Month, - Year, -Region.y, -sample, -Date, - Microcystis)
@@ -97,6 +97,9 @@ summary(zlm4)
 plot(zlm4)
 visreg(zlm4)
 
+
+#Let's try an exploitory power analysis to see if we
+#are collecting enough samples in the future
 library(sjstats)
 library(pwr)
 
