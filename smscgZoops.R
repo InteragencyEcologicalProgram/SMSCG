@@ -44,7 +44,7 @@ zoopB2= mutate(zoopBM, Acartiella = ACARTELA + ASINEJUV,
                 SINOCAL + EURYJUV + OTHCALJUV + SINOCALJUV + ACARJUV + DIAPTJUV + SINONAUP + EURYNAUP,
               `Other Cyclopoids` = AVERNAL + OITHDAV + OITHSIM + OTHCYCAD + OITHJUV + OTHCYCJUV,
               Other = HARPACT + OTHCOPNAUP)
-zoopB2a = zoopB2[,c(1,3,5,6,22,25, 63:69)]
+zoopB2a = zoopB2[,c(1,3,5,6,22,25, 62:69)]
 
 #create a sample ID
 zoopB2a$sample = 1:nrow(zoopB2a)
@@ -65,7 +65,7 @@ zoopsum = group_by(zooplong, Region, Year, Month, Taxa) %>% summarize(meanB = me
 #reorder the factor levels so they look nicer
 zoopsum$Taxa = factor(zoopsum$Taxa, levels = c("Other","Limnoithona", "Other Cyclopoids",
                                                "Other Calanoids", 
-                                               "Tortanus", "Pseudodiaptomus","Acartiella"))
+                                               "Tortanus", "Pseudodiaptomus","Acartiella", "Cladocera"))
 
 b1 = ggplot(zoopsum, aes(x = Month, y = meanB))
 b2 = b1 + geom_bar(stat = "identity", aes(fill = Taxa)) + 
@@ -153,6 +153,6 @@ zNMDS
 
 source("plotNMDS.R")
 
-PlotNMDS(zNMDS, data = zoopB2, group = "Region.y")
+PlotNMDS(zNMDS, data = zoopB2, group = "Region")
 
 PlotNMDS(zNMDS, data = zoopB2, group = "Month")
