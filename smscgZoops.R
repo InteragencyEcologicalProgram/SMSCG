@@ -1,56 +1,75 @@
 #let's take a look at the zooplankton data from the 2018 action
-
+#and add the 2019 stuff too.
 
 library(tidyverse)
 library(readxl)
 library(ggthemes)
 
-#import the biomass data
-zoopB <- read_excel("Data/FMWT_TNSZooplanktonBPUEMarch2019.xlsx", 
-                    sheet = "FMWT&TNS ZP BPUE")
+
+SMSCG_zoops <- read_excel("Data/SMSCG_CBNet_2018to2019CPUE_24August2020.xlsx", 
+                          sheet = "SMSCGZoopCPUE")
+
+
+#carbon mass for individual zooplankton taxa (cladocerans, copepods)
+zmass<-read.csv("Data/zoop_individual_mass.csv")
+
 
 #Now filter it so it's just the stations and time period we are interested in
 stas = data.frame(Station = as.character(c(513, 520, 801, 802, 606, 609, 610, "Mont", "NZ032")), 
                   Region = c(rep("River", 4), rep("Suisun Marsh", 5)))
 
+#Note: We may want to include other stations, these were just the ones we used
+#for Ted's paper.
+
 stas = mutate(stas, Region = factor(Region, levels = c("Suisun Marsh", "River")))
 
-zoopB = filter(merge(zoopB, stas, by = "Station"), Year == 2018, Month == 7 | Month ==8 | Month==9| Month==10) 
+zoopB = filter(merge(select(SMSCG_zoops, -Region), stas, by = "Station"), Year %in% c(2018, 2019), Month == 7 | Month ==8 | Month==9| Month==10) 
+
+#Convert to biomass
+zoopBM = pivot_longer(zoopB, cols = ACARTELA:CUMAC, 
+                      names_to = "taxon", values_to = "CPUE") %>%
+  left_join(zmass) %>%
+  mutate(BPUE = CPUE*mass_indiv_ug) %>%
+  filter(!is.na(BPUE)) %>%
+  pivot_wider(id_cols = c(Station:Volume, Region), names_from = taxon, values_from = BPUE)
+
 
 #Pick out just the columns we are interested in
-zoopB2= mutate(zoopB, Acartiella = ACARTELA + ASINEJUV, 
+zoopB2= mutate(zoopBM, Acartiella = ACARTELA + ASINEJUV, 
               Tortanus = TORTANUS + TORTJUV,
+              Cladocera = BOSMINA + DAPHNIA + DIAPHAN + OTHCLADO,
                 Limnoithona = LIMNOSPP + LIMNOSINE + LIMNOTET + LIMNOJUV,
               Pseudodiaptomus = PDIAPFOR + PDIAPMAR + PDIAPJUV + PDIAPNAUP,
               `Other Calanoids` = ACARTIA + DIAPTOM + EURYTEM + OTHCALAD + 
                 SINOCAL + EURYJUV + OTHCALJUV + SINOCALJUV + ACARJUV + DIAPTJUV + SINONAUP + EURYNAUP,
               `Other Cyclopoids` = AVERNAL + OITHDAV + OITHSIM + OTHCYCAD + OITHJUV + OTHCYCJUV,
-              Other = HARPACT + OTHCOPNAUP + ALLCLADOCERA)
-zoopB2 = zoopB2[,c(1,3,5,6,22, 67:74)]
-zoopB2$sample = 1:nrow(zoopB2)
+              Other = HARPACT + OTHCOPNAUP)
+zoopB2a = zoopB2[,c(1,3,5,6,22,25, 63:69)]
+
+#create a sample ID
+zoopB2a$sample = 1:nrow(zoopB2a)
+
+#turn month into a factor
 zoopB2$Month = factor(zoopB2$Month, labels = c("Jul", "Aug", "Sep", "Oct"))
 
 #write a csv for publication
 #write.csv(zoopB2, "plankton_2018_smscg.csv")
 
-#figure out what samples/stations we might be missing
-zooptest = group_by(zoopB2, Station, Month) %>% summarize(n = length(sample))
-#write.csv(zooptest, "Zoopsamples.csv", row.names = F)
 
 #now from wide to long
-zooplong = gather(zoopB2, key = "Taxa", value = "BPUE", -Station, -Month, - Year, -Region.y, -sample, -Date, - Microcystis)
+zooplong = gather(zoopB2a, key = "Taxa", value = "BPUE", -Station, -Month, - Year, -Region, -sample, -Date, - Microcystis)
 
 #Now the summary version
-zoopsum = group_by(zooplong, Region.y, Month, Taxa) %>% summarize(meanB = mean(BPUE), sdB = sd(BPUE), n = length(BPUE))
+zoopsum = group_by(zooplong, Region, Year, Month, Taxa) %>% summarize(meanB = mean(BPUE), sdB = sd(BPUE), n = length(BPUE))
 
 #reorder the factor levels so they look nicer
 zoopsum$Taxa = factor(zoopsum$Taxa, levels = c("Other","Limnoithona", "Other Cyclopoids",
                                                "Other Calanoids", 
                                                "Tortanus", "Pseudodiaptomus","Acartiella"))
-zoopsum$Month = factor(zoopsum$Month, labels = c("Jul", "Aug", "Sep", "Oct"))
 
 b1 = ggplot(zoopsum, aes(x = Month, y = meanB))
-b2 = b1 + geom_bar(stat = "identity", aes(fill = Taxa)) + facet_wrap(~Region.y) +
+b2 = b1 + geom_bar(stat = "identity", aes(fill = Taxa)) + 
+  facet_wrap(Year~Region) +
   scale_fill_brewer(palette = "Set3", name = NULL) +
   ylab("Mean BPUE (µgC/m3)") +
   geom_label(aes(x = Month, y = 100, label = paste("n=", n))) + 
@@ -65,7 +84,7 @@ b2
 
 #####################################################################################################
 #now a glm of total BPUE
-zooptots = group_by(zooplong, Region.y, Month, Station, sample) %>% 
+zooptots = group_by(zooplong, Region, Year, Month, Station, sample) %>% 
   summarize(BPUE = sum(BPUE), logBPUE = log(BPUE))
 zooptots$Month = factor(zooptots$Month, labels = c("Jul", "Aug", "Sep", "Oct"))
 hist(zooptots$BPUE)
@@ -73,26 +92,26 @@ hist(zooptots$logBPUE)
 
 #quick boxplot to see whether we would expect any difference in total BPUE
 tot = ggplot(data = zooptots, aes(x= Month, y = BPUE))
-tot + geom_boxplot() + facet_wrap(~Region.y)
+tot + geom_boxplot() + facet_wrap(Year~Region)
 
 shapiro.test(zooptots$BPUE)
 shapiro.test(zooptots$logBPUE)
-#with october added in with need the log-transformed data. 
+# need the log-transformed data. Even then it's marginal
 
-zlm1 = glm(BPUE~Month*Region.y, data = zooptots)
+zlm1 = glm(BPUE~Month*Region + Year, data = zooptots)
 summary(zlm1)
 plot(zlm1)
 
-zlm2 = glm(BPUE~Month + Region.y, data = filter(zooptots, Month != "Oct"))
+zlm2 = glm(BPUE~Month + Region + Year, data = filter(zooptots, Month != "Oct"))
 summary(zlm2)
 plot(zlm2)
 
-zlm3 = lm(logBPUE~Month*Region.y, data = filter(zooptots, Month != "Oct"))
+zlm3 = lm(logBPUE~Month*Region + Year, data = filter(zooptots, Month != "Oct"))
 summary(zlm3)
 plot(zlm3)
 visreg(zlm3, xvar = "Month", by = "Region.y")
 
-zlm4 = glm(logBPUE~Month+Region.y, data = filter(zooptots, Month != "Oct"))
+zlm4 = glm(logBPUE~Month+Region + Year, data = filter(zooptots, Month != "Oct"))
 summary(zlm4)
 plot(zlm4)
 visreg(zlm4)
@@ -103,7 +122,7 @@ visreg(zlm4)
 library(sjstats)
 library(pwr)
 
-a1 =aov(logBPUE~Month+Region.y, data = filter(zooptots, Month != "Oct"))
+a1 =aov(logBPUE~Month+Region, data = filter(zooptots, Month != "Oct"))
 effectsize::cohens_f(a1)
 
 #power to detect differences between regions
