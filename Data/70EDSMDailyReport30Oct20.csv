@@ -1,0 +1,601 @@
+Date,Day,Stratum,Start Latitude,Start Longitude,Station Code,Region,Sub-Region,Time Start,Avg E/C (µS),Avg Temp (°C),Avg Turbidity (NTU),Avg Secchi (M),Avg Start Depth (M),Method,Number of Tows,TowDuration,TowDirection,Species,Catch,FL Range (mm),Expression,Stage,Mark,Comments
+6/29/2020,Mon,Suisun Marsh,38.7848,-122.00648,20-49-SM01,West,Suisun Marsh,8:33,10646.5,22.08,26.03,0.4,6.38,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+6/29/2020,Mon,Suisun Marsh,38.14715,-122.06893,20-49-SM02,West,Suisun Marsh,10:16,15095.75,21.78,25.53,0.43,3.1,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 2 was code 2 (Net stuck on bottom at end of tow; mud in net)
+6/29/2020,Mon,Suisun Marsh,38.1005,-122.05514,20-49-GB01,West,Grizzly Bay,11:54,15648,21.2,18.78,0.52,4.95,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+6/29/2020,Mon,Lower Sacramento,38.07985,-121.75668,20-49-LSR02,West,Lower Sacramento River,8:59,240.4,22.43,9.94,0.86,9.73,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+6/29/2020,Mon,Lower Sacramento,38.11859,-121.70141,20-49-RV03,North,Sacramento River near Rio Vista,10:33,176.75,22.88,8.33,1.07,9.18,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 1 was code 2 (Twist in net, partial blockage)"
+6/29/2020,Mon,Lower Sacramento,38.13618,-121.68906,20-49-RV04,North,Sacramento River near Rio Vista,12:03,172.08,22.85,6.29,1.67,4.95,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+6/29/2020,Mon,Cache Slough and Liberty Island,38.32585,-121.65277,20-49-CS01,North,Cache Slough/Liberty Island,12:12,175.83,21.08,17.73,0.72,3.65,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+6/29/2020,Mon,Cache Slough and Liberty Island,38.2569,-121.73551,20-49-CS02,North,Cache Slough/Liberty Island,8:41,171.38,21.48,7.63,1.23,4.33,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 1 was code 2 (Twist in net); Tow 2 was code 2 (Distance from site exceeded target distance, was 0.59 mi at stop); Tow 4 was code 2 (Distance from site exceeded target distance, was 0.7 mi at stop)"
+6/29/2020,Mon,Cache Slough and Liberty Island,38.27418,-121.69443,20-49-CS03,North,Cache Slough/Liberty Island,10:29,158.9,21.6,9.37,1.03,5.43,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+6/30/2020,Tues,Lower Sacramento,38.07388,-121.76615,20-49-LSR01,West,Lower Sacramento River,8:43,206.23,22.68,7.44,1.26,9.43,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+6/30/2020,Tues,Lower Sacramento,38.16143,-121.68271,20-49-RV01,North,Sacramento River near Rio Vista,11:48,141.88,23.23,7.84,1.42,10.3,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+6/30/2020,Tues,Lower Sacramento,38.09398,-121.73189,20-49-RV02,North,Sacramento River near Rio Vista,10:09,166.05,22.95,7.03,1.38,8.03,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+6/30/2020,Tues,Suisun Marsh,38.11697,-122.06106,20-49-SM03,West,Suisun Marsh,8:13,13457.75,21.08,69.4,0.25,4.2,Kodiak,4,10,D,LFS,1,37,n/p,n/p,n/p,
+6/30/2020,Tues,Suisun Marsh,38.16066,-122.04684,20-49-SM04,West,Suisun Marsh,9:33,12939.25,21.73,47.75,0.31,6.45,Kodiak,4,10,D,LFS,1,47,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+6/30/2020,Tues,Suisun Marsh,38.15317,-121.91988,20-49-SM05,West,Suisun Marsh,11:03,7124.5,22.03,31.55,0.39,3.98,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+6/30/2020,Tues,Cache Slough and Liberty Island,38.24962,-121.6743,20-49-CS04,North,Cache Slough/Liberty Island,8:40,161.83,21.45,12.98,0.91,9.08,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+6/30/2020,Tues,Cache Slough and Liberty Island,38.28594,-121.71787,20-49-CS06,North,Cache Slough/Liberty Island,8:16,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too Shallow
+6/30/2020,Tues,Cache Slough and Liberty Island,38.28007,-121.66555,20-49-CS07,North,Cache Slough/Liberty Island,10:04,172.68,21.43,12.35,0.93,5.08,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+6/30/2020,Tues,Cache Slough and Liberty Island,38.37251,-121.63392,20-49-CS05,North,Cache Slough/Liberty Island,11:55,191.85,23.7,37.45,0.34,2.9,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Knot in net)
+7/1/2020,Wed,Lower San Joaquin,38.02597,-121.74995,20-49-LSJ01,West,Lower San Joaquin River,9:58,333.63,23.3,8.75,1.33,8.8,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+7/1/2020,Wed,Lower San Joaquin,38.02148,-121.79802,20-49-LSJ02,West,Lower San Joaquin River,8:36,629,23.05,12.07,0.97,5.45,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/1/2020,Wed,Lower San Joaquin,38.05086,-121.69472,20-49-LSJ03,West,Lower San Joaquin River,11:28,264.43,23.7,7.55,1.36,13.08,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/1/2020,Wed,Suisun Bay,38.07081,-121.84149,20-49-CF01,West,Confluence,11:10,1618.5,21.9,28.45,0.48,6.1,Kodiak,2,10,D,DSM,2,41-47,n/p,n/p,n/p,DSM flash frozen for UCDavis
+7/1/2020,Wed,Suisun Bay,38.04973,-121.94454,20-49-HB01,West,Honker Bay,9:36,4846.25,21.75,24.05,0.52,14.2,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/1/2020,Wed,Suisun Bay,38.05665,-122.08449,20-49-SBW01,Far West,West Suisun Bay,8:05,14290,21.08,32.65,0.46,7.7,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/1/2020,Wed,Sac Deep Water Shipping Channel,38.20941,-121.66187,20-49-LSSC01,North,Lower Sacramento River Shipping Channel,7:59,143.7,22.88,7.97,1.47,12.63,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/1/2020,Wed,Sac Deep Water Shipping Channel,38.35693,-121.63733,20-49-LSSC02,North,Lower Sacramento River Shipping Channel,9:38,493.5,22.68,37.63,0.3,9.98,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 2 was code 2 (Distance from site exceeded target distance, was 0.6 mi at stop)"
+7/1/2020,Wed,Sac Deep Water Shipping Channel,38.48283,-121.58464,20-49-USSC01,North,Upper Sacramento River Shipping Channel,11:20,910.75,24,16.45,0.57,9.38,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/1/2020,Wed,Sac Deep Water Shipping Channel,38.51997,-121.58454,20-49-USSC02,North,Upper Sacramento River Shipping Channel,12:37,986.5,24.83,11.05,0.8,10.33,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/2/2020,Thurs,Suisun Bay,38.05534,-121.99663,20-49-SBM01,West,Mid Suisun Bay,8:06,10337,21.25,44.23,0.41,3.95,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/2/2020,Thurs,Suisun Bay,38.06386,-121.96077,20-49-HB02,West,Honker Bay,9:21,7278.75,21.35,51.2,0.33,3.2,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+7/2/2020,Thurs,Suisun Bay,38.04556,-121.8782,20-49-CF02,West,Confluence,10:42,3110,22.1,21.35,0.6,6.38,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1 and 2 were code 2 (Partial net blockage due to vegetation)
+7/2/2020,Thurs,Sac Deep Water Shipping Channel,38.33466,-121.64664,20-49-LSSC05,North,Lower Sacramento River Shipping Channel,8:19,335.1,22.5,24.5,0.42,4.85,Kodiak,4,10,U,DSM,1,45,n/p,n/p,n/p,DSM flash frozen for UCD; 2 Wakasagi (60-63mm) retained for verification
+7/2/2020,Thurs,Sac Deep Water Shipping Channel,38.27535,-121.66117,20-49-LSSC03,North,Lower Sacramento River Shipping Channel,9:33,221.33,22.8,13.65,0.81,10.65,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/2/2020,Thurs,Sac Deep Water Shipping Channel,38.18678,-121.6603,20-49-LSSC04,North,Lower Sacramento River Shipping Channel,11:13,139,22.9,7.22,1.57,16.65,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/2/2020,Thurs,Lower San Joaquin,38.06522,-121.55267,20-49-PP02,South ,San Joaquin River at Prisoners Pt,9:34,183.58,24.08,4.18,1.8,8.78,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/2/2020,Thurs,Lower San Joaquin,38.10196,-121.60352,20-49-PP03,South ,San Joaquin River at Prisoners Pt,10:59,175.68,24.05,6.24,1.8,11.83,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 4 was code 2 (Distance from site exceeded target distance, was 0.57 mi at stop)"
+7/2/2020,Thurs,Lower San Joaquin,38.09411,-121.57542,20-49-PP01,South ,San Joaquin River at Prisoners Pt,12:13,178.5,24.3,18.15,1.8,9.08,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/6/2020,Mon,Lower San Joaquin,38.05324,-121.50971,20-50-PP03,South ,San Joaquin River at Prisoners Pt,8:20,181.63,24.05,4,1.8,13.33,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/6/2020,Mon,Lower San Joaquin,38.04698,-121.52289,20-50-PP01,South ,San Joaquin River at Prisoners Pt,9:46,183.25,23.18,n/p,1.8,5.23,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Turbidity meter not working for all tows. Tow 1 was code 2 (Twist in net)
+7/6/2020,Mon,Lower San Joaquin,38.10275,-121.59611,20-50-PP02,South ,San Joaquin River at Prisoners Pt,11:38,165.03,23.48,n/p,1.69,7.08,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/6/2020,Mon,Sac Deep Water Shipping Channel,38.28694,-121.65822,20-50-LSSC01,North,Lower Sacramento River Shipping Channel,9:09,189.2,22.83,18.53,0.65,10.63,Kodiak,4,10,U,DSM,1,46,n/p,n/p,n/p,DSM flash frozen for UCD
+7/6/2020,Mon,Sac Deep Water Shipping Channel,38.36079,-121.63551,20-50-LSSC02,North,Lower Sacramento River Shipping Channel,11:09,451.17,22.87,71.53,0.28,9.53,Kodiak,3,10,U,DSM,4,43-49,n/p,n/p,n/p,DSM flash frozen for UCD; 3 DSM (43-46mm) initially returned as WAG but IDed in lab as DSM and being sent to DOP for verification; 30 Wakasagi (51-71mm) retained for verification; Tow 1 was code 2 (Twist in net)
+7/6/2020,Mon,Sac Deep Water Shipping Channel,38.51341,-121.58434,20-50-USSC01,North,Upper Sacramento River Shipping Channel,13:24,971.25,24.65,17.45,0.71,10.1,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/6/2020,Mon,Suisun Marsh,38.15678,-122.0618,20-50-SM02,West,Suisun Marsh,9:37,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too Shallow
+7/6/2020,Mon,Suisun Marsh,38.12955,-122.08146,20-50-SM03,West,Suisun Marsh,9:40,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too Shallow; No sites performed at Pittsburg today due to boat issues. Sites will be completed later in the week. 
+7/7/2020,Tues,Sac Deep Water Shipping Channel,38.24174,-121.67092,20-50-LSSC04,North,Lower Sacramento River Shipping Channel,8:21,135.43,22.13,6.15,1.56,6.64,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Buoy line wrapped around net/twist in net)
+7/7/2020,Tues,Sac Deep Water Shipping Channel,38.35125,-121.63983,20-50-LSSC05,North,Lower Sacramento River Shipping Channel,9:54,371.5,22.65,47.45,0.3,10.4,Kodiak,2,10,U,DSM,1,43,n/p,n/p,n/p,DSM flash frozen for UCD; 15 Wakasagi (55-74mm) retained for verification; Tow 1 was code 2 (Twist in net)
+7/7/2020,Tues,Sac Deep Water Shipping Channel,38.1962,-121.65739,20-50-LSSC03,North,Lower Sacramento River Shipping Channel,11:47,138.35,22.2,10.63,1.16,17.68,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/7/2020,Tues,Lower San Joaquin,38.09646,-121.63183,20-50-SJT01,South ,San Joaquin River at Twitchell Island,8:16,321.35,22.9,6.36,1.68,14.15,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/7/2020,Tues,Lower San Joaquin,38.02418,-121.74376,20-50-LSJ02,West,Lower San Joaquin River,10:33,815.75,22.4,6.4,1.6,5.35,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/7/2020,Tues,Lower San Joaquin,38.03116,-121.7241,20-50-LSJ01,West,Lower San Joaquin River,12:35,466,22.7,6.07,1.69,7.75,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/7/2020,Tues,Suisun Marsh,38.10632,-122.04694,20-50-GB01,West,Grizzly Bay,8:54,14777.5,20,88.3,0.22,2.15,Kodiak,4,10,U,LFS,1,100,X,n/p,n/p,"Tow 1 was code 2 (Started 500ft from target point); Tow 2 was code 2 (Twist in net); Tow 4 was code 2 (Distance from site exceeded target distance, was 0.57 mi at stop)"
+7/7/2020,Tues,Suisun Marsh,38.17493,-122.01285,20-50-SM04,West,Suisun Marsh,10:43,10040,21.9,46.93,0.29,4.65,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/7/2020,Tues,Suisun Marsh,38.17929,-122.05584,20-50-SM01,West,Suisun Marsh,12:27,9405.75,21.63,37.28,0.33,3.13,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/8/2020,Weds,Cache Slough and Liberty Island,38.25568,-121.73684,20-50-CS02,North,Cache Slough/Liberty Island,8:42,162.9,22.23,5.7,1.28,5.3,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+7/8/2020,Weds,Cache Slough and Liberty Island,38.25189,-121.72352,20-50-CS03,North,Cache Slough/Liberty Island,10:15,159.23,22.45,5.18,1.5,5.63,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+7/8/2020,Weds,Cache Slough and Liberty Island,38.24555,-121.67341,20-50-CS01,North,Cache Slough/Liberty Island,11:45,146.55,22.43,10.13,1.19,5.78,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/8/2020,Weds,Suisun Bay,38.07138,-121.95807,20-50-HB01,West,Honker Bay,10:10,11047,21.1,27.38,0.43,3.2,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/8/2020,Weds,Suisun Bay,38.08622,-122.07519,20-50-SBW01,Far West,West Suisun Bay,11:43,15886.5,21.23,78.7,0.26,7.03,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/8/2020,Weds,Suisun Bay,38.03439,-121.84947,20-50-CF01,West,Confluence,8:38,5612.75,21.53,24.53,0.58,4.73,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/8/2020,Weds,Lower Sacramento,38.06649,-121.83493,20-50-LSR02,West,Lower Sacramento River,8:30,5665.25,21.53,19.65,0.73,7.9,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/8/2020,Weds,Lower Sacramento,38.08757,-121.74744,20-50-LSR01,West,Lower Sacramento River,9:51,681,22.08,43.13,0.47,8.55,Kodiak,4,10,U,DSM,3,33-41,n/p,n/p,n/p,DSM flash frozen for UCD; 7 Wakasagi (57-68mm) retained for verification
+7/8/2020,Weds,Lower Sacramento,38.08757,-121.74744,20-50-LSR01,West,Lower Sacramento River,9:51,681,22.08,43.13,0.47,8.55,Kodiak,4,10,U,OSM,1,40,n/p,n/p,n/p,OSM waiting for further ID verification 
+7/8/2020,Weds,Lower Sacramento,38.09567,-121.72543,20-50-RV04,North,Sacramento River near Rio Vista,11:26,274.85,22.7,17.5,1.21,4.83,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/9/2020,Thurs,Cache Slough and Liberty Island,38.28849,-121.69245,20-50-CS04,North,Cache Slough/Liberty Island,8:14,161.58,22.23,5.1,1.59,4.45,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/9/2020,Thurs,Cache Slough and Liberty Island,38.24978,-121.68719,20-50-CS06,North,Cache Slough/Liberty Island,9:30,136.15,22.88,6.3,1.57,9.7,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/9/2020,Thurs,Cache Slough and Liberty Island,38.27372,-121.66532,20-50-CS05,North,Cache Slough/Liberty Island,10:46,152.1,22.68,9.49,1.2,5.68,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Buoy line wrapped around net/twist in net)
+7/9/2020,Thurs,Suisun Marsh,38.10946,-122.04069,20-50-GB03,West,Grizzly Bay,9:05,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too Shallow
+7/9/2020,Thurs,Suisun Marsh,38.11141,-122.05729,20-50-GB02,West,Grizzly Bay,9:17,14317.75,21.63,108.45,0.18,2.43,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/9/2020,Thurs,Suisun Marsh,38.13695,-122.06134,20-50-SM06,West,Suisun Marsh,10:51,13471.25,22.93,38.7,0.4,11.45,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/9/2020,Thurs,Suisun Marsh,38.17392,-122.05636,20-50-SM05,West,Suisun Marsh,12:20,10437.6,22.44,32.12,0.38,5.4,Kodiak,5,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 3 (Net not separating properly); 5 tows performed
+7/9/2020,Thurs,Lower Sacramento,38.10388,-121.72117,20-50-RV02,North,Sacramento River near Rio Vista,8:30,695.5,22.33,15.83,0.72,10.4,Kodiak,4,10,U,DSM,1,53,X,n/p,n/p,DSM flash frozen for UCD
+7/9/2020,Thurs,Lower Sacramento,38.13997,-121.69049,20-50-RV03,North,Sacramento River near Rio Vista,9:52,184.93,22.95,8.2,1.76,6.67,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/9/2020,Thurs,Lower Sacramento,38.16473,-121.67961,20-50-RV01,North,Sacramento River near Rio Vista,11:25,135.58,23.15,7.42,1.73,9.88,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/10/2020,Friday,Suisun Bay,38.07014,-121.99862,20-50-SBM01,West,Mid Suisun Bay,8:00,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too Shallow
+7/10/2020,Friday,Suisun Bay,38.0602,-122.11452,20-50-SBW02,Far West,West Suisun Bay,9:43,22047,20.63,29.5,0.52,6.48,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 2 was code 3 (Distance from site exceeded target distance, was 0.6 mi at stop)"
+7/10/2020,Friday,Suisun Bay,38.09533,-122.06853,20-50-SBM02,West,Mid Suisun Bay,8:21,16427.25,20.8,34.75,0.47,9.98,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/10/2020,Friday,Suisun Bay,38.04334,-121.85376,20-50-CF02,West,Confluence,11:42,4541.5,22.33,31.25,0.69,11.25,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/13/2020,Mon,Cache Slough and Liberty Island,38.25115,-121.71983,20-51-CS03,North,Cache Slough/Liberty Island,8:19,159.83,23.75,3.65,1.8,4.2,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/13/2020,Mon,Cache Slough and Liberty Island,38.25169,-121.68786,20-51-CS01,North,Cache Slough/Liberty Island,9:40,144.1,23.55,6.16,1.67,9.55,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/13/2020,Mon,Cache Slough and Liberty Island,38.27552,-121.66554,20-51-CS02,North,Cache Slough/Liberty Island,10:50,157.13,23.58,9.68,1.24,6.48,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/13/2020,Mon,Suisun Bay,38.07025,-122.09304,20-51-SBW01,Far West,West Suisun Bay,8:11,17462.75,21.7,13.1,0.68,10.25,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/13/2020,Mon,Suisun Bay,38.09538,-122.05591,20-51-SBM01,West,Mid Suisun Bay,10:14,17398.75,21.85,16.2,0.71,6.18,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/13/2020,Mon,Suisun Bay,38.05454,-121.94078,20-51-HB01,West,Honker Bay,10:56,8292.5,22.7,14.68,0.88,10.08,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/13/2020,Mon,Lower San Joaquin,38.04241,-121.49879,20-51-PP03,South ,San Joaquin River at Prisoners Pt,8:49,169.55,25.63,4.16,1.8,10.93,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/13/2020,Mon,Lower San Joaquin,38.07214,-121.57189,20-51-PP01,South ,San Joaquin River at Prisoners Pt,10:07,160.68,24.73,4.64,1.8,7.78,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/13/2020,Mon,Lower San Joaquin,38.10334,-121.59477,20-51-PP02,South ,San Joaquin River at Prisoners Pt,11:26,164.63,24.6,4.63,1.8,7.73,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/14/2020,Tues,Lower San Joaquin,38.0255,-121.75905,20-51-LSJ03,West,Lower San Joaquin River,8:18,632,23.73,5.93,1.68,6.58,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 3 was code 2 (Distance from site exceeded target distance, was 0.6 mi at stop)"
+7/14/2020,Tues,Lower San Joaquin,38.03756,-121.71661,20-51-LSJ01,West,Lower San Joaquin River,9:45,487.6,23.83,7.19,1.68,9.2,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/14/2020,Tues,Lower San Joaquin,38.04708,-121.70267,20-51-LSJ02,West,Lower San Joaquin River,11:03,543.25,23.88,7.56,1.47,5.13,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/14/2020,Tues,Suisun Bay,38.04564,-122.11803,20-51-SBW03,Far West,West Suisun Bay,8:13,21524,21.23,15.78,0.77,11.75,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/14/2020,Tues,Suisun Bay,38.0958,-122.07273,20-51-SBW02,Far West,West Suisun Bay,9:34,19117,21.45,21.33,0.64,6.58,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/14/2020,Tues,Suisun Bay,38.04457,-121.89959,20-51-CF01,West,Confluence,11:05,7276.25,22.6,14,0.94,16.3,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/14/2020,Tues,Cache Slough and Liberty Island,38.26001,-121.74077,20-51-CS06,North,Cache Slough/Liberty Island,8:17,162.73,22.73,5.77,1.39,4.7,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 2 was code 2 (Partial net blockage due to vegetation); Tow 3 was code 3 (Net blocked by vegetation); Tow 4 was code 2 (Buoy line wrapped around net/partial blockage); 5th tow not conducted due to excessive vegitation.
+7/14/2020,Tues,Cache Slough and Liberty Island,38.27708,-121.70739,20-51-CS04,North,Cache Slough/Liberty Island,10:35,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too much vegetation
+7/14/2020,Tues,Cache Slough and Liberty Island,38.25997,-121.69427,20-51-CS07,North,Cache Slough/Liberty Island,10:48,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too much vegetation
+7/14/2020,Tues,Cache Slough and Liberty Island,38.24695,-121.67688,20-51-CS05,North,Cache Slough/Liberty Island,12:25,138.45,23.4,6.72,1.51,9.13,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/14/2020,Tues,Cache Slough and Liberty Island,38.44501,-121.60121,20-51-CS08,North,Cache Slough/Liberty Island,11:05,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too Shallow
+7/14/2020,Tues,Cache Slough and Liberty Island,38.25171,-121.67305,20-51-CS09,North,Cache Slough/Liberty Island,11:17,145.95,22.93,7.83,1.22,6.33,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Buoy line wrapped around net/twist in net)
+7/15/2020,Weds,Sac Deep Water Shipping Channel,38.42101,-121.60737,20-51-LSSC02,North,Lower Sacramento River Shipping Channel,8:45,696.33,23.33,22.33,0.56,6.83,Kodiak,3,10,U,DSM,1,43,X,n/p,n/p,DSM flash frozen for UCD
+7/15/2020,Weds,Sac Deep Water Shipping Channel,38.32428,-121.64928,20-51-LSSC03,North,Lower Sacramento River Shipping Channel,9:58,356.6,23.28,20.43,0.64,9.85,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"UNID at 42mm waiting for further ID verification, in poor condition; Tow 3 was code 2 (Distance from site exceeded target distance, was 0.68 mi at stop)"
+7/15/2020,Weds,Sac Deep Water Shipping Channel,38.1818,-121.66201,20-51-LSSC01,North,Lower Sacramento River Shipping Channel,11:38,124.35,23.58,5.89,1.8,8.03,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/15/2020,Weds,Suisun Marsh,38.15821,-121.92568,20-51-SM01,West,Suisun Marsh,8:08,8559.5,22.38,15.4,0.66,3.83,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/15/2020,Weds,Suisun Marsh,38.20786,-122.03383,20-51-SM02,West,Suisun Marsh,9:55,8665,21.48,34.95,0.38,5.7,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,1 Wakasagi (70mm) retained for verification
+7/15/2020,Weds,Suisun Marsh,38.13824,-122.06072,20-51-SM03,West,Suisun Marsh,11:25,14850.75,22.05,48,0.32,10.08,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/15/2020,Weds,Lower Sacramento,38.13967,-121.69237,20-51-RV03,North,Sacramento River near Rio Vista,8:50,124.13,23.58,6.77,1.78,10.15,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/15/2020,Weds,Lower Sacramento,38.10065,-121.72488,20-51-RV04,North,Sacramento River near Rio Vista,10:24,131.53,23.7,7.11,1.8,8.05,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/15/2020,Weds,Lower Sacramento,38.0638,-121.82946,20-51-LSR02,West,Lower Sacramento River,11:55,3799.75,22.48,14.4,0.73,10.63,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/16/2020,Thurs,Sac Deep Water Shipping Channel,38.50341,-121.58453,20-51-USSC01,North,Upper Sacramento River Shipping Channel,8:49,942.25,24.08,11.7,0.73,10.68,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/16/2020,Thurs,Sac Deep Water Shipping Channel,38.41703,-121.60934,20-51-LSSC05,North,Lower Sacramento River Shipping Channel,10:22,696.25,23.43,23.85,0.51,10.4,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/16/2020,Thurs,Sac Deep Water Shipping Channel,38.23423,-121.60479,20-51-LSSC04,North,Lower Sacramento River Shipping Channel,12:08,136.38,22.43,10.21,1.43,10.5,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/16/2020,Thurs,Lower Sacramento,38.08262,-121.7444,20-51-LSR01,West,Lower Sacramento River,8:55,272.48,22.83,13.08,0.87,9.78,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/16/2020,Thurs,Lower Sacramento,38.10606,-121.70357,20-51-RV02,North,Sacramento River near Rio Vista,10:14,334.68,23.25,8.33,1.54,7.98,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/16/2020,Thurs,Lower Sacramento,38.15274,-121.68687,20-51-RV01,North,Sacramento River near Rio Vista,11:40,125.08,23.38,5.53,1.8,6.48,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/16/2020,Thurs,Suisun Marsh,38.1721,-121.95643,20-51-SM04,West,Suisun Marsh,8:20,9420.5,21.9,19.05,0.57,8.23,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 1 was code 2 (Distance from site exceeded target distance, was 0.61 mi at stop)"
+7/16/2020,Thurs,Suisun Marsh,38.13301,-122.08213,20-51-SM05,West,Suisun Marsh,9:59,16089.75,21.7,25.15,0.5,5.58,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/16/2020,Thurs,Suisun Marsh,38.10201,-122.0656,20-51-GB01,West,Grizzly Bay,11:17,20482.75,21,62.08,0.29,3.25,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/20/2020,Mon,Suisun Marsh,38.17448,-121.92427,20-52-SM03,West,Suisun Marsh,8:21,9289,20.18,32.8,0.44,4.78,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/20/2020,Mon,Suisun Marsh,38.16827,-122.06863,20-52-SM02,West,Suisun Marsh,10:12,12689.25,21.1,42.65,0.34,6.53,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 2 was code 2 (Distance from site exceeded target distance, was 0.58 mi at stop)"
+7/20/2020,Mon,Suisun Marsh,38.20538,-122.03372,20-52-SM01,West,Suisun Marsh,11:55,8868.25,20.28,49.3,0.27,4.33,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/20/2020,Mon,Sac Deep Water Shipping Channel,38.56319,-121.55472,20-52-USSC01,North,Upper Sacramento River Shipping Channel,9:02,1103.5,25.38,8.67,1.78,11.1,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 4 was code 2 (Distance from site exceeded target distance, was 0.58 mi at stop)"
+7/20/2020,Mon,Sac Deep Water Shipping Channel,38.50767,-121.5842,20-52-USSC02,North,Upper Sacramento River Shipping Channel,10:20,920,24.03,17,0.74,8.65,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/20/2020,Mon,Sac Deep Water Shipping Channel,38.25999,-121.66552,20-52-LSSC01,North,Lower Sacramento River Shipping Channel,12:15,184.48,22.55,10.9,0.97,7.08,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,No sites performed at Eddo's today due to windy conditions. Sites will be completed later in the week. 
+7/21/2020,Tues,Suisun Marsh,38.17389,-122.01612,20-52-SM04,West,Suisun Marsh,8:26,12965.5,21.23,38.15,0.36,7.2,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/21/2020,Tues,Suisun Marsh,38.10681,-122.05213,20-52-GB01,West,Grizzly Bay,9:58,19295.5,19.3,191,0.12,3.35,Kodiak,2,10,U,DSM,1,45,n/p,n/p,n/p,DSM flash frozen for UCD
+7/21/2020,Tues,Suisun Marsh,38.15679,-122.04952,20-52-SM05,West,Suisun Marsh,11:00,12738.5,21.7,80.63,0.34,3.3,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/21/2020,Tues,Sac Deep Water Shipping Channel,38.49287,-121.5843,20-52-USSC03,North,Upper Sacramento River Shipping Channel,8:38,859.75,23.38,16.33,0.74,10.73,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Buoy line wrapped around net/twist in net)
+7/21/2020,Tues,Sac Deep Water Shipping Channel,38.324,-121.64951,20-52-LSSC03,North,Lower Sacramento River Shipping Channel,10:18,281.7,22.33,24.9,0.53,10.65,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,5 Wakasagi (61-75mm) retained for verification
+7/21/2020,Tues,Sac Deep Water Shipping Channel,38.22292,-121.67335,20-52-LSSC02,North,Lower Sacramento River Shipping Channel,11:50,134.13,21.5,10.43,1.39,13.98,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/21/2020,Tues,Lower Sacramento,38.0921,-121.70865,20-52-RV02,North,Sacramento River near Rio Vista,9:00,523.25,21.4,15.23,0.87,3.08,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+7/21/2020,Tues,Lower Sacramento,38.08725,-121.7466,20-52-LSR01,West,Lower Sacramento River,10:22,364.18,21.65,18.63,0.83,8.9,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/21/2020,Tues,Lower Sacramento,38.15416,-121.68596,20-52-RV01,North,Sacramento River near Rio Vista,11:54,132.3,22.33,10.54,1.51,5.43,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/22/2020,Weds,Cache Slough and Liberty Island,38.23554,-121.67916,20-52-CS02,North,Cache Slough/Liberty Island,10:48,146.98,20.75,13.69,0.89,6.8,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 2 was code 2 (partial net blockage due to vegetation)
+7/22/2020,Weds,Cache Slough and Liberty Island,38.3187,-121.6928,20-52-CS01,North,Cache Slough/Liberty Island,8:12,223.85,20.73,8.11,1.08,5.4,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/22/2020,Weds,Cache Slough and Liberty Island,38.30466,-121.66714,20-52-CS03,North,Cache Slough/Liberty Island,9:29,160.08,20.3,13.7,0.71,6.58,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/22/2020,Weds,Suisun Bay,38.05601,-122.1062,20-52-SBW01,Far West,West Suisun Bay,10:03,22190.5,19.4,59.98,0.32,6.23,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/22/2020,Weds,Suisun Bay,38.07275,-121.96743,20-52-HB01,West,Honker Bay,8:28,15954.75,19.6,37.2,0.35,4.95,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 2 was code 2 (twist in net)
+7/22/2020,Weds,Suisun Bay,38.04637,-121.87642,20-52-CF01,West,Confluence,11:57,6436.25,20.88,20.4,0.66,4.3,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"Tows 1 and 3 were code 2 (buoy line wrapped around net); Tow 2 was code 2 (Distance from site exceeded target distance, was 0.58 mi at stop)"
+7/22/2020,Weds,Lower Sacramento,38.06432,-121.81486,20-52-LSR02,West,Lower Sacramento River,8:59,6009.25,20.5,32.98,0.38,5.63,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/22/2020,Weds,Lower Sacramento,38.13232,-121.69403,20-52-RV04,North,Sacramento River near Rio Vista,10:30,159.53,21.98,9.79,0.94,7.73,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/22/2020,Weds,Lower Sacramento,38.17476,-121.6701,20-52-RV03,North,Sacramento River near Rio Vista,12:01,129.18,22.48,8.94,1.07,15.3,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/23/2020,Thurs,Suisun Bay,38.06238,-122.03936,20-52-SBM01,West,Mid Suisun Bay,8:05,19804.5,19.68,26.75,0.6,8.95,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1 and 2 were code 2 (Twist in net). No further sites performed at Pitts due to boat issues. Sites will be completed tomorrow. 
+7/23/2020,Thurs,Cache Slough and Liberty Island,38.24643,-121.70431,20-52-CS04,North,Cache Slough/Liberty Island,8:10,151.25,20.85,6.45,1.29,5.35,Kodiak,2,7,U,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1 and 2 were code 2 (Partial blockage due to vegetation; tows cut short due to heavy vegetation). Tows 3 and 4 not performed 
+7/23/2020,Thurs,Cache Slough and Liberty Island,38.25708,-121.69021,20-52-CS06,North,Cache Slough/Liberty Island,9:01,144.35,21.175,8.58,1.35,10.125,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/23/2020,Thurs,Cache Slough and Liberty Island,38.26405,-121.66989,20-52-CS05,North,Cache Slough/Liberty Island,10:22,153.325,20.525,16.125,0.85,6.225,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,No sites performed at Eddo's today. Sites will be completed tomorrow. 
+7/24/2020,Friday,Suisun Bay,38.07206,-121.85507,20-52-CF02,West,Confluence,9:29,7696.25,20.65,21.625,0.68,4.85,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/24/2020,Friday,Suisun Bay,38.08277,-121.98407,20-52-SBM02,West,Mid Suisun Bay,8:00,16757.75,19.925,34.1,0.41,13.375,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/24/2020,Friday,Lower San Joaquin,38.06346,-121.54154,20-52-PP01,South ,San Joaquin River at Prisoners Pt,8:32,192.58,22.63,4.79,1.8,4.93,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/24/2020,Friday,Lower San Joaquin,38.04582,-121.69701,20-52-LSJ02,West,Lower San Joaquin River,10:16,1260.75,21.53,7.88,1.09,8.43,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/24/2020,Friday,Lower San Joaquin,38.02518,-121.72055,20-52-LSJ01,West,Lower San Joaquin River,11:31,890.25,22.15,4.32,1.71,4.63,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/27/2020,Mon,Suisun Bay,38.05141,-121.88829,20-53-CF02,West,Confluence,7:47,7343,20.63,33.48,0.48,11.98,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/27/2020,Mon,Suisun Bay,38.04475,-121.92865,20-53-CF01,West,Confluence,9:03,10310.5,20.53,25.53,0.61,18.98,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/27/2020,Mon,Suisun Bay,38.07394,-122.00679,20-53-SBM01,West,Mid Suisun Bay,10:32,17100.25,19.63,39.78,0.4,9.2,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/27/2020,Mon,Sac Deep Water Shipping Channel,38.56124,-121.54064,20-53-USSC01,North,Upper Sacramento River Shipping Channel,8:36,1116.75,25.65,3.26,1.8,6.98,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/27/2020,Mon,Sac Deep Water Shipping Channel,38.2849,-121.65912,20-53-LSSC02,North,Lower Sacramento River Shipping Channel,10:32,164.05,21.95,7.98,1.32,11.38,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 4 was code 2 (Distance from site exceeded target distance, was 0.57 mi at stop)"
+7/27/2020,Mon,Sac Deep Water Shipping Channel,38.20115,-121.65589,20-53-LSSC01,North,Lower Sacramento River Shipping Channel,11:51,149.88,22.53,4.33,1.8,12.95,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/27/2020,Mon,Lower Sacramento,38.12727,-121.69555,20-53-RV03,North,Sacramento River near Rio Vista,9:54,268.15,21.95,6.76,1.44,7.85,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+7/27/2020,Mon,Lower Sacramento,38.06736,-121.77207,20-53-LSR04,West,Lower Sacramento River,9:34,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Code 4: Strong winds, too rough to sample"
+7/27/2020,Mon,Lower Sacramento,38.0658,-121.83036,20-53-LSR03,West,Lower Sacramento River,9:17,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Code 4: Strong winds, too rough to sample"
+7/27/2020,Mon,Lower Sacramento,38.5202,-121.68652,20-53-RV04,North,Sacramento River near Rio Vista,11:04,176.13,22.33,6.22,1.57,5.65,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/27/2020,Mon,Lower Sacramento,38.17102,-121.6716,20-53-RV02,North,Sacramento River near Rio Vista,12:20,144.05,22.73,4.37,1.8,7.45,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/28/2020,Tues,Suisun Bay,38.05673,-121.95921,20-53-HB01,West,Honker Bay,7:47,8623,20.4,19.15,0.57,15.1,Kodiak,2,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Only 2 sites performed due to wind
+7/28/2020,Tues,Suisun Bay,38.08885,-122.00967,20-53-SBM02,West,Mid Suisun Bay,8:42,14148,20,26.6,0.47,11.08,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/28/2020,Tues,Suisun Bay,38.03124,-121.83099,20-53-CF03,West,Confluence,10:21,2866,21.1,17.93,0.73,4.53,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/28/2020,Tues,Sac Deep Water Shipping Channel,38.51948,-121.58454,20-53-USSC02,North,Upper Sacramento River Shipping Channel,8:33,984.5,23.65,13.48,0.79,10.7,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/28/2020,Tues,Sac Deep Water Shipping Channel,38.19815,-121.65733,20-53-LSSC03,North,Lower Sacramento River Shipping Channel,11:50,150.15,22.33,9.22,1.8,15.15,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/28/2020,Tues,Sac Deep Water Shipping Channel,38.40268,-121.616,20-53-LSSC04,North,Lower Sacramento River Shipping Channel,10:07,536,21.9,49.65,0.32,9.33,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,9 Wakasagi (40-80mm) retained for verification
+7/28/2020,Tues,Lower Sacramento,38.05934,-121.80483,20-53-LSR01,West,Lower Sacramento River,8:30,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Code 4: Strong winds, too rough to sample"
+7/28/2020,Tues,Lower Sacramento,38.07792,-121.76492,20-53-LSR02,West,Lower Sacramento River,8:46,321.63,21.45,18.73,0.66,9.75,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/28/2020,Tues,Lower Sacramento,38.10504,-121.71498,20-53-RV01,North,Sacramento River near Rio Vista,10:12,258.48,21.7,11.37,1,5.1,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/28/2020,Tues,Lower Sacramento,38.03301,-121.78248,20-53-LSR05,West,Lower Sacramento River,11:30,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Code 4: Strong winds, too rough to sample"
+7/28/2020,Tues,Lower Sacramento,38.09571,-121.7236,20-53-RV05,North,Sacramento River near Rio Vista,11:31,376.53,21.4,14.15,0.71,4.98,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/29/2020,Wed,Cache Slough and Liberty Island,38.26101,-121.75387,20-53-CS06,North,Cache Slough/Liberty Island,7:58,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV and too shallow (1.9 m)
+7/29/2020,Wed,Cache Slough and Liberty Island,38.25702,-121.72977,20-53-CS01,North,Cache Slough/Liberty Island,8:09,163.18,20.83,5.01,1.67,4.5,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/29/2020,Wed,Cache Slough and Liberty Island,38.24465,-121.68786,20-53-CS03,North,Cache Slough/Liberty Island,9:27,158.78,21.08,7.51,1.57,14.01,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/29/2020,Wed,Cache Slough and Liberty Island,38.27921,-121.69454,20-53-CS02,North,Cache Slough/Liberty Island,10:36,170.93,20.8,6.17,1.44,7.03,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/29/2020,Wed,Suisun Marsh,38.14791,-122.05719,20-53-SM01,West,Suisun Marsh,8:21,15548.75,20.85,27.63,0.41,10.18,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/29/2020,Wed,Suisun Marsh,38.11824,-122.05527,20-53-GB02,West,Grizzly Bay,9:46,18098.25,19.88,64.98,0.28,4.15,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/29/2020,Wed,Suisun Marsh,38.10489,-122.03133,20-53-GB01,West,Grizzly Bay,11:09,19380.25,19.98,51.45,0.32,3.15,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was Code 2 (Twist in net)
+7/29/2020,Wed,Lower San Joaquin,38.023002,-121.79549,20-53-LSJ01,West,Lower San Joaquin River,8:49,1510.5,21.4,8.56,1.02,11.6,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/29/2020,Wed,Lower San Joaquin,38.02468,-121.784,20-53-LSJ02,West,Lower San Joaquin River,10:03,1314.75,21.5,8.52,0.97,12.8,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/29/2020,Wed,Lower San Joaquin,38.08572,-121.64268,20-53-SJT02,South ,San Joaquin River at Twitchell Island,11:33,232.63,22.85,5.63,1.36,14.38,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/20/2020,Thurs,Suisun Marsh,38.10218,-122.06631,20-53-GB03,West,Grizzly Bay,8:11,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too Shallow
+7/20/2020,Thurs,Suisun Marsh,38.15197,-122.07067,20-53-SM04,West,Suisun Marsh,8:15,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too Shallow
+7/20/2020,Thurs,Suisun Marsh,38.17936,-122.05199,20-53-SM02,West,Suisun Marsh,8:33,12990,20.65,31.2,0.45,5.58,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/20/2020,Thurs,Suisun Marsh,38.15385,-121.92076,20-53-SM05,West,Suisun Marsh,10:19,10033.25,20.98,22.38,0.54,4.13,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+7/20/2020,Thurs,Suisun Marsh,38.12583,-121.89075,20-53-SM03,West,Suisun Marsh,11:51,9064.75,20.85,17.75,0.63,4.43,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,1 Wakasagi (51mm) retained for verification
+7/20/2020,Thurs,Cache Slough and Liberty Island,38.24536,-121.68759,20-53-CS07,North,Cache Slough/Liberty Island,8:00,156.43,21.2,5.9,1.55,9.33,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Buoy line wrapped around net)
+7/20/2020,Thurs,Cache Slough and Liberty Island,38.28723,-121.69256,20-53-CS04,North,Cache Slough/Liberty Island,9:13,221.25,21.48,5.2,1.63,5.28,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Buoy line wrapped around net)
+7/20/2020,Thurs,Cache Slough and Liberty Island,38.2714,-121.70402,20-53-CS05,North,Cache Slough/Liberty Island,9:04,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too Shallow and heavy SAV
+7/20/2020,Thurs,Cache Slough and Liberty Island,38.33318,-121.66729,20-53-CS08,North,Cache Slough/Liberty Island,10:34,206.1,21.4,18.2,0.67,5.2,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 3 was code 2 (Distance from site exceeded target distance, was 0.59 mi at stop)"
+7/20/2020,Thurs,Lower San Joaquin,38.08696,-121.56816,20-53-PP01,South ,San Joaquin River at Prisoners Pt,9:44,201.05,23.08,8.19,1.11,11.28,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+7/20/2020,Thurs,Lower San Joaquin,38.0641,-121.54071,20-53-PP02,South ,San Joaquin River at Prisoners Pt,8:39,202.55,23.1,5.83,1.02,4.7,Kodiak,2,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Heavy vegetation); Only 2 tows performed at site due to heavy vegetation
+7/20/2020,Thurs,Lower San Joaquin,38.0895,-121.63458,20-53-SJT01,South ,San Joaquin River at Twitchell Island,11:04,203.55,22.9,7.27,1.21,16.65,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/3/2020,Mon,Cache Slough and Liberty Island,38.24804,-121.70483,21-02-CS01,North,Cache Slough/Liberty Island,8:07,150.25,21.7,3.61,1.8,3.75,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/3/2020,Mon,Cache Slough and Liberty Island,38.30234,-121.667,21-02-CS04,North,Cache Slough/Liberty Island,9:43,160.75,21.85,7.56,1.35,5.1,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/3/2020,Mon,Cache Slough and Liberty Island,38.28472,-121.71774,21-02-CS02,North,Cache Slough/Liberty Island,9:20,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV
+8/3/2020,Mon,Cache Slough and Liberty Island,38.28267,-121.71609,21-02-CS06,North,Cache Slough/Liberty Island,9:25,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV
+8/3/2020,Mon,Cache Slough and Liberty Island,38.24265,-121.67924,21-02-CS03,North,Cache Slough/Liberty Island,10:54,152.2,21.98,10.89,1.04,11,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/3/2020,Mon,Lower San Joaquin,38.04732,-121.52733,21-02-PP03,South ,San Joaquin River at Prisoners Pt,8:42,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Site is on an island
+8/3/2020,Mon,Lower San Joaquin,38.05859,-121.55522,21-02-PP01,South ,San Joaquin River at Prisoners Pt,8:46,218.8,23.35,10.63,1.09,17.15,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Vegetation blocking live box)
+8/3/2020,Mon,Lower San Joaquin,38.08262,-121.56882,21-02-PP04,South ,San Joaquin River at Prisoners Pt,9:56,213.58,23.38,11.45,1.11,8.15,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/3/2020,Mon,Lower San Joaquin,38.10463,-121.60371,21-02-PP02,South ,San Joaquin River at Prisoners Pt,11:07,205.28,23.43,9.48,1.11,9.63,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+8/3/2020,Mon,Suisun Marsh,38.17238,-121.95649,21-02-SM03,West,Suisun Marsh,8:34,11562.25,21.3,29.5,0.57,9.7,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/3/2020,Mon,Suisun Marsh,38.18228,-122.05295,21-02-SM01,West,Suisun Marsh,10:23,11393,20.73,32.4,0.52,6.5,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/3/2020,Mon,Suisun Marsh,38.1432,-122.05979,21-02-SM02,West,Suisun Marsh,11:53,15239.5,21.63,27.48,0.57,10.53,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/4/2020,Tues,Cache Slough and Liberty Island,38.27134,-121.69304,21-02-CS05,North,Cache Slough/Liberty Island,8:05,147.75,22.08,6.47,1.6,5.45,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/4/2020,Tues,Cache Slough and Liberty Island,38.23886,-121.683,21-02-CS07,North,Cache Slough/Liberty Island,9:50,148.38,22.05,11.9,1.15,14.93,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/4/2020,Tues,Cache Slough and Liberty Island,38.23506,-121.68134,21-02-CS08,North,Cache Slough/Liberty Island,11:02,150.58,22.1,11.3,1.15,11.53,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/4/2020,Tues,Lower San Joaquin,38.04542,-121.70404,21-02-LSJ02,West,Lower San Joaquin River,8:24,1341.5,22.2,9.47,0.86,7.83,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/4/2020,Tues,Lower San Joaquin,38.05783,-121.6842,21-02-SJT01,South ,San Joaquin River at Twitchell Island,9:34,790.75,22.53,9.07,1.02,14,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/4/2020,Tues,Lower San Joaquin,38.02691,-121.74677,21-02-LSJ01,West,Lower San Joaquin River,10:53,1118,22.45,9.63,0.93,11.73,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/4/2020,Tues,Suisun Marsh,38.10295,-122.05774,21-02-GB01,West,Grizzly Bay,8:23,16809.25,20.45,73.5,0.37,3.95,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/4/2020,Tues,Suisun Marsh,38.15748,-122.05059,21-02-SM04,West,Suisun Marsh,9:57,14661.75,21.53,28.38,0.49,5.85,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/4/2020,Tues,Suisun Marsh,38.21021,-122.03448,21-02-SM05,West,Suisun Marsh,11:29,9675.25,21.25,34.9,0.37,4.2,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/5/2020,Wed,Suisun Bay,38.05015,-122.08396,21-02-SBW01,Far West,West Suisun Bay,8:15,25197.75,20.1,35.05,0.42,9.78,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/5/2020,Wed,Lower Sacramento,38.08102,-121.74655,21-02-LSR01,West,Lower Sacramento River,8:32,1592.25,21.8,16.43,0.72,8.8,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/5/2020,Wed,Sac Deep Water Shipping Channel,38.49577,-121.58396,21-02-USSC01,North,Upper Sacramento River Shipping Channel,8:41,834.75,23.28,53.25,0.3,10.93,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,18 Wakasagi (49-77mm) retained for verification; Tow 1 was code 2 (Twist in net)
+8/5/2020,Wed,Suisun Bay,38.09666,-122.03646,21-02-SBM01,West,Mid Suisun Bay,9:58,16710.75,20.45,68.8,0.4,5.5,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/5/2020,Wed,Lower Sacramento,38.15661,-121.68421,21-02-RV01,North,Sacramento River near Rio Vista,11:03,148.58,23.23,8.73,1.54,6.13,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/5/2020,Wed,Lower Sacramento,38.11635,-121.70397,21-02-RV02,North,Sacramento River near Rio Vista,9:46,262.38,22.93,17.18,0.78,8.23,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/5/2020,Wed,Suisun Bay,38.07376,-122.00844,21-02-SBM02,West,Mid Suisun Bay,11:25,11910.25,21.13,41.33,0.47,7.83,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/5/2020,Wed,Sac Deep Water Shipping Channel,38.31696,-121.65157,21-02-LSSC05,North,Lower Sacramento River Shipping Channel,10:56,277.08,22.45,53.1,0.29,9.83,Kodiak,4,10,U,DSM,1,45,n/p,n/p,n/p,DSM flash frozen for UCD; 34 Wakasagi retained for verification (58-78 mm)
+8/5/2020,Wed,Sac Deep Water Shipping Channel,38.1821,-121.66378,21-02-LSSC04,North,Lower Sacramento River Shipping Channel,12:43,142.7,23.35,13.4,1.66,15.93,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+8/6/2020,Thurs,Sac Deep Water Shipping Channel,38.36913,-121.63153,21-02-LSSC03,North,Lower Sacramento River Shipping Channel,8:30,341.1,22.1,61.85,0.25,9.73,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,8 Wakasagi (63-77mm) retained for verification
+8/6/2020,Thurs,Sac Deep Water Shipping Channel,38.23602,-121.67356,21-02-LSSC02,North,Lower Sacramento River Shipping Channel,10:05,150.1,22.28,13.98,1.2,10.68,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+8/6/2020,Thurs,Sac Deep Water Shipping Channel,38.19985,-121.65642,21-02-LSSC01,North,Lower Sacramento River Shipping Channel,11:17,146.73,22.5,7.33,1.77,13.65,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/6/2020,Thurs,Lower Sacramento,38.05974,-121.80993,21-02-LSR02,West,Lower Sacramento River,8:26,4511,21.43,12.15,0.87,9.9,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/6/2020,Thurs,Lower Sacramento,38.06926,-121.78117,21-02-LSR03,West,Lower Sacramento River,9:33,1942.5,21.88,19.73,0.65,9.85,Kodiak,4,10,U,DSM,1,55,X,n/p,n/p,DSM flash frozen for UCD
+8/6/2020,Thurs,Lower Sacramento,38.10443,-121.72274,21-02-RV03,North,Sacramento River near Rio Vista,10:52,239.75,23.08,14.95,0.93,8.88,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/6/2020,Thurs,Suisun Bay,38.03475,-122.13759,21-02-SBW02,Far West,West Suisun Bay,8:18,23411.5,19.9,19.5,0.6,17,Kodiak,2,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Only 2 sites performed due to approaching strata boundary 
+8/6/2020,Thurs,Suisun Bay,38.09519,-122.06122,21-02-SBM03,West,Mid Suisun Bay,9:20,18438.25,20.13,32.5,0.6,7.38,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+8/6/2020,Thurs,Suisun Bay,38.03732,-121.83906,21-02-CF01,West,Confluence,11:11,3636,21.95,18.23,0.85,6.35,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/10/2020,Mon,Suisun Marsh,38.15727,-122.06418,21-03-SM01,West,Suisun Marsh,9:50,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too shallow
+8/10/2020,Mon,Cache Slough and Liberty Island,38.27065,-121.70527,21-03-CS04,North,Cache Slough/Liberty Island,8:22,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV
+8/10/2020,Mon,Suisun Marsh,38.19846,-121.91512,21-03-SM03,West,Suisun Marsh,8:39,10911.25,22.48,25.4,0.46,3.6,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/10/2020,Mon,Cache Slough and Liberty Island,38.25905,-121.69272,21-03-CS06,North,Cache Slough/Liberty Island,8:40,153.65,22.93,6.41,1.73,8.03,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/10/2020,Mon,Cache Slough and Liberty Island,38.25249,-121.72524,21-03-CS07,North,Cache Slough/Liberty Island,9:57,160.68,22.83,5.29,1.8,5.08,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/10/2020,Mon,Lower Sacramento,38.16583,-121.67753,21-03-RV01,North,Sacramento River near Rio Vista,8:50,149.63,23.53,4.48,1.8,9.35,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/10/2020,Mon,Lower Sacramento,38.10879,-121.70175,21-03-RV02,North,Sacramento River near Rio Vista,10:10,277.35,23.4,7.35,1.33,7.05,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/10/2020,Mon,Cache Slough and Liberty Island,38.24167,-121.68394,21-03-CS05,North,Cache Slough/Liberty Island,11:16,151.75,23.25,4.95,1.8,9.65,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/10/2020,Mon,Suisun Marsh,38.18186,-121.99332,21-03-SM02,West,Suisun Marsh,10:41,13402.25,22.45,13.5,0.73,10.98,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/10/2020,Mon,Suisun Marsh,38.11953,-122.05706,21-03-SM04,West,Suisun Marsh,12:10,15768,22.75,17.38,0.59,3.48,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/10/2020,Mon,Lower Sacramento,38.07617,-121.75763,21-03-LSR01,West,Lower Sacramento River,11:32,1045.5,22.83,13.75,0.72,8.73,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/11/2020,Tue,Cache Slough and Liberty Island,38.26423,-121.69654,21-03-CS02,North,Cache Slough/Liberty Island,8:05,159.08,22.2,5.7,1.69,5.5,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/11/2020,Tue,Lower Sacramento,38.06616,-121.83642,21-03-LSR02,West,Lower Sacramento River,8:39,3822.1,21.28,15.35,0.81,8.13,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/11/2020,Tue,Suisun Marsh,38.17131,-122.03289,21-03-SM06,West,Suisun Marsh,8:53,15340,22.33,14.18,0.81,11.55,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/11/2020,Tue,Suisun Marsh,38.14227,-122.06094,21-03-SM05,West,Suisun Marsh,10:26,16157,21.68,22.78,0.62,10.38,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/11/2020,Tue,Lower Sacramento,38.06454,-121.77942,21-03-LSR03,West,Lower Sacramento River,9:52,1861,21.9,18.03,0.61,9.25,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/11/2020,Tue,Cache Slough and Liberty Island,38.30625,-121.66734,21-03-CS03,North,Cache Slough/Liberty Island,9:35,179.08,21.6,18.73,0.62,6.03,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/11/2020,Tue,Cache Slough and Liberty Island,38.25183,-121.67245,21-03-CS01,North,Cache Slough/Liberty Island,10:49,158.73,22.5,16.28,0.83,11.03,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Buoy line wrapped around net)
+8/11/2020,Tue,Lower Sacramento,38.14206,-121.69061,21-03-RV03,North,Sacramento River near Rio Vista,11:09,159.98,23.15,6.62,1.65,7.43,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 2 was code 2 (Distance from site exceeded target distance, was 0.56 mi at stop)"
+8/11/2020,Tue,Suisun Marsh,38.10764,-122.04636,21-03-GB01,West,Grizzly Bay,11:50,19778,20.7,31.55,0.43,2.6,Kodiak,2,10,U,DSM,1,49,n/p,n/p,n/p,DSM flash frozen for UCD
+8/12/2020,Wed,Lower San Joaquin,38.02239,-121.75151,21-03-LSJ01,West,Lower San Joaquin River,8:25,1091.25,22.38,7.35,0.99,4.73,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/12/2020,Wed,Lower San Joaquin,38.02559,-121.72691,21-03-LSJ02,West,Lower San Joaquin River,9:34,902.75,22.58,8.17,1.05,5.55,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+8/12/2020,Wed,Lower San Joaquin,38.05933,-121.6777,21-03-SJT02,South ,San Joaquin River at Twitchell Island,10:41,705.25,22.9,7.88,1,7.93,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/12/2020,Wed,Suisun Bay,38.04131,-122.12745,21-03-SBW01,Far West,West Suisun Bay,8:33,22591.25,20.28,16.33,0.81,20.03,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/12/2020,Wed,Suisun Bay,38.06259,-122.05134,21-03-SBM01,West,Mid Suisun Bay,9:54,18619.5,20.9,12.03,0.83,7.9,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/12/2020,Wed,Suisun Bay,38.02779,-121.83865,21-03-CF01,West,Confluence,11:33,4934.5,21.83,9.12,1,13.98,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/12/2020,Wed,Sac Deep Water Shipping Channel,38.52462,-121.58431,21-03-USSC01,North,Upper Sacramento River Shipping Channel,8:41,967,23.88,17.53,0.63,10.33,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Buoy line wrapped around net)
+8/12/2020,Wed,Sac Deep Water Shipping Channel,38.3944,-121.62024,21-03-LSSC01,North,Lower Sacramento River Shipping Channel,10:21,486.5,22.33,77.88,0.19,10.48,Kodiak,4,10,D,DSM,1,39,n/p,n/p,n/p,DSM flash frozen for UCD; 18 Wakagasi (63-82mm) retained for verification; Tow 1 was code 2 (Buoy line wrapped around net)
+8/12/2020,Wed,Sac Deep Water Shipping Channel,38.24875,-121.66957,21-03-LSSC02,North,Lower Sacramento River Shipping Channel,12:09,159.15,22.65,11.25,1.3,9.75,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"1 Wakasagi (73mm) retained for verification; Tow 4 was code 2 (Distance from site exceeded target distance, was 0.6 mi at stop)"
+8/13/2020,Thurs,Lower San Joaquin,38.08159,-121.68124,21-03-SJT01,South ,San Joaquin River at Twitchell Island,8:40,372.35,23.73,9.29,1.17,9.38,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/13/2020,Thurs,Lower San Joaquin,38.10368,-121.62098,21-03-SJT03,South ,San Joaquin River at Twitchell Island,9:50,207.4,24.1,5.63,1.78,15.15,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/13/2020,Thurs,Lower San Joaquin,38.04762,-121.50434,21-03-PP01,South ,San Joaquin River at Prisoners Pt,11:12,204.4,24.93,6.25,1.8,9.43,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/13/2020,Thurs,Suisun Bay,38.0627,-122.10634,21-03-SBW03,Far West,West Suisun Bay,8:36,19465.25,21.05,11.52,0.88,11.45,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/13/2020,Thurs,Suisun Bay,38.05337,-122.07696,21-03-SBW02,Far West,West Suisun Bay,9:53,20518.75,21.1,10.92,1.03,10.15,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/13/2020,Thurs,Suisun Bay,38.07204,-121.95374,31-02-HB01,West,Honker Bay,11:21,12866,21.25,11.92,0.88,3.3,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/13/2020,Thurs,Sac Deep Water Shipping Channel,38.33749,-121.64625,21-03-LSSC04,North,Lower Sacramento River Shipping Channel,8:18,391.33,22.4,58.08,0.24,9.7,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"5 Wakasagi (69-80mm) retained for verification; Tow 4 was code 2 (Distance from site exceeded target distance, was 0.6 mi at stop)"
+8/13/2020,Thurs,Sac Deep Water Shipping Channel,38.30822,-121.65359,21-03-LSSC05,North,Lower Sacramento River Shipping Channel,10:21,308.75,22.75,39.85,0.3,10.75,Kodiak,4,10,U,DSM,1,56,X,n/p,n/p,DSM flash frozen for UCD; 2 Wakasagi (68-72mm) retained for verification
+8/13/2020,Thurs,Sac Deep Water Shipping Channel,38.21378,-121.66821,21-03-LSSC03,North,Lower Sacramento River Shipping Channel,10:29,162.1,22.65,8.06,1.78,13.1,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/17/2020,Mon,Lower San Joaquin,38.04231,-121.49607,21-04-PP03,South ,San Joaquin River at Prisoners Pt,11:37,205.8,26.45,5.58,1.79,9.38,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 4 was code 2 (Distance from site exceeded target distance, was over 120 ft at stop)"
+8/17/2020,Mon,Lower San Joaquin,38.07707,-121.57079,21-04-PP01,South ,San Joaquin River at Twitchell Island,8:33,343.6,25.4,11.12,1.12,7.08,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tows 2-4 were code 2 (Partial blockage in net)
+8/17/2020,Mon,Lower San Joaquin,38.07231,-121.56735,21-04-PP02,South ,San Joaquin River at Prisoners Pt,9:58,266,25.6,7.43,1.39,5.48,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1-3 were code 2 (Partial blockage in net)
+8/17/2020,Mon,Cache Slough and Liberty Island,38.32039,-121.69282,21-04-CS01,North,Cache Slough/Liberty Island,8:03,234.65,24.9,8.28,1.2,5.25,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/17/2020,Mon,Cache Slough and Liberty Island,38.27319,-121.70538,21-04-CS03,North,Cache Slough/Liberty Island,9:17,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV
+8/17/2020,Mon,Cache Slough and Liberty Island,38.25453,-121.6883,21-04-CS04,North,Cache Slough/Liberty Island,9:27,170.7,24.9,5.7,1.8,7.08,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tows 3-4 were code 2 (Partial blockage in net)
+8/17/2020,Mon,Cache Slough and Liberty Island,38.24255,-121.67957,21-04-CS02,North,Cache Slough/Liberty Island,10:39,176.03,25.53,10.35,1.5,8,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1-4 were code 2 (Partial blockage in net)
+8/17/2020,Mon,Suisun Bay,38.06381,-122.0318,21-04-SBM03,West,Mid Suisun Bay,8:57,15455.5,22.9,17.18,0.8,12.65,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/17/2020,Mon,Suisun Bay,38.07138,-121.97956,21-04-SBM01,West,Mid Suisun Bay,10:09,11776.25,23.03,15.53,0.93,6.55,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/17/2020,Mon,Suisun Bay,38.0852,-122.03943,21-04-SBM02,West,Mid Suisun Bay,8:46,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too shallow
+8/17/2020,Mon,Suisun Bay,38.04642,-122.92134,21-04-CF01,West,Confluence,11:23,6598.75,23.5,9.94,1.41,16.23,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/18/2020,Tues,Lower San Joaquin,38.09027,-121.65283,21-04-SJT02,South ,San Joaquin River at Twitchell Island,7:12,809,25,6.82,1.55,14.18,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/18/2020,Tues,Lower San Joaquin,38.09941,-121.62439,21-04-SJT01,South ,San Joaquin River at Twitchell Island,8:29,434,25.25,12.23,1.12,9.68,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1-3 were code 2 (Partial blockage in net)
+8/18/2020,Tues,Lower San Joaquin,38.01704,-122.77355,21-04-LSJ01,West,Lower San Joaquin River,10:50,1573,24.96,8.01,1.61,9.52,Kodiak,5,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 2 was code 3 (Heavy vegetation, sample discarded); Tows 1 and 5 were code 2 (Partial blockage in net)"
+8/18/2020,Tues,Cache Slough and Liberty Island,38.23221,-121.67617,21-04-CS06,North,Cache Slough/Liberty Island,7:42,168.1,25.23,7.58,1.76,15.83,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1-4 were code 2 (Partial blockage in net)
+8/18/2020,Tues,Cache Slough and Liberty Island,38.30394,-121.66714,21-04-CS05,North,Cache Slough/Liberty Island,8:59,186.1,25.78,7.76,1.6,5.55,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/18/2020,Tues,Cache Slough and Liberty Island,38.29211,-121.69267,21-04-CS07,North,Cache Slough/Liberty Island,10:25,210.35,25.38,4.61,1.8,6.3,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/18/2020,Tues,Suisun Bay,38.09471,-122.06502,21-04-SBM05,West,Mid Suisun Bay,8:08,19288.5,23.28,36.95,0.47,9.7,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/18/2020,Tues,Suisun Bay,38.05731,-121.97689,21-04-SBM04,West,Mid Suisun Bay,9:46,11440,23.28,20.68,0.85,10.85,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/18/2020,Tues,Suisun Bay,38.05852,-121.86517,21-04-CF02,West,Confluence,11:13,4306.5,24.13,11.11,1.17,6.13,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/19/2020,Weds,Lower Sacramento,38.17569,-121.66849,21-04-RV01,North,Sacramento River near Rio Vista,8:04,167.6,25.55,6.23,1.68,15.9,Kodiak,2,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Only 2 tows performed due to poor air quality. Remainder of sites at Eddo's and all sites at Rio Vista/Pittsburg not completed due to poor air quality leading to hazardous conditions. Sites will be made up later in the week.
+8/20/2020,Thurs,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Kodiak,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Due to poor air quality, EDSM crews did not sample today"
+8/21/2020,Friday,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Kodiak,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Due to poor air quality, EDSM crews did not sample today"
+8/24/2020,Mon,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Kodiak,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Due to poor air quality, EDSM crews did not sample today"
+8/25/2020,Tues,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Kodiak,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Due to poor air quality, EDSM crews did not sample today"
+8/26/2020,Weds,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Kodiak,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Due to poor air quality, EDSM crews did not sample today"
+8/27/2020,Thurs,Sac Deep Water Shipping Channel,38.56161,-121.55063,21-05-USSC02,North,Upper Sacramento River Shipping Channel,8:50,1221.5,25.33,5.74,1.61,10.68,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/27/2020,Thurs,Sac Deep Water Shipping Channel,38.52599,-121.58443,21-05-USSC01,North,Upper Sacramento River Shipping Channel,10:12,1028.5,24.53,15.25,0.63,10.4,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/27/2020,Thurs,Sac Deep Water Shipping Channel,38.26554,-121.66492,21-05-LSSC01,North,Upper Sacramento River Shipping Channel,12:05,172.15,22,14.15,0.88,8.58,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/27/2020,Thurs,Suisun Marsh,38.10572,-122.04972,21-05-GB01,West,Grizzly Bay,8:39,20748.25,21.1,27.18,0.47,3.7,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/27/2020,Thurs,Suisun Marsh,38.17953,-122.05517,21-05-SM01,West,Suisun Marsh,10:05,16908.5,22.33,62.75,0.29,6.33,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/27/2020,Thurs,Suisun Marsh,38.17783,-122.00831,21-05-SM02,West,Suisun Marsh,11:46,16904.75,22.83,30.43,0.51,7.13,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 4 was code 2 (Distance from site exceeded target distance, was 0.63 mi at stop)"
+8/27/2020,Thurs,Lower San Joaquin,38.02182,-121.75081,21-05-LSJ01,West,Lower San Joaquin River,9:50,2392.75,23,6.52,1.5,4.2,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tows 3-4 were code 2 (Partial blockage in net)
+8/27/2020,Thurs,Lower San Joaquin,38.02233,-121.72975,21-05-LSJ02,West,Lower San Joaquin River,9:22,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too shallow
+8/27/2020,Thurs,Lower San Joaquin,38.10264,-121.61867,21-05-SJT01,South ,San Joaquin River at Twitchell Island,11:23,419.7,23.65,9.15,1.44,11.85,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+8/27/2020,Thurs,Lower San Joaquin,38.09686,-121.57206,21-05-PP01,South ,San Joaquin River at Prisoners Pt,12:41,344.18,23.56,6.07,1.74,8.46,Kodiak,5,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 3 was code 3 (Total blockage)
+8/28/2020,Friday,Suisun Bay,38.07747,-122.07964,21-05-SBW01,Far West,West Suisun Bay,8:17,21918,20.7,46.35,0.33,2.78,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Only 1 site performed at Pittsburg due to poor air quality. All sites at Eddo's not completed due to poor air quality 
+8/28/2020,Friday,Cache Slough and Liberty Island,38.33298,-121.6672,21-05-CS01,North,Cache Slough/Liberty Island,7:48,207.83,21.4,19.68,0.6,5.73,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 2 was code 2 (Tow ended early due to snag in net) 
+8/28/2020,Friday,Cache Slough and Liberty Island,38.2573,-121.6714,21-05-CS02,North,Cache Slough/Liberty Island,9:13,173.43,21.1,17.03,0.92,8.35,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1-4 were code 2 (Partial blockage in net)
+8/28/2020,Friday,Cache Slough and Liberty Island,38.26368,-121.69618,21-05-CS03,North,Cache Slough/Liberty Island,10:20,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV
+8/28/2020,Friday,Cache Slough and Liberty Island,38.27944,-121.71104,21-05-CS04,North,Cache Slough/Liberty Island,10:25,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV
+8/28/2020,Friday,Cache Slough and Liberty Island,38.3094,-121.69291,21-05-CS05,North,Cache Slough/Liberty Island,10:50,241.58,22.4,9.6,1.17,6.03,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1 and 2 were code 2 (Partial twist in net)
+8/31/2020,Mon,Suisun Bay,38.04571,-121.88628,21-06-CF01,West,Confluence,7:58,10179.5,21.25,21.7,0.7,16.55,Kodiak,2,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Reduced to 3 minutes; strong current pulled bars under); Only 2 tows performed due to strong current
+8/31/2020,Mon,Suisun Bay,38.05022,-122.09451,21-06-SBW03,Far West,West Suisun Bay,9:46,20326.5,20.35,28.25,0.56,13.3,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Only 1 site performed at Pittsburg due to poor air quality, sites will be made up later in the week"
+8/31/2020,Mon,Cache Slough and Liberty Island,38.31882,-121.69287,21-06-CS01,North,Cache Slough/Liberty Island,8:06,239.93,21.4,9.86,1.05,4.83,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/31/2020,Mon,Cache Slough and Liberty Island,38.27217,-121.7654,21-06-CS02,North,Cache Slough/Liberty Island,9:27,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV
+8/31/2020,Mon,Cache Slough and Liberty Island,38.23491,-121.68133,21-06-CS03,North,Cache Slough/Liberty Island,10:46,171.53,21.18,6.34,1.80+,11.7,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/31/2020,Mon,Cache Slough and Liberty Island,38.25587,-121.68926,21-06-CS04,North,Cache Slough/Liberty Island,9:35,170.23,21,6.68,1.80+,8.4,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/31/2020,Mon,Lower Sacramento,38.07769,-121.75837,21-06-LSR01,West,Lower Sacramento River,8:27,854,21.7,19.78,0.69,8.35,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/31/2020,Mon,Lower Sacramento,38.11631,-121.70296,21-06-RV02,North,Sacramento River near Rio Vista,9:46,185.35,22.03,10.92,1.56,6.68,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+8/31/2020,Mon,Lower Sacramento,38.14962,-121.68996,21-06-RV01,North,Sacramento River near Rio Vista,11:03,180.65,21.88,7.74,1.8,10.58,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Buoy line wrapped around cod end)
+9/1/2020,Tues,Suisun Bay,38.06453,-122.10762,21-06-SBW01,Far West,West Suisun Bay,8:27,22576.75,19.7,100.85,0.21,7.65,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/1/2020,Tues,Suisun Bay,38.07433,-122.07841,21-06-SBW02,Far West,West Suisun Bay,9:43,22182.5,19.6,64.25,0.35,4.2,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/1/2020,Tues,Suisun Bay,38.09178,-122.01747,21-06-SBM01,West,Mid Suisun Bay,11:20,16143.25,20.25,34.83,0.42,10.1,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/1/2020,Tues,Cache Slough and Liberty Island,38.25979,-121.76345,21-06-CS05,North,Cache Slough/Liberty Island,7:55,174.05,20.85,7.75,1.28,4.35,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/1/2020,Tues,Cache Slough and Liberty Island,38.24652,-121.70826,21-06-CS06,North,Cache Slough/Liberty Island,9:22,173.68,21.05,5.56,2,3.88,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 3 was code 2 (Heavy SAV)
+9/1/2020,Tues,Cache Slough and Liberty Island,38.24443,-121.68766,21-06-CS07,North,Cache Slough/Liberty Island,10:50,170,20.98,5.49,2,9.7,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/1/2020,Tues,Lower Sacramento,38.1242,-121.69531,21-06-RV05,North,Sacramento River near Rio Vista,9:00,324.1,21.78,9.69,1.11,4.35,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/1/2020,Tues,Lower Sacramento,38.06862,-121.83818,21-06-LSR02,West,Lower Sacramento River,8:20,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Code 4: Strong winds, too rough to sample"
+9/1/2020,Tues,Lower Sacramento,38.06222,-121.79127,21-06-LSR03,West,Lower Sacramento River,8:22,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Code 4: Strong winds, too rough to sample"
+9/1/2020,Tues,Lower Sacramento,38.09188,-121.73526,21-06-RV04,North,Sacramento River near Rio Vista,8:40,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Code 4: Strong winds, too rough to sample"
+9/1/2020,Tues,Lower Sacramento,38.05671,-121.8053,21-06-LSR04,West,Lower Sacramento River,8:30,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Code 4: Strong winds, too rough to sample"
+9/1/2020,Tues,Lower Sacramento,38.06767,-121.7712,21-06-LSR05,West,Lower Sacramento River,8:35,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Code 4: Strong winds, too rough to sample"
+9/1/2020,Tues,Lower Sacramento,38.13864,-121.69312,21-06-RV03,North,Sacramento River near Rio Vista,10:08,183.7,21.95,6.25,1.32,9.8,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Only 2 sites at Eddo's performed due to strong winds. Sites will be made up later in the week. 
+9/2/2020,Wed,Lower Sacramento,38.09882,-121.72369,21-06-RV06,North,Sacramento River near Rio Vista,8:29,665.25,21.05,49.52,0.58,6.12,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/2/2020,Wed,Lower San Joaquin,38.01724,-121.78948,21-06-LSJ01,West,Lower San Joaquin,10:26,3577.75,21.05,13.27,0.83,8.22,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/2/2020,Wed,Lower San Joaquin,38.02753,-121.74961,21-06-LSJ02,West,Lower San Joaquin,11:38,2147.5,21.35,10.47,1,11.35,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/2/2020,Wed,Lower San Joaquin,38.05625,-121.68859,21-06-SJT01,South ,San Joaquin River at Twitchell Island,13:02,1336.5,22.1,7.09,1.15,10.38,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/2/2020,Wed,Sac Deep Water Shipping Channel,38.35135,-121.63991,21-06-LSSC01,North,Lower Sacramento River Shipping Channel,11:43,372.55,22.35,60.45,0.28,9.97,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,12 Wakasagi (70-82mm) retained for verification 
+9/2/2020,Wed,Sac Deep Water Shipping Channel,38.52566,-121.58429,21-06-USSC01,North,Upper Sacramento River Shipping Channel,9:56,997.75,23.9,11.18,0.93,11.05,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/2/2020,Wed,Sac Deep Water Shipping Channel,38.55985,-121.56494,21-06-USSC02,North,Upper Sacramento River Shipping Channel,8:37,1149.75,24.55,8.07,1.22,11.38,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/2/2020,Wed,Suisun Bay,38.06497,-122.02019,21-06-SBM02,West,Mid Suisun Bay,12:40,14596,20.27,20.65,0.67,9.02,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/2/2020,Wed,Suisun Marsh,38.10431,-122.04461,21-06-GB01,West,Grizzly Bay,8:18,22532.75,17.38,46.1,0.41,2.56,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/2/2020,Wed,Suisun Marsh,38.10141,-122.05936,21-06-GB02,West,Grizzly Bay,9:37,20492.75,19.05,90.8,0.28,4.15,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/2/2020,Wed,Suisun Marsh,38.17911,-122.05785,21-06-SM01,West,Suisun Marsh,11:03,49638.75,20.03,44.22,0.37,7.67,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Buoy line wrapped around cod end)
+9/3/2020,Thu,Lower San Joaquin,38.04931,-121.49752,21-06-PP01,South,San Joaquin River at Prisoners Pt,9:42,313.8,22.28,5.51,1.8,7.07,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/3/2020,Thu,Lower San Joaquin,38.05668,-121.53367,21-06-PP02,South,San Joaquin River at Prisoners Pt,10:50,369.58,22.3,5.45,1.8,11.53,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/3/2020,Thu,Lower San Joaquin,38.0995,-121.62659,21-06-SJT02,South,San Joaquin River near Twitchell Island,8:06,864.75,21.9,6.94,1.43,9.25,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/3/2020,Thu,Sac Deep Water Shipping Channel,38.18052,-121.6665,21-06-LSSC02,North,Lower Sacramento River Shipping Channel,7:36,179.9,21.3,7.77,1.43,11.07,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/3/2020,Thu,Sac Deep Water Shipping Channel,38.40987,-121.61287,21-06-LSSC03,North,Lower Sacramento River Shipping Channel,9:14,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Site in the middle of dredging area 
+9/3/2020,Thu,Sac Deep Water Shipping Channel,38.28223,-121.65995,21-06-LSSC04,North,Lower Sacramento River Shipping Channel,11:15,225.65,21.87,15.35,0.83,10.57,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/3/2020,Thu,Sac Deep Water Shipping Channel,38.51006,-121.58453,21-06-USSC03,North,Upper Sacramento River Shipping Channel,9:34,919,23.4,12.67,0.79,11.38,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/3/2020,Thu,Suisun Marsh,38.13621,-122.06178,21-06-SM02,West,Suisun Marsh,11:59,18402,20.23,28.3,0.52,7.5,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/3/2020,Thu,Suisun Marsh,38.1176,-122.06182,21-06-SM03,West,Suisun Marsh,10:29,19406,20.05,60.1,0.28,3.12,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/3/2020,Thu,Suisun Marsh,38.12032,-121.91267,21-06-SM04,West,Suisun Marsh,8:31,13310,20.2,32.47,0.4,9.45,Kodiak,4,10,U,LFS,1,75,X,n/p,None,1 Wakasagi (76mm) retained for verification 
+9/8/2020,Tues,Suisun Bay,38.05659,-121.87848,21-07-CF01,West,Confluence,8:13,8826.75,21.28,8.79,1.08,11.6,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Only 1 site performed at Pittsburg due to poor air quality and high winds. All sites at Eddo's and Rio Vista not completed due to poor air quality. Sites will be made up later in the week.  
+9/9/2020,Weds,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Kodiak,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Due to poor air quality, EDSM crews did not sample today"
+9/10/2020,Thurs,Sac Deep Water Shipping Channel,38.21875,-121.67122,21-07-LSSC01,North,Lower Sacramento River Shipping Channel,7:53,184.65,21.83,6.28,1.8,14.3,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Only 1 site performed at Rio Vista due to poor air quality and high winds. All sites at Eddo's and Pittsburg not completed due to poor air quality. 
+9/11/2020,Friday,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Kodiak,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Due to poor air quality, EDSM crews did not sample today"
+9/14/2020,Mon,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Kodiak,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Due to poor air quality, EDSM crews did not sample today"
+9/15/2020,Tues,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Kodiak,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Due to poor air quality, EDSM crews did not sample today"
+9/16/2020,Weds,Lower San Joaquin,38.05684,-121.53583,21-08-PP01,South,San Joaquin River at Prisoners Pt,8:17,324.5,21.9,7.93,1.8,8.48,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/16/2020,Weds,Lower San Joaquin,38.09541,-121.56854,21-08-PP02,South,San Joaquin River at Prisoners Pt,9:26,185.43,20.33,6.66,1.8,6.33,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/16/2020,Weds,Lower San Joaquin,38.06001,-121.6849,21-08-SJT01,South,San Joaquin River near Twitchell Island,11:00,730,21.73,11.23,1.45,2.88,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+9/16/2020,Weds,Lower San Joaquin,38.02165,-121.76332,21-08-LSJ01,West,Lower San Joaquin,12:20,1294.5,21.3,8.01,1.8,10.63,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/16/2020,Weds,Suisun Marsh,38.14135,-122.06089,21-08-SM04,West,Suisun Marsh,8:51,9151.75,20.15,39.35,0.41,9.35,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/16/2020,Weds,Suisun Marsh,38.12171,-122.06743,21-08-SM02,West,Suisun Marsh,8:38,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too shallow
+9/16/2020,Weds,Suisun Marsh,38.18733,-121.98061,21-08-SM03,West,Suisun Marsh,10:10,8835.25,20.13,23.8,0.59,8.13,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/16/2020,Weds,Suisun Marsh,38.10629,-121.88923,21-08-SM01,West,Suisun Marsh,11:58,8692.25,20.25,30.53,0.52,7.45,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/16/2020,Weds,Sac Deep Water Shipping Channel,38.5615,-121.54895,21-08-USSC01,North,Upper Sacramento River Shipping Channel,9:00,1090.25,23.4,6.55,1.58,10.83,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/16/2020,Weds,Sac Deep Water Shipping Channel,38.52084,-121.58413,21-08-USSC02,North,Upper Sacramento River Shipping Channel,10:30,970,22.93,15.15,0.81,9.85,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/16/2020,Weds,Sac Deep Water Shipping Channel,38.2258,-121.67454,21-08-LSSC01,North,Lower Sacramento River Shipping Channel,12:43,185.7,20.75,8.54,1.8,11.63,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/17/2020,Thurs,Lower San Joaquin,38.10974,-121.70801,21-08-RV02,North,Sacramento River near Rio Vista,8:36,366.4,21.43,10.91,1.23,5.1,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+9/17/2020,Thurs,Lower San Joaquin,38.08097,-121.72616,21-08-RV01,North,Sacramento River near Rio Vista,9:55,644,21.6,16.4,0.79,5.03,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/17/2020,Thurs,Lower San Joaquin,38.06877,-121.76989,21-08-LSR01,West,Lower Sacramento River,11:04,681.75,21.6,17.33,0.84,6.38,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/17/2020,Thurs,Suisun Bay,38.08238,-122.05731,21-08-SBM02,West,Mid Suisun Bay,9:20,18432.75,20.1,50.13,0.44,5.1,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/17/2020,Thurs,Suisun Bay,38.0531,-121.97109,21-08-SBM01,West,Mid Suisun Bay,10:40,10286.5,20.3,19.35,0.82,5.28,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/17/2020,Thurs,Suisun Bay,38.0558,-121.84446,21-08-CF01,West,Confluence,12:08,3022.75,21.1,11.58,1,6.23,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 3 was code 2 (Distance from site exceeded target distance, was 0.57 mi at stop)"
+9/17/2020,Thurs,Sac Deep Water Shipping Channel,38.47133,-121.58488,21-08-LSSC04,North,Lower Sacramento River Shipping Channel,8:40,771.75,22.3,45.83,0.31,10.25,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"1 Wakasagi (80mm) retained for verification; Tow 2 was code 2 (Distance from site exceeded target distance, was 0.62 mi at stop)"
+9/17/2020,Thurs,Sac Deep Water Shipping Channel,38.29956,-121.65498,21-08-LSSC02,North,Lower Sacramento River Shipping Channel,10:44,265.7,21.93,36.23,0.37,8.9,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,4 Wakasagi (65-82mm) retained for verification
+9/17/2020,Thurs,Sac Deep Water Shipping Channel,38.20794,-121.65918,21-08-LSSC03,North,Lower Sacramento River Shipping Channel,12:22,181.98,20.8,8.71,1.74,13.15,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,2 Wakasagi (60-75mm) retained for verification
+9/18/2020,Friday,Lower Sacramento,38.05974,-121.80029,21-08-LSR02,West,Lower Sacramento River,8:23,4687.25,20.73,12.8,0.84,7.5,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/18/2020,Friday,Lower Sacramento,38.07802,-121.76144,21-08-LSR03,West,Lower Sacramento River,9:37,1218.75,21.28,25.68,0.55,8.73,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/18/2020,Friday,Lower Sacramento,38.09015,-121.73399,21-08-RV03,North,Sacramento River near Rio Vista,10:50,539.5,21.55,13.3,1.03,5.53,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/18/2020,Friday,Cache Slough and Liberty Island,38.35679,-121.64153,21-08-CS01,North,Cache Slough/Liberty Island,8:01,303.6,21.63,12.6,1,2.93,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/18/2020,Friday,Cache Slough and Liberty Island,38.25011,-121.68687,21-08-CS02,North,Cache Slough/Liberty Island,9:40,180.9,20.65,6.7,1.8,8.83,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/18/2020,Friday,Cache Slough and Liberty Island,38.24942,-121.71694,21-08-CS03,North,Cache Slough/Liberty Island,10:53,190.84,21.1,5.51,1.8,4.86,Kodiak,5,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 2 was code 3 (Heavy vegetation, sample discarded)"
+9/18/2020,Friday,Suisun Marsh,38.12429,-122.05582,21-08-SM05,West,Suisun Marsh,8:11,14141.75,20.7,62.58,0.28,2.68,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/18/2020,Friday,Suisun Marsh,38.10792,-122.04385,21-08-GB01,West,Grizzly Bay,9:20,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too shallow
+9/18/2020,Friday,Suisun Marsh,38.04546,-122.09929,21-08-SBW01,Far West,West Suisun Bay,9:43,16417.75,20.3,36.53,0.46,11.93,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net; high RPMs to avoid structure)
+9/18/2020,Friday,Suisun Marsh,38.07078,-121.97933,21-08-SBM03,West,Mid Suisun Bay,11:10,12587,20.63,20.4,0.61,5.43,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/21/2020,Mon,Lower San Joaquin,38.0428,-121.52805,21-09-PP01,South,San Joaquin River at Prisoners Pt,8:53,329.07,21.8,6.06,1.64,14.05,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 2 was code 2 (Partial blockage in net)
+9/21/2020,Mon,Lower San Joaquin,38.10196,-121.60929,21-09-SJT01,South,San Joaquin River near Twitchell Island,10:10,404.62,21.85,7.4,1.36,10.47,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+9/21/2020,Mon,Lower San Joaquin,38.05631,-121.68259,21-09-SJT02,South,San Joaquin River near Twitchell Island,11:27,1040.5,21.82,9.63,1.28,11.45,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+9/21/2020,Mon,Sac Deep Water Shipping Channel,38.24242,-121.67106,21-09-LSSC01,North,Lower Sacramento River Shipping Channel,11:58,182.7,21.23,7.81,1.68,10.43,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/21/2020,Mon,Sac Deep Water Shipping Channel,38.56305,-121.54893,21-09-USSC01,North,Upper Sacramento River Shipping Channel,8:46,1070,23.25,5.69,1.8,12.03,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/21/2020,Mon,Sac Deep Water Shipping Channel,38.53623,-121.5845,21-09-USSC02,North,Upper Sacramento River Shipping Channel,10:04,964.5,22.85,14.62,3.97,11.43,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/21/2020,Mon,Suisun Bay,38.04974,-122.09331,21-09-SBW01,Far West,West Suisun Bay,8:17,24810.25,20.25,48.17,0.79,19.48,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/21/2020,Mon,Suisun Bay,38.04428,-121.88751,21-09-CF01,West,Confluence,11:06,8950.25,21,13.33,0.84,13.7,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/21/2020,Mon,Suisun Bay,38.05832,-121.99929,21-09-SBM01,West,Mid Suisun Bay,9:40,17826,20.63,14.92,0.78,12.68,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/22/2020,Tues,Lower San Joaquin,38.02056,-121.75294,21-09-LSJ01,West,Lower San Joaquin,9:33,3338,21.58,12.15,1,4.95,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/22/2020,Tues,Lower San Joaquin,38.02543,-121.73069,21-09-LSJ02,West,Lower San Joaquin,10:43,1915.25,21.87,6.3,1.75,7.8,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tows 2-4 were code 2 (Partial blockage in net)
+9/22/2020,Tues,Lower San Joaquin,38.02976,-121.76701,21-09-LSJ03,West,Lower San Joaquin,8:15,3225.75,21.4,11.43,0.92,12.2,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1 and 4 were code 2 (Partial blockage in net)
+9/22/2020,Tues,Sac Deep Water Shipping Channel,38.19403,38.19526,21-09-LSSC02,North,Lower Sacramento River Shipping Channel,11:10,170.6,21.1,6.39,1.8,14.77,Kodiak,3,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/22/2020,Tues,Sac Deep Water Shipping Channel,38.37801,-121.62755,21-09-LSSC03,North,Lower Sacramento River Shipping Channel,8:04,365.98,21.68,67.55,0.33,8.05,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/22/2020,Tues,Sac Deep Water Shipping Channel,38.2602,-121.66522,21-09-LSSC04,North,Lower Sacramento River Shipping Channel,9:40,178,21.03,10.11,1.28,5.65,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/22/2020,Tues,Suisun Bay,38.05515,-121.87144,21-09-CF02,West,Confluence,11:21,9781,21.1,16.35,0.77,9.75,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/22/2020,Tues,Suisun Bay,38.09467,-122.01831,21-09-SBM02,West,Mid Suisun Bay,8:28,18217.75,20.3,24.73,0.51,7.92,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/22/2020,Tues,Suisun Bay,38.06111,-121.97651,21-09-SBM03,West,Mid Suisun Bay,9:53,16506.5,20.53,19.2,0.75,12.03,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/23/2020,Wed,Cache Slough and Liberty Island,35.2644,-121.69689,21-09-CS04,North,Cache Slough and Liberty Island,8:00,181.32,20.55,5.41,1.8,3.23,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/23/2020,Wed,Cache Slough and Liberty Island,38.24215,-121.68383,21-09-CS01,North,Cache Slough and Liberty Island,9:18,173.98,20.67,6.75,1.77,6.52,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/23/2020,Wed,Cache Slough and Liberty Island,38.25841,-121.67125,21-09-CS02,North,Cache Slough and Liberty Island,10:32,177.63,20.82,7.47,1.72,10.3,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/23/2020,Wed,Cache Slough and Liberty Island,38.28718,-121.71718,21-09-CS03,North,Cache Slough and Liberty Island,7:44,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV
+9/23/2020,Wed,Lower Sacramento,38.13035,-121.69068,21-09-RV03,North,Sacramento River near Rio Vista,8:31,394.17,20.97,6.26,1.72,3.15,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/23/2020,Wed,Lower Sacramento,38.05992,-121.82214,21-09-LSR02,West,Lower Sacramento River,11:04,7166.5,21.15,11.7,0.74,10.88,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/23/2020,Wed,Lower Sacramento,38.06718,-121.8204,21-09-LSR03,West,Lower Sacramento River,9:56,6205,20.97,16.65,0.7,6.1,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/23/2020,Wed,Suisun Marsh,38.10638,-122.03892,21-09-GB01,West,Grizzly Bay,8:07,20505.25,20.5,43.3,0.32,3.15,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/23/2020,Wed,Suisun Marsh,38.12113,-122.06994,21-09-SM01,West,Suisun Marsh,9:13,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too shallow
+9/23/2020,Wed,Suisun Marsh,38.17376,-122.0561,21-09-SM02,West,Suisun Marsh,9:37,12551.25,20.77,29.85,0.46,6.9,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/23/2020,Wed,Suisun Marsh,38.16649,-122.04318,21-09-SM03,West,Suisun Marsh,10:48,13776,20.83,21.43,0.5,5.5,Kodiak,4,10,U,DSM,1,50,X,n/p,None,DSM flash frozen for UCD
+9/24/2020,Thu,Cache Slough and Liberty Island,38.23588,-121.68151,21-09-CS05,North,Cache Slough and Liberty Island,11:27,163.12,20.9,6.01,1.8,11.82,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/24/2020,Thu,Cache Slough and Liberty Island,38.29455,-121.69284,21-09-CS06,North,Cache Slough and Liberty Island,10:05,233.78,21,9,1.77,7.08,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/24/2020,Thu,Cache Slough and Liberty Island,38.27027,-121.70358,21-09-CS07,North,Cache Slough and Liberty Island,10:00,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV
+9/24/2020,Thu,Cache Slough and Liberty Island,38.39064,-121.62612,21-09-CS08,North,Cache Slough and Liberty Island,8:14,497.75,21.63,47.98,0.3,3.1,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/24/2020,Thu,Lower Sacramento,38.10319,-121.72483,21-09-RV01,North,Sacramento River near Rio Vista,9:39,506.75,21.1,15.2,0.95,17,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/24/2020,Thu,Lower Sacramento,38.12283,-121.69497,21-09-RV02,North,Sacramento River near Rio Vista,11:06,520.5,21.28,7.55,1.63,4.62,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/24/2020,Thu,Lower Sacramento,38.06498,-121.81387,21-09-LSR01,West,Lower Sacramento River,8:23,2862,20.8,22.95,0.69,4.3,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+9/24/2020,Thu,Suisun Marsh,38.11161,-122.05624,21-09-GB02,West,Grizzly Bay,11:08,19389.25,20.87,20.17,0.61,3.73,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/24/2020,Thu,Suisun Marsh,38.12081,-121.902,21-09-SM04,West,Suisun Marsh,8:14,8879.25,20.8,15.97,0.7,6.12,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/24/2020,Thu,Suisun Marsh,38.12672,-122.05914,21-09-SM05,West,Suisun Marsh,9:51,18180,20.55,18.6,0.66,4.72,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/28/2020,Mon,Sac Deep Water Shipping Channel,38.29969,-121.66413,21-10-LSSC01,North,Lower Sacramento River Shipping Channel,12:20,163.45,21.05,8.4,1.21,12.6,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/28/2020,Mon,Suisun Bay,38.0529,-122.08595,21-10-SBW03,Far West,West Suisun Bay,8:20,18667.5,20.9,14.75,0.92,10.93,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/28/2020,Mon,Sac Deep Water Shipping Channel,38.56098,-121.54879,21-10-USSC01,North,Upper Sacramento River Shipping Channel,8:42,1055.75,22.83,7.52,1.34,8.4,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/28/2020,Mon,Suisun Bay,38.06525,-121.97887,21-10-SBM01,West,Suisun Marsh,11:01,12196.75,21.03,11,1.14,6.05,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 3 was code 2 (Twist in net)
+9/28/2020,Mon,Sac Deep Water Shipping Channel,38.55749,-121.5708,21-10-USSC02,North,Upper Sacramento River Shipping Channel,10:07,1026.5,22.58,16.2,0.66,9.13,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 3 (Twist at lead line)
+9/28/2020,Mon,Suisun Bay,38.09938,-122.06515,21-10-SBM02,West,Suisun Marsh,10:21,17935.5,20.9,15.85,0.98,5.23,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/29/2020,Tues,Lower Sacramento,38.10312,-121.71781,21-10-RV01,North,Sacramento River near Rio Vista,8:36,391.12,21.3,10.99,1.42,3.15,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/29/2020,Tues,Lower Sacramento,38.12318,-121.69543,21-10-RV02,North,Sacramento River near Rio Vista,9:49,189.38,16.3,7.17,1.8,3.38,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/29/2020,Tues,Lower Sacramento,38.07002,-121.76894,21-10-LSR01,West,Lower Sacramento River,11:08,662.67,21.3,12.63,1.04,8.37,Kodiak,3,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 4 not completed due to poor air quality
+9/29/2020,Tues,Sac Deep Water Shipping Channel,38.23886,-121.67288,21-10-LSSC02,North,Lower Sacramento River Shipping Channel,10:23,188.12,21.25,14.53,0.95,10.1,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Buoy line wrapped around cod end)
+9/29/2020,Tues,Sac Deep Water Shipping Channel,38.18254,-121.66322,21-10-LSSC03,North,Lower Sacramento River Shipping Channel,11:37,163.95,21.3,7.97,1.8,13.93,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/29/2020,Tues,Sac Deep Water Shipping Channel,38.47337,-121.58427,21-10-LSSC04,North,Lower Sacramento River Shipping Channel,8:15,778.5,21.8,57.35,0.23,11.45,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,5 Wakasagi (54-93) retained for verification
+9/29/2020,Tues,Suisun Bay,38.04133,-122.11049,21-10-SBW01,Far West,West Suisun Bay,8:22,22095.75,20.92,19.28,0.7,7.55,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+9/29/2020,Tues,Suisun Bay,38.08569,-122.07485,21-10-SBW02,Far West,West Suisun Bay,9:36,18967.75,21.1,22.15,0.68,7.9,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/29/2020,Tues,Suisun Bay,38.04353,-121.89612,21-10-CF01,West,Confluence,11:13,7034,21.5,10.99,1.19,19.73,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+9/30/2020,Wed,Cache Slough and Liberty Island,38.38609,-121.62772,21-10-CS01,North,Cache Slough and Liberty Island,8:13,230.62,21.5,24.88,0.55,3.45,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,1 Wakasagi (62) retained for verification
+9/30/2020,Wed,Cache Slough and Liberty Island,38.23316,-121.67627,21-10-CS02,North,Cache Slough and Liberty Island,11:08,183.15,21.2,8.81,1.8,10.85,Kodiak,2,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tows 3 and 4 not completed due to poor air quality
+9/30/2020,Wed,Cache Slough and Liberty Island,38.29959,-121.65887,21-10-CS03,North,Cache Slough and Liberty Island,9:38,193.42,21.15,14.9,1.45,4.02,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,All 4 tows were code 2 (partial plockage of net by SAV)
+10/5/2020,Mon,Lower San Joaquin,38.06343,-121.53093,21-11-PP01,South,San Joaquin River at Prisoners Pt,8:38,288.9,21.88,5.09,1.8,10.97,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+10/5/2020,Mon,Lower San Joaquin,38.05113,-121.69379,21-11-SJT01,South,San Joaquin River near Twitchell Island,10:19,1135,22.05,6.63,1.75,13.2,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/5/2020,Mon,Lower San Joaquin,38.02885,-121.76326,21-11-LSJ01,West,Lower San Joaquin,11:43,2984.5,21.9,8.02,1.57,11.8,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Only 2 tows performed due to poor air quality
+10/5/2020,Mon,Sac Deep Water Shipping Channel,38.18168,-121.66323,21-11-LSSC01,North,Lower Sacramento River Shipping Channel,12:14,144.65,21.5,10.26,1.8,15.65,Kodiak,2,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Only 2 tows performed due to poor air quality
+10/5/2020,Mon,Sac Deep Water Shipping Channel,38.38414,-121.62505,21-11-LSSC02,North,Lower Sacramento River Shipping Channel,10:30,433.12,21.8,65.9,0.21,10.25,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,2 Wakasagi (80-91mm) retained for verification
+10/5/2020,Mon,Sac Deep Water Shipping Channel,38.56079,-121.54129,21-11-USSC01,North,Upper Sacramento River Shipping Channel,8:51,1047.25,22.53,4.52,1.67,11,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/5/2020,Mon,Suisun Bay,38.04584,-121.89379,21-11-CF01,West,Confluence,8:11,12079.75,21.08,7.44,1.1,25.15,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/5/2020,Mon,Suisun Bay,38.05402,-121.9599,21-11-HB01,West,Honker Bay,9:35,81768.5,20.9,9.07,1.12,12.02,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Only 2 sites performed at Pittsburg; sites will be made up later in the week
+10/6/2020,Tue,Lower San Joaquin,38.09441,-121.65716,21-11-SJT02,South,San Joaquin River near Twitchell Island,8:08,909.5,22.1,6.14,1.8,9.95,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/6/2020,Tue,Lower San Joaquin,38.02937,-121.7306,21-11-LSJ02,West,Lower San Joaquin,9:55,2499.5,21.92,5.05,1.8,11.47,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/6/2020,Tue,Lower San Joaquin,38.02072,-121.80419,21-11-LSJ03,West,Lower San Joaquin,11:20,4360.5,21.6,6.91,1.48,7.8,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/6/2020,Tue,Sac Deep Water Shipping Channel,38.21147,-121.6662,21-11-LSSC03,North,Lower Sacramento River Shipping Channel,11:41,144.5,21.4,5.06,1.8,12.63,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Buoy line wrapped around net); Tows 3-4 was code 2 (Vegetation in net)
+10/6/2020,Tue,Sac Deep Water Shipping Channel,38.24005,-121.67205,21-11-LSSC04,North,Lower Sacramento River Shipping Channel,10:26,154.65,21.5,4.62,1.8,8.47,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/6/2020,Tue,Sac Deep Water Shipping Channel,38.48705,-121.58461,21-11-USSC02,North,Upper Sacramento River Shipping Channel,8:35,756.75,22.18,31.4,0.37,11.05,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,2 Wakasagi (66-80mm) retained for verification
+10/6/2020,Tue,Suisun Bay,38.07603,-122.09173,21-11-SBW01,Far West,West Suisun Bay,8:43,25127.75,20.75,17.27,1.06,10.62,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/6/2020,Tue,Suisun Bay,38.07239,-121.85796,21-11-CF02,West,Confluence,11:43,7880.75,21.87,8.58,1.2,9.62,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/6/2020,Tue,Suisun Bay,38.05136,-121.94444,21-11-HB02,West,Honker Bay,10:15,12982,20.92,10.65,1.11,18.48,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/7/2020,Wed,Cache Slough and Liberty Island,38.28648,-121.66305,21-11-CS01,North,Cache Slough and Liberty Island,11:30,165.43,21.45,4.04,1.8,7.3,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/7/2020,Wed,Cache Slough and Liberty Island,38.25959,-121.68628,21-11-CS02,North,Cache Slough and Liberty Island,8:00,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Site inaccessable 
+10/7/2020,Wed,Cache Slough and Liberty Island,38.2846,-121.71873,21-11-CS03,North,Cache Slough and Liberty Island,8:04,183.5,21.3,2.55,1.8,3,Kodiak,1,5,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 3 (Excessive vegetation in net); No further tows performed
+10/7/2020,Wed,Cache Slough and Liberty Island,38.25115,-121.72112,21-11-CS04,North,Cache Slough and Liberty Island,8:43,169.9,21.18,5.89,1.24,5.6,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 4 was code 2 (Distance from site exceeded target distance, was 0.57 mi at stop)"
+10/7/2020,Wed,Cache Slough and Liberty Island,38.23471,-121.68017,21-11-CS05,North,Cache Slough and Liberty Island,10:02,141.35,21.18,6.59,1.8,14.27,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/7/2020,Wed,Lower Sacramento,38.12694,-121.69603,21-11-RV03,North,Sacramento River near Rio Vista,8:43,544.57,21.45,7.19,1.66,10.22,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/7/2020,Wed,Lower Sacramento,38.0562,-121.80325,21-11-LSR02,West,Lower Sacramento River,11:37,6902.25,21.2,8.39,1.3,8.75,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/7/2020,Wed,Lower Sacramento,38.06175,-121.79571,21-11-LSR03,West,Lower Sacramento River,10:17,6499,21.15,12.01,1,11.18,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/7/2020,Wed,Suisun Bay,38.09668,-122.06728,21-11-SBM01,West,Mid Suisun Bay,12:17,20843.33,20.2,31.17,0.47,4.57,Kodiak,3,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Only 3 tows completed 
+10/7/2020,Wed,Suisun Marsh,38.07346,-121.87891,21-11-SM01,West,Suisun Marsh,8:08,8391,20.73,13.97,0.72,8.7,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/7/2020,Wed,Suisun Marsh,38.1187,-122.06125,21-11-SM02,West,Suisun Marsh,11:43,18489,20.3,19.5,0.56,1.9,Kodiak,1,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Only 1 tow completed due to shallow depth 
+10/7/2020,Wed,Suisun Marsh,38.1803,-121.9958,21-11-SM03,West,Suisun Marsh,10:14,15117.75,21.42,16.7,0.7,11.25,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/8/2020,Thu,Cache Slough and Liberty Island,38.26366,-121.66994,21-11-CS06,North,Cache Slough and Liberty Island,9:49,148.62,20.6,10.9,1.5,7.92,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1-4 were code 2 (Vegetation in net)
+10/8/2020,Thu,Cache Slough and Liberty Island,38.39848,-121.62242,21-11-CS08,North,Cache Slough and Liberty Island,8:21,205.72,20.9,32.62,0.36,3.6,Kodiak,4,10,D,CHNA,1,525,n/p,n/p,n/p,CHNA was code 9
+10/8/2020,Thu,Cache Slough and Liberty Island,38.23892,-121.68474,21-11-CS09,North,Cache Slough and Liberty Island,11:09,138.12,20.6,6.79,1.8,12.1,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 1 was code 2 (Twist in net); Tow 4 was code 2 (Distance from site exceeded target distance, was 0.68 mi at stop)"
+10/8/2020,Thu,Cache Slough and Liberty Island,38.27193,-121.70758,21-11-CS07,North,Cache Slough and Liberty Island,8:00,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV
+10/8/2020,Thu,Lower Sacramento,38.1772,-121.66217,21-11-RV01,North,Sacramento River near Rio Vista,8:47,149.18,20.7,3.61,1.8,10.9,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/8/2020,Thu,Lower Sacramento,38.10539,-121.71211,21-11-RV02,North,Sacramento River near Rio Vista,11:42,1326.25,20.8,9.65,1.41,4.15,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/8/2020,Thu,Lower Sacramento,38.07294,-121.77463,21-11-LSR01,West,Lower Sacramento River,10:29,5750.33,20.5,13.6,0.94,9.87,Kodiak,3,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Only 3 tows completed 
+10/8/2020,Thu,Suisun Marsh,38.10417,-122.04617,21-11-GB02,West,Grizzly Bay,8:37,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Code 4: Strong winds, too rough to sample"
+10/8/2020,Thu,Suisun Marsh,38.1054,-122.03369,21-11-GB03,West,Grizzly Bay,8:32,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Code 4: Strong winds, too rough to sample"
+10/8/2020,Thu,Suisun Marsh,38.1126,-122.05755,21-11-GB05,West,Grizzly Bay,9:01,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Code 4: Strong winds, too rough to sample"
+10/8/2020,Thu,Suisun Marsh,38.1824,-122.05336,21-11-SM04,West,Suisun Marsh,10:13,15837.75,20.57,27.15,0.61,5.42,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/8/2020,Thu,Suisun Marsh,38.12147,-122.07416,21-11-SM05,West,Suisun Marsh,8:37,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too shallow
+10/8/2020,Thu,Suisun Marsh,38.14507,-122.06842,21-11-SM06,West,Suisun Marsh,9:02,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too shallow
+10/8/2020,Thu,Suisun Marsh,38.17208,38.17126,21-11-SM07,West,Suisun Marsh,11:46,12786,21.05,18.92,0.81,9.95,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/8/2020,Thu,Suisun Marsh,38.17213,-122.05854,21-11-SM08,West,Suisun Marsh,9:01,13666.25,20.2,16.4,0.79,9.07,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/8/2020,Thu,Suisun Marsh,38.17426,-121.92417,21-11-SM09,West,Suisun Marsh,13:06,11361,20.2,19.1,0.71,4.35,Kodiak,2,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Only 2 tows completed 
+10/13/2020,Tue,Lower San Joaquin,38.04715,-121.50291,21-12-PP02,South,San Joaquin River at Prisoners Pt,8:38,256.9,20.77,4.81,1.80+,11.15,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/13/2020,Tue,Lower San Joaquin,38.08044,-121.57118,21-12-PP03,South,San Joaquin River at Prisoners Pt,9:56,290.88,20.53,3.89,1.80+,13.28,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 4 was code 2 (Distance from site exceeded target distance, was 0.59 mi at stop)"
+10/13/2020,Tue,Lower San Joaquin,38.08601,-121.56525,21-12-PP01,South,San Joaquin River at Prisoners Pt,11:03,235.83,20.35,4.92,1.80+,7.8,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/13/2020,Tue,Sac Deep Water Shipping Channel,38.55729,-121.57319,21-12-USSC01,North,Upper Sacramento River Shipping Channel,8:56,997.75,21.53,9.37,1.1,10.4,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/13/2020,Tue,Sac Deep Water Shipping Channel,38.53682,-121.58489,21-12-USSC02,North,Upper Sacramento River Shipping Channel,10:25,969.75,21.37,14.22,0.79,9.85,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/13/2020,Tue,Sac Deep Water Shipping Channel,38.25172,-121.66828,21-12-LSSC01,North,Lower Sacramento River Shipping Channel,12:29,143.55,19.3,10.69,1.37,10.3,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/13/2020,Tue,Suisun Marsh,38.11507,-121.8906,21-12-SM03,West,Suisun Marsh,8:53,10716.25,19.7,17.15,0.73,4.05,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/13/2020,Tue,Suisun Marsh,38.17038,-122.02852,21-12-SM01,West,Suisun Marsh,10:31,13830.75,19.87,22.25,0.52,8.9,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/13/2020,Tue,Suisun Marsh,38.16236,-122.06159,21-12-SM02,West,Suisun Marsh,11:53,17539.5,19.45,48.57,0.39,6.47,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/14/2020,Wed,Cache Slough and Liberty Island,38.25732,-121.72827,21-12-CS01,North,Cache Slough and Liberty Island,8:13,167.25,19.4,5.8,1.56,5.15,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/14/2020,Wed,Cache Slough and Liberty Island,38.24124,-121.68766,21-12-CS03,North,Cache Slough and Liberty Island,9:45,152.7,19.47,6.03,1.8,10.68,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/14/2020,Wed,Cache Slough and Liberty Island,38.2854,-121.72097,21-12-CS02,North,Cache Slough and Liberty Island,11:03,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too Shallow and heavy SAV
+10/14/2020,Wed,Cache Slough and Liberty Island,38.28791,-121.68584,21-12-CS04,North,Cache Slough and Liberty Island,11:25,170,19.63,7.38,1.22,7.15,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/14/2020,Wed,Lower San Joaquin,38.01893,-121.80088,21-12-LSJ03,West,Lower San Joaquin,8:20,3001.25,20.4,9.08,1.25,13.62,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/14/2020,Wed,Lower San Joaquin,38.02523,-121.75673,21-12-LSJ01,West,Lower San Joaquin,9:34,1234,20.5,8.39,1.35,6.97,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/14/2020,Wed,Lower San Joaquin,38.03559,-121.71711,21-12-LSJ02,West,Lower San Joaquin,10:49,1019.25,20.6,7.04,1.32,12,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 3 was code 2 (Vegetation in net)
+10/14/2020,Wed,Suisun Marsh,38.15416,-121.92161,21-12-SM05,West,Suisun Marsh,8:29,6408.65,19.87,36.12,0.44,2.9,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/14/2020,Wed,Suisun Marsh,38.11316,-122.06088,21-12-GB01,West,Grizzly Bay,11:28,19815,20.18,41.2,0.38,2.7,Kodiak,4,10,D,LFS,1,62,n/p,n/p,n/p,LFS brought back to lab (mort)
+10/14/2020,Wed,Suisun Marsh,38.1806,-121.99708,21-12-SM04,West,Suisun Marsh,10:00,9568,20.03,35.65,0.41,7.4,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/15/2020,Thu,Lower Sacramento,38.09863,-121.73033,21-12-RV03,North,Sacramento River near Rio Vista,8:51,251.22,19.7,15.1,0.89,8.85,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+10/15/2020,Thu,Lower Sacramento,38.06009,-121.79975,21-12-LSR02,West,Lower Sacramento River,10:04,921.18,20,19.38,0.67,10.75,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/15/2020,Thu,Lower Sacramento,38.08479,-121.75298,21-12-LSR03,West,Lower Sacramento River,11:16,415.9,19.9,12.77,0.88,9.1,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/15/2020,Thu,Suisun Bay,38.06448,-122.04388,21-12-SBM01,West,Mid Suisun Bay,8:17,18120.25,20,13.7,0.85,7.85,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/15/2020,Thu,Suisun Bay,38.03194,-122.14144,21-12-SBW01,Far West,West Suisun Bay,9:43,23304.5,19.97,16.88,0.77,18.95,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 1 was code 2 (Crossed strata boundary line); Tow 3 was code 2 (Distance from site exceeded target distance, was 0.91 mi at stop)"
+10/15/2020,Thu,Suisun Bay,38.09465,-122.06972,21-12-SBW02,Far West,West Suisun Bay,11:17,20542.25,20.2,37.35,0.48,7.25,Kodiak,4,10,D,LFS,1,101,X,n/p,n/p,"LFS brought back to lab, died after handling "
+10/15/2020,Thu,Sac Deep Water Shipping Channel,38.4873,-121.5846,21-12-USSC03,North,Upper Sacramento River Shipping Channel,8:48,797,20.6,31.32,0.32,10.5,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,2 Wakasagi (79-85mm) retained for verification; Tow 1 was code 2 (Twist in net)
+10/15/2020,Thu,Sac Deep Water Shipping Channel,38.36116,-121.63578,21-12-LSSC03,North,Lower Sacramento River Shipping Channel,10:41,432.2,20.08,77.88,0.2,9.73,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"5 Wakasagi (80-93mm) retained for verification; Tow 4 was code 2 (Distance from site exceeded target distance, was 0.58 mi at stop)"
+10/15/2020,Thu,Sac Deep Water Shipping Channel,38.23348,-121.67382,21-12-LSSC02,North,Lower Sacramento River Shipping Channel,12:28,140.55,19.3,12.14,1.62,10.08,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/19/2020,Mon,Cache Slough and Liberty Island,38.23677,-121.68261,21-13-CS01,North,Cache Slough and Liberty Island,8:05,134.18,19.45,6.07,1.8,9.95,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/19/2020,Mon,Cache Slough and Liberty Island,38.25785,-121.69194,21-13-CS02,North,Cache Slough and Liberty Island,9:24,141.3,19.6,7.41,1.8,4.97,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+10/19/2020,Mon,Cache Slough and Liberty Island,38.37535,-121.63303,21-13-CS03,North,Cache Slough and Liberty Island,10:59,180.43,20.13,13.6,0.75,3.8,Kodiak,3,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 3 was code 2 (Vegetation in net)
+10/19/2020,Mon,Lower Sacramento,38.08791,-121.68579,21-13-RV03,North,Sacramento River near Rio Vista,8:07,1383.25,20.42,8.23,1.37,5.83,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/19/2020,Mon,Lower Sacramento,38.09296,-121.73235,21-13-RV04,North,Sacramento River near Rio Vista,9:38,3026.25,20.1,11.93,0.81,7.45,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/19/2020,Mon,Lower Sacramento,38.13319,-121.69265,21-13-RV05,North,Sacramento River near Rio Vista,10:56,360.97,19.9,10.28,1.32,6.88,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/19/2020,Mon,Suisun Bay,38.05611,-122.0825,21-13-SBW01,Far West,West Suisun Bay,8:22,25190.5,19.82,15.78,0.72,8.18,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/19/2020,Mon,Suisun Bay,38.05916,-121.86536,21-13-CF01,West,Confluence,11:29,10414.5,20.3,11.99,0.96,12.68,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/19/2020,Mon,Suisun Bay,38.06723,-121.97935,21-13-SBM01,West,Mid Suisun Bay,9:44,17556.75,19.92,18.45,0.69,5.62,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/20/2020,Tue,Cache Slough and Liberty Island,38.27398,-121.69477,21-13-CS06,North,Cache Slough and Liberty Island,8:14,144,19.75,6.81,1.65,6.08,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/20/2020,Tue,Cache Slough and Liberty Island,38.29794,-121.72953,21-13-CS08,North,Cache Slough and Liberty Island,9:12,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV
+10/20/2020,Tue,Cache Slough and Liberty Island,38.26676,-121.69763,21-13-CS04,North,Cache Slough and Liberty Island,9:20,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV
+10/20/2020,Tue,Cache Slough and Liberty Island,38.2419,-121.68649,21-13-CS05,North,Cache Slough and Liberty Island,9:31,136.15,19.6,7.54,1.8,12.25,Kodiak,2,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 2 was code 3 (Sea lion in area. Ended tow after 2.5min). No further tows performed. 
+10/20/2020,Tue,Cache Slough and Liberty Island,38.32396,-121.65315,21-13-CS07,North,Cache Slough and Liberty Island,10:15,157.83,20.3,6.99,1.8,5.17,Kodiak,3,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1-2 were code 2 (Vegetation in net); Tow 3 was code 3 (Heavy SAV); No further tows performed
+10/20/2020,Tue,Cache Slough and Liberty Island,38.25275,-121.67189,21-13-CS09,North,Cache Slough and Liberty Island,11:32,143.45,19.92,6.53,1.8,4.35,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1 and 3 were code 2 (Vegetation in net)
+10/20/2020,Tue,Lower Sacramento,38.10739,-121.70985,21-13-RV02,North,Sacramento River near Rio Vista,8:29,2389.25,20.05,12.12,0.82,5.03,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 4 was code 2 (Twist in net)
+10/20/2020,Tue,Lower Sacramento,38.09171,-121.73671,21-13-RV01,North,Sacramento River near Rio Vista,9:57,3756,20.18,15.35,0.6,8.82,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/20/2020,Tue,Lower Sacramento,38.06309,-121.78395,21-13-LSR01,West,Lower Sacramento River,11:23,4852.75,20.58,10.06,0.84,8.78,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/20/2020,Tue,Suisun Bay,38.09143,-122.0708,21-13-SBW02,Far West,West Suisun Bay,8:24,24391.25,19.93,24.02,0.56,11.55,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/20/2020,Tue,Suisun Bay,38.04921,-121.92033,21-13-CF03,West,Confluence,9:51,15544.67,19.97,13.6,0.76,11.93,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/20/2020,Tue,Suisun Bay,38.04588,-121.83514,21-13-CF02,West,Confluence,11:20,9031,20.45,8.28,1.1,9.38,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,All 4 tows were code 2 (Weight fell off tow bar)
+10/21/2020,Wed,Lower San Joaquin,38.08206,-121.57011,21-13-PP01,South,San Joaquin River at Prisoners Pt,8:27,305.18,20.4,5.57,1.8,5.75,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/21/2020,Wed,Lower San Joaquin,38.08801,-121.57498,21-13-PP02,South,San Joaquin River at Prisoners Pt,9:41,396.7,20.5,8.26,1.51,12,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/21/2020,Wed,Lower San Joaquin,38.0863,-121.67922,21-13-SJT01,South,San Joaquin River near Twitchell Island,11:03,1265.5,20.6,6.16,1.77,14.25,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/21/2020,Wed,Suisun Marsh,38.12472,-122.08152,21-13-SM01,West,Suisun Marsh,8:25,18570.75,19.35,22.65,0.48,4.3,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/21/2020,Wed,Suisun Marsh,38.1051,-122.03884,21-13-GB01,West,Grizzly Bay,9:41,23474.75,20.05,19.28,0.67,3.38,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 4 was code 2 (Crossed strata boundary line)
+10/21/2020,Wed,Suisun Marsh,38.10929,-122.05957,21-13-GB02,West,Grizzly Bay,11:00,20028,20.03,16.38,0.61,2.6,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/21/2020,Wed,Sac Deep Water Shipping Channel,38.23537,-121.67398,21-13-LSSC01,North,Lower Sacramento River Shipping Channel,11:53,138.5,20,6.31,1.8,11.17,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/21/2020,Wed,Sac Deep Water Shipping Channel,38.30889,-121.6533,21-13-LSSC02,North,Lower Sacramento River Shipping Channel,10:23,184.67,20.1,16.6,0.98,9.05,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/21/2020,Wed,Sac Deep Water Shipping Channel,38.44576,-121.5968,21-13-LSSC03,North,Lower Sacramento River Shipping Channel,8:34,538.25,20.4,82.1,0.18,8.5,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"6 Wakasagi (80-97mm) retained for verification; Tow 4 was code 2 (Distance from site exceeded target distance, was 0.60 mi at stop)"
+10/22/2020,Thu,Lower San Joaquin,38.02453,-121.79253,21-13-LSJ01,West,Lower San Joaquin,8:06,4799.5,20.53,6.01,1.47,12.03,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1-2 were code 2 (Vegetation in net)
+10/22/2020,Thu,Lower San Joaquin,38.03248,-121.73591,21-13-LSJ03,West,Lower San Joaquin,9:16,3580,20.6,8.38,1.35,6.85,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1-3 were code 2 (Vegetation in net)
+10/22/2020,Thu,Lower San Joaquin,38.04574,-121.70335,21-13-LSJ02,West,Lower San Joaquin,10:30,2763.25,20.53,7.41,1.4,7.47,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+10/22/2020,Thu,Sac Deep Water Shipping Channel,38.45312,-121.59265,21-13-LSSC04,North,Lower Sacramento River Shipping Channel,8:35,583.25,20.25,62.3,0.29,8.88,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"25 Wakasagi (72-96mm) retained for verification; Tow 4 was code 2 (Distance from site exceeded target distance, was 0.68 mi at stop)"
+10/22/2020,Thu,Sac Deep Water Shipping Channel,38.25768,-121.66698,21-13-LSSC06,North,Lower Sacramento River Shipping Channel,10:55,138.25,19.65,8.35,1.8,10.8,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 1 was code 2 (Buoy line wrapped around net); Tow 4 was code 2 (Distance from site exceeded target distance, was 0.69 mi at stop)"
+10/22/2020,Thu,Sac Deep Water Shipping Channel,38.20017,-121.65658,21-13-LSSC05,North,Lower Sacramento River Shipping Channel,12:19,142.7,19.53,5.7,1.72,13.55,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+10/22/2020,Thu,Suisun Marsh,38.17331,-121.92748,21-13-SM02,West,Suisun Marsh,8:38,11563,20.22,12.82,0.83,8.5,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 4 was code 2 (Distance from site exceeded target distance, was 0.61 mi at stop)"
+10/22/2020,Thu,Suisun Marsh,38.16168,-122.04594,21-13-SM03,West,Suisun Marsh,9:59,15513.5,20.02,17.9,0.59,5.97,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/22/2020,Thu,Suisun Marsh,38.10723,-122.04387,21-13-GB03,West,Grizzly Bay,11:13,24403.25,20.13,13.36,0.81,2.75,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/26/2020,Mon,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Kodiak,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,"Due to high winds, EDSM crews did not sample today"
+10/27/2020,Tue,Cache Slough and Liberty Island,38.24019,-121.68633,21-14-CS05,North,Cache Slough and Liberty Island,9:30,130.7,14.47,13.12,0.89,7.22,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 4 was code 2 (Distance from site exceeded target distance, was 0.67 mi at stop)"
+10/27/2020,Tue,Cache Slough and Liberty Island,38.28007,-121.66496,21-14-CS06,North,Cache Slough and Liberty Island,8:08,133.5,13.4,17.57,0.83,5.47,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/27/2020,Tue,Cache Slough and Liberty Island,38.2469,-121.69982,21-14-CS04,North,Cache Slough and Liberty Island,10:39,132.38,14.58,11.08,1,6.4,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/27/2020,Tue,Lower Sacramento,38.10715,-121.70915,21-14-RV02,North,Sacramento River near Rio Vista,9:48,495.2,16.65,9.66,1.32,5,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/27/2020,Tue,Lower Sacramento,38.05821,-121.80419,21-14-LSR01,West,Lower Sacramento River,8:26,3522.25,16.75,23.4,0.51,8.62,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/27/2020,Tue,Lower Sacramento,38.14141,-121.688,21-14-RV01,North,Sacramento River near Rio Vista,11:13,157.5,16.68,7.12,1.8,5.6,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/27/2020,Tue,Suisun Marsh,38.1856,-121.96964,21-14-SM04,West,Suisun Marsh,8:49,12369,15.54,31.64,0.44,7.89,Kodiak,8,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tows 1-4 were code 3 (Net inverted)
+10/27/2020,Tue,Suisun Marsh,38.15673,-122.05023,21-14-SM03,West,Suisun Marsh,11:35,18597.75,16.15,44.43,0.33,8.78,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/28/2020,Wed,Cache Slough and Liberty Island,38.31928,-121.65413,21-14-CS03,North,Cache Slough and Liberty Island,8:04,139.23,13.78,9.61,1.52,3.6,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 4 was code 2 (Partial blockage of net due to vegetation)
+10/28/2020,Wed,Cache Slough and Liberty Island,38.24418,-121.68957,21-14-CS01,North,Cache Slough and Liberty Island,9:20,132.97,14.72,9.21,1.27,4.75,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/28/2020,Wed,Cache Slough and Liberty Island,38.27148,-121.69458,21-14-CS02,North,Cache Slough and Liberty Island,10:31,134.5,14.25,6.73,1.74,4.95,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 3 was code 2 (Distance from site exceeded target distance, was 0.59 mi at stop)"
+10/28/2020,Wed,Lower Sacramento,38.05076,-121.79861,21-14-LSR02,West,Lower Sacramento River,8:04,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Heavy SAV and too shallow (1.6 m)
+10/28/2020,Wed,Lower Sacramento,38.06855,-121.83268,21-14-LSR03,West,Lower Sacramento River,8:17,6024,16.82,16.28,0.5,6.47,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/28/2020,Wed,Lower Sacramento,38.07491,-121.75741,21-14-LSR04,West,Lower Sacramento River,9:31,1608.75,16.63,21.03,0.44,7.08,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/28/2020,Wed,Lower Sacramento,38.14331,-121.69183,21-14-RV03,North,Sacramento River near Rio Vista,10:44,147.28,16.22,9.8,1.24,11.8,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 2 was code 2 (Distance from site exceeded target distance, was 0.64 mi at stop); Tows 3-4 were code 2 (Twist in net)"
+10/28/2020,Wed,Suisun Bay,38.07592,-122.07336,21-14-SBW01,Far West,West Suisun Bay,8:03,20990.5,16.38,29.65,0.57,5.15,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 4 was code 2 (Distance from site exceeded target distance, was 0.64 mi at stop)"
+10/28/2020,Wed,Suisun Bay,38.07369,-121.96776,21-14-HB01,West,Honker Bay,9:28,13302.5,16.9,24.62,0.58,3.42,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/28/2020,Wed,Suisun Bay,38.02649,-121.83314,21-14-CF01,West,Confluence,10:51,5610.25,16.82,18.78,0.88,8.47,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,
+10/29/2020,Thu,Sac Deep Water Shipping Channel,38.35891,-121.63659,21-14-LSSC03,North,Lower Sacramento River Shipping Channel,8:02,345.9,16.63,74.85,0.24,10.3,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,3 Wakasagi (72-89mm) retained for verification
+10/29/2020,Thu,Sac Deep Water Shipping Channel,38.31672,-121.65185,21-14-LSSC04,North,Lower Sacramento River Shipping Channel,9:20,271.12,16.75,66.98,0.36,9.35,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,18 Wakasagi (72-96mm) retained for verification
+10/29/2020,Thu,Sac Deep Water Shipping Channel,38.17999,-121.66585,21-14-LSSC02,North,Lower Sacramento River Shipping Channel,11:06,125.33,15.73,9.81,1.47,19.07,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 4 was code 2 (Distance from site exceeded target distance, was 0.91 mi at stop)"
+10/29/2020,Thu,Suisun Bay,38.05848,-122.11577,21-14-SBW02,Far West,West Suisun Bay,8:25,21400.5,16.47,40.75,0.35,6.83,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/29/2020,Thu,Suisun Bay,38.05287,-121.94514,21-14-HB02,West,Honker Bay,9:57,11543,16.87,19.33,0.83,16.95,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 4 was code 2 (Distance from site exceeded target distance, was 0.59 mi at stop)"
+10/29/2020,Thu,Suisun Bay,38.07211,-121.84111,21-14-CF02,West,Confluence,11:22,6266.5,16.72,16.93,0.72,6.92,Kodiak,4,10,D,n/p,n/p,n/p,n/p,n/p,n/p,Tow 2 was code 2 (Twist in net)
+10/29/2020,Thu,Lower San Joaquin,38.07966,-121.56948,21-14-PP02,South,San Joaquin River at Prisoners Pt,8:11,341.05,16.77,5.44,1.8,11.28,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/29/2020,Thu,Lower San Joaquin,38.09321,-121.57388,21-14-PP01,South,San Joaquin River at Prisoners Pt,9:18,301.32,16.68,6.83,1.79,8.25,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+10/29/2020,Thu,Lower San Joaquin,38.04446,-121.70198,21-14-LSJ04,West,Lower San Joaquin,10:45,1234,17.13,10.55,1.21,9.1,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/30/2020,Fri,Lower San Joaquin,38.01882,-121.79203,21-14-LSJ03,West,Lower San Joaquin,8:21,3744,16.77,13.71,0.84,5.92,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/30/2020,Fri,Lower San Joaquin,38.02519,-121.74468,21-14-LSJ02,West,Lower San Joaquin,9:47,2046.25,16.82,13.18,1.05,6.75,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/30/2020,Fri,Lower San Joaquin,38.03927,-121.72448,21-14-LSJ01,West,Lower San Joaquin,11:06,1573.25,16.97,8.87,1.11,5.38,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/30/2020,Fri,Sac Deep Water Shipping Channel,38.5637,-121.55065,21-14-USSC01,North,Upper Sacramento River Shipping Channel,8:30,930.5,18.4,9.27,1.5,10.78,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 2 was code 2 (Twist in net)
+10/30/2020,Fri,Sac Deep Water Shipping Channel,38.38928,-121.62244,21-14-LSSC01,North,Lower Sacramento River Shipping Channel,11:18,433.18,16.78,90.82,0.2,9.95,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,2 Wakasagi (86-94mm) retained for verification
+10/30/2020,Fri,Sac Deep Water Shipping Channel,38.51054,-121.58449,21-14-USSC02,North,Upper Sacramento River Shipping Channel,9:53,818.25,17.57,31.88,0.44,10.25,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,"Tow 4 was code 2 (Distance from site exceeded target distance, was 0.59 mi at stop)"
+10/30/2020,Fri,Suisun Marsh,38.14919,-122.0701,21-14-SM01,West,Suisun Marsh,9:58,n/p,n/p,n/p,n/p,n/p,Kodiak,0,n/p,n/p,n/p,n/p,n/p,n/p,n/p,n/p,Code 4: Too shallow
+10/30/2020,Fri,Suisun Marsh,38.17666,-122.01066,21-14-SM02,West,Suisun Marsh,8:30,10816.5,15.85,24.88,0.47,5.77,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,Tow 1 was code 2 (Twist in net)
+10/30/2020,Fri,Suisun Marsh,38.10334,-122.06112,21-14-GB02,West,Suisun Marsh,10:06,20331.5,16.35,23.9,0.57,4.45,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,
+10/30/2020,Fri,Suisun Marsh,38.10782,-122.06243,21-14-GB01,West,Suisun Marsh,11:21,21867.75,16.75,57.65,0.33,2.68,Kodiak,4,10,U,n/p,n/p,n/p,n/p,n/p,n/p,

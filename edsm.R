@@ -1,7 +1,9 @@
 #fix ted's edsm data
 library(readxl)
 library(tidyverse)
+library(lubridate)
 
+#this was the crappy version Ted did in Excel. 
 edsmcatch = read_excel("Data/EDSMcatch2018.xlsx", sheet = "catch")
 
 edsmcatch2 = pivot_longer(edsmcatch, cols = c("Suisun Bay":"Lower San Joaquin"), 
@@ -14,11 +16,14 @@ edsmeffort2 = pivot_longer(edsmeffort, cols = c("Suisun Bay":"Lower San Joaquin"
 edsmdata = merge(edsmcatch2, edsmeffort2)
 edsmdata = rename(edsmdata, EndWeek = `End Of Week`)
 edsmdata$catch[which(is.na(edsmdata$catch))] = 0
+
+#Make a better version to publish on EDI
 write.csv(edsmdata, "Data/EDSMsmelt_summer_2018.csv")
 
 
 #######################################################
-#quickly check raw EDSM data
+#quickly check raw EDSM data from 2018
+#it looked like there were some problems with the number of trawls
 
 EDSM = read.csv("Data/EDSM_KDTR.csv")
 
@@ -99,42 +104,83 @@ ggplot(filter(EDSM3, Stratum=="Suisun Marsh"), aes(x=Date, y = DSM)) +
 #import data from 2020
 EDSMx = read.csv("Data/EDSM2012-2020.csv")
 
+#Add teh more recent 2020 data
+EDSM2020 = read.csv("Data/70EDSMDailyReport30Oct20.csv", na.strings = "n/p")
+
+
 EDSMxa = mutate(EDSMx, Date = as.Date(Date, format = "%d-%b-%y"), Year = year(Date), 
                 Month = month(Date), Week = week(Date)) %>%
-  filter(Month %in% c(7,8,9,10), !is.na(Tow))
+  filter(Month %in% c(7,8,9,10), !is.na(Tow)) %>%
+  select(Region, SubRegion, Station, Date, Stratum, 
+         Tow, Month, Year, Week, ForkLength, OrganismCode)
 
+#get the 2020 data in the same format as the other data
+EDSM2020x = mutate(EDSM2020, Date = as.Date(Date, format = "%m/%d/%Y"), Year = year(Date), 
+                   Month = month(Date), Week = week(Date))%>%
+  mutate(Tow = 1:nrow(EDSM2020)) %>%
+  ungroup() %>%
+  rename(SubRegion = Sub.Region, Station = Station.Code, tows = Number.of.Tows) %>%
+  filter(Month %in% c(7,8,9,10)) %>%
+  select(Region, SubRegion, Station, Date, Stratum, Tow, Month, 
+         Year, Week, Species, Catch, tows)
 
+EDSM2020x$Catch[which(is.na(EDSM2020x$Catch))] = 0
+
+EDSM2020xa = group_by(EDSM2020x, Stratum, Station, Date, tows, Month, Year, Week) %>%
+  summarize(DSM = sum(Catch[which(Species == "DSM")], na.rm = T))
 
 EDSM3a = group_by(EDSMxa, Stratum, Station, Date, Tow, Month, Year, Week) %>%
-  summarize(totcatch = length(ForkLength), 
-            DSM = length(ForkLength[which(OrganismCode == "DSM")]))
+  summarize(DSM = length(ForkLength[which(OrganismCode == "DSM")])) %>%
+  group_by(Stratum, Station, Date, Month, Year, Week) %>%
+summarize(tows = length(Tow), DSM = sum(DSM))
 
+EDSMALL = rbind(EDSM3a, EDSM2020xa)
 
-EDSM4a = group_by(EDSM3a, Week, Stratum, Station, Year, Month) %>%
-  summarize(tows = length(Tow), DSM = sum(DSM)) %>%
-  group_by(Stratum, Week, Month, Year) %>%
-  summarize(tows = sum(tows, na.rm = T), 
-            Stations = length(Station), DSM = sum(DSM),
-            DSMcpue = DSM/tows, Tows = sum(tows)) %>%
+EDSM4a = group_by(EDSMALL, Week, Stratum, Year, Month) %>%
+  summarize(Stations = length(Station),Tows = sum(tows), DSM = sum(DSM, na.rm = T),
+            DSMcpue = DSM/Tows) %>%
   ungroup()
+
+test = group_by(EDSM4a, Week, Year, Month) %>%
+  summarize(ntows = sum(Tows))
 
 ggplot(EDSM4a, aes(x=Month, y = DSM)) + geom_bar(stat = "identity") + facet_grid(Stratum~Year)
 
 ggplot(EDSM4a, aes(x=Week, y = DSM, fill = Stratum)) + geom_bar(stat = "identity") + facet_grid(.~Year)
 
+library(RColorBrewer)
+
+mypal = c(brewer.pal(8, "Set1"), brewer.pal(8, "Dark2"))
+
 ggplot(EDSM4a, aes(x=Week, y = DSMcpue, fill = Stratum)) + 
   geom_bar(stat = "identity") + facet_grid(.~Year) +
-  scale_x_continuous(breaks = c(26, 30, 34, 38, 42), labels = c("Jun","Jul","Aug","Sep","Oct"))
+  ylab("Delta Smelt Catch per Trawl")+
+  scale_x_continuous(breaks = c(26, 30, 34, 38, 42), 
+                     labels = c("Jun","Jul","Aug","Sep","Oct"))+
+  scale_fill_manual(values = mypal)
+
+#just the 2020 data
+ggplot(filter(EDSM4a, Year == 2020), aes(x=Week, y = DSMcpue, fill = Stratum)) + 
+  geom_bar(stat = "identity") +
+  ylab("Delta Smelt Catch per Trawl")+
+  scale_x_continuous(breaks = c(26, 30, 34, 38, 42), 
+                     labels = c("Jun","Jul","Aug","Sep","Oct"))+
+  scale_fill_manual(values = mypal)
 
 
 ggplot(EDSM4a, aes(x=Week, y = DSM, fill = Stratum)) + 
-  geom_bar(stat = "identity") + facet_grid(.~Year) + ylab("total Delta Smelt caught") +
-  scale_x_continuous(breaks = c(26, 30, 34, 38, 42), labels = c("Jun","Jul","Aug","Sep","Oct"))
+  geom_bar(stat = "identity") + facet_grid(.~Year) + 
+  ylab("total Delta Smelt caught") +
+  scale_x_continuous(breaks = c(26, 30, 34, 38, 42), 
+                     labels = c("Jun","Jul","Aug","Sep","Oct"))+
+  scale_fill_manual(values = mypal)
 
 
 towplot = ggplot(EDSM4a, aes(x=Week, y = Tows, fill = Stratum)) + 
-  geom_bar(stat = "identity") + facet_grid(.~Year) + 
-  scale_x_continuous(breaks = c(26, 30, 34, 38, 42), labels = c("Jun","Jul","Aug","Sep","Oct"))
+  geom_bar(stat = "identity") + facet_grid(.~Year) #+ 
+#  scale_x_continuous(breaks = c(26, 30, 34, 38, 42), labels = c("Jun","Jul","Aug","Sep","Oct"))
+
+z2020 = filter(EDSM4a, Year == 2020)
 
 library(ggthemes)
 towplot + theme_excel_new()
