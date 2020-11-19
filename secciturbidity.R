@@ -16,5 +16,10 @@ ggplot(turb, aes(x= turbidity, y = Secchi)) +
   geom_point() +
   geom_smooth()
 
+ggplot(turb, aes(x= log(turbidity), y = Secchi)) + 
+  geom_point() +
+  geom_smooth()
+
+
 write.csv(turb, "FMWTturbidity.csv")
 
