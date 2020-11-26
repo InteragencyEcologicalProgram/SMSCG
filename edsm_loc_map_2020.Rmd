@@ -1,0 +1,306 @@
+---
+title: "EDSM Locations Map - 2020 sampling"
+author: "Dave Bosworth"
+date: "11/25/2020"
+output: 
+  html_document: 
+    code_folding: show
+    toc: true
+    toc_float: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Purpose
+
+This document provides an interactive map of the EDSM sampling locations collected in 2020. There were a few sampling coordinates that were entered incorrectly in the spreadsheet of provisional data, which are highlighted in this document. I tried to fix these coordinates the best I could, but it would be best to have the staff that provided this data to make these corrections before using this data in analyses.
+
+# Import and Prepare data
+
+```{r load packages, message = FALSE, warning = FALSE}
+# Load packages
+library(tidyverse)
+library(readxl)
+library(sf)
+library(leaflet)
+library(knitr)
+library(kableExtra)
+```
+
+Import the data for both EDSM surveys (20 mm and Kodiak) for the 2020 sampling events.
+
+```{r import data, warning = FALSE}
+# Define relative file path for the Excel file with 2020 EDSM data
+fp_rel_edsm_data <- 
+  "California Department of Water Resources/SMSCG - Summer Action - Documents/Data/EDSM/2020-11-17_EDSM June-October 2020.xlsx"
+
+# Define absolute file path
+fp_abs_edsm_data <- normalizePath(file.path(Sys.getenv('USERPROFILE'), fp_rel_edsm_data))
+
+# Import Kodiak data
+df_kodiak_orig <- read_excel(fp_abs_edsm_data, sheet = "Kodiak data June-Oct 2020")
+
+# Import 20mm data
+df_20mm_orig <- read_excel(fp_abs_edsm_data, sheet = "20mm data June 2020")
+```
+
+I'll just keep the `SampleID`, `StartLat`, and `StartLong` variables for each EDSM survey. Then, I'll combine the survey data and find the unique combinations of these three variables. Note that for now I'm ignoring the `StopLat` and `StopLong` variables, which indicate the ending location of each trawl. ***The map will show the starting locations of each trawl.***
+
+```{r prepare sampling locations}
+df_edsm_sta_loc <- 
+  list("Kodiak" = df_kodiak_orig, "20mm" = df_20mm_orig) %>% 
+  map(~select(.x, SampleID, StartLat, StartLong)) %>% 
+  bind_rows(.id = "Survey") %>% 
+  distinct()
+```
+
+# Inspect and fix sampling coordinates
+
+To create a quick plot to determine if all sampling coordinates were entered correctly, the `df_edsm_sta_loc` dataframe needs to be converted to an sf object. I will assume that the coordinates were recorded using the ***WGS84 geographic coordinate reference system (4326)***.
+
+```{r convert df to sf 1}
+sf_edsm_sta_loc <- df_edsm_sta_loc %>% 
+  st_as_sf(
+    coords = c("StartLong", "StartLat"),
+    crs = 4326,
+    remove = FALSE
+  )
+```
+
+I'll create a quick plot of the sampling locations.
+
+```{r plot sampling locations 1}
+plot(sf_edsm_sta_loc$geometry)
+```
+
+Hmm, I got warning message stating that some of the sampling locations are potentially out of range. I'll look to see if there are any obviously incorrect coordinate values.
+
+```{r inspect erroneous coordinates}
+# Find records with erroneous latitude and longitude coordinates
+df_bad_lat <- filter(df_edsm_sta_loc, StartLat > 100)
+df_bad_long <- filter(df_edsm_sta_loc, StartLong < -200)
+
+bind_rows(df_bad_lat, df_bad_long) %>% 
+  kable() %>% 
+  kable_styling("striped", full_width = FALSE)
+```
+
+It looks like there are a few latitude and longitude coordinates that were reported without a decimal in the EDSM dataset. I will convert these erroneous coordinates to values with the decimal in the proper place (ie. 38.xxx for latitude and -121.xxx for longitude).
+
+```{r fix erroneous coordinates}
+# Fix the erroneous coordinates
+df_lat_fix <- df_bad_lat %>% 
+  mutate(
+    whole_num = str_sub(StartLat, end = 2),
+    decimal_num = str_sub(StartLat, start = 3),
+    StartLat = as.numeric(str_c(whole_num, decimal_num, sep = "."))
+  ) %>% 
+  select(!ends_with("_num"))
+
+df_long_fix <- df_bad_long %>% 
+  mutate(
+    whole_num = str_sub(StartLong, end = 4),
+    decimal_num = str_sub(StartLong, start = 5),
+    StartLong = as.numeric(str_c(whole_num, decimal_num, sep = "."))
+  ) %>% 
+  select(!ends_with("_num"))
+
+# Add fixed coordinates back to the original dataframe
+df_coord_fix <- bind_rows(df_lat_fix, df_long_fix)
+
+df_edsm_sta_loc_v1 <- df_edsm_sta_loc %>% 
+  anti_join(df_coord_fix, by = c("Survey", "SampleID")) %>% 
+  bind_rows(df_coord_fix)
+```
+
+I'll convert `df_edsm_sta_loc_v1` to an sf object and create a quick plot of the sampling locations to see if the error message is addressed.
+
+```{r plot sampling locations 2}
+# Convert to sf object
+sf_edsm_sta_loc_v1 <- df_edsm_sta_loc_v1 %>% 
+  st_as_sf(
+    coords = c("StartLong", "StartLat"),
+    crs = 4326,
+    remove = FALSE
+  )
+
+# Create plot
+plot(sf_edsm_sta_loc_v1$geometry)
+```
+
+The error message is addressed, but it looks like there are still a few sampling locations that are potentially incorrect. I'll use the `leaflet` package to create an interactive map to take a closer look at these sampling locations. 
+
+```{r create leaflet map}
+# Define color palette for Surveys
+color_pal <- colorFactor(c("blue", "orangered"), domain = sf_edsm_sta_loc_v1$Survey)
+
+# Create map using leaflet
+leaflet(sf_edsm_sta_loc_v1) %>% 
+  addTiles() %>% 
+  addCircleMarkers(
+    radius = 3,
+    fillColor = ~color_pal(Survey),
+    fillOpacity = 1,
+    weight = 0.5,
+    color = "black",
+    opacity = 1,
+    label = paste0(
+      "SampleID: ",
+      sf_edsm_sta_loc_v1$SampleID,
+      ", Latitude: ", 
+      sf_edsm_sta_loc_v1$StartLat,
+      ", Longitude: ",
+      sf_edsm_sta_loc_v1$StartLong
+    )
+  ) %>% 
+  addLegend(
+    position = "bottomleft",
+    pal = color_pal,
+    values = ~Survey,
+    title = "EDSM Survey"
+  )
+```
+
+Some of these sampling coordinates are obviously incorrect. I'll attempt to fix them the best I can. It looks like most of the incorrect coordinates have erroneous longitude values. I'll take a look at these first.
+
+```{r inspect erroneous longitudes 1}
+df_bad_long2 <- filter(df_edsm_sta_loc_v1, StartLong > -120)
+
+kable(df_bad_long2) %>% kable_styling("striped", full_width = FALSE)
+```
+
+All of these coordinates with erroneous longitude values are from the Kodiak survey. I'll take a look at the original data for these `r nrow(df_bad_long2)` bad values.
+
+```{r inspect erroneous longitudes 2, message = FALSE}
+df_bad_long2 <- select(df_bad_long2, Survey, SampleID)
+
+df_bad_long2_join <- 
+  inner_join(df_kodiak_orig, df_bad_long2) %>% 
+  select(SampleID, contains(c("Lat", "Long"))) %>% 
+  distinct() %>% 
+  select(SampleID, starts_with("Target"), starts_with("Start"), starts_with("Stop"))
+
+kable(df_bad_long2_join) %>% kable_styling("striped", full_width = FALSE)
+```
+
+It looks like there are 4 reasons for these erroneous longitude values:
+
+* For 7 of these sampling coordinates, the values in the `StartLong` and `StopLat` columns appear to be entered in reverse order. I'll use the values in the `StopLat` column for these longitude values.
+* One of the sampling coordinates is missing a negative sign. I'll add that.
+* One of the sampling coordinates is entered as -11.xxx where it probably needs to be -121.xxx. I'll fix that.
+* The remaining 3 sampling coordinates have the same number entered in the `StartLong` and `StopLat` columns. Since there is no way to determine the correct longitude values, I'll use the `StopLat` and `StopLong` columns to define the sampling coordinates for these 3 samples.
+
+```{r fix erroneous longitudes}
+# Fix the 7 sampling coordinates with the values in the `StartLong` and `StopLat` columns entered in reverse order
+df_long_fix2 <- df_bad_long2_join %>% 
+  filter(StopLat < 0) %>% 
+  select(SampleID, StartLat, StopLat) %>% 
+  rename(StartLong = StopLat)
+
+# Fix the one sampling coordinate with a positive longitude value
+df_long_fix3 <- df_bad_long2_join %>% 
+  filter(StartLong > 100) %>% 
+  mutate(StartLong = -StartLong) %>% 
+  select(SampleID, StartLat, StartLong)
+
+# Fix the one sampling coordinate with a -11.xxx longitude value
+df_long_fix4 <- df_bad_long2_join %>% 
+  filter(StartLong < 0) %>% 
+  mutate(
+    decimal_num = str_sub(StartLong, start = 4),
+    StartLong = as.numeric(paste0("-121", decimal_num))
+  ) %>% 
+  select(SampleID, StartLat, StartLong)
+
+# Fix the remaining three sampling coordinates that have equal StartLong and StopLat values
+df_long_fix5 <- df_bad_long2_join %>% 
+  filter(StartLong == StopLat) %>% 
+  select(SampleID, StopLat, StopLong) %>% 
+  rename(
+    StartLat = StopLat,
+    StartLong = StopLong
+  )
+
+# Add the fixed coordinates back to the df_edsm_sta_loc_v1 dataframe
+df_long_fix_c <- 
+  bind_rows(df_long_fix2, df_long_fix3, df_long_fix4, df_long_fix5) %>% 
+  mutate(Survey = "Kodiak")
+
+df_edsm_sta_loc_v2 <- df_edsm_sta_loc_v1 %>% 
+  anti_join(df_long_fix_c, by = c("Survey", "SampleID")) %>% 
+  bind_rows(df_long_fix_c)
+```
+
+It looks like one of the incorrect coordinates has an erroneous latitude value. I'll take a look at this next.
+
+```{r inspect erroneous latitude}
+df_bad_lat2 <- filter(df_edsm_sta_loc_v2, StartLat < 37)
+
+kable(df_bad_lat2) %>% kable_styling("striped", full_width = FALSE)
+```
+
+There is one coordinate with a latitude value with 35 degrees. All other latitudes for samples collected during these surveys were 38 degrees. I'll assume that this one coordinate should also have a latitude of 38 degrees.
+
+```{r fix erroneous latitude, message = FALSE}
+# Fix one incorrect latitude value
+df_lat_fix2 <- df_bad_lat2 %>% mutate(StartLat = StartLat + 3)
+
+# Add the fixed coordinate back to the df_edsm_sta_loc_v2 dataframe
+df_edsm_sta_loc_v3 <- df_edsm_sta_loc_v2 %>% 
+  anti_join(df_lat_fix2, by = c("Survey", "SampleID")) %>% 
+  bind_rows(df_lat_fix2)
+```
+
+I'll convert `df_edsm_sta_loc_v3` to an sf object and create a quick plot of the sampling locations to see if the obviously incorrect coordinates were addressed.
+
+```{r plot sampling locations 3}
+# Convert to sf object
+sf_edsm_sta_loc_v3 <- df_edsm_sta_loc_v3 %>% 
+  st_as_sf(
+    coords = c("StartLong", "StartLat"),
+    crs = 4326,
+    remove = FALSE
+  )
+
+# Create plot
+plot(sf_edsm_sta_loc_v3$geometry)
+```
+
+Yes, it appears the obviously incorrect coordinates were fixed. I can create an interactive `leaflet` map of the EDSM sampling locations now.
+
+# Final map of sampling locations
+
+First, define the color palette to display surveys in different colors.
+
+```{r define color palette}
+# Define color palette for Surveys
+color_pal <- colorFactor(c("blue", "orangered"), domain = sf_edsm_sta_loc_v3$Survey)
+```
+
+Here is an interactive map of the 2020 EDSM sampling locations. Some of these sampling locations still appear to have incorrect coordinates, but these will definitely need to be fixed by EDSM staff.
+
+```{r create final leaflet map}
+# Create final map using leaflet
+leaflet(sf_edsm_sta_loc_v3) %>% 
+  addTiles() %>% 
+  addCircleMarkers(
+    radius = 3,
+    fillColor = ~color_pal(Survey),
+    fillOpacity = 1,
+    weight = 0.5,
+    color = "black",
+    opacity = 1,
+    label = paste("SampleID:",sf_edsm_sta_loc_v3$SampleID)
+  ) %>% 
+  addLegend(
+    position = "bottomleft",
+    pal = color_pal,
+    values = ~Survey,
+    title = "EDSM Survey"
+  )
+```
+
