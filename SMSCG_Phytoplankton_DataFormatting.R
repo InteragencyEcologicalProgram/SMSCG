@@ -4,8 +4,8 @@
 #required packages
 library(tidyverse)
 library(janitor)
-library(hms) #formatting times
 library(readxl) #importing data from excel files
+library(lubridate) #formatting dates
 
 
 # 1. Import Data from SharePoint (under construction) ----------------------------------------------------------
@@ -102,14 +102,16 @@ glimpse(phyto_shorter)
 unique(phyto_shorter$StationCode)
 #n=14 statons; looks like the names were entered consistently; check to make sure they are all the correct stations
 
+
 #look at unique dates to make sure they make sense after the autoformatting
 unique(phyto_shorter$SampleDate)
+phyto_shorter$Date<-ymd(phyto_shorter$SampleDate)
 #looks correct though they are labeled UTC when they should be Pacific Daylight(?) Time
 
 #should add some code to detect any NAs in date
 
 #format the time column
-phyto_shorter$SampleTime2<-as_hms(phyto_shorter$SampleTime)
+phyto_shorter$SampleTime2<-format(phyto_shorter$SampleTime, format = "%H:%M:%S")
 #should add some code to detect any NAs in time
 
 #create new column that calculates organisms per mL
@@ -128,6 +130,7 @@ phyto_shorter<-phyto_shorter %>%
 
 #create a column that calculates biovolume per mL
 #organisms per ml * cells per unit abundance * mean biovolume per cell
+#units for biovolume both for individual cells and per mL is cubic microns
 phyto_shorter$biovolume_per_ml<-phyto_shorter$organisms_per_ml * 
   phyto_shorter$"Number of cells per unit" * phyto_shorter$mean_cell_biovolume
 
@@ -137,7 +140,7 @@ names(phyto_shorter)
 
 phyto<-phyto_shorter %>%
   rename(station = StationCode
-         ,date = SampleDate 
+         ,date = Date 
          ,time = SampleTime2
          ,genus = Genus
          ,taxon = Taxon
@@ -153,7 +156,6 @@ phy<-phyto[,c(
   ,"taxon"                              
   ,"phyto_form"           
   , "organisms_per_ml"
-  ,"mean_cell_biovolume"  
   ,"biovolume_per_ml" 
 )]
 
@@ -184,7 +186,7 @@ taxon_high_rn<-taxon_high %>%
          ,algal_type = 'Algal Type'
   )
 
-#remove some combinations that are creating duplicates for genus
+#remove some (likely incorrect) combinations that are creating duplicates for genus
 taxon_high_fx<-taxon_high_rn %>% 
   filter(!(genus == "Achnanthidium" & class =="Fragilariophyceae") & 
            !(genus == "Elakatothrix" & class =="Chlorophyceae") &
@@ -193,8 +195,11 @@ taxon_high_fx<-taxon_high_rn %>%
 
 #condense taxonomy data set to just the unique combinations
 taxon_high_cond<-unique(taxon_high_fx[,c('kingdom','phylum','class','genus','algal_type')])
+#initially some genera appeared more than once in this taxonomy data set
+#but this has been corrected
 
-#looks like some genera appear more than once in this taxonomy data set
+#investigating duplicates for genus---------------
+
 #count number of times each genus appears
 #ideally this would be once
 tax_gen_sum<-data.frame(table(taxon_high_cond$genus)) 
@@ -216,10 +221,11 @@ names(taxon_high_cond)
 phyto_tax<-left_join(phy,taxon_high_cond)
 
 #reorder columns once more for data frame export
-phy_final<-phyto_tax[,c(1:3,10:13,6,4,5,7:9)]
+phy_final<-phyto_tax[,c(1:3,9:12,6,4,5,7,8)]
 
 
 #write the formatted data file to a csv
+#figure out how to save to SharePoint site
 #write_csv(phy_final,"SMSCG_phytoplankton_formatted_2020.csv")
 
 
