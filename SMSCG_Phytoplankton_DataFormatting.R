@@ -141,36 +141,28 @@ phyto_cleanest<-phyto_cleaner %>%
 
 #subset to just the needed columns
 #will match genus name between the two data frames
-taxon_high<-taxonomy[,c(
-  "Kingdom"
+taxon_high<-taxonomy %>% 
+  select("Kingdom"
   ,"Phylum"
   ,"Class"
   ,"Genus"
-  ,"Algal Type" #confirmed that there is just one type per genus
-)]
+  ,"Algal Type") %>%  #confirmed that there is just one type per genus
 #this approach is very simple because it removes the need for exact matches in the taxon names
 #part of the difficulty in matching taxon names is presence of "cf." for many taxa
 #unfortunately by just matching by genus and not taxon, we loose the habitat type, and salinity range info
 #also with species level data, there's a chance the taxonomy dataset doesn't include every species in the samples
-
-#rename columns
-taxon_high_rn<-taxon_high %>%
   rename(kingdom = Kingdom
          ,phylum = Phylum
          ,class = Class
          ,genus = Genus
-         ,algal_type = 'Algal Type'
-  )
-
+         ,algal_type = 'Algal Type')%>% 
 #remove some (likely incorrect) combinations that are creating duplicates for genus
-taxon_high_fx<-taxon_high_rn %>% 
   filter(!(genus == "Achnanthidium" & class =="Fragilariophyceae") & 
            !(genus == "Elakatothrix" & class =="Chlorophyceae") &
-           !(genus == "Leptocylindrus" & algal_type =="Centric diatom")
-  )
+           !(genus == "Leptocylindrus" & algal_type =="Centric diatom"))
 
 #condense taxonomy data set to just the unique combinations
-taxon_high_cond<-unique(taxon_high_fx[,c('kingdom','phylum','class','genus','algal_type')])
+taxon_high_cond<-unique(taxon_high[,c('kingdom','phylum','class','genus','algal_type')])
 #initially some genera appeared more than once in this taxonomy data set
 #but this has been corrected
 
@@ -191,10 +183,10 @@ tax_gen_sum_sub<-filter(tax_gen_sum, Freq >1)
 #  filter(genus == "Achnanthidium" | genus =="Elakatothrix" | genus=="Leptocylindrus" )
 #remove the combos that are duplicates from the main data set
 
-#combine sample data and high level taxonomy
-names(phy)
+#combine sample data and high level taxonomy----------
+names(phyto_cleanest)
 names(taxon_high_cond)
-phyto_tax<-left_join(phy,taxon_high_cond)
+phyto_tax<-left_join(phyto_cleanest,taxon_high_cond)
 
 #reorder columns once more for data frame export
 phy_final<-phyto_tax[,c(1:3,9:12,6,4,5,7,8)]
