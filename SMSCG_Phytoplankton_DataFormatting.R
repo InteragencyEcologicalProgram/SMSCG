@@ -19,12 +19,34 @@ sharepoint_path <- normalizePath(
   )
 )  
 
-# Import data
-#this won't work for me because it's for a Rdata file, not excel files
-#load(file = file.path(sharepoint_path, ""))
+#Create character vectors of all phytoplankton files
+#includes six files of sample data and one file with higher level taxonomy info
+phyto_files <- dir(sharepoint_path, pattern = "\\.xlsx", full.names = T)
 
+#Separate the taxonomy file from the sample data files
+samp_files <- phyto_files[!str_detect(phyto_files, "Taxonomy")] 
+taxon_file <- phyto_files[str_detect(phyto_files, "Taxonomy")] 
 
+#Read the taxonomy file
+taxonomy <- map_dfr(taxon_file, read_excel)
 
+#Combine all of the sample data files
+#getting error that SampleTime isn't matching among files
+#need to specify format of columns
+phytoplankton <- map_dfr(samp_files, ~read_excel(.x, col_types = rep("text", 66)))
+#succeeded in combining all the sample files
+#but date and time are non-sense
+#also the sampling depth column has three variations: "Depth (m)", "Depth (ft.)", "Depth (ft)"
+
+phytoplankton2 <- map_dfr(samp_files, ~read_excel(.x, col_types = cols(.default = "?", SampleDate = "date")))
+
+#options: “blank”, “numeric”, “date”, or “text”
+
+#phytoplankton <- map(samp_file_list, ~ read_excel(.x, col_types = cols(.default = "?", SampleDate = "date", SampleTime="date")))
+
+#emp<-bind_rows(samp_df_list, .id = "id")
+
+glimpse(phytoplankton)
 
 #set working directory for date on OneDrive--------
 
@@ -36,23 +58,11 @@ setwd("C:/Users/nrasmuss/OneDrive - California Department of Water Resources/SMS
 #samp_file_list <- list.files(pattern = "*.Samples.*\\.xlsx") 
 #samp_df_list <- lapply(samp_file_list, read_excel) 
 
-#combine the files of all the sample data (EMP: n=5, SMSCG: n=1)
-#none of this works
-#I think the formatting of the date and time columns are part of the problem
-#also there are lots of mostly empty rows because of the way the files are formatted
-#.id = "id" adds a column with the name of the original file
-#emp<-bind_rows(samp_df_list, .id = "id")
-#phytoplankton <- map_df(samp_df_list, read_xlsx, .id = "id")
-#phytoplankton <- map(samp_file_list, ~ read_excel(.x, col_types = cols(.default = "?", SampleDate = "date", SampleTime="date")))
-
 
 #Import individual files from OneDrive-------------
 
 #import phytoplankton sample data
 phytoplankton<-read_excel("DFW_Phyto_Samples_2020_all.xlsx")
-
-#import taxonomic info to be combined with sample data
-taxonomy<-read_excel("PhytoplanktonTaxonomy_2021-03-19.xlsx")
 
 #start formatting the data set------------
 
