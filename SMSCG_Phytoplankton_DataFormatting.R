@@ -12,19 +12,19 @@ library(lubridate) #formatting dates
 # Dataset is on SharePoint site for the Seasonal Monitoring Report
 
 # Define path on SharePoint site for data
-#sharepoint_path <- normalizePath(
-#  file.path(
-#    Sys.getenv("USERPROFILE"),
-#    "California Department of Water Resources/SMSCG - Summer Action - Data/Phytoplankton"
-#  )
-#)  
+sharepoint_path <- normalizePath(
+  file.path(
+    Sys.getenv("USERPROFILE"),
+    "California Department of Water Resources/SMSCG - Summer Action - Data/Phytoplankton"
+  )
+)  
 
 # Import data
-#load(file = file.path(sharepoint_path, "SMSCG_Phytoplankton_2020.xlsx"))
+#this won't work for me because it's for a Rdata file, not excel files
+#load(file = file.path(sharepoint_path, ""))
 
 
-#if that didin't work
-#load(file = file.path("data","BayStudyFish.RData"))
+
 
 #set working directory for date on OneDrive--------
 
@@ -54,110 +54,86 @@ phytoplankton<-read_excel("DFW_Phyto_Samples_2020_all.xlsx")
 #import taxonomic info to be combined with sample data
 taxonomy<-read_excel("PhytoplanktonTaxonomy_2021-03-19.xlsx")
 
+#start formatting the data set------------
 
-#look at number of different taxonomists
-#if more than one, this likely introduces variation in phytoplankton IDs
-unique(phytoplankton$Taxonomist)
-#just one taxonomist
+phyto_cleaner <- phytoplankton %>% 
+  #subset to just the needed columns
+  select("StationCode"
+         , "SampleDate"
+         , "SampleTime"
+         , "Genus"
+         , "Taxon"
+         , "Colony/Filament/Individual Group Code"
+         , "Unit Abundance"
+         , "Slide/ Chamber Area (mm²)"
+         , "Volume Analyzed (mL)"
+         , "Field-of-view (mm²)"
+         , "Number of Fields Counted"
+         , "Factor"
+         , "Number of cells per unit"
+         , "Biovolume 1":"Biovolume 10") %>% 
+  #remove empty rows created by linear cell measurement rows (length, width, depth)  
+  remove_empty(which = "rows") %>% 
+  #create new column that formats date as a date type instead of date-time
+  mutate(Date = format(ymd(SampleDate), format = "%Y-%m-%d")) %>% 
+  #create new column that calculates mean biovolume per cell
+  rowwise() %>% 
+  mutate(mean_cell_biovolume = mean(c_across(`Biovolume 1`:`Biovolume 10`),na.rm=T))
 
-#subset to just the needed columns
-phyto_thinner<-phytoplankton[,c(
-  "StationCode"
-  , "SampleDate"
-  , "SampleTime"
-  , "Genus"
-  , "Taxon"
-  , "Colony/Filament/Individual Group Code"
-  , "Unit Abundance"
-  , "Slide/ Chamber Area (mm²)"
-  , "Volume Analyzed (mL)"
-  , "Field-of-view (mm²)"
-  , "Number of Fields Counted"
-  , "Factor"
-  , "Number of cells per unit"
-  , "Biovolume 1"
-  , "Biovolume 2"
-  , "Biovolume 3"
-  , "Biovolume 4"
-  , "Biovolume 5"
-  , "Biovolume 6"
-  , "Biovolume 7"
-  , "Biovolume 8"
-  , "Biovolume 9"
-  , "Biovolume 10"
-)]
 
-#remove empty rows
-#lots of these because the initial linear cell measurements were put on different rows (length, width, depth)
-#we just need the biovolume calculated from the linear measurements
-phyto_shorter<-remove_empty(phyto_thinner, which = "rows")
 
 #look at data structure
-glimpse(phyto_shorter)
+glimpse(phyto_cleaner)
 #everything looks fine except the time, which includes nonsense years
 #we will want to keep the time info
 #probably even want a date-time column
 
 #look at station names
-unique(phyto_shorter$StationCode)
+unique(phyto_cleaner$StationCode)
 #n=14 statons; looks like the names were entered consistently; check to make sure they are all the correct stations
 
-
-#look at unique dates to make sure they make sense after the autoformatting
-unique(phyto_shorter$SampleDate)
-phyto_shorter$Date<-ymd(phyto_shorter$SampleDate)
-#looks correct though they are labeled UTC when they should be Pacific Daylight(?) Time
-
-#should add some code to detect any NAs in date
-
 #format the time column
-phyto_shorter$SampleTime2<-format(phyto_shorter$SampleTime, format = "%H:%M:%S")
+phyto_cleaner$SampleTime2<-format(phyto_cleaner$SampleTime, format = "%H:%M:%S")
 #should add some code to detect any NAs in time
 
 #create new column that calculates organisms per mL
-phyto_shorter$organisms_per_ml<-(phyto_shorter$`Unit Abundance`*phyto_shorter$`Slide/ Chamber Area (mm²)`)/
-  (phyto_shorter$`Volume Analyzed (mL)`*phyto_shorter$`Field-of-view (mm²)`*phyto_shorter$`Number of Fields Counted`)
+phyto_cleaner$organisms_per_ml<-(phyto_cleaner$`Unit Abundance`*phyto_cleaner$`Slide/ Chamber Area (mm²)`)/
+  (phyto_cleaner$`Volume Analyzed (mL)`*phyto_cleaner$`Field-of-view (mm²)`*phyto_cleaner$`Number of Fields Counted`)
 
 #organisms per ml can also be calculated by simply multiplying factor by unit abundance
 #Though it requires more calculations, I think I prefer to use the formula based on the more raw
 #version of the data rather than the one based on the factor column which is a derived column
-#phyto_shorter$organisms_per_ml_alt<-(phyto_shorter$Factor*phyto_shorter$`Unit Abundance`)
+#phyto_cleaner$organisms_per_ml_alt<-(phyto_cleaner$Factor*phyto_cleaner$`Unit Abundance`)
   
-#create new column that calculates mean biovolume per cell
-phyto_shorter<-phyto_shorter %>% 
-  rowwise() %>% 
-  mutate(mean_cell_biovolume = mean(c_across(`Biovolume 1`:`Biovolume 10`),na.rm=T))
 
 #create a column that calculates biovolume per mL
 #organisms per ml * cells per unit abundance * mean biovolume per cell
 #units for biovolume both for individual cells and per mL is cubic microns
-phyto_shorter$biovolume_per_ml<-phyto_shorter$organisms_per_ml * 
-  phyto_shorter$"Number of cells per unit" * phyto_shorter$mean_cell_biovolume
+phyto_cleaner$biovolume_per_ml<-phyto_cleaner$organisms_per_ml * 
+  phyto_cleaner$"Number of cells per unit" * phyto_cleaner$mean_cell_biovolume
 
 
-#rename needed columns so they are simpler
-names(phyto_shorter)
+#rename, subset, and reorder needed columns---------- 
 
-phyto<-phyto_shorter %>%
+phyto_cleanest<-phyto_cleaner %>%
+  #simplify column names
   rename(station = StationCode
          ,date = Date 
          ,time = SampleTime2
          ,genus = Genus
          ,taxon = Taxon
-         ,phyto_form =  "Colony/Filament/Individual Group Code"
-  )
+         ,phyto_form =  "Colony/Filament/Individual Group Code") %>% 
+  #subset and reorder columns again to just those needed
+  select("station"
+         , "date"
+         ,"time"
+         ,"genus"
+         ,"taxon"                              
+         ,"phyto_form"           
+         , "organisms_per_ml"
+         ,"biovolume_per_ml"
+         )
 
-#reorder columns and subset again to just the needed columns
-phy<-phyto[,c(
-  "station"
-  , "date"
-  ,"time"
-  ,"genus"
-  ,"taxon"                              
-  ,"phyto_form"           
-  , "organisms_per_ml"
-  ,"biovolume_per_ml" 
-)]
 
 #Add higher level taxonomic information and habitat information-------------
 
