@@ -33,36 +33,23 @@ taxonomy <- map_dfr(taxon_file, read_excel)
 #Combine all of the sample data files
 #getting error that SampleTime isn't matching among files
 #need to specify format of columns
-phytoplankton <- map_dfr(samp_files, ~read_excel(.x, col_types = rep("text", 66)))
+columns<-c("guess","text","text",rep("guess",63)) #still need to work on this
+phytoplankton <- map_dfr(samp_files, ~read_excel(.x, col_types = columns))
 #succeeded in combining all the sample files
 #but date and time are non-sense
 #also the sampling depth column has three variations: "Depth (m)", "Depth (ft.)", "Depth (ft)"
 
-phytoplankton2 <- map_dfr(samp_files, ~read_excel(.x, col_types = cols(.default = "?", SampleDate = "date")))
+phytoplankton <- map_dfr(samp_files, ~read_excel(.x, col_types = "text"))
+glimpse(phytoplankton)
 
-#options: “blank”, “numeric”, “date”, or “text”
+phytoplankton$SampleDate2<-as_date(as.numeric(phytoplankton$SampleDate))
+phytoplankton$SampleTime2<-as_hms(as.numeric(phytoplankton$SampleTime)*60*60*24)
 
-#phytoplankton <- map(samp_file_list, ~ read_excel(.x, col_types = cols(.default = "?", SampleDate = "date", SampleTime="date")))
+phytoplankton2 <- map_dfr(samp_files, ~read_excel(.x, col_types = cols(.default = "guess", SampleDate = "date")))
 
-#emp<-bind_rows(samp_df_list, .id = "id")
 
 glimpse(phytoplankton)
 
-#set working directory for date on OneDrive--------
-
-setwd("C:/Users/nrasmuss/OneDrive - California Department of Water Resources/SMSCG/Phyto/Data_2020")
-
-#import and combine all sample files at once (under construction)------------
-
-#these two lines of code work fine to read the files into R
-#samp_file_list <- list.files(pattern = "*.Samples.*\\.xlsx") 
-#samp_df_list <- lapply(samp_file_list, read_excel) 
-
-
-#Import individual files from OneDrive-------------
-
-#import phytoplankton sample data
-phytoplankton<-read_excel("DFW_Phyto_Samples_2020_all.xlsx")
 
 #start formatting the data set------------
 
