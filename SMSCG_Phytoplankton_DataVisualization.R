@@ -11,10 +11,12 @@
 #maybe nmds by region
 
 #NOTE: don't forget to compare data with notes about some samples not looking not well preserved
+#also note that EMP data starts in June but DFW data starts in July
 
 #load packages
 library(tidyverse)
 library(ggplot2)
+library(lubridate)
 
 # 1. Read in the Data----------------------------------------------
 # Dataset is on SharePoint site for the SMSCG action
@@ -59,6 +61,11 @@ glimpse(station_key)
 #by using inner_join, only the SMSCG relevant stations are kept
 phyto_gates<- inner_join(phyto_vis,station_key) 
 
+#add a column for month
+phyto_gates$month<-month(phyto_gates$date)
+#just extracts the month from the date
+#could consider rounding date to nearest month too
+
 #look at number of samples per station
 s_samp_count<-phyto_gates %>% 
   distinct(station_comb, date) %>% 
@@ -74,29 +81,54 @@ r_samp_count<-phyto_gates %>%
 #twice as many samples in river as east marsh
 #west marsh intermediate in sample number
 
+
+#plot time series of density and biovolume by station-----------
+
 #summarize density and biovolume data by sample (station x date combo)
 #so sum all the taxon specific densities and biovolumes within a sample
-phyto_sum<-phyto_gates %>% 
-  group_by(region, station_comb, station2, date) %>% 
+s_phyto_sum<-phyto_gates %>% 
+  group_by(region, station_comb, station2, date, month) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
     ,tot_bvol = sum(biovolume_per_ml)
   )
 
 
-#plot total phytoplankton density by station and region
-(plot_st_tot_den <-ggplot(phyto_sum, aes(x=date, y=tot_den))+ #specified what to plot on the x and y axes
+#plot total phytoplankton density by station 
+(plot_st_tot_den <-ggplot(s_phyto_sum, aes(x=date, y=tot_den))+ #specified what to plot on the x and y axes
     geom_line() + 
     geom_point() + 
     facet_wrap(~station_comb, nrow=2)
   )
 
-#plot total phytoplankton biovolume by station and region
-(plot_st_tot_bvol <-ggplot(phyto_sum, aes(x=date, y=tot_bvol))+ #specified what to plot on the x and y axes
+#plot total phytoplankton biovolume by station
+(plot_st_tot_bvol <-ggplot(s_phyto_sum, aes(x=date, y=tot_bvol))+ 
     geom_line() + 
     geom_point() + 
     facet_wrap(~station_comb, nrow=2)
 )
 
+#plot time series of density and biovolume by region-----------
 
+#so sum all the taxon specific densities and biovolumes within a sample
+r_phyto_sum<-s_phyto_sum %>% 
+  group_by(region, month) %>% 
+  summarize(
+    tot_den_avg = mean(tot_den)
+    ,tot_bvol_avg = mean(tot_bvol)
+  )
+
+#plot mean total phytoplankton density by region
+(plot_rg_tot_den <-ggplot(r_phyto_sum, aes(x=month, y=tot_den_avg))+ 
+    geom_line() + 
+    geom_point() + 
+    facet_wrap(~region)
+)
+
+#plot mean total phytoplankton biovolume by region
+(plot_rg_tot_bvol <-ggplot(r_phyto_sum, aes(x=month, y=tot_bvol_avg))+ 
+    geom_line() + 
+    geom_point() + 
+    facet_wrap(~region)
+)
 
