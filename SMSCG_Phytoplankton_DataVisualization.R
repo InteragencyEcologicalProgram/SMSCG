@@ -3,11 +3,14 @@
 #data visualizations
 
 #Note: refer to DSRS plotting code
+#also compare DFW and EMP samples where possible
 
 #total organisms per ml
 #total biovolume per ml
 #both responses by major taxonomic group (likely phylum)
 #maybe nmds by region
+
+#NOTE: don't forget to compare data with notes about some samples not looking not well preserved
 
 #load packages
 library(tidyverse)
@@ -71,9 +74,29 @@ r_samp_count<-phyto_gates %>%
 #twice as many samples in river as east marsh
 #west marsh intermediate in sample number
 
+#summarize density and biovolume data by sample (station x date combo)
+#so sum all the taxon specific densities and biovolumes within a sample
+phyto_sum<-phyto_gates %>% 
+  group_by(region, station_comb, station2, date) %>% 
+  summarize(
+    tot_den = sum(organisms_per_ml)
+    ,tot_bvol = sum(biovolume_per_ml)
+  )
 
 
+#plot total phytoplankton density by station and region
+(plot_st_tot_den <-ggplot(phyto_sum, aes(x=date, y=tot_den))+ #specified what to plot on the x and y axes
+    geom_line() + 
+    geom_point() + 
+    facet_wrap(~station_comb, nrow=2)
+  )
 
+#plot total phytoplankton biovolume by station and region
+(plot_st_tot_bvol <-ggplot(phyto_sum, aes(x=date, y=tot_bvol))+ #specified what to plot on the x and y axes
+    geom_line() + 
+    geom_point() + 
+    facet_wrap(~station_comb, nrow=2)
+)
 
 
 
