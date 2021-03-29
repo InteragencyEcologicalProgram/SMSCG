@@ -32,6 +32,9 @@ sharepoint_path <- normalizePath(
 phyto_vis<-read_csv("SMSCG_phytoplankton_formatted_2020.csv")
 #looks like column types are all correct, even date and time
 
+
+#format data---------------
+
 #look at station names
 sort(unique(phyto_vis$station))
 #names are mostly, but not completely, unique
@@ -65,6 +68,18 @@ phyto_gates<- inner_join(phyto_vis,station_key)
 phyto_gates$month<-month(phyto_gates$date)
 #just extracts the month from the date
 #could consider rounding date to nearest month too
+
+#how many genera didn't match up with higher taxonomy?
+sum(is.na(phyto_gates$class))
+#there are 12 rows that aren't matched with higher level taxonomy
+
+#look at distinct genera and taxa
+taxon_na<-phyto_gates %>% 
+  filter(is.na(class)) %>% 
+  distinct(genus, taxon) %>% 
+  arrange(genus,taxon)
+#7 genera and 8 taxa that's weren't in higher taxonomy spreadsheet
+#need to add them
 
 #look at number of samples per station
 s_samp_count<-phyto_gates %>% 
@@ -110,7 +125,8 @@ s_phyto_sum<-phyto_gates %>%
 
 #plot time series of density and biovolume by region-----------
 
-#so sum all the taxon specific densities and biovolumes within a sample
+#so calculate means for densities and biovolumes 
+#across stations within regions and across dates within months
 r_phyto_sum<-s_phyto_sum %>% 
   group_by(region, month) %>% 
   summarize(
@@ -202,8 +218,87 @@ phyto_genera_sum_rg<-phyto_gates %>%
 
 #stacked bar plot showing phyla by station-------
 
+#summarize density and biovolume data by sample and phylum
+#so sum densities and biovolumes within a sample by phylum
+s_phyto_phylum_sum<-phyto_gates %>% 
+  group_by(region, station_comb, date, month,phylum) %>% 
+  summarize(
+    tot_den = sum(organisms_per_ml)
+    ,tot_bvol = sum(biovolume_per_ml)
+  )
+
+#stacked bar plot time series of density by phylum and station
+(plot_st_den_per_phylum <-ggplot(s_phyto_phylum_sum
+      , aes(x=date, y= tot_den,  fill = phylum))+
+  geom_bar(position = "stack", stat = "identity") + 
+  ylab("Phytoplankton Density (Organisms / mL)") + xlab("Date") + 
+  #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
+  #scale_fill_manual(name = "Phylum",
+   #                 values=phylum_colors,
+    #                breaks=phylum_names,
+     #               labels = phylum_names)+ 
+  facet_grid(~station_comb
+             #,labeller = labeller(island = island_label) 
+))
+#cyanobacteria dominates the community numerically at all stations and times
+#figure out why there is "NA" category for phylum
+
+#stacked bar plot time series of density by phylum and station
+(plot_st_bvol_per_phylum <-ggplot(s_phyto_phylum_sum, aes(x=date, y= tot_bvol,  fill = phylum))+
+    geom_bar(position = "stack", stat = "identity") + 
+    ylab("Phytoplankton Biovolume") + xlab("Date") + 
+    #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
+    #scale_fill_manual(name = "Phylum",
+    #                 values=phylum_colors,
+    #                breaks=phylum_names,
+    #               labels = phylum_names)+ 
+    facet_grid(~station_comb
+               #,labeller = labeller(island = island_label) 
+    ))
+#mostly cyanobactera as well as diatoms and allies
+
 
 #stacked bar plot showing phyla by region-------
+
+#summarize density and biovolume data by region, date and phylum
+#so sum densities and biovolumes within a region and date by phylum
+r_phyto_phylum_sum<-s_phyto_phylum_sum %>% 
+  group_by(region, month, phylum) %>% 
+  summarize(
+    tot_den_avg = mean(tot_den)
+    ,tot_bvol_avg = mean(tot_bvol)
+  )
+
+#stacked bar plot time series of density by phylum and station
+(plot_rg_den_per_phylum <-ggplot(r_phyto_phylum_sum
+                                 , aes(x=month, y= tot_den_avg,  fill = phylum))+
+    geom_bar(position = "stack", stat = "identity") + 
+    ylab("Phytoplankton Density (Organisms / mL)") + xlab("Date") + 
+    #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
+    #scale_fill_manual(name = "Phylum",
+    #                 values=phylum_colors,
+    #                breaks=phylum_names,
+    #               labels = phylum_names)+ 
+    facet_grid(~region
+               #,labeller = labeller(island = island_label) 
+    ))
+#cyanobacteria dominates the community numerically at all stations and times
+#figure out why there is "NA" category for phylum
+
+#stacked bar plot time series of density by phylum and station
+(plot_rg_bvol_per_phylum <-ggplot(r_phyto_phylum_sum
+                                 , aes(x=month, y= tot_bvol_avg,  fill = phylum))+
+    geom_bar(position = "stack", stat = "identity") + 
+    ylab("Phytoplankton Biovolume") + xlab("Date") + 
+    #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
+    #scale_fill_manual(name = "Phylum",
+    #                 values=phylum_colors,
+    #                breaks=phylum_names,
+    #               labels = phylum_names)+ 
+    facet_grid(~region
+               #,labeller = labeller(island = island_label) 
+    ))
+#mostly cyanobactera as well as diatoms and allies
 
 
 
