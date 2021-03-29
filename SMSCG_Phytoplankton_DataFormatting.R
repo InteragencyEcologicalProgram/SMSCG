@@ -1,15 +1,15 @@
-#SMSCG
-#Format raw data for data visualization and analysis
+#Suisun Marsh Salinity Control Gate
+#Phytoplankton Data
+#Format raw data in preparation for visualization and analysis
 
 #required packages
 library(tidyverse)
 library(janitor)
 library(readxl) #importing data from excel files
-library(lubridate) #formatting dates
 
 
-# 1. Import Data from SharePoint (under construction) ----------------------------------------------------------
-# Dataset is on SharePoint site for the Seasonal Monitoring Report
+# 1. Read in the Data----------------------------------------------
+# Dataset is on SharePoint site for the SMSCG action
 
 # Define path on SharePoint site for data
 sharepoint_path <- normalizePath(
@@ -27,37 +27,33 @@ phyto_files <- dir(sharepoint_path, pattern = "\\.xlsx", full.names = T)
 samp_files <- phyto_files[!str_detect(phyto_files, "Taxonomy")] 
 taxon_file <- phyto_files[str_detect(phyto_files, "Taxonomy")] 
 
-#Read the taxonomy file
-taxonomy <- map_dfr(taxon_file, read_excel)
+#create taxonomy df
+taxonomy <- read_excel(taxon_file)
 
-#Combine all of the sample data files
-#getting error that SampleTime isn't matching among files
-#need to specify format of columns
-columns<-c("guess","text","text",rep("guess",63)) #still need to work on this
-phytoplankton <- map_dfr(samp_files, ~read_excel(.x, col_types = columns))
+#Combine and all of the sample data files into a single df
+#specify format of columns because column types not automatically read consistently among files
+column_type<-c(rep("text",4),rep("numeric",10),rep("text",5),rep("numeric",5),rep("text",5)
+               ,rep("numeric",10),"text",rep("numeric",26)) 
+phytoplankton <- map_dfr(samp_files, ~read_excel(.x, col_types = column_type))
+glimpse(phytoplankton)
 #succeeded in combining all the sample files
-#but date and time are non-sense
+#but date and time are in weird format
 #also the sampling depth column has three variations: "Depth (m)", "Depth (ft.)", "Depth (ft)"
 
-phytoplankton <- map_dfr(samp_files, ~read_excel(.x, col_types = "text"))
-glimpse(phytoplankton)
+#format the sample data set------------
 
-phytoplankton$SampleDate2<-as_date(as.numeric(phytoplankton$SampleDate))
+#format date and time columns
+phytoplankton$SampleDate2<-as.Date(as.numeric(phytoplankton$SampleDate),origin = "1899-12-30")
+#converted numeric excel dates to date format; compared with some original data and looks correct
 phytoplankton$SampleTime2<-as_hms(as.numeric(phytoplankton$SampleTime)*60*60*24)
-
-phytoplankton2 <- map_dfr(samp_files, ~read_excel(.x, col_types = cols(.default = "guess", SampleDate = "date")))
-
-
+#checked some formatted times against original data and it looks like they converted correctly
 glimpse(phytoplankton)
-
-
-#start formatting the data set------------
 
 phyto_cleaner <- phytoplankton %>% 
   #subset to just the needed columns
   select("StationCode"
-         , "SampleDate"
-         , "SampleTime"
+         , "SampleDate2"
+         , "SampleTime2"
          , "Genus"
          , "Taxon"
          , "Colony/Filament/Individual Group Code"
@@ -71,27 +67,30 @@ phyto_cleaner <- phytoplankton %>%
          , "Biovolume 1":"Biovolume 10") %>% 
   #remove empty rows created by linear cell measurement rows (length, width, depth)  
   remove_empty(which = "rows") %>% 
-  #create new column that formats date as a date type instead of date-time
-  mutate(Date = format(ymd(SampleDate), format = "%Y-%m-%d")) %>% 
   #create new column that calculates mean biovolume per cell
   rowwise() %>% 
   mutate(mean_cell_biovolume = mean(c_across(`Biovolume 1`:`Biovolume 10`),na.rm=T))
 
-
-
 #look at data structure
 glimpse(phyto_cleaner)
-#everything looks fine except the time, which includes nonsense years
-#we will want to keep the time info
-#probably even want a date-time column
+#everything looks fine 
 
 #look at station names
 unique(phyto_cleaner$StationCode)
-#n=14 statons; looks like the names were entered consistently; check to make sure they are all the correct stations
+#station names mostly but not entirely formatted consistently; why is NA present?
 
-#format the time column
-phyto_cleaner$SampleTime2<-format(phyto_cleaner$SampleTime, format = "%H:%M:%S")
-#should add some code to detect any NAs in time
+#look at number of samples per station
+samp_count<-phyto_cleaner %>% 
+  distinct(StationCode, SampleDate2) %>% 
+  group_by(StationCode) %>% 
+  summarize(count = n())
+#there is one NA but there shouldn't be any
+
+#look closer at rows with NA for station
+station_na<-phyto_cleaner %>% 
+  filter(is.na(StationCode))
+#There are two rows with the value 4 for Biovolume2 but are otherwise blank rows
+#maybe values were typed into wrong row?
 
 #create new column that calculates organisms per mL
 phyto_cleaner$organisms_per_ml<-(phyto_cleaner$`Unit Abundance`*phyto_cleaner$`Slide/ Chamber Area (mm²)`)/
@@ -109,13 +108,12 @@ phyto_cleaner$organisms_per_ml<-(phyto_cleaner$`Unit Abundance`*phyto_cleaner$`S
 phyto_cleaner$biovolume_per_ml<-phyto_cleaner$organisms_per_ml * 
   phyto_cleaner$"Number of cells per unit" * phyto_cleaner$mean_cell_biovolume
 
-
-#rename, subset, and reorder needed columns---------- 
+#rename, subset, and reorder needed columns 
 
 phyto_cleanest<-phyto_cleaner %>%
   #simplify column names
   rename(station = StationCode
-         ,date = Date 
+         ,date = SampleDate2 
          ,time = SampleTime2
          ,genus = Genus
          ,taxon = Taxon
@@ -146,20 +144,20 @@ taxon_high<-taxonomy %>%
   ,"Algal Type") %>%  #confirmed that there is just one type per genus
 #this approach is very simple because it removes the need for exact matches in the taxon names
 #part of the difficulty in matching taxon names is presence of "cf." for many taxa
-#unfortunately by just matching by genus and not taxon, we loose the habitat type, and salinity range info
+#unfortunately by just matching by genus and not taxon, we lose the habitat type, and salinity range info
 #also with species level data, there's a chance the taxonomy dataset doesn't include every species in the samples
   rename(kingdom = Kingdom
          ,phylum = Phylum
          ,class = Class
          ,genus = Genus
-         ,algal_type = 'Algal Type')%>% 
+         ,common_name = 'Algal Type')%>% 
 #remove some (likely incorrect) combinations that are creating duplicates for genus
   filter(!(genus == "Achnanthidium" & class =="Fragilariophyceae") & 
            !(genus == "Elakatothrix" & class =="Chlorophyceae") &
-           !(genus == "Leptocylindrus" & algal_type =="Centric diatom"))
+           !(genus == "Leptocylindrus" & common_name =="Centric diatom"))
 
 #condense taxonomy data set to just the unique combinations
-taxon_high_cond<-unique(taxon_high[,c('kingdom','phylum','class','genus','algal_type')])
+taxon_high_cond<-unique(taxon_high[,c('kingdom','phylum','class','genus','common_name')])
 #initially some genera appeared more than once in this taxonomy data set
 #but this has been corrected
 
@@ -180,18 +178,16 @@ tax_gen_sum_sub<-filter(tax_gen_sum, Freq >1)
 #  filter(genus == "Achnanthidium" | genus =="Elakatothrix" | genus=="Leptocylindrus" )
 #remove the combos that are duplicates from the main data set
 
-#combine sample data and high level taxonomy----------
+#combine sample data and high level taxonomy by genus----------
 names(phyto_cleanest)
 names(taxon_high_cond)
 phyto_tax<-left_join(phyto_cleanest,taxon_high_cond)
 
 #reorder columns once more for data frame export
-phy_final<-phyto_tax[,c(1:3,9:12,6,4,5,7,8)]
+phyto_final<-phyto_tax[,c(1:3,9:12,6,4,5,7,8)]
 
-
-#write the formatted data file to a csv
-#figure out how to save to SharePoint site
-#write_csv(phy_final,"SMSCG_phytoplankton_formatted_2020.csv")
+#write the formatted data as csv on SharePoint
+#write_csv(phyto_final,file = paste0(sharepoint_path,"/SMSCG_phytoplankton_formatted_2020.csv"))
 
 
 
