@@ -29,9 +29,6 @@ sharepoint_path <- normalizePath(
   )
 )  
 
-phyto_vis<-read_csv("SMSCG_phytoplankton_formatted_2020.csv")
-#looks like column types are all correct, even date and time
-
 # Define path on SharePoint site for plots
 sharepoint_path_plots <- normalizePath(
   file.path(
@@ -39,6 +36,10 @@ sharepoint_path_plots <- normalizePath(
     "California Department of Water Resources/SMSCG - Summer Action - Data/Phytoplankton/Plots"
   )
 )  
+
+#read in the aggregated and formatted phytoplankton data
+phyto_vis<-read_csv(file = paste0(sharepoint_path,"/SMSCG_phytoplankton_formatted_2020.csv"))
+#looks like column types are all correct, even date and time
 
 #format data---------------
 
@@ -111,11 +112,12 @@ r_samp_count<-phyto_gates %>%
 #summarize density and biovolume data by sample (station x date combo)
 #so sum all the taxon specific densities and biovolumes within a sample
 s_phyto_sum<-phyto_gates %>% 
-  group_by(region, station_comb, station2, date, month) %>% 
+  group_by(region, station_comb, station2, month, date, time) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
     ,tot_bvol = sum(biovolume_per_ml)
   )
+#write_csv(s_phyto_sum,file = paste0(sharepoint_path,"/SMSCG_phytoplankton_sample_summary_2020.csv"))
 
 
 #plot total phytoplankton density by station 
@@ -358,16 +360,6 @@ r_phyto_phylum_sum_rg<-phyto_gates %>%
 )
 #ggsave(file = paste0(sharepoint_path_plots,"/SMSCG_Phyto_StackedBar_AllPhyto_Region.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
 
-
-
-
-
-
-
-
-
-
-
 #stacked barplots for diatoms-------------
 
 #summarize density and biovolume data by region and month
@@ -438,7 +430,11 @@ diatom_sum_rg<-phyto_gates %>%
 )
 #ggsave(file = paste0(sharepoint_path_plots,"/SMSCG_Phyto_StackedBar_Diatom_Region.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
 
+#NMDS plots---------------
+#next step is use these plots to see how much regions overlap in composition
+#the large number of rare taxa may make it difficult to generate these plots
 
+#first create histogram of genera per sample
 
 
 
