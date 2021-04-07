@@ -28,6 +28,17 @@ sharepoint_path <- normalizePath(
 #includes organisms/mL and biovolume/mL
 phyto_com<-read_csv(file = paste0(sharepoint_path,"./Phytoplankton/SMSCG_phytoplankton_sample_summary_2020.csv"))
 
+#read in the sonde data, including fluorescence used to estimate primary productivity
+sonde<-read_csv(file = paste0(sharepoint_path,"./2020 data for USBR/des_data.csv"))
+
 #read in extracted chlorophyll-a concentrations
-#NOTE: this code doesn't work 
-chlora<-read_excel(file = paste0(sharepoint_path,"./2020 data for USBR/DWR SuisunMarsh Chl All Stations WY2020.xlsx"))
+chlora<-read_excel(path = paste0(sharepoint_path,"./2020 data for USBR/DWR SuisunMarsh Chl All Stations WY2020.xlsx"))
+
+
+
+
+
+
+
+
+
