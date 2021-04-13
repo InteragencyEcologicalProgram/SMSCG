@@ -123,10 +123,13 @@ stations$region<-c(rep("GZ",2), "RV","MW",rep("ME",2), rep("MW",3),"ME" )
 #use join to add region names to main extracted chlorophyll data set
 chlora_reg<-left_join(chlora_sub,stations)
 
-#look at Dave's code from the aquatic veg study about chlorophyll samples
+#at least for now, just average the normal and duplicate samples from a given site/date
+chlora_samp_mean<-chlora_reg %>% 
+  group_by("station_name","station_code","region","date","analyte","units") %>% 
+  summarize(samp_mean = mean(result))
 
 
-#make sure all dataframe columns are formatted correctly
+#make sure all data frame columns are formatted correctly
 
 #rough regional comparisons (would be fairly quick to do)
 #assign stations to regions for continuous and discrete WQ samples
