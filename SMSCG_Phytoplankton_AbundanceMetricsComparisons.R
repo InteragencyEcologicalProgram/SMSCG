@@ -207,25 +207,23 @@ fluor_week_sum <- fluor_reg %>%
 #all these data are NAs; perhaps the probe malfunctioned
 #but it could be some sort of data download error or something too
   
+#summarize the phytoplankton community data by region and week---------
 
+phyto_com_sum <- phyto_com %>% 
+  mutate(week = week(date)) %>% 
+  group_by(region, week) %>% 
+  summarize(tot_den = mean(tot_den),
+            tot_bvol = mean(tot_bvol)
+            )
 
+#combine the three data set and plot correlations by region-------
 
+#create list of data sets to combine
+data_list <- list(phyto_com_sum, lab_pigment, fluor_week_sum)
 
-#make sure all data frame columns are formatted correctly
-
-#rough regional comparisons (would be fairly quick to do)
-#assign stations to regions for continuous and discrete WQ samples
-#summarize these data by region and month
-#summarize phyto community data by region and month (see data visualization script for code to do this)
-#plot correlations between pairs of metrics
-
-#more sophisticated approach (would take much more work)
-#try to pair specific sampling stations across sample types
-   #need to match based on distances and also times
-#keep track of how large the differences in space and time are between samples compared
-#could then plot correlation coefficents against things like time and space differences
-#would indicate how much mismatches in space and time affect similarities among metrics
-
+#join data sets by region and week
+all_data <- data_list %>% 
+  reduce(full_join, by = c("region","week"))  
 
 
 
