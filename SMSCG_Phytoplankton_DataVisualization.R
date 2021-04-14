@@ -25,26 +25,18 @@ library(lubridate)
 sharepoint_path <- normalizePath(
   file.path(
     Sys.getenv("USERPROFILE"),
-    "California Department of Water Resources/SMSCG - Summer Action - Data/Phytoplankton"
-  )
-)  
-
-# Define path on SharePoint site for plots
-sharepoint_path_plots <- normalizePath(
-  file.path(
-    Sys.getenv("USERPROFILE"),
-    "California Department of Water Resources/SMSCG - Summer Action - Data/Phytoplankton/Plots"
+    "California Department of Water Resources/SMSCG - Summer Action - Data"
   )
 )  
 
 #read in the aggregated and formatted phytoplankton data
-phyto_vis<-read_csv(file = paste0(sharepoint_path,"/SMSCG_phytoplankton_formatted_2020.csv"))
+phyto_vis<-read_csv(file = paste0(sharepoint_path,"./Phytoplankton/SMSCG_phytoplankton_formatted_2020.csv"))
 #looks like column types are all correct, even date and time
 
 #format data---------------
 
 #look at station names
-sort(unique(phyto_vis$station))
+#sort(unique(phyto_vis$station))
 #names are mostly, but not completely, unique
 #fix this one because it's needed: "STN 610" vs "STN610"
 #the rest will be filtered out: 
@@ -66,7 +58,7 @@ station_key <- data.frame(
   station_comb = c(rep("PHY706", 4), rep("PHY704",2), rep("PHY801", 4),"STN609","MONT","STN610", "FMWT605", rep("PHY606",3),"NZS42"),
   region = c(rep("RV",10), rep("ME",3), rep("MW",5))
 )
-glimpse(station_key)
+#glimpse(station_key)
 
 #join the sample data and the new station/region data
 #by using inner_join, only the SMSCG relevant stations are kept
@@ -117,7 +109,10 @@ s_phyto_sum<-phyto_gates %>%
     tot_den = sum(organisms_per_ml)
     ,tot_bvol = sum(biovolume_per_ml)
   )
-#write_csv(s_phyto_sum,file = paste0(sharepoint_path,"/SMSCG_phytoplankton_sample_summary_2020.csv"))
+#write_csv(s_phyto_sum,file = paste0(sharepoint_path,"./Plots/SMSCG_phytoplankton_sample_summary_2020.csv"))
+
+#reorder region factor levels for plotting
+s_phyto_sum$region <- factor(s_phyto_sum$region, levels=c('MW','ME','RV'))
 
 
 #plot total phytoplankton density by station 
@@ -151,6 +146,10 @@ r_phyto_sum<-s_phyto_sum %>%
   )
 #glimpse(r_phyto_sum)
 
+#reorder region factor levels for plotting
+r_phyto_sum$region <- factor(r_phyto_sum$region, levels=c('MW','ME','RV'))
+
+
 #plot mean total phytoplankton density by region
 (plot_rg_tot_den <-ggplot(r_phyto_sum, aes(x=month, y=tot_den_avg))+ 
     geom_line() + 
@@ -164,9 +163,11 @@ r_phyto_sum<-s_phyto_sum %>%
     geom_line() + 
     geom_point() + 
     geom_errorbar(aes(ymin=tot_bvol_avg-tot_bvol_se, ymax=tot_bvol_avg+tot_bvol_se), width = 0.2) +
-    facet_wrap(~region)
+    facet_wrap(~region)+
+    labs(x="Month", y="Total Biovolume (cubic microns per mL)")
+  
 )
-#ggsave(file = paste0(sharepoint_path_plots,"/SMSCG_Phyto_LinePlot_TotalBiovolume_RegionMonth.png"),type ="cairo-png",width=8, height=5,units="in",dpi=300)
+#ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_LinePlot_TotalBiovolume_RegionMonth.png"),type ="cairo-png",width=8, height=5,units="in",dpi=300)
 
 
 #boxplots of total density and biovolume by region-------
@@ -178,9 +179,11 @@ r_phyto_sum<-s_phyto_sum %>%
 
 (plot_rg_tot_bvol_bx<-ggplot(data=s_phyto_sum, aes(x = region, y = tot_bvol)) + 
     geom_boxplot()+
-    geom_jitter() #adds all points to plot, not just outliers
+    geom_jitter()+ #adds all points to plot, not just outliers
+    labs(x = "Region", y = "Total Biovolume (cubic microns per mL)")
+  
 )
-#ggsave(file = paste0(sharepoint_path_plots,"/SMSCG_Phyto_BoxPlot_TotalBiovolume_Region.png"),type ="cairo-png",width=8, height=5,units="in",dpi=300)
+#ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_BoxPlot_TotalBiovolume_Region.png"),type ="cairo-png",width=8, height=5,units="in",dpi=300)
 
 
 #plot number of genera by station and region-------
@@ -328,7 +331,7 @@ r_phyto_phylum_sum<-s_phyto_phylum_sum %>%
                #,labeller = labeller(island = island_label) 
     ))
 #mostly cyanobactera as well as diatoms and allies
-#ggsave(file = paste0(sharepoint_path_plots,"/SMSCG_Phyto_StackedBar_TotalBiovolume_AllPhyto_Region.png"),type ="cairo-png",width=8, height=5,units="in",dpi=300)
+#ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_StackedBar_TotalBiovolume_AllPhyto_Region.png"),type ="cairo-png",width=8, height=5,units="in",dpi=300)
 
 
 #stacked bar plot showing phyla by region-------
@@ -347,18 +350,22 @@ r_phyto_phylum_sum_rg<-phyto_gates %>%
     tot_bvol_avg = mean(tot_bvol),
   )
 
+#reorder region factor levels for plotting
+r_phyto_phylum_sum_rg$region <- factor(r_phyto_phylum_sum_rg$region, levels=c('MW','ME','RV'))
+
+
 #stacked bar plot time series of diatom biovolume by region, class
 (plot_all_phyto_rg_only_bvol_per_phylum <-ggplot(r_phyto_phylum_sum_rg
                                              , aes(x=region, y= tot_bvol_avg,  fill = phylum))+
     geom_bar(position = "stack", stat = "identity") + 
-    ylab("Phytoplankton Biovolume") + xlab("Region")  
+    ylab("Biovolume (cubic microns per mL)") + xlab("Region")  
   #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
   #scale_fill_manual(name = "Phylum",
   #                 values=phylum_colors,
   #                breaks=phylum_names,
   #               labels = phylum_names)+ 
 )
-#ggsave(file = paste0(sharepoint_path_plots,"/SMSCG_Phyto_StackedBar_AllPhyto_Region.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
+#ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_StackedBar_AllPhyto_Region.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
 
 #stacked barplots for diatoms-------------
 
@@ -379,6 +386,10 @@ diatom_sum<-phyto_gates %>%
       tot_bvol_avg = mean(tot_bvol),
       tot_bvol_se = se(tot_bvol)
     )
+
+#reorder region factor levels for plotting
+diatom_sum$region <- factor(diatom_sum$region, levels=c('MW','ME','RV'))
+
   
 #stacked bar plot time series of diatom biovolume by region, month, class
 (plot_diatom_rg_bvol_per_class <-ggplot(diatom_sum
@@ -393,7 +404,7 @@ diatom_sum<-phyto_gates %>%
     facet_grid(~region
                #,labeller = labeller(island = island_label) 
     ))
-#ggsave(file = paste0(sharepoint_path_plots,"/SMSCG_Phyto_StackedBar_Diatom_RegionMonth.png"),type ="cairo-png",width=9, height=5,units="in",dpi=300)
+#ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_StackedBar_Diatom_RegionMonth.png"),type ="cairo-png",width=9, height=5,units="in",dpi=300)
 
 #similar stacked bar plot but averaged over months too
 #facilitate comparisons among regions
@@ -417,18 +428,22 @@ diatom_sum_rg<-phyto_gates %>%
     tot_bvol_se = se(tot_bvol)
   )
 
+#reorder region factor levels for plotting
+diatom_sum_rg$region <- factor(diatom_sum_rg$region, levels=c('MW','ME','RV'))
+
+
 #stacked bar plot time series of diatom biovolume by region, class
 (plot_diatom_rg_only_bvol_per_class <-ggplot(diatom_sum_rg
                                         , aes(x=region, y= tot_bvol_avg,  fill = class))+
     geom_bar(position = "stack", stat = "identity") + 
-    ylab("Phytoplankton Biovolume") + xlab("Region")  
+    ylab("Biovolume (cubic microns per mL)") + xlab("Region")  
     #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
     #scale_fill_manual(name = "Phylum",
     #                 values=phylum_colors,
     #                breaks=phylum_names,
     #               labels = phylum_names)+ 
 )
-#ggsave(file = paste0(sharepoint_path_plots,"/SMSCG_Phyto_StackedBar_Diatom_Region.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
+#ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_StackedBar_Diatom_Region.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
 
 #NMDS plots---------------
 #next step is use these plots to see how much regions overlap in composition
