@@ -223,9 +223,45 @@ data_list <- list(phyto_com_sum, lab_pigment, fluor_week_sum)
 
 #join data sets by region and week
 all_data <- data_list %>% 
-  reduce(full_join, by = c("region","week"))  
+  reduce(full_join, by = c("region","week"))  %>% 
+  #rename the lab pigment columns
+  rename(chlorophyll = "Chlorophyll a",
+         pheophytin = "Pheophytin a"
+  )
 
+#plot phytoplankton density vs phytoplankton biovolume
+(plot_den_bvol <-ggplot(all_data, aes(x=tot_den, y=tot_bvol))+ 
+    geom_point() + 
+    facet_wrap(~region, nrow=2)
+)
+#overall, seems like there is some relationship
+#hard to make out because of outlier in RV (high biovolume value relative to density)
+#no data for GZ, which makes sense for these data
 
+#plot chlorophyll vs pheophytin
+(plot_chl_pheo <-ggplot(all_data, aes(x=chlorophyll, y=pheophytin))+ 
+    geom_point() + 
+    facet_wrap(~region, nrow=2)
+)
+#possibly a relationship but hard to tell because of outlier in MW
 
+#plot chlorophyll vs fluorescence
+(plot_chl_fluor <-ggplot(all_data, aes(x=chlorophyll, y=fluorescence))+ 
+    geom_point() + 
+    facet_wrap(~region, nrow=2)
+)
+#not very compelling but look at MW outlier
 
+#plot chlorophyll vs total biovolume
+(plot_chl_bvol <-ggplot(all_data, aes(x=chlorophyll, y=tot_bvol))+ 
+    geom_point() + 
+    facet_wrap(~region, nrow=2)
+)
+#again, the MW outlier
 
+#plot fluorescence vs total biovolume
+(plot_fluor_bvol <-ggplot(all_data, aes(x=fluorescence, y=tot_bvol))+ 
+    geom_point() + 
+    facet_wrap(~region, nrow=2)
+)
+#again RV outlier
