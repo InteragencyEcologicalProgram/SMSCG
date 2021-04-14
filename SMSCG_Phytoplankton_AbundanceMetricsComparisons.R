@@ -129,8 +129,20 @@ stations$region<-c(rep("GZ",2), "RV","MW",rep("ME",2), rep("MW",3),"ME" )
 #could get GPS coordinates from CDEC
 
 #use join to add region names to main extracted chlorophyll data set
-chlora_reg<-left_join(chlora_sub,stations)
+chlora_reg<-left_join(chlora_sub,stations) %>% 
+  #remove two high outliers for MW (over 150 mg/L)
+  #go back and look into these later
+  filter(result < 150)
 #glimpse(chlora_reg)
+
+#boxplot of chlorophyll by region
+chlora_reg$region <- factor(chlora_reg$region, levels=c('GZ','MW','ME','RV'))
+(plot_rg_chlora_bx<-ggplot(data=chlora_reg, aes(x = region, y = result)) + 
+    geom_boxplot()+
+    labs(x="Region", y="Chlorophyll-a (mg/L)")
+)
+ggsave(file = paste0(sharepoint_path,"./Plots/ChlorophyllByRegion_Boxplot.png"),type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
 
 #add a week of the year column based on date
 chlora_reg$week <- week(chlora_reg$date)
@@ -206,6 +218,15 @@ fluor_week_sum <- fluor_reg %>%
 #  filter(cdec_code == "BDL" & week > 26 & week < 32)
 #all these data are NAs; perhaps the probe malfunctioned
 #but it could be some sort of data download error or something too
+
+#boxplot of fluorescence by region
+fluor_reg$region <- factor(fluor_reg$region, levels=c('GZ','MW','ME','RV'))
+(plot_rg_fluor_bx<-ggplot(data=fluor_reg, aes(x = region, y = value)) + 
+    geom_boxplot()+
+    labs(x="Region", y="Fluorescence")
+)
+#ggsave(file = paste0(sharepoint_path,"./Plots/FluorescenceByRegion_Boxplot.png"),type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
   
 #summarize the phytoplankton community data by region and week---------
 
@@ -265,3 +286,5 @@ all_data <- data_list %>%
     facet_wrap(~region, nrow=2)
 )
 #again RV outlier
+
+
