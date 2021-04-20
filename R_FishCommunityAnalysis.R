@@ -8,12 +8,17 @@ library(tidyverse)
 library(readxl)
 library(arsenal)
 
-#Path to local drive
-root <- "D:/Projects/Suisun Marsh Salinity Control Gate Action/2020 DWR Suisun Marsh Salinity Control Gate Action Report"
-setwd(root)
+# Dataset is on SharePoint site for the SMSCG action
+# Define path on SharePoint site for data
+root <- normalizePath(
+  file.path(
+    Sys.getenv("USERPROFILE"),
+    "California Department of Water Resources/SMSCG - Summer Action - Data"
+  )
+)  
 
-data_root<-file.path(root,"Data")
-output_root <- file.path(root,"Output")
+data_root<-file.path(root,"EDSM")
+output_root <- file.path(root,"Plots")
 
 End_year=2020
 
