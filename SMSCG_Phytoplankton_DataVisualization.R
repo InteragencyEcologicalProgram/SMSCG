@@ -67,17 +67,26 @@ phyto_gates<- inner_join(phyto_vis,station_key) %>%
   mutate(month = month(date)) %>% 
   #remove the June samples from EMP because we don't have any other June samples
   filter(month!=6) 
-  
+
+#check for NAs
+check_na <- phyto_gates[rowSums(is.na(phyto_gates)) > 0,]
+#no NAs now that I've updated the taxonomy dataset
+
+#export data as csv for publishing on EDI
+edi<-phyto_gates[,c(1,14,2:11)]
+
+write_csv(edi,file = paste0(sharepoint_path,"./Phytoplankton/SMSCG_phytoplankton_EDI_2020.csv"))
+
 #how many genera didn't match up with higher taxonomy?
-sum(is.na(phyto_gates$class))
+#sum(is.na(phyto_gates$class))
 #there are 10 rows that aren't matched with higher level taxonomy
 
 #look at distinct genera and taxa
-taxon_na<-phyto_gates %>% 
-  filter(is.na(class)) %>% 
-  distinct(genus, taxon) %>% 
-  arrange(genus,taxon)
-#5 genera and 6 taxa that's weren't in higher taxonomy spreadsheet
+#taxon_na<-phyto_gates %>% 
+#  filter(is.na(class)) %>% 
+#  distinct(genus, taxon) %>% 
+#  arrange(genus,taxon)
+#5 genera and 6 taxa that weren't in higher taxonomy spreadsheet
 #need to add them
 
 #look at number of samples per station

@@ -5,6 +5,7 @@
 #required packages
 library(tidyverse)
 library(janitor)
+library(hms)
 library(readxl) #importing data from excel files
 
 
@@ -35,7 +36,7 @@ taxonomy <- read_excel(taxon_file)
 column_type<-c(rep("text",4),rep("numeric",10),rep("text",5),rep("numeric",5),rep("text",5)
                ,rep("numeric",10),"text",rep("numeric",26)) 
 phytoplankton <- map_dfr(samp_files, ~read_excel(.x, col_types = column_type))
-glimpse(phytoplankton)
+#glimpse(phytoplankton)
 #succeeded in combining all the sample files
 #but date and time are in weird format
 #also the sampling depth column has three variations: "Depth (m)", "Depth (ft.)", "Depth (ft)"
@@ -47,7 +48,7 @@ phytoplankton$SampleDate2<-as.Date(as.numeric(phytoplankton$SampleDate),origin =
 #converted numeric excel dates to date format; compared with some original data and looks correct
 phytoplankton$SampleTime2<-as_hms(as.numeric(phytoplankton$SampleTime)*60*60*24)
 #checked some formatted times against original data and it looks like they converted correctly
-glimpse(phytoplankton)
+#glimpse(phytoplankton)
 
 phyto_cleaner <- phytoplankton %>% 
   #subset to just the needed columns
@@ -72,7 +73,7 @@ phyto_cleaner <- phytoplankton %>%
   mutate(mean_cell_biovolume = mean(c_across(`Biovolume 1`:`Biovolume 10`),na.rm=T))
 
 #look at data structure
-glimpse(phyto_cleaner)
+#glimpse(phyto_cleaner)
 #everything looks fine 
 
 #look at station names
@@ -129,6 +130,9 @@ phyto_cleanest<-phyto_cleaner %>%
          ,"biovolume_per_ml"
          )
 
+#check for NAs
+check_na <- phyto_cleanest[rowSums(is.na(phyto_cleanest)) > 0,]
+#none of these rows are needed for SMSCG data set
 
 #Add higher level taxonomic information and habitat information-------------
 
@@ -184,7 +188,8 @@ names(taxon_high_cond)
 phyto_tax<-left_join(phyto_cleanest,taxon_high_cond)
 
 #reorder columns once more for data frame export
-phyto_final<-phyto_tax[,c(1:3,9:12,6,4,5,7,8)]
+#decided to drop the common names column here too
+phyto_final<-phyto_tax[,c(1:3,9:11,6,4,5,7,8)]
 
 #write the formatted data as csv on SharePoint
 #write_csv(phyto_final,file = paste0(sharepoint_path,"/SMSCG_phytoplankton_formatted_2020.csv"))
