@@ -75,7 +75,7 @@ check_na <- phyto_gates[rowSums(is.na(phyto_gates)) > 0,]
 #export data as csv for publishing on EDI
 edi<-phyto_gates[,c(1,14,2:11)]
 
-write_csv(edi,file = paste0(sharepoint_path,"./Phytoplankton/SMSCG_phytoplankton_EDI_2020.csv"))
+#write_csv(edi,file = paste0(sharepoint_path,"./Phytoplankton/SMSCG_phytoplankton_EDI_2020.csv"))
 
 #how many genera didn't match up with higher taxonomy?
 #sum(is.na(phyto_gates$class))
