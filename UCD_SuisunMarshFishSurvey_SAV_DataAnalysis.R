@@ -10,23 +10,30 @@
 library(tidyverse)
 library(janitor)
 library(lubridate)
+#library(readxl) #importing data from excel files
+
 
 
 # Read in the Data----------------------------------------------
-# Dataset is on SharePoint site for the SMSCG action
+# Datasets are on SharePoint site for the SMSCG action
 
 # Define path on SharePoint site for data
 sharepoint_path <- normalizePath(
   file.path(
     Sys.getenv("USERPROFILE"),
-    "California Department of Water Resources/SMSCG - Summer Action - Data/UC-Davis Suisun Marsh Fish Survey"
+    "California Department of Water Resources/SMSCG - Summer Action - Data"
   )
 )  
 
-#read in data
-sav_data<-read_csv(file = paste0(sharepoint_path,"/SAV_Data_2014-2020.csv"))
+#read in submerged aquatic vegetation data
+sav_data<-read_csv(file = paste0(sharepoint_path,"./UC-Davis Suisun Marsh Fish Survey/SAV_Data_2014-2020.csv"))
 
-#format data-----------
+#read in water quality data from the National Estuarine Research Reserve System (NERRS) stations
+#for this analysis, just need SFBFMWQ 
+nerr_data<-read_csv(file = paste0(sharepoint_path,"./2020 data for USBR/NERRS_data/SFBSMWQ_SFBFMWQ_2014-01-01_2021-04-01.csv"))
+
+
+#format SAV data-----------
 
 #remove unneeded columns
 #MethodCode = OTR for all samples because all from same type of gear
@@ -76,20 +83,24 @@ hist(sav_cleaner$Volume)
 #vast majority are small but at least one or two that are very large
 
 #create data frame that categorizes station by region
+#and identifies the closest water quality station
 #E = eastern marsh, C = central marsh, W = western marsh
-#O = other: a temporary category for two stations that I can't place on map; look up coordinates in database
-region <- data.frame(
-  StationCode = c("MZ1", "MZ2", "MZ6", "NS3", "NS2", "NS1", "DV2", "DV1","CO1", "SU2", "SB1", "BY3","SU4", "SU3", "MZN3", "SD2"),
-  region = c(rep("E",8), rep("C",4), rep("W",2), rep("O",2))
+rgwq <- data.frame(
+  StationCode = c("MZ1", "MZ2", "MZ6", "NS3", "NS2", "NS1", "DV2", "DV1","MZN3","CO1", "SU2", "SB1", "BY3","SD2", "SU4", "SU3"),
+  region = c(rep("E",9), rep("C",5), rep("W",2)),
+  wq = c("MSL", "NSL", rep("BLL",7),rep("SFBSMWQ",5),rep("GOD",2))
 )
-#stations that seem to be missing
+#fish stations that seem to be missing
 #East marsh: DV3
 #Central marsh: CO2, SB2, SU1, BY1, PT1, PT2
 #West marsh: GY2, GY1, GY3
-#two stations that aren't on my map of the study: "MZN3", "SD2" 
+#all of these are active stations according to data base
+#two stations that aren't on my map of the study: 
+#"MZN3": Montezuma Slough - at side channel, 38.1503740699, -121.916719863 (East marsh)
+#"SD2": Sheldrake Slough - at Suisun Slough, no coordinates in database (West Marsh)
 
 #add region categories to main data set
-savr<- inner_join(sav_cleaner,region) 
+savr<- inner_join(sav_cleaner,rgwq) 
 
 #plots-----------
 
@@ -99,9 +110,37 @@ savr<- inner_join(sav_cleaner,region)
 
 #stacked bar plots showing composition by month across years within station
 
+
+#format NERR water quality data--------------
+
+nerr_cleaner <- nerr_data %>% 
+  #just want the date-time column and the SFBFMWQ station columns
+  select(c( DateTimeStamp | contains("SFBFMWQ"))) %>%
+  #format date-time column
+  mutate(date_time = mdy_hm(DateTimeStamp))
+  #rename columns
+
+#glimpse(nerr_cleaner)
+#temperature (C)
+#Specific conductivity (mS/cm)
+#salinity (ppt)
+#DO (%)
+#DO (mg/L)
+#sonde depth (m) 
+#pH
+#turbidity (NTU)
+#fluorescence (ug/L)
+
+#explore NERR data--------------
+
+
+
 #additional data sets needed for analysis----------
 #survey effort: need to know SAV volume per unit survey effort (though maybe this is standardized)
 #water quality measurements: salinity is key but turbidity would be nice too
+#need to get WQ data from nearby sondes: NSL, BDL
+#some of this WQ data is on the SharePoint site
+#fish survey does collect some kind of depth data
 
 
 
