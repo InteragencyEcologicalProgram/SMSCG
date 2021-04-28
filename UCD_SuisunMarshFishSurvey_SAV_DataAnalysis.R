@@ -51,7 +51,7 @@ sav_cleaner <- sav_data %>%
   #format date
   mutate(date = dmy(SampleDate))
 
-#examine columns-------------
+#examine SAV data columns-------------
 
 #generate list of the column names
 names(sav_cleaner)
@@ -88,7 +88,7 @@ hist(sav_cleaner$Volume)
 rgwq <- data.frame(
   StationCode = c("MZ1", "MZ2", "MZ6", "NS3", "NS2", "NS1", "DV2", "DV1","MZN3","CO1", "SU2", "SB1", "BY3","SD2", "SU4", "SU3"),
   region = c(rep("E",9), rep("C",5), rep("W",2)),
-  wq = c("MSL", "NSL", rep("BLL",7),rep("SFBSMWQ",5),rep("GOD",2))
+  wq = c("MSL", "NSL", rep("BLL",7),rep("SFBFMWQ",5),rep("GOD",2))
 )
 #fish stations that seem to be missing
 #East marsh: DV3
@@ -116,6 +116,9 @@ savr<- inner_join(sav_cleaner,rgwq)
 nerr_cleaner <- nerr_data %>% 
   #just want the date-time column and the SFBFMWQ station columns
   select(c( DateTimeStamp | contains("SFBFMWQ"))) %>%
+  #simplify column names for remaining station
+  rename_at(.vars = vars(starts_with("SFBFMWQ_")),
+            .funs = funs(sub("SFBFMWQ_", "", .))) %>% 
   #format date-time column
   mutate(date_time = mdy_hm(DateTimeStamp))
   #rename columns
@@ -133,6 +136,54 @@ nerr_cleaner <- nerr_data %>%
 
 #explore NERR data--------------
 
+#look at QC flag codes for specific conductance
+unique(nerr_cleaner$F_SpCond)
+#lots of categories
+#keep the ones that include <0> which indicates pass of initial QAQC checks
+
+#filter to only keep the rows that include specific conductance values 
+#that passed initial QAQC checks
+nerr_filter<-nerr_cleaner %>% 
+  filter(grepl("<0>",F_SpCond))
+
+#unique(nerr_filter$F_SpCond)
+#looks like the filter worked correctly
+
+#histogram of remaining salinity values
+hist(nerr_filter$SpCond)
+
+#histogram of remaining temperature values
+hist(nerr_filter$Temp)
+#looks OK
+
+#how do flags for temperature look in filtered data set
+unique(nerr_filter$F_Temp)
+#all remaining temp data passed initial QAQC
+
+#histogram of remaining turbidity values
+hist(nerr_filter$Turb)
+#turbidity still has problems
+
+#for now, just focus on specific conductance and temperature
+#turbidity probably matters too but isn't available across all WQ stations
+nerr_sub<-nerr_filter %>% 
+  #use janitor package to get rid of capital letters in column names
+  clean_names() %>% 
+  #create a month column which will be used to calculate monthly means
+  mutate(month = month(date_time)) %>% 
+  #subset columns and reorder them
+  select(station_code, date_time, month, temp, sp_cond) %>% 
+  #rename station_code to wq to then join with sav data set
+  rename(wq = station_code)
+
+#calculate monthly means for specific conductance and temperature
+  
+#make boxplots by month
+(plot_nerr_bx<-ggplot(data=nerr_sub, aes(x = month, y = sp_cond)) + 
+    geom_boxplot()+
+    geom_jitter() #adds all points to plot, not just outliers
+)
+  
 
 
 #additional data sets needed for analysis----------
