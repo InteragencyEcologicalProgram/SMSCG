@@ -40,16 +40,19 @@ nerr_data<-read_csv(file = paste0(sharepoint_path,"./2020 data for USBR/NERRS_da
 #StandardLength and Count are all zeros because Volume is unit of measurement for SAV
 
 sav_cleaner <- sav_data %>% 
-  #remove unneeded columns and reorder remaining columns
-  select(StationCode
-         ,SampleDate
-         ,Year
-         ,Month
-         ,SampleTime
-         ,OrganismCode
-         ,Volume) %>% 
+  #use janitor package to simplify column names
+  clean_names() %>% 
   #format date
-  mutate(date = dmy(SampleDate))
+  mutate(date = dmy(sample_date)) %>% 
+  #remove unneeded columns and reorder remaining columns
+  select(station_code
+         ,date
+         ,year
+         ,month
+         ,sample_time
+         ,organism_code
+         ,volume) 
+  
 
 #examine SAV data columns-------------
 
@@ -57,7 +60,7 @@ sav_cleaner <- sav_data %>%
 names(sav_cleaner)
 
 #how many stations in data set?
-unique(sav_cleaner$StationCode)
+unique(sav_cleaner$station_code)
 #n=16
 
 #range of dates?
@@ -65,7 +68,7 @@ range(sav_cleaner$date)
 #2014-04-17" "2020-12-23"
 
 #which SAV species?
-unique(sav_cleaner$OrganismCode)
+unique(sav_cleaner$organism_code)
 #Nine categories
 #"ELCA" = Elodea canadensis = American waterweed   
 #"EGDE" = Egeria densa = Brazilian waterweed   
@@ -78,18 +81,19 @@ unique(sav_cleaner$OrganismCode)
 #"CACA" = Cabomba caroliniana = Carolina Fanwort    
 
 #distribution of SAV volume
-range(sav_cleaner$Volume) #1 - 102206
-hist(sav_cleaner$Volume)
+range(sav_cleaner$volume) #1 - 102206
+hist(sav_cleaner$volume)
 #vast majority are small but at least one or two that are very large
 
 #create data frame that categorizes station by region
 #and identifies the closest water quality station
 #E = eastern marsh, C = central marsh, W = western marsh
 rgwq <- data.frame(
-  StationCode = c("MZ1", "MZ2", "MZ6", "NS3", "NS2", "NS1", "DV2", "DV1","MZN3","CO1", "SU2", "SB1", "BY3","SD2", "SU4", "SU3"),
+  station_code = c("MZ1", "MZ2", "MZ6", "NS3", "NS2", "NS1", "DV2", "DV1","MZN3","CO1", "SU2", "SB1", "BY3","SD2", "SU4", "SU3"),
   region = c(rep("E",9), rep("C",5), rep("W",2)),
   wq = c("MSL", "NSL", rep("BLL",7),rep("SFBFMWQ",5),rep("GOD",2))
 )
+
 #fish stations that seem to be missing
 #East marsh: DV3
 #Central marsh: CO2, SB2, SU1, BY1, PT1, PT2
@@ -100,15 +104,72 @@ rgwq <- data.frame(
 #"SD2": Sheldrake Slough - at Suisun Slough, no coordinates in database (West Marsh)
 
 #add region categories to main data set
-savr<- inner_join(sav_cleaner,rgwq) 
+savr<- inner_join(sav_cleaner,rgwq) %>% 
+  mutate_at(vars(station_code, organism_code,region,wq),factor)
+#glimpse(savr)
+
+#look at samples by station and year
+#vast majority of samples are in eastern Montezuma Slough (MZ1, MZ2, MZ6)
+#note there are multiple entries per month in some cases because of multiple species
+savt1<-savr %>% 
+  tabyl(station_code)
+
+savt2<-savr %>% 
+  tabyl(station_code, year)
+
+#create new data frame that sums all SAV by station 
+sav_sum_tot <- savr %>% 
+  group_by(station_code,region, wq) %>% 
+  summarize(
+    sav_tot = sum(volume))
+glimpse(sav_sum_tot)
+
+#create new data frame that sums all SAV by station and date
+sav_sum_dt <- savr %>% 
+  group_by(station_code,region, wq, date) %>% 
+  summarize(
+    sav_tot = sum(volume))
+
+#create new data frame that sums volume by species for each station
+sav_sum_stn_spp <- savr %>% 
+  group_by(station_code,region, wq, organism_code) %>% 
+  summarize(
+    sav_spp_tot = sum(volume))
+
+#create subset with just MZ1 which has by far the veg
+mz1 <- savr %>% 
+  filter(station_code == "MZ1")
 
 #plots-----------
 
-#total SAV volume time series by station
-#exclude algae
-#need to generate new data frame with all sav categories with a date and station summed
+#total SAV volume by station
+(plot_tot_vol_stn <-ggplot(sav_sum_tot, aes(x=station_code, y=sav_tot))+ 
+   geom_bar(stat="identity")
+ )
 
-#stacked bar plots showing composition by month across years within station
+#total SAV volume time series by station
+(plot_tot_vol_stn_dt <-ggplot(sav_sum_dt, aes(x=date, y=sav_tot))+ 
+   geom_line() + 
+   geom_point() + 
+   #ylim(0,13000)+ #exclude a high end outlier in MZ1
+   facet_wrap(~station_code)
+)
+
+#stacked bar plots showing composition by station
+(plot_tot_vol_stn_spp <-ggplot(sav_sum_stn_spp
+      , aes(x=station_code, y= sav_spp_tot,  fill = organism_code))+
+    geom_bar(position = "stack", stat = "identity") + 
+    #ylim(0,25000)+ #zooms in on lower volume stations (MZ1 bar not accurate this way)
+    ylab("Volume") + xlab("Station")
+)
+
+#stacked bar plots showing composition by month for MZ1
+(plot_tot_vol_mz1_spp <-ggplot(mz1
+            , aes(x=date, y= volume,  fill = organism_code))+
+    geom_bar(position = "stack", stat = "identity") + 
+    #ylim(0,25000)+ #zooms in on lower volume stations (MZ1 bar not accurate this way)
+    ylab("Volume") + xlab("Date")
+)
 
 
 #format NERR water quality data--------------
