@@ -8,8 +8,8 @@
 
 #required packages
 library(tidyverse)
-library(janitor)
-library(lubridate)
+library(janitor) #function for data frame clean up
+library(lubridate) #format dates
 #library(readxl) #importing data from excel files
 
 
@@ -136,7 +136,8 @@ sav_sum_stn_spp <- savr %>%
   summarize(
     sav_spp_tot = sum(volume))
 
-#create subset with just MZ1 which has by far the veg
+#create subset with just MZ1 which has by far the most veg
+#mostly on a single date
 mz1 <- savr %>% 
   filter(station_code == "MZ1")
 
@@ -232,15 +233,32 @@ nerr_sub<-nerr_filter %>%
   clean_names() %>% 
   #create a month column which will be used to calculate monthly means
   mutate(month = month(date_time)) %>% 
+  #create a year column 
+  mutate(year = year(date_time)) %>% 
   #subset columns and reorder them
-  select(station_code, date_time, month, temp, sp_cond) %>% 
+  select(station_code, date_time, year, month, temp, sp_cond) %>% 
   #rename station_code to wq to then join with sav data set
   rename(wq = station_code)
 
 #calculate monthly means for specific conductance and temperature
-  
-#make boxplots by month
-(plot_nerr_bx<-ggplot(data=nerr_sub, aes(x = month, y = sp_cond)) + 
+nerr_month<-nerr_sub %>% 
+  group_by(wq,year,month) %>% 
+  summarize(
+    temp_avg = mean(temp),
+    sp_cond_avg = mean(sp_cond)) %>% 
+  #make year and month character for plotting
+  mutate_at(vars(year, month),factor)
+
+glimpse(nerr_month)
+
+#specific conductance: make boxplots by month
+(plot_nerr_bx<-ggplot(data=nerr_month, aes(x = month, y = sp_cond_avg)) + 
+    geom_boxplot()+
+    geom_jitter() #adds all points to plot, not just outliers
+)
+
+#temperature: make boxplots by month
+(plot_nerr_bx<-ggplot(data=nerr_month, aes(x = month, y = temp_avg)) + 
     geom_boxplot()+
     geom_jitter() #adds all points to plot, not just outliers
 )
@@ -251,7 +269,6 @@ nerr_sub<-nerr_filter %>%
 #survey effort: need to know SAV volume per unit survey effort (though maybe this is standardized)
 #water quality measurements: salinity is key but turbidity would be nice too
 #need to get WQ data from nearby sondes: NSL, BDL
-#some of this WQ data is on the SharePoint site
 #fish survey does collect some kind of depth data
 
 
