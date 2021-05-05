@@ -45,7 +45,36 @@ str(dwr_all)
 #for this analysis, just need SFBFMWQ 
 nerr_data<-read_csv(file = paste0(sharepoint_path,"./NERRS_Data/SFBSMWQ_SFBFMWQ_2014-01-01_2021-04-01.csv"))
 
-#format NERR water quality data--------------
+#explore the DWR data set---------------
+
+#look at station names
+unique(dwr_all$cdec_code)
+#"GOD" "MSL" "NSL" "BLL"
+#looks good
+
+#look at list of analytes
+unique(dwr_all$analyte_name)
+#"Specific Conductance" "Temperature"          "Turbidity"            "SC River"            
+#"Stage River"          "DO River"             "Temp River" 
+#need to change "SC River" to "Specific Conductance"
+#need to change "Temp River" to "Temperature"
+#also just subset to keep specific conductance and temperature
+#none of the other analytes are consistently available across stations and dates
+
+#look unique combinations of station and analyte
+unique(dwr_all[,c('cdec_code',"analyte_name")])
+
+#look at date range
+range(dwr_all$time)
+#"2014-01-01 UTC" "2021-04-01 UTC"
+
+#format DWR data set--------------
+
+#this isn't working yet
+#dwr_cleaner <- dwr_all %>% 
+#  str_replace("Temp River","Temperature")
+
+#format NERR data set--------------
 
 nerr_cleaner <- nerr_data %>% 
   #just want the date-time column and the SFBFMWQ station columns
