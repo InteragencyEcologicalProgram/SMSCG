@@ -2,7 +2,7 @@
 #UC-Davis Suisun Marsh Fish Survey
 #Otter trawl
 #Submerged aquatic vegetation 
-#Relevant water quality data
+#Relevant water quality data from DWR and NERR
 
 #required packages
 library(tidyverse)
@@ -25,11 +25,11 @@ sharepoint_path <- normalizePath(
 dwr_files <- dir(sharepoint_path, pattern = "data.csv", full.names = T)
 dwr <- map_df(dwr_files, ~ read_csv(.x, col_types = "dcccdTdcdd")) %>% 
   bind_rows()
-str(dwr)
+#str(dwr)
 
 #read in BLL station data
 bll<-read_csv(file = paste0(sharepoint_path,"/BLL River.csv"), col_types = "dcccdcdcdd")
-str(bll)
+#str(bll)
 
 #format BLL data a bit before combining with rest of DWR data
 bll_cleaner <- bll %>% 
@@ -38,7 +38,7 @@ bll_cleaner <- bll %>%
   #replace some analyte names to match counterparts in rest of DWR data set
   mutate(across("analyte_name", str_replace,"Temp River","Temperature")) %>% 
   mutate(across("analyte_name", str_replace,"SC River","Specific Conductance"))  
-str(bll_cleaner)
+#str(bll_cleaner)
 
 #look at time range for BLL station data
 range(bll_cleaner$time)
@@ -47,7 +47,7 @@ range(bll_cleaner$time)
 
 #combine all DWR station data
 dwr_all <- rbind(dwr,bll_cleaner)
-str(dwr_all)
+#str(dwr_all)
 
 #read in water quality data from the National Estuarine Research Reserve System (NERRS) stations
 #for this analysis, just need SFBFMWQ 
@@ -57,7 +57,7 @@ nerr_data<-read_csv(file = paste0(sharepoint_path,"./NERRS_Data/SFBSMWQ_SFBFMWQ_
 
 #look at QAQC flag types
 #need to figure out what they mean
-unique(dwr_all$qaqc_flag_id)
+#unique(dwr_all$qaqc_flag_id)
 #"G" "X" "M" "A" "U" "B"
 
 #look closer at flag types
@@ -65,26 +65,24 @@ tabyl(dwr_all$qaqc_flag_id)
 #68% are G, which is probably the data I want
 
 #look at station names
-unique(dwr_all$cdec_code)
+#unique(dwr_all$cdec_code)
 #"GOD" "MSL" "NSL" "BLL"
 #looks good
 
 #look at list of analytes
-unique(dwr_all$analyte_name)
+#unique(dwr_all$analyte_name)
 #"Specific Conductance" "Temperature", "Turbidity", "Stage River" "DO River" 
 #just subset to keep specific conductance and temperature
 #none of the other analytes are consistently available across stations and dates
 
 #look unique combinations of station and analyte
-unique(dwr_all[,c('cdec_code',"analyte_name")])
+#unique(dwr_all[,c('cdec_code',"analyte_name")])
 
 #look at date range
 range(dwr_all$time)
 #"2014-01-01 UTC" "2021-04-01 UTC"
 
 #DWR: format data set--------------
-
-  
 
 dwr_cleaner <- dwr_all %>%
   #rename station column
@@ -107,9 +105,8 @@ dwr_temp <- dwr_cleaner %>%
   select(wq
          ,time
          ,temp)
-hist(dwr_temp$value)
+#hist(dwr_temp$value)
   
-
 dwr_sc <- dwr_cleaner %>% 
   filter(analyte_name == "Specific Conductance"
          #remove some high outliers
@@ -125,7 +122,7 @@ dwr_ts <- full_join(dwr_temp, dwr_sc) %>%
   #create a year column 
   mutate(year = year(time))  
 
-glimpse(dwr_ts)
+#glimpse(dwr_ts)
 
 
 #DWR: plot time series of data sets by station and analyte------------
@@ -187,7 +184,7 @@ nerr_cleaner <- nerr_data %>%
 #explore NERR data--------------
 
 #look at QC flag codes for specific conductance
-unique(nerr_cleaner$F_SpCond)
+#unique(nerr_cleaner$F_SpCond)
 #lots of categories
 #keep the ones that include <0> which indicates pass of initial QAQC checks
 
@@ -200,18 +197,18 @@ nerr_filter<-nerr_cleaner %>%
 #looks like the filter worked correctly
 
 #histogram of remaining salinity values
-hist(nerr_filter$SpCond)
+#hist(nerr_filter$SpCond)
 
 #histogram of remaining temperature values
-hist(nerr_filter$Temp)
+#hist(nerr_filter$Temp)
 #looks OK
 
 #how do flags for temperature look in filtered data set
-unique(nerr_filter$F_Temp)
+#unique(nerr_filter$F_Temp)
 #all remaining temp data passed initial QAQC
 
 #histogram of remaining turbidity values
-hist(nerr_filter$Turb)
+#hist(nerr_filter$Turb)
 #turbidity still has problems
 
 #for now, just focus on specific conductance and temperature
@@ -237,7 +234,7 @@ nerr_month<-nerr_sub %>%
   #make year and month character for plotting
   mutate_at(vars(year, month),factor)
 
-glimpse(nerr_month)
+#glimpse(nerr_month)
 
 #specific conductance: make boxplots by month
 (plot_nerr_bx<-ggplot(data=nerr_month, aes(x = month, y = sp_cond_avg)) + 
@@ -252,11 +249,12 @@ glimpse(nerr_month)
 )
 
 #combine DWR and NERR data sets-----------
-glimpse(dwr_month)
-glimpse(nerr_month)
+#glimpse(dwr_month)
+#glimpse(nerr_month)
 
 final <- rbind(dwr_month,nerr_month)
 
+#write_csv(final,file = paste0(sharepoint_path,"/AquaticVegetation_WQ_SummarizedData.csv"))
 
 
 
