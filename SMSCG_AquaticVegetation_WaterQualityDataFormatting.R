@@ -86,15 +86,38 @@ range(dwr_all$time)
 
 dwr_cleaner <- dwr_all %>%
   #filter to keep only temperature and specific conductance data
-  #and only data with "G" for the QAQC code
+  #and only data with "G" (good) or "U" (unchecked) for the QAQC code
   filter((analyte_name == "Specific Conductance" | analyte_name == "Temperature") 
-         & qaqc_flag_id == "G")
+         & (qaqc_flag_id == "G" | qaqc_flag_id == "U")) %>% 
+  #remove some very high end outliers 
+  group_by(analyte_name) %>% 
+  filter(value < mean(value, na.rm = TRUE)*5)
+
 unique(dwr_cleaner$analyte_name)
 unique(dwr_cleaner$qaqc_flag_id)
 
 #DWR: plot time series of data sets by station and analyte------------
 
+#temperature plot
+(plot_d_temp <- ggplot(data = dwr_cleaner %>% 
+  filter(analyte_name == "Temperature"), aes(x=time, y=value))+
+  geom_line() + 
+  labs(x = "Time", y = "Temperature (C)") + 
+  theme_minimal() +
+  facet_wrap(~cdec_code)
+)
+#there are chunks of missing data for GOD and NSL
+#could be due to data not flagged as "G" or "U"
 
+#specific conductance plot
+(plot_d_sc <- ggplot(data = dwr_cleaner %>% 
+    filter(analyte_name == "Specific Conductance"), aes(x=time, y=value))+
+    geom_line() + 
+    labs(x = "Time", y = "Specific Conductance (uS/cm") + 
+    theme_minimal() +
+    facet_wrap(~cdec_code)
+)
+#chunks of data missing for GOD also some clearly bad data for GOD 
 
 #DWR: calculate monthly means for temperature and specific conductance-------
 
