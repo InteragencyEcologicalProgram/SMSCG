@@ -4,8 +4,6 @@
 #Submerged aquatic vegetation 
 #Relevant water quality data
 
-
-
 #required packages
 library(tidyverse)
 library(janitor) #function for data frame clean up
@@ -33,19 +31,38 @@ str(dwr)
 bll<-read_csv(file = paste0(sharepoint_path,"/BLL River.csv"), col_types = "dcccdcdcdd")
 str(bll)
 
-#format BLL station date
-bll$time <- mdy_hm(bll$time)
-str(bll)
+#format BLL data a bit before combining with rest of DWR data
+bll_cleaner <- bll %>% 
+  #format date-time
+  mutate(time = mdy_hm(time)) %>% 
+  #replace some analyte names to match counterparts in rest of DWR data set
+  mutate(across("analyte_name", str_replace,"Temp River","Temperature")) %>% 
+  mutate(across("analyte_name", str_replace,"SC River","Specific Conductance"))  
+str(bll_cleaner)
+
+#look at time range for BLL station data
+range(bll_cleaner$time)
+#"2014-01-01 00:00:00 UTC" "2019-07-31 23:45:00 UTC"
+#so this station isn't active
 
 #combine all DWR station data
-dwr_all <- rbind(dwr,bll)
+dwr_all <- rbind(dwr,bll_cleaner)
 str(dwr_all)
 
 #read in water quality data from the National Estuarine Research Reserve System (NERRS) stations
 #for this analysis, just need SFBFMWQ 
 nerr_data<-read_csv(file = paste0(sharepoint_path,"./NERRS_Data/SFBSMWQ_SFBFMWQ_2014-01-01_2021-04-01.csv"))
 
-#explore the DWR data set---------------
+#DWR: explore data set---------------
+
+#look at QAQC flag types
+#need to figure out what they mean
+unique(dwr_all$qaqc_flag_id)
+#"G" "X" "M" "A" "U" "B"
+
+#look closer at flag types
+tabyl(dwr_all$qaqc_flag_id)
+#68% are G, which is probably the data I want
 
 #look at station names
 unique(dwr_all$cdec_code)
@@ -54,11 +71,8 @@ unique(dwr_all$cdec_code)
 
 #look at list of analytes
 unique(dwr_all$analyte_name)
-#"Specific Conductance" "Temperature"          "Turbidity"            "SC River"            
-#"Stage River"          "DO River"             "Temp River" 
-#need to change "SC River" to "Specific Conductance"
-#need to change "Temp River" to "Temperature"
-#also just subset to keep specific conductance and temperature
+#"Specific Conductance" "Temperature", "Turbidity", "Stage River" "DO River" 
+#just subset to keep specific conductance and temperature
 #none of the other analytes are consistently available across stations and dates
 
 #look unique combinations of station and analyte
@@ -68,11 +82,23 @@ unique(dwr_all[,c('cdec_code',"analyte_name")])
 range(dwr_all$time)
 #"2014-01-01 UTC" "2021-04-01 UTC"
 
-#format DWR data set--------------
+#DWR: format data set--------------
 
-#this isn't working yet
-#dwr_cleaner <- dwr_all %>% 
-#  str_replace("Temp River","Temperature")
+dwr_cleaner <- dwr_all %>%
+  #filter to keep only temperature and specific conductance data
+  #and only data with "G" for the QAQC code
+  filter((analyte_name == "Specific Conductance" | analyte_name == "Temperature") 
+         & qaqc_flag_id == "G")
+unique(dwr_cleaner$analyte_name)
+unique(dwr_cleaner$qaqc_flag_id)
+
+#DWR: plot time series of data sets by station and analyte------------
+
+
+
+#DWR: calculate monthly means for temperature and specific conductance-------
+
+
 
 #format NERR data set--------------
 
