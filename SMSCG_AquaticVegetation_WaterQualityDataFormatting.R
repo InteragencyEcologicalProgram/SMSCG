@@ -84,43 +84,81 @@ range(dwr_all$time)
 
 #DWR: format data set--------------
 
-dwr_cleaner <- dwr_all %>%
-  #filter to keep only temperature and specific conductance data
-  #and only data with "G" (good) or "U" (unchecked) for the QAQC code
-  filter((analyte_name == "Specific Conductance" | analyte_name == "Temperature") 
-         & (qaqc_flag_id == "G" | qaqc_flag_id == "U")) %>% 
-  #remove some very high end outliers 
-  group_by(analyte_name) %>% 
-  filter(value < mean(value, na.rm = TRUE)*5)
+  
 
-unique(dwr_cleaner$analyte_name)
-unique(dwr_cleaner$qaqc_flag_id)
+dwr_cleaner <- dwr_all %>%
+  #rename station column
+  rename(wq = cdec_code) %>% 
+  #filter to only keep with "G" (good) which are mainly what I want
+  #also kept "U" (unchecked) because otherwise there are big time gaps in data
+  filter(qaqc_flag_id == "G" | qaqc_flag_id == "U") %>% 
+  #subset and reorder columns
+  select(wq
+         ,time
+         ,analyte_name
+         ,value) 
+
+#create subset with just temperature data
+dwr_temp <- dwr_cleaner %>% 
+  filter(analyte_name == "Temperature" 
+         #remove some high outliers
+         & value < 40)  %>% 
+  rename(temp = value) %>% 
+  select(wq
+         ,time
+         ,temp)
+hist(dwr_temp$value)
+  
+
+dwr_sc <- dwr_cleaner %>% 
+  filter(analyte_name == "Specific Conductance"
+         #remove some high outliers
+         & value < 27000)%>% 
+  rename(sp_cond = value) %>% 
+  select(wq
+         ,time
+         ,sp_cond)
+
+#join temp and specific conductance data sets
+dwr_ts <- full_join(dwr_temp, dwr_sc) %>% 
+  mutate(month = month(time)) %>% 
+  #create a year column 
+  mutate(year = year(time))  
+
+glimpse(dwr_ts)
+
 
 #DWR: plot time series of data sets by station and analyte------------
 
 #temperature plot
-(plot_d_temp <- ggplot(data = dwr_cleaner %>% 
-  filter(analyte_name == "Temperature"), aes(x=time, y=value))+
+(plot_d_temp <- ggplot(dwr_ts, aes(x=time, y=temp))+
   geom_line() + 
   labs(x = "Time", y = "Temperature (C)") + 
   theme_minimal() +
-  facet_wrap(~cdec_code)
+  facet_wrap(~wq)
 )
 #there are chunks of missing data for GOD and NSL
 #could be due to data not flagged as "G" or "U"
 
 #specific conductance plot
-(plot_d_sc <- ggplot(data = dwr_cleaner %>% 
-    filter(analyte_name == "Specific Conductance"), aes(x=time, y=value))+
+(plot_d_sc <- ggplot(dwr_ts, aes(x=time, y=sp_cond))+
     geom_line() + 
     labs(x = "Time", y = "Specific Conductance (uS/cm") + 
     theme_minimal() +
-    facet_wrap(~cdec_code)
+    facet_wrap(~wq)
 )
-#chunks of data missing for GOD also some clearly bad data for GOD 
+#chunks of data missing for GOD NS  also some clearly bad data for GOD 
 
-#DWR: calculate monthly means for temperature and specific conductance-------
+#DWR: calculate monthly means by analyte-------
 
+#calculate monthly means for specific conductance and temperature
+dwr_month <- dwr_ts %>% 
+  group_by(wq,year,month) %>% 
+  summarize(
+    temp_avg = mean(temp,na.rm=T),
+    sp_cond_avg = mean(sp_cond,na.rm=T)) %>% 
+  #make year and month character for plotting
+  mutate_at(vars(year, month),factor)
 
 
 #format NERR data set--------------
@@ -212,3 +250,16 @@ glimpse(nerr_month)
     geom_boxplot()+
     geom_jitter() #adds all points to plot, not just outliers
 )
+
+#combine DWR and NERR data sets-----------
+glimpse(dwr_month)
+glimpse(nerr_month)
+
+final <- rbind(dwr_month,nerr_month)
+
+
+
+
+
+
+
