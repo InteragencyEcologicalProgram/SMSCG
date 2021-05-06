@@ -29,6 +29,9 @@ sharepoint_path <- normalizePath(
 #read in submerged aquatic vegetation data
 sav_data<-read_csv(file = paste0(sharepoint_path,"./UC-Davis Suisun Marsh Fish Survey/SAV_Data_2014-2020.csv"))
 
+#read in water quality data
+wq_data<-read_csv(file = paste0(sharepoint_path,"./WaterQuality/AquaticVegetation_WQ_SummarizedData.csv"))
+
 #format SAV data-----------
 
 #remove unneeded columns
@@ -124,7 +127,11 @@ glimpse(sav_sum_tot)
 sav_sum_dt <- savr %>% 
   group_by(station_code,region, wq, date) %>% 
   summarize(
-    sav_tot = sum(volume))
+    sav_tot = sum(volume)) %>% 
+  #create a month column 
+  mutate(month = month(date)) %>% 
+  #create a year column 
+  mutate(year = year(date)) 
 
 #create new data frame that sums volume by species for each station
 sav_sum_stn_spp <- savr %>% 
@@ -167,5 +174,63 @@ mz1 <- savr %>%
     #ylim(0,25000)+ #zooms in on lower volume stations (MZ1 bar not accurate this way)
     ylab("Volume") + xlab("Date")
 )
+
+#combine SAV and WQ data sets------------
+
+glimpse(sav_sum_dt)
+glimpse(wq_data)
+wq_data$wq <- factor(wq_data$wq)
+
+#join them by month, year, and wq station name
+vgwq <- left_join(sav_sum_dt,wq_data) %>% 
+  #filter out the one extreme outlier for total SAV 
+  filter(sav_tot <90000)
+#NOTE: BLL is the WQ station used for a number of veg stations
+#but BLL data stops in July 2019
+#for veg data past that month, would need to designate a different WQ station (NSL)
+
+
+
+#look at correlation between total vegetation biomass and specific conductance------
+
+names(vgwq)
+
+(plot_vg_sc_corr <- ggplot(vgwq, aes(x=sp_cond_avg, y=sav_tot))+
+  geom_point()+
+  geom_smooth(method='lm')
+)
+
+cor.test(x = vgwq$sp_cond_avg, y=vgwq$sav_tot)
+#t = 0.26162, df = 79, p-value = 0.7943
+#cor = 0.02942159
+#not a significant correlation
+
+
+#look at correlation between total vegetation biomass and temperature------
+
+(plot_vg_tp_corr <- ggplot(vgwq, aes(x=temp_avg, y=sav_tot))+
+    geom_point()+
+    geom_smooth(method='lm')
+)
+
+cor.test(x = vgwq$temp_avg, y=vgwq$sav_tot)
+#t = 0.050997, df = 79, p-value = 0.9595
+#cor = 0.005737467
+#not a significant correlation
+
+
+#next steps-----------
+
+#look at correlations for particular species instead of totals
+
+#could focus on just a few of the stations in East Marsh where most samples are collected
+
+#could look at particular water year types (very dry and very wet)
+
+#look at correlation between SAV volume and flows into the marsh via SMSCG
+#veg caught in the trawl might not have been growing in location where it was collected
+#SAV drifts around and could have come from upstream in the Delta
+
+
 
 
