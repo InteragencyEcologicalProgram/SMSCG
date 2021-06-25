@@ -207,7 +207,6 @@ cor.test(x = vgwq$sp_cond_avg, y=vgwq$sav_tot)
 
 
 #look at correlation between total vegetation biomass and temperature------
-
 (plot_vg_tp_corr <- ggplot(vgwq, aes(x=temp_avg, y=sav_tot))+
     geom_point()+
     geom_smooth(method='lm')
