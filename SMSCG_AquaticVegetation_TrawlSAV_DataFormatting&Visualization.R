@@ -225,6 +225,7 @@ cor.test(x = vgwq$temp_avg, y=vgwq$sav_tot)
 
 #could focus on just a few of the stations in East Marsh where most samples are collected
 
+
 #could look at particular water year types (very dry and very wet)
 
 #look at correlation between SAV volume and flows into the marsh via SMSCG
