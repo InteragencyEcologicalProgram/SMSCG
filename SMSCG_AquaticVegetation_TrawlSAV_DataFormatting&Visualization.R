@@ -73,9 +73,9 @@ unique(sav_cleaner$organism_code)
 #"EGDE" = Egeria densa = Brazilian waterweed   
 #"CEDE" = Ceratophyllum demersum = coontail   
 #"MYSP" = Myriophyllum spicatum = Eurasian watermilfoil   
-#"ALG" = filamentous green algae    
+#"ALG" = filamentous green algae (not SAV)
 #"POCR" = Potamogeton crispa = curlyleaf pondweed   
-#"STSPP" = Stuckenia spp = Sago pondweed  
+#"STSPP" = Stuckenia spp = Sago pondweed  (salt tolerant native)
 #"SAVSPP" = unidentified submerged aquatic plant species
 #"CACA" = Cabomba caroliniana = Carolina Fanwort    
 
@@ -116,6 +116,13 @@ savt1<-savr %>%
 savt2<-savr %>% 
   tabyl(station_code, year)
 
+#create new data frame that sums all SAV by taxon 
+sav_sum_tax <- savr %>% 
+  group_by(organism_code) %>% 
+  summarize(
+    sav_tot = sum(volume))
+glimpse(sav_sum_tax)
+
 #create new data frame that sums all SAV by station 
 sav_sum_tot <- savr %>% 
   group_by(station_code,region, wq) %>% 
@@ -133,6 +140,26 @@ sav_sum_dt <- savr %>%
   #create a year column 
   mutate(year = year(date)) 
 
+#create new data frame that sums all SAV by station and date
+#And removes algae (not SAV) and sago (salt tolerant native)
+sav_sum_dt_sub <- savr %>% 
+  filter(organism_code != "STSPP" & organism_code != "ALG") %>% 
+  group_by(station_code,region, wq, date) %>% 
+  summarize(
+    sav_tot = sum(volume)) %>% 
+  #create a month column 
+  mutate(month = month(date)) %>% 
+  #create a year column 
+  mutate(year = year(date))
+
+#create new data frame with just egeria
+sav_sum_dt_egde <- savr %>% 
+  filter(organism_code == "EGDE") %>% 
+  #create a month column 
+  mutate(month = month(date)) %>% 
+  #create a year column 
+  mutate(year = year(date))
+
 #create new data frame that sums volume by species for each station
 sav_sum_stn_spp <- savr %>% 
   group_by(station_code,region, wq, organism_code) %>% 
@@ -145,6 +172,12 @@ mz1 <- savr %>%
   filter(station_code == "MZ1")
 
 #plots-----------
+
+#total SAV volume by taxon
+(plot_tot_vol_tax <-ggplot(sav_sum_tax, aes(x=organism_code, y=sav_tot))+ 
+   geom_bar(stat="identity")
+)
+#mostly Egeria by volume, followed by algae, coontail, and sago
 
 #total SAV volume by station
 (plot_tot_vol_stn <-ggplot(sav_sum_tot, aes(x=station_code, y=sav_tot))+ 
@@ -163,7 +196,7 @@ mz1 <- savr %>%
 (plot_tot_vol_stn_spp <-ggplot(sav_sum_stn_spp
       , aes(x=station_code, y= sav_spp_tot,  fill = organism_code))+
     geom_bar(position = "stack", stat = "identity") + 
-    #ylim(0,25000)+ #zooms in on lower volume stations (MZ1 bar not accurate this way)
+    ylim(0,25000)+ #zooms in on lower volume stations (MZ1 bar not accurate this way)
     ylab("Volume") + xlab("Station")
 )
 
@@ -184,16 +217,23 @@ wq_data$wq <- factor(wq_data$wq)
 #join them by month, year, and wq station name
 vgwq <- left_join(sav_sum_dt,wq_data) %>% 
   #filter out the one extreme outlier for total SAV 
-  filter(sav_tot <90000)
+  filter(sav_tot <9000)
 #NOTE: BLL is the WQ station used for a number of veg stations
 #but BLL data stops in July 2019
 #for veg data past that month, would need to designate a different WQ station (NSL)
 
+#join them by month, year, and wq station name
+#but with algae and sago excluded
+vgwq_sub <- left_join(sav_sum_dt_sub,wq_data) %>% 
+  filter(sav_tot <9000)
 
+#join dataset with just egeria with wq
+#join them by month, year, and wq station name
+vgwq_egde <- left_join(sav_sum_dt_egde,wq_data) %>% 
+  filter(volume <9000)
 
 #look at correlation between total vegetation biomass and specific conductance------
-
-names(vgwq)
+#one high end outlier removed
 
 (plot_vg_sc_corr <- ggplot(vgwq, aes(x=sp_cond_avg, y=sav_tot))+
   geom_point()+
@@ -201,9 +241,30 @@ names(vgwq)
 )
 
 cor.test(x = vgwq$sp_cond_avg, y=vgwq$sav_tot)
-#t = 0.26162, df = 79, p-value = 0.7943
-#cor = 0.02942159
+#t = -0.31075, df = 78, p-value = 0.7568
+#cor = -0.03516371 
 #not a significant correlation
+
+#same analysis but with algae and sago excluded
+(plot_vg_sc_corr2 <- ggplot(vgwq_sub, aes(x=sp_cond_avg, y=sav_tot))+
+    geom_point()+
+    geom_smooth(method='lm')
+)
+
+cor.test(x = vgwq_sub$sp_cond_avg, y=vgwq_sub$sav_tot)
+#t = 0.34781, df = 64, p-value = 0.7291
+#corr = 0.04343478
+
+#same analysis but just egeria
+(plot_vg_sc_corr3 <- ggplot(vgwq_egde, aes(x=sp_cond_avg, y=volume))+
+    geom_point()+
+    geom_smooth(method='lm')
+)
+
+cor.test(x = vgwq_egde$sp_cond_avg, y=vgwq_egde$volume)
+#t = 0.14967, df = 50, p-value = 0.8816
+#corr = 0.02116175
+
 
 
 #look at correlation between total vegetation biomass and temperature------
@@ -220,10 +281,10 @@ cor.test(x = vgwq$temp_avg, y=vgwq$sav_tot)
 
 #next steps-----------
 
-#look at correlations for particular species instead of totals
+
+#look at correlations for particular species instead of totals (when data sufficient)
 
 #could focus on just a few of the stations in East Marsh where most samples are collected
-
 
 #could look at particular water year types (very dry and very wet)
 
