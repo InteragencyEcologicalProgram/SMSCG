@@ -172,7 +172,7 @@ nerr_cleaner <- nerr_data %>%
 
 #glimpse(nerr_cleaner)
 #temperature (C)
-#Specific conductivity (mS/cm)
+#Specific conductivity (mS/cm); change to uS/cm!
 #salinity (ppt)
 #DO (%)
 #DO (mg/L)
@@ -190,14 +190,16 @@ nerr_cleaner <- nerr_data %>%
 
 #filter to only keep the rows that include specific conductance values 
 #that passed initial QAQC checks
+#also convert from mS/cm to uS/com
 nerr_filter<-nerr_cleaner %>% 
-  filter(grepl("<0>",F_SpCond))
+  filter(grepl("<0>",F_SpCond)) %>% 
+  mutate(SpCond2 = SpCond*1000)
 
 #unique(nerr_filter$F_SpCond)
 #looks like the filter worked correctly
 
 #histogram of remaining salinity values
-#hist(nerr_filter$SpCond)
+#hist(nerr_filter$SpCond2)
 
 #histogram of remaining temperature values
 #hist(nerr_filter$Temp)
@@ -221,16 +223,24 @@ nerr_sub<-nerr_filter %>%
   #create a year column 
   mutate(year = year(date_time)) %>% 
   #subset columns and reorder them
-  select(station_code, date_time, year, month, temp, sp_cond) %>% 
+  select(station_code, date_time, year, month, temp, sp_cond2) %>% 
   #rename station_code to wq to then join with sav data set
   rename(wq = station_code)
+
+#specific conductance plot
+(plot_n_sc <- ggplot(nerr_sub, aes(x=date_time, y=sp_cond2))+
+    geom_line() + 
+    labs(x = "Time", y = "Specific Conductance (uS/cm)") + 
+    theme_minimal() +
+    facet_wrap(~wq)
+)
 
 #calculate monthly means for specific conductance and temperature
 nerr_month<-nerr_sub %>% 
   group_by(wq,year,month) %>% 
   summarize(
     temp_avg = mean(temp),
-    sp_cond_avg = mean(sp_cond)) %>% 
+    sp_cond_avg = mean(sp_cond2)) %>% 
   #make year and month character for plotting
   mutate_at(vars(year, month),factor)
 
