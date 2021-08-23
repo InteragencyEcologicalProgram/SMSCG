@@ -1,5 +1,5 @@
 #SMSCG
-#phytoplantkon
+#phytoplantkon data
 #data visualizations
 
 #Note: refer to DSRS plotting code
@@ -44,7 +44,9 @@ phyto_vis<-read_csv(file = paste0(sharepoint_path,"./Phytoplankton/SMSCG_phytopl
 #"D16"  "D16-Twitchell"
 #"E26" vs "EZ6" 
 
+
 #remove spaces from all station names, which will remove the redundant versions of 610
+
 phyto_vis$station2<-str_replace_all(phyto_vis$station, " ", "")
 
 #EMP stations: Subset to just the four relevant to SMSCG
