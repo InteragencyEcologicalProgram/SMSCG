@@ -5,6 +5,11 @@
 
 #To do list
 #what are the volume units for SAV?
+#add the "non-detect" otter trawl samples
+#incorporate survey effort (trawl duration)
+#try using UCD trawl WQ data (SpCond, secchi, depth)
+#refer to following database tabs: Sample, Depth, TrawlEffort
+
 
 #required packages
 library(tidyverse)
@@ -213,6 +218,8 @@ mz1 <- savr %>%
 glimpse(sav_sum_dt)
 glimpse(wq_data)
 wq_data$wq <- factor(wq_data$wq)
+#NOTE: some missing WQ data for BLL, so can't include some SAV samples in plots and analyses below
+#use different WQ station for those SAV samples
 
 #join them by month, year, and wq station name
 vgwq <- left_join(sav_sum_dt,wq_data) %>% 
@@ -241,8 +248,8 @@ vgwq_egde <- left_join(sav_sum_dt_egde,wq_data) %>%
 )
 
 cor.test(x = vgwq$sp_cond_avg, y=vgwq$sav_tot)
-#t = -0.31075, df = 78, p-value = 0.7568
-#cor = -0.03516371 
+#t = -0.30938, df = 78, p-value = 0.7579
+#cor = -0.03500853 
 #not a significant correlation
 
 #same analysis but with algae and sago excluded
@@ -252,8 +259,8 @@ cor.test(x = vgwq$sp_cond_avg, y=vgwq$sav_tot)
 )
 
 cor.test(x = vgwq_sub$sp_cond_avg, y=vgwq_sub$sav_tot)
-#t = 0.34781, df = 64, p-value = 0.7291
-#corr = 0.04343478
+#t = -0.15111, df = 64, p-value = 0.8804
+#corr = -0.01888581
 
 #same analysis but just egeria
 (plot_vg_sc_corr3 <- ggplot(vgwq_egde, aes(x=sp_cond_avg, y=volume))+
@@ -262,8 +269,8 @@ cor.test(x = vgwq_sub$sp_cond_avg, y=vgwq_sub$sav_tot)
 )
 
 cor.test(x = vgwq_egde$sp_cond_avg, y=vgwq_egde$volume)
-#t = 0.14967, df = 50, p-value = 0.8816
-#corr = 0.02116175
+#t = -0.18162, df = 50, p-value = 0.8566
+#corr = -0.02567717
 
 
 
