@@ -14,9 +14,9 @@
 #also note that EMP data starts in June but DFW data starts in July
 
 #load packages
-library(tidyverse)
-library(ggplot2)
-library(lubridate)
+library(tidyverse) #variety of data science tools
+library(ggplot2) #making plots
+library(lubridate) #format dates
 
 # 1. Read in the Data----------------------------------------------
 # Dataset is on SharePoint site for the SMSCG action
@@ -119,7 +119,9 @@ s_phyto_sum<-phyto_gates %>%
   summarize(
     tot_den = sum(organisms_per_ml)
     ,tot_bvol = sum(biovolume_per_ml)
-  )
+  ) %>% 
+  #make month a factor
+    mutate_at(vars(month), factor)
 #write_csv(s_phyto_sum,file = paste0(sharepoint_path,"./Plots/SMSCG_phytoplankton_sample_summary_2020.csv"))
 
 #reorder region factor levels for plotting
@@ -380,7 +382,40 @@ r_phyto_phylum_sum_rg$region <- factor(r_phyto_phylum_sum_rg$region, levels=c('M
 
 #stacked barplots for diatoms-------------
 
-#summarize density and biovolume data by region and month
+#summarize diatom density and biovolume data by sample (station x date combo)
+#so sum all the taxon specific densities and biovolumes within a sample
+s_diatom_sum<-phyto_gates %>% 
+  #subset data to just the phylum with diatoms
+  filter(phylum == "Ochrophyta") %>% 
+  group_by(region, station_comb, station2, month, date, time) %>% 
+  summarize(
+    tot_den = sum(organisms_per_ml)
+    ,tot_bvol = sum(biovolume_per_ml)
+  )  %>% 
+  #make month a factor
+  mutate_at(vars(month), factor)
+#there are 7 samples without diatoms
+#add these 7 samples back to this data set and put zeros for them
+
+#first grab the relevant columns from the all taxa analogous dataset
+s_phyto_sum_cols<-s_phyto_sum %>%
+  select("region"
+         ,"station_comb"
+         ,"station2"
+         ,"month"
+         ,"date"        
+         ,"time"
+  )
+
+#join diatom data set and the all taxa equivalent
+s_diatom_sum_full <- left_join(s_phyto_sum_cols,s_diatom_sum)
+
+#replace NAs with zeros for density and biovolume
+#these are the only NAs in the data set
+s_diatom_sum_fullz <- s_diatom_sum_full %>% 
+  replace_na(list(tot_den = 0, tot_bvol = 0))
+
+#summarize diatom density and biovolume data by class, region, and month
 diatom_sum<-phyto_gates %>% 
   #subset data to just the phylum with diatoms
   filter(phylum == "Ochrophyta") %>% 
@@ -419,7 +454,6 @@ diatom_sum$region <- factor(diatom_sum$region, levels=c('MW','ME','RV'))
 
 #similar stacked bar plot but averaged over months too
 #facilitate comparisons among regions
-#could do this for the all taxa stack bar plots too
 
 #summarize density and biovolume data by region only
 diatom_sum_rg<-phyto_gates %>% 
@@ -455,6 +489,92 @@ diatom_sum_rg$region <- factor(diatom_sum_rg$region, levels=c('MW','ME','RV'))
     #               labels = phylum_names)+ 
 )
 #ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_StackedBar_Diatom_Region.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
+
+#Statistics: total phyto biovolume--------
+
+#predictors to include: region, month, maybe salinity
+#could include station as a random effect. there are only 9 though
+
+#build model
+tbmod = glm(tot_bvol ~ region * month, data = s_phyto_sum)
+
+#model checking plots
+plot(tbmod)
+#plots aren't great
+#residuals vs fitted: spread gets larger with higher values 
+#Q-Q plot: points stray pretty far off diagonal at upper end 
+#scale-location: line drifts up with higher values
+#residuals vs leverage: looks OK
+
+#redo analysis with log transformed response
+tblmod = glm(log(tot_bvol) ~ region * month, data = s_phyto_sum)
+
+#model checking plots
+plot(tblmod)
+#looks like log transformation did the trick
+#could also try a different error distribution like gamma
+
+#look at model results
+summary(tblmod)
+drop1(tblmod, test="Chi")
+#interaction term isn't significant 
+
+#redo model with log transformed response and without interaction term
+tblmod2 = glm(log(tot_bvol) ~ region  + month, data = s_phyto_sum)
+
+#look at model results
+summary(tblmod2)
+drop1(tblmod2, test="Chi")
+#neither region nor month is significant
+#Df Deviance    AIC scaled dev. Pr(>Chi)
+#<none>      19.120 122.34                     
+#region  2   19.645 120.27      1.9235   0.3822
+#month   3   19.894 119.16      2.8168   0.4207
+
+
+#Statistics: total diatom biovolume--------
+
+#predictors to include: region, month, maybe salinity
+#could include station as a random effect. there are only 9 though
+
+#Note: there are 7 zeros that are currently excluded from the data set used in these models
+#the data set s_diatom_sum_fullz includes these zeros
+zeros <-filter(s_diatom_sum_fullz, tot_bvol == 0)
+#RV = 3, ME = 1, MW = 3
+
+#build model
+dbmod = glm(tot_bvol ~ region * month, data = s_diatom_sum_full)
+
+#model checking plots
+plot(dbmod)
+#as with full data set, should do log transform
+
+#redo analysis with log transformed response
+dblmod = glm(log(tot_bvol) ~ region * month, data = s_diatom_sum_full)
+#messes up because of presence of 7 zeros which can't be log transformed
+
+#model checking plots
+plot(dblmod)
+#looks like log transformation did the trick
+#could also try a different error distribution like gamma
+
+#look at model results
+summary(dblmod)
+drop1(dblmod, test="Chi")
+#interaction term isn't significant 
+
+#redo model with log transformed response and without interaction term
+dblmod2 = glm(log(tot_bvol) ~ region  + month, data = s_diatom_sum_full)
+
+#look at model results
+summary(dblmod2)
+drop1(dblmod2, test="Chi")
+#neither region nor month is significant
+#       Df Deviance    AIC scaled dev. Pr(>Chi)
+#<none>      183.02 262.87                     
+#region  2   184.86 259.51     0.64225   0.7253
+#month   3   189.84 259.21     2.34374   0.5042
+
 
 #NMDS plots---------------
 #next step is use these plots to see how much regions overlap in composition
