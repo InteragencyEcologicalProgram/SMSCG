@@ -22,6 +22,9 @@ load("actiondata.RData")
 ############################################################################################
 #examine autocorrelation and partial autocorrelation
 
+library(lme4)
+
+lm = lmer(Sepal.Length~Sepal.Width + (1|Species), data = iris)
 
 # we want to look at the autoregressive and moving-average structure
 # of the data. The moving average is generally interpreted from the 
