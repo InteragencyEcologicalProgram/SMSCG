@@ -534,14 +534,22 @@ effsz<-s_pd_sum_l %>%
 #calculate % of phyto biovolume comprised of diatoms
 (sum(s_pd_sum_z$d_tot_bvol)/sum(s_pd_sum_z$tot_bvol))*100
 
-(plot_rm_pd_bvol_bx<-ggplot(data=s_pd_sum_l, aes(x = month, y = tot_bvol2)) + 
+(plot_rm_pd_bvol_bx<-ggplot(data=s_pd_sum_l
+                            , aes(x = month
+                                  #, y = tot_bvol2
+                                  , y = log(tot_bvol2)
+                                  )) + 
     geom_boxplot(fill="darkolivegreen4")+
     #ylim(0,0.05)+ #drops a high end outlier for all phyto, july, sac river
     facet_grid(region2~type2)+
-        labs(x = "Month", y = bquote("Biovolume"~(mm^3~mL^-1) ))+
+        labs(x = "Month"
+             #, y = bquote("Biovolume"~(mm^3~mL^-1) )
+             , y = bquote("Biovolume"~LN(mm^3~mL^-1) )
+                          )+
     scale_x_discrete(labels = c("July","August", "September", "October"))
 )
-#ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_Boxplot_Phyto&Diatom_Region&Month.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
+#log transforming data means we lose 7 data points for the diatoms plot because they are zeros
+#ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_Boxplot_Phyto&Diatom_Region&Month_LN.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
 
 
 #Statistics: total phyto biovolume--------
