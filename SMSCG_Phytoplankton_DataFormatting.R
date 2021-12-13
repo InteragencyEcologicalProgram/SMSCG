@@ -3,10 +3,11 @@
 #Format raw data in preparation for visualization and analysis
 
 #required packages
-library(tidyverse)
-library(janitor)
-library(hms)
+library(tidyverse) #suite of data science tools
+library(janitor) #functions for cleaning up data sets
+library(hms) #working with date/time
 library(readxl) #importing data from excel files
+library(algaeClassify) #grab taxonomy info from AlgaeBase
 
 
 # 1. Read in the Data----------------------------------------------
@@ -134,7 +135,20 @@ phyto_cleanest<-phyto_cleaner %>%
 check_na <- phyto_cleanest[rowSums(is.na(phyto_cleanest)) > 0,]
 #none of these rows are needed for SMSCG data set
 
-#Add higher level taxonomic information and habitat information-------------
+#Add higher level taxonomic information using the algaeClassify package--------
+#NOTE: couldn't get the functions from this package that interface with AlgaeBase to work
+#Package hasn't been updated in over two years and AlgaeBase has launched a new website since then
+#emailed the package author on 12/13/2021
+
+#started by trying out examples from documentation. they didn't work
+algae_search(genus='Anabaena',species='flos-aquae',long=FALSE)
+
+data(lakegeneva)
+lakegeneva=lakegeneva[1,] ##use 1 row for testing
+lakegeneva.algaebase<-
+  spp_list_algaebase(lakegeneva,phyto.name='phyto_name',long=FALSE,write=FALSE)
+
+#Add higher level taxonomic information and habitat information manually-------------
 
 #names(taxonomy)
 
