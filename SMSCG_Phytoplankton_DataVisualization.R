@@ -17,6 +17,7 @@
 library(tidyverse) #variety of data science tools
 library(ggplot2) #making plots
 library(lubridate) #format dates
+library(diathor) #diatom trait data
 
 # 1. Read in the Data----------------------------------------------
 # Dataset is on SharePoint site for the SMSCG action
@@ -115,6 +116,38 @@ rm_samp_count<-phyto_gates %>%
   summarize(count = n(), .groups = 'drop') 
 range(rm_samp_count$count)
 #4-7 samples per month x region
+
+
+#try to get diatom trait data using the diathor package--------------
+#NOTE: so far, not having much luck; at least some of the examples worked
+
+#first make a df with just the diatoms
+#and format it into a matrix like this package needs
+diatoms_only<-phyto_gates %>% 
+  filter(phylum == "Ochrophyta") %>% 
+  #for diaThorAll function, there must be a column called "species"
+  rename(species=taxon) %>% 
+  #create combined station-date column
+  unite(station_date, station, date) %>% 
+  #reduce to just needed columns
+  select(species
+         ,station_date
+         ,organisms_per_ml
+  )   %>% 
+  #convert from long to wide
+  pivot_wider(names_from = station_date, values_from = organisms_per_ml) %>%  
+  glimpse()
+  #convert data frame to matrix
+  as.matrix()
+
+data("diat_sampleData")
+
+#Run diaThorAll to get all the outputs from the sample data with the default settings, and store
+#the results into the “results” object, to also retain the output within R
+#NOTE: this function runs a whole pipeline of functions and takes a while 
+#results <- diaThorAll(diat_sampleData) #If the sample data was used
+
+
 
 #plot time series of density and biovolume by station-----------
 
