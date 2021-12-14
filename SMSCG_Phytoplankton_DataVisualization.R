@@ -136,18 +136,33 @@ diatoms_only<-phyto_gates %>%
   )   %>% 
   #convert from long to wide
   pivot_wider(names_from = station_date, values_from = organisms_per_ml) %>%  
+  #convert all NAs to zeros
+  replace(is.na(.), 0) %>% 
+  #make species a factor and everything else integers
+  #NOTE that abundances are actually densities instead of counts but fine for now
+  mutate(across(c(species),as.factor)
+         ,across(c('STN 609_2020-08-12':'NZS42_2020-10-13'),as.integer)
+         ) %>% 
   glimpse()
-  #convert data frame to matrix
-  as.matrix()
+  
 
 data("diat_sampleData")
+glimpse(diat_sampleData)
+#species is a factor and all other columns are integers
+
 
 #Run diaThorAll to get all the outputs from the sample data with the default settings, and store
 #the results into the “results” object, to also retain the output within R
 #NOTE: this function runs a whole pipeline of functions and takes a while 
 #results <- diaThorAll(diat_sampleData) #If the sample data was used
 
+#I got their example to work
+#loadedData <- diat_loadData(species_df=diat_sampleData,resultsPath=sharepoint_path) # load data with the diat_loadData() function
+#results <- diat_ips(loadedData )
 
+#this isn't working still
+#loadedData <- diat_loadData(species_df=diatoms_only,resultsPath=sharepoint_path) 
+#results <- diat_ips(loadedData )
 
 #plot time series of density and biovolume by station-----------
 
