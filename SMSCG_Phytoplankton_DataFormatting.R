@@ -9,6 +9,8 @@ library(hms) #working with date/time
 library(readxl) #importing data from excel files
 library(algaeClassify) #grab taxonomy info from AlgaeBase
 
+#to do list
+#round up higher taxonomy data for the 12 new genera present in the 2021 data set
 
 # 1. Read in the Data----------------------------------------------
 
@@ -212,9 +214,14 @@ phyto_final<-phyto_tax[,c(1:3,9:11,6,4,5,7,8)]
 
 #how many genera in samples not in taxonomy data?
 #look for NA in Class column
-sum(is.na(phyto_tax$Class))
-#none so no genera in these samples that aren't in taxonomy data
+sum(is.na(phyto_tax$class))
+#31 cases in which a genus in a sample didn't match the taxonomy data
 
+#look at set of samples without matching taxonomy
+misfits <- phyto_tax %>% 
+  filter(is.na(class)) %>% 
+  distinct(genus)
+#12 new genera plus NA
 
 #how often do genera have multiple algae types? if always just one, then can just add the algae type column
 #if more than one, then we have to match up taxa to use the algae type
