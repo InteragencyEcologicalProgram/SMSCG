@@ -12,6 +12,10 @@ library(algaeClassify) #grab taxonomy info from AlgaeBase
 
 # 1. Read in the Data----------------------------------------------
 
+#read in taxonomy data
+#this probably needs to be updated with each new batch of data
+taxonomy <- read_excel(path = "Data/phytoplankton/PhytoplanktonTaxonomy_2021-04-23.xlsx")
+
 #Create character vectors of all 2020 phytoplankton files
 #five from EMP and one from DFW
 phyto_files20 <- dir(path = "Data/phytoplankton/2020", pattern = "\\.xlsx", full.names = T)
@@ -19,14 +23,8 @@ phyto_files20 <- dir(path = "Data/phytoplankton/2020", pattern = "\\.xlsx", full
 #Create character vectors of all 2021 phytoplankton files
 #five from EMP and one from DFW
 #doing this separately from 2020 because there's an extra column in these files
+#the "Full Code" column is the FLIMS code; relevant to EMP samples but not DFW samples
 phyto_files21 <- dir(path = "Data/phytoplankton/2021", pattern = "\\.xlsx", full.names = T)
-
-#Separate the taxonomy file from the sample data files
-#samp_files <- phyto_files[!str_detect(phyto_files, "Taxonomy")] 
-#taxon_file <- phyto_files[str_detect(phyto_files, "Taxonomy")] 
-
-#create taxonomy df
-#taxonomy <- read_excel(taxon_file)
 
 #Combine all of the 2020 sample data files into a single df
 #specify format of columns because column types not automatically read consistently among files
@@ -64,7 +62,7 @@ phytoplankton$SampleTime2<-as_hms(as.numeric(phytoplankton$SampleTime)*60*60*24)
 #checked some formatted times against original data and it looks like they converted correctly
 #glimpse(phytoplankton)
 
-phyto_cleaner <- phytoplankton %>% 
+phyto_cleanest <- phytoplankton %>% 
   #subset to just the needed columns
   select("StationCode"
          , "SampleDate2"
@@ -82,50 +80,15 @@ phyto_cleaner <- phytoplankton %>%
          , "Biovolume 1":"Biovolume 10") %>% 
   #remove empty rows created by linear cell measurement rows (length, width, depth)  
   remove_empty(which = "rows") %>% 
-  #create new column that calculates mean biovolume per cell
   rowwise() %>% 
-  mutate(mean_cell_biovolume = mean(c_across(`Biovolume 1`:`Biovolume 10`),na.rm=T))
-
-#look at data structure
-#glimpse(phyto_cleaner)
-#everything looks fine 
-
-#look at station names
-unique(phyto_cleaner$StationCode)
-#station names mostly but not entirely formatted consistently; why is NA present?
-
-#look at number of samples per station
-samp_count<-phyto_cleaner %>% 
-  distinct(StationCode, SampleDate2) %>% 
-  group_by(StationCode) %>% 
-  summarize(count = n())
-#there is one NA but there shouldn't be any
-
-#look closer at rows with NA for station
-station_na<-phyto_cleaner %>% 
-  filter(is.na(StationCode))
-#There are two rows with the value 4 for Biovolume2 but are otherwise blank rows
-#maybe values were typed into wrong row?
-
-#create new column that calculates organisms per mL
-phyto_cleaner$organisms_per_ml<-(phyto_cleaner$`Unit Abundance`*phyto_cleaner$`Slide/ Chamber Area (mm²)`)/
-  (phyto_cleaner$`Volume Analyzed (mL)`*phyto_cleaner$`Field-of-view (mm²)`*phyto_cleaner$`Number of Fields Counted`)
-
-#organisms per ml can also be calculated by simply multiplying factor by unit abundance
-#Though it requires more calculations, I think I prefer to use the formula based on the more raw
-#version of the data rather than the one based on the factor column which is a derived column
-#phyto_cleaner$organisms_per_ml_alt<-(phyto_cleaner$Factor*phyto_cleaner$`Unit Abundance`)
-  
-
-#create a column that calculates biovolume per mL
-#organisms per ml * cells per unit abundance * mean biovolume per cell
-#units for biovolume both for individual cells and per mL is cubic microns
-phyto_cleaner$biovolume_per_ml<-phyto_cleaner$organisms_per_ml * 
-  phyto_cleaner$"Number of cells per unit" * phyto_cleaner$mean_cell_biovolume
-
-#rename, subset, and reorder needed columns 
-
-phyto_cleanest<-phyto_cleaner %>%
+  mutate(
+    #create new column that calculates mean biovolume per cell
+    mean_cell_biovolume = mean(c_across(`Biovolume 1`:`Biovolume 10`),na.rm=T)
+    #create new column that calculates organisms per mL
+    ,organisms_per_ml = (`Unit Abundance`*`Slide/ Chamber Area (mm²)`)/(`Volume Analyzed (mL)`*`Field-of-view (mm²)`*`Number of Fields Counted`)
+    #create a column that calculates biovolume per mL
+    #units for biovolume both for individual cells and per mL is cubic microns
+    ,biovolume_per_ml = organisms_per_ml * `Number of cells per unit` * mean_cell_biovolume) %>% 
   #simplify column names
   rename(station = StationCode
          ,date = SampleDate2 
@@ -142,7 +105,29 @@ phyto_cleanest<-phyto_cleaner %>%
          ,"phyto_form"           
          , "organisms_per_ml"
          ,"biovolume_per_ml"
-         )
+  ) %>% 
+  glimpse()
+#organisms per ml can also be calculated by simply multiplying factor by unit abundance
+#Though it requires more calculations, I think I prefer to use the formula based on the more raw
+#version of the data rather than the one based on the factor column which is a derived column
+#phyto_cleaner$organisms_per_ml_alt<-(phyto_cleaner$Factor*phyto_cleaner$`Unit Abundance`)
+
+#look at station names
+unique(phyto_cleanest$station)
+#station names mostly but not entirely formatted consistently; why is NA present?
+
+#look at number of samples per station
+samp_count<-phyto_cleanest %>% 
+  distinct(station, date) %>% 
+  group_by(station) %>% 
+  summarize(count = n())
+#there is one NA but there shouldn't be any
+
+#look closer at rows with NA for station
+station_na<-phyto_cleanest %>% 
+  filter(is.na(station))
+#There are two rows with the value 4 for Biovolume2 but are otherwise blank rows
+#maybe values were typed into wrong row?
 
 #check for NAs
 check_na <- phyto_cleanest[rowSums(is.na(phyto_cleanest)) > 0,]
@@ -154,12 +139,12 @@ check_na <- phyto_cleanest[rowSums(is.na(phyto_cleanest)) > 0,]
 #emailed the package author on 12/13/2021
 
 #started by trying out examples from documentation. they didn't work
-algae_search(genus='Anabaena',species='flos-aquae',long=FALSE)
+#algae_search(genus='Anabaena',species='flos-aquae',long=FALSE)
 
-data(lakegeneva)
-lakegeneva=lakegeneva[1,] ##use 1 row for testing
-lakegeneva.algaebase<-
-  spp_list_algaebase(lakegeneva,phyto.name='phyto_name',long=FALSE,write=FALSE)
+#data(lakegeneva)
+#lakegeneva=lakegeneva[1,] ##use 1 row for testing
+#lakegeneva.algaebase<-
+#  spp_list_algaebase(lakegeneva,phyto.name='phyto_name',long=FALSE,write=FALSE)
 
 #Add higher level taxonomic information and habitat information manually-------------
 
@@ -218,9 +203,9 @@ phyto_tax<-left_join(phyto_cleanest,taxon_high_cond)
 #decided to drop the common names column here too
 phyto_final<-phyto_tax[,c(1:3,9:11,6,4,5,7,8)]
 
-#write the formatted data as csv on SharePoint
-#write_csv(phyto_final,file = paste0(sharepoint_path,"/SMSCG_phytoplankton_formatted_2020.csv"))
-
+#write the formatted data as csv 
+#write_csv(phyto_final,file = "Data/phytoplankton/SMSCG_phytoplankton_formatted_2020-2021.csv")
+#NOTE: the time look fine in df in R but is wrong when viewed in exported csv
 
 
 #exploring taxonomy data set--------------------
