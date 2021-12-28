@@ -11,36 +11,49 @@ library(algaeClassify) #grab taxonomy info from AlgaeBase
 
 
 # 1. Read in the Data----------------------------------------------
-# Dataset is on SharePoint site for the SMSCG action
 
-# Define path on SharePoint site for data
-sharepoint_path <- normalizePath(
-  file.path(
-    Sys.getenv("USERPROFILE"),
-    "California Department of Water Resources/SMSCG - Summer Action - Data/Phytoplankton"
-  )
-)  
+#Create character vectors of all 2020 phytoplankton files
+#five from EMP and one from DFW
+phyto_files20 <- dir(path = "Data/phytoplankton/2020", pattern = "\\.xlsx", full.names = T)
 
-#Create character vectors of all phytoplankton files
-#includes six files of sample data and one file with higher level taxonomy info
-phyto_files <- dir(sharepoint_path, pattern = "\\.xlsx", full.names = T)
+#Create character vectors of all 2021 phytoplankton files
+#five from EMP and one from DFW
+#doing this separately from 2020 because there's an extra column in these files
+phyto_files21 <- dir(path = "Data/phytoplankton/2021", pattern = "\\.xlsx", full.names = T)
 
 #Separate the taxonomy file from the sample data files
-samp_files <- phyto_files[!str_detect(phyto_files, "Taxonomy")] 
-taxon_file <- phyto_files[str_detect(phyto_files, "Taxonomy")] 
+#samp_files <- phyto_files[!str_detect(phyto_files, "Taxonomy")] 
+#taxon_file <- phyto_files[str_detect(phyto_files, "Taxonomy")] 
 
 #create taxonomy df
-taxonomy <- read_excel(taxon_file)
+#taxonomy <- read_excel(taxon_file)
 
-#Combine and all of the sample data files into a single df
+#Combine all of the 2020 sample data files into a single df
 #specify format of columns because column types not automatically read consistently among files
-column_type<-c(rep("text",4),rep("numeric",10),rep("text",5),rep("numeric",5),rep("text",5)
+column_type20<-c(rep("text",4),rep("numeric",10),rep("text",5),rep("numeric",5),rep("text",5)
                ,rep("numeric",10),"text",rep("numeric",26)) 
-phytoplankton <- map_dfr(samp_files, ~read_excel(.x, col_types = column_type))
-#glimpse(phytoplankton)
+phytoplankton20 <- map_dfr(phyto_files20, ~read_excel(.x, col_types = column_type20))
+#glimpse(phytoplankton20)
 #succeeded in combining all the sample files
 #but date and time are in weird format
 #also the sampling depth column has three variations: "Depth (m)", "Depth (ft.)", "Depth (ft)"
+#so when the files are combined, there are two extra depth columns added
+
+#Combine all of the 2021 sample data files into a single df
+#specify format of columns because column types not automatically read consistently among files
+#accounts for extra column in 2021 files
+column_type21<-c(rep("text",5),rep("numeric",10),rep("text",5),rep("numeric",5),rep("text",5)
+                 ,rep("numeric",10),"text",rep("numeric",26)) 
+phytoplankton21 <- map_dfr(phyto_files21, ~read_excel(.x, col_types = column_type21))
+#glimpse(phytoplankton21)
+#succeeded in combining all the sample files
+#but date and time are in weird format
+
+#combine the 2020 and 2021 data sets
+#bind_rows can handle the fact that not all columns will match between data sets
+phytoplankton <- bind_rows(phytoplankton20,phytoplankton21)
+#glimpse(phytoplankton) 
+#the three non-matching columns get kicked to the end of the combined df
 
 #format the sample data set------------
 
