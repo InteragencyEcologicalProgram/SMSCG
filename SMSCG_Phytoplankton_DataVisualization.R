@@ -17,6 +17,7 @@
 library(tidyverse) #variety of data science tools
 library(ggplot2) #making plots
 library(lubridate) #format dates
+library(diathor) #diatom trait data
 
 # 1. Read in the Data----------------------------------------------
 # Dataset is on SharePoint site for the SMSCG action
@@ -76,7 +77,6 @@ check_na <- phyto_gates[rowSums(is.na(phyto_gates)) > 0,]
 
 #export data as csv for publishing on EDI
 edi<-phyto_gates[,c(1,14,2:11)]
-
 #write_csv(edi,file = paste0(sharepoint_path,"./Phytoplankton/SMSCG_phytoplankton_EDI_2020.csv"))
 
 #how many genera didn't match up with higher taxonomy?
@@ -95,7 +95,7 @@ edi<-phyto_gates[,c(1,14,2:11)]
 s_samp_count<-phyto_gates %>% 
   distinct(station_comb, date) %>% 
   group_by(station_comb) %>% 
-  summarize(count = n())  
+  summarize(count = n(), .groups = 'drop')  
 #generally 6-8 as expected 
 
 #count total number of samples
@@ -105,10 +105,64 @@ sum(s_samp_count$count) #70
 r_samp_count<-phyto_gates %>% 
   distinct(region, date) %>% 
   group_by(region) %>% 
-  summarize(count = n())  
+  summarize(count = n(), .groups = 'drop')  
 #twice as many samples in river as east marsh
 #west marsh intermediate in sample number
 
+#look at number of samples per region and month
+rm_samp_count<-phyto_gates %>% 
+  distinct(region,station_comb, month,date) %>% 
+  group_by(region, month) %>% 
+  summarize(count = n(), .groups = 'drop') 
+range(rm_samp_count$count)
+#4-7 samples per month x region
+
+
+#try to get diatom trait data using the diathor package--------------
+#NOTE: so far, not having much luck; at least some of the examples worked
+
+#first make a df with just the diatoms
+#and format it into a matrix like this package needs
+diatoms_only<-phyto_gates %>% 
+  filter(phylum == "Ochrophyta") %>% 
+  #for diaThorAll function, there must be a column called "species"
+  rename(species=taxon) %>% 
+  #create combined station-date column
+  unite(station_date, station, date) %>% 
+  #reduce to just needed columns
+  select(species
+         ,station_date
+         ,organisms_per_ml
+  )   %>% 
+  #convert from long to wide
+  pivot_wider(names_from = station_date, values_from = organisms_per_ml) %>%  
+  #convert all NAs to zeros
+  replace(is.na(.), 0) %>% 
+  #make species a factor and everything else integers
+  #NOTE that abundances are actually densities instead of counts but fine for now
+  mutate(across(c(species),as.factor)
+         ,across(c('STN 609_2020-08-12':'NZS42_2020-10-13'),as.integer)
+         ) %>% 
+  glimpse()
+  
+
+data("diat_sampleData")
+glimpse(diat_sampleData)
+#species is a factor and all other columns are integers
+
+
+#Run diaThorAll to get all the outputs from the sample data with the default settings, and store
+#the results into the “results” object, to also retain the output within R
+#NOTE: this function runs a whole pipeline of functions and takes a while 
+#results <- diaThorAll(diat_sampleData) #If the sample data was used
+
+#I got their example to work
+#loadedData <- diat_loadData(species_df=diat_sampleData,resultsPath=sharepoint_path) # load data with the diat_loadData() function
+#results <- diat_ips(loadedData )
+
+#this isn't working still
+#loadedData <- diat_loadData(species_df=diatoms_only,resultsPath=sharepoint_path) 
+#results <- diat_ips(loadedData )
 
 #plot time series of density and biovolume by station-----------
 
@@ -118,7 +172,8 @@ s_phyto_sum<-phyto_gates %>%
   group_by(region, station_comb, station2, month, date, time) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
-    ,tot_bvol = sum(biovolume_per_ml)
+    ,tot_bvol = sum(biovolume_per_ml), 
+    .groups = 'drop'
   ) %>% 
   #make month a factor
     mutate_at(vars(month), factor)
@@ -155,7 +210,8 @@ r_phyto_sum<-s_phyto_sum %>%
     tot_den_avg = mean(tot_den),
     tot_den_se = se(tot_den),
     tot_bvol_avg = mean(tot_bvol),
-    tot_bvol_se = se(tot_bvol)
+    tot_bvol_se = se(tot_bvol), 
+    .groups = 'drop'
   )
 #glimpse(r_phyto_sum)
 
@@ -192,12 +248,14 @@ r_phyto_sum$region <- factor(r_phyto_sum$region, levels=c('MW','ME','RV'))
 
 (plot_rg_tot_bvol_bx<-ggplot(data=s_phyto_sum, aes(x = region, y = tot_bvol)) + 
     geom_boxplot()+
-    geom_jitter()+ #adds all points to plot, not just outliers
-    labs(x = "Region", y = "Total Biovolume (cubic microns per mL)")
-  
+    #geom_jitter()+ #adds all points to plot, not just outliers; need to remove default outlier points to avoid duplication
+    labs(x = "Region", y = "Phytoplankton Biovolume (cubic microns per mL)")+
+    scale_x_discrete(labels = c('West Suisun Marsh','East Suisun Marsh','Lower Sacramento'))
 )
-#ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_BoxPlot_TotalBiovolume_Region.png"),type ="cairo-png",width=8, height=5,units="in",dpi=300)
+#ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_BoxPlot_TotalBiovolume_Region_Report.png"),type ="cairo-png",width=8, height=5,units="in",dpi=300)
 
+#look at high end outliers
+out<-filter(s_phyto_sum, tot_bvol>40000000)
 
 #plot number of genera by station and region-------
 
@@ -206,7 +264,7 @@ r_phyto_sum$region <- factor(r_phyto_sum$region, levels=c('MW','ME','RV'))
 ssp_count<-phyto_gates %>% 
   distinct(genus, taxon) %>% 
   group_by(genus) %>% 
-  summarize(count = n())  
+  summarize(count = n(), .groups = 'drop')  
 
 #use histogram to visualize distribution of species per genera
 (plot_spp_per_genus_hist<-ggplot(data=ssp_count, aes(x = count)) + 
@@ -226,7 +284,7 @@ genera_rich<-phyto_gates %>%
 phyto_genera_sum<-phyto_gates %>% 
   distinct(region, station_comb,date, month,genus) %>% 
   group_by(region, station_comb,date, month) %>% 
-  summarize(genera = n())
+  summarize(genera = n(), .groups = 'drop')
 
 #use histogram to visualize distribution of genera per sample
 (plot_genera_per_sample_hist<-ggplot(data=phyto_genera_sum, aes(x = genera)) + 
@@ -245,7 +303,7 @@ phyto_genera_sum<-phyto_gates %>%
 phyto_genera_sum_rg<-phyto_gates %>% 
   distinct(region,date, month,genus) %>% 
   group_by(region,date, month) %>% 
-  summarize(genera = n())
+  summarize(genera = n(), .groups = 'drop')
 
 #plot time series of number of genera by region
 (plot_st_genera <-ggplot(phyto_genera_sum_rg, aes(x=date, y=genera))+ 
@@ -262,7 +320,8 @@ s_phyto_phylum_sum<-phyto_gates %>%
   group_by(region, station_comb, date, month,phylum) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
-    ,tot_bvol = sum(biovolume_per_ml)
+    ,tot_bvol = sum(biovolume_per_ml), 
+    .groups = 'drop'
   )
 
 #stacked bar plot time series of density by phylum and station
@@ -306,7 +365,8 @@ r_phyto_phylum_sum<-s_phyto_phylum_sum %>%
     tot_den_avg = mean(tot_den),
     tot_den_se = se(tot_den),
     tot_bvol_avg = mean(tot_bvol),
-    tot_bvol_se = se(tot_bvol)
+    tot_bvol_se = se(tot_bvol), 
+    .groups = 'drop'
       )
 #NOTE: calculating the means probably isn't this simple
 #probably need to create data frame with all combos of samples x taxa
@@ -355,12 +415,14 @@ r_phyto_phylum_sum_rg<-phyto_gates %>%
   group_by(region, station_comb, date, month,phylum) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
-    ,tot_bvol = sum(biovolume_per_ml)) %>% 
+    ,tot_bvol = sum(biovolume_per_ml)
+    , .groups = 'drop') %>% 
   #calculate mean densities and biovolumes within regions by phylum
   group_by(region, phylum) %>% 
   summarize(
     tot_den_avg = mean(tot_den),
-    tot_bvol_avg = mean(tot_bvol),
+    tot_bvol_avg = mean(tot_bvol)
+    , .groups = 'drop'
   )
 
 #reorder region factor levels for plotting
@@ -389,31 +451,21 @@ s_diatom_sum<-phyto_gates %>%
   filter(phylum == "Ochrophyta") %>% 
   group_by(region, station_comb, station2, month, date, time) %>% 
   summarize(
-    tot_den = sum(organisms_per_ml)
-    ,tot_bvol = sum(biovolume_per_ml)
+    d_tot_den = sum(organisms_per_ml)
+    ,d_tot_bvol = sum(biovolume_per_ml)
+    , .groups = 'drop'
   )  %>% 
   #make month a factor
   mutate_at(vars(month), factor)
 #there are 7 samples without diatoms
-#add these 7 samples back to this data set and put zeros for them
+#combine diatom data with total phyto data
 
-#first grab the relevant columns from the all taxa analogous dataset
-s_phyto_sum_cols<-s_phyto_sum %>%
-  select("region"
-         ,"station_comb"
-         ,"station2"
-         ,"month"
-         ,"date"        
-         ,"time"
-  )
-
-#join diatom data set and the all taxa equivalent
-s_diatom_sum_full <- left_join(s_phyto_sum_cols,s_diatom_sum)
+#join diatom data set and all phyto data set
+s_pd_sum <- left_join(s_phyto_sum,s_diatom_sum)
 
 #replace NAs with zeros for density and biovolume
-#these are the only NAs in the data set
-s_diatom_sum_fullz <- s_diatom_sum_full %>% 
-  replace_na(list(tot_den = 0, tot_bvol = 0))
+s_pd_sum_z <- s_pd_sum %>% 
+    replace_na(list(d_tot_den = 0, d_tot_bvol = 0))
 
 #summarize diatom density and biovolume data by class, region, and month
 diatom_sum<-phyto_gates %>% 
@@ -423,7 +475,8 @@ diatom_sum<-phyto_gates %>%
   group_by(region, station_comb, date, month,class) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
-    ,tot_bvol = sum(biovolume_per_ml)) %>% 
+    ,tot_bvol = sum(biovolume_per_ml)
+    , .groups = 'drop') %>% 
   #calculate mean densities and biovolumes within regions and months by class
     group_by(region, month, class) %>% 
     summarize(
@@ -431,6 +484,7 @@ diatom_sum<-phyto_gates %>%
       tot_den_se = se(tot_den),
       tot_bvol_avg = mean(tot_bvol),
       tot_bvol_se = se(tot_bvol)
+      , .groups = 'drop'
     )
 
 #reorder region factor levels for plotting
@@ -463,7 +517,8 @@ diatom_sum_rg<-phyto_gates %>%
   group_by(region, station_comb, date, month,class) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
-    ,tot_bvol = sum(biovolume_per_ml)) %>% 
+    ,tot_bvol = sum(biovolume_per_ml)
+    , .groups = 'drop') %>% 
   #calculate mean densities and biovolumes within regions by class
   group_by(region, class) %>% 
   summarize(
@@ -471,6 +526,7 @@ diatom_sum_rg<-phyto_gates %>%
     tot_den_se = se(tot_den),
     tot_bvol_avg = mean(tot_bvol),
     tot_bvol_se = se(tot_bvol)
+    , .groups = 'drop'
   )
 
 #reorder region factor levels for plotting
@@ -490,6 +546,61 @@ diatom_sum_rg$region <- factor(diatom_sum_rg$region, levels=c('MW','ME','RV'))
 )
 #ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_StackedBar_Diatom_Region.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
 
+#boxplot of total phyto biovolume and diatom biovolume by region and month---------
+
+#first reshape data frame
+#use version with zeros for samples without diatoms (instead of NAs)
+s_pd_sum_l<- s_pd_sum_z %>% 
+  #reduce data frame to just needed columns
+  select("region","station_comb","month","date","tot_bvol","d_tot_bvol") %>% 
+  #convert wide to long
+  pivot_longer(c("tot_bvol","d_tot_bvol"), names_to = "type", values_to = "tot_bvol") %>% 
+  #converts some columns from character to factor
+  mutate_at(vars(region,type), factor) %>% 
+  #reorder factor levels for plotting
+  mutate(region = factor(region, levels=c('RV','ME','MW'))
+         ,type = factor(type, levels=c("tot_bvol","d_tot_bvol"))
+  #create new columns with better names for labeling facets
+         ,type2 = recode(
+           type, "tot_bvol" = "All Phytoplankton","d_tot_bvol" = "Diatoms")
+        ,region2 = recode(
+    region, "RV" = "Lower Sacramento", "ME" = "East Suisun Marsh", "MW" = "West Suisun Marsh")) %>% 
+  #convert from cubic microns per mL to cubic mm per mL
+  mutate(tot_bvol2 = tot_bvol/1000000000)
+glimpse(s_pd_sum_l)
+
+#generate effect sizes for total phyto and diatoms across regions and months
+#needed for USBR report
+#start with means and SD for total phyto and diatoms
+effsz<-s_pd_sum_l %>% 
+  group_by(type) %>% 
+  summarize(
+    bvol_mean = mean(tot_bvol2)
+    ,bvol_sd = sd(tot_bvol2)
+    , .groups = 'drop')
+
+#calculate % of phyto biovolume comprised of diatoms
+(sum(s_pd_sum_z$d_tot_bvol)/sum(s_pd_sum_z$tot_bvol))*100
+
+#plot: col: phyto and diatoms, row: region, x-axis: month
+(plot_rm_pd_bvol_bx<-ggplot(data=s_pd_sum_l
+                            , aes(x = month
+                                  , y = tot_bvol2
+                                  #, y = log(tot_bvol2)
+                                  )) + 
+    geom_boxplot(fill="darkolivegreen4")+
+    #ylim(0,0.05)+ #drops a high end outlier for all phyto, july, sac river
+    facet_grid(region2~type2)+
+        labs(x = "Month"
+             , y = bquote("Biovolume"~(mm^3~mL^-1) )
+             #, y = bquote("Biovolume"~LN(mm^3~mL^-1) )
+                          )+
+    scale_x_discrete(labels = c("July","August", "September", "October"))
+)
+#log transforming data means we lose 7 data points for the diatoms plot because they are zeros
+#could switch month and region to better emphasize region comparisons but either month nor region differ
+#ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_Boxplot_Phyto&Diatom_Region&Month.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
+
 #Statistics: total phyto biovolume--------
 
 #predictors to include: region, month, maybe salinity
@@ -499,7 +610,7 @@ diatom_sum_rg$region <- factor(diatom_sum_rg$region, levels=c('MW','ME','RV'))
 tbmod = glm(tot_bvol ~ region * month, data = s_phyto_sum)
 
 #model checking plots
-plot(tbmod)
+#plot(tbmod)
 #plots aren't great
 #residuals vs fitted: spread gets larger with higher values 
 #Q-Q plot: points stray pretty far off diagonal at upper end 
@@ -510,7 +621,7 @@ plot(tbmod)
 tblmod = glm(log(tot_bvol) ~ region * month, data = s_phyto_sum)
 
 #model checking plots
-plot(tblmod)
+#plot(tblmod)
 #looks like log transformation did the trick
 #could also try a different error distribution like gamma
 
@@ -538,23 +649,23 @@ drop1(tblmod2, test="Chi")
 #could include station as a random effect. there are only 9 though
 
 #Note: there are 7 zeros that are currently excluded from the data set used in these models
-#the data set s_diatom_sum_fullz includes these zeros
-zeros <-filter(s_diatom_sum_fullz, tot_bvol == 0)
+#s_pd_sum: these 7 samples are NAs
+#s_pd_sum_z: these 7 samples are zeros
+zeros <-filter(s_pd_sum_z, d_tot_bvol == 0)
 #RV = 3, ME = 1, MW = 3
 
 #build model
-dbmod = glm(tot_bvol ~ region * month, data = s_diatom_sum_full)
+dbmod = glm(d_tot_bvol ~ region * month, data = s_pd_sum)
 
 #model checking plots
-plot(dbmod)
+#plot(dbmod)
 #as with full data set, should do log transform
 
 #redo analysis with log transformed response
-dblmod = glm(log(tot_bvol) ~ region * month, data = s_diatom_sum_full)
-#messes up because of presence of 7 zeros which can't be log transformed
+dblmod = glm(log(d_tot_bvol) ~ region * month, data = s_pd_sum)
 
 #model checking plots
-plot(dblmod)
+#plot(dblmod)
 #looks like log transformation did the trick
 #could also try a different error distribution like gamma
 
@@ -564,7 +675,7 @@ drop1(dblmod, test="Chi")
 #interaction term isn't significant 
 
 #redo model with log transformed response and without interaction term
-dblmod2 = glm(log(tot_bvol) ~ region  + month, data = s_diatom_sum_full)
+dblmod2 = glm(log(d_tot_bvol) ~ region  + month, data = s_pd_sum)
 
 #look at model results
 summary(dblmod2)
