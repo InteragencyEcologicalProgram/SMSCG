@@ -17,49 +17,28 @@
 library(tidyverse) #variety of data science tools
 library(ggplot2) #making plots
 library(lubridate) #format dates
-library(diathor) #diatom trait data
+#library(diathor) #diatom trait data
 
 # 1. Read in the Data----------------------------------------------
-# Dataset is on SharePoint site for the SMSCG action
-
-# Define path on SharePoint site for data
-sharepoint_path <- normalizePath(
-  file.path(
-    Sys.getenv("USERPROFILE"),
-    "California Department of Water Resources/SMSCG - Summer Action - Data"
-  )
-)  
 
 #read in the aggregated and formatted phytoplankton data
-phyto_vis<-read_csv(file = paste0(sharepoint_path,"./Phytoplankton/SMSCG_phytoplankton_formatted_2020.csv"))
+phyto_vis<-read_csv("Data/phytoplankton/SMSCG_phytoplankton_formatted_2020-2021.csv")
 #looks like column types are all correct, even date and time
 
 #format data---------------
-
-#look at station names
-#sort(unique(phyto_vis$station))
-#names are mostly, but not completely, unique
-#fix this one because it's needed: "STN 610" vs "STN610"
-#the rest will be filtered out: 
-#"C3A" "C3A-Hood" "C3A-HOOD"
-#"D16"  "D16-Twitchell"
-#"E26" vs "EZ6" 
-
-
-#remove spaces from all station names, which will remove the redundant versions of 610
-
-phyto_vis$station2<-str_replace_all(phyto_vis$station, " ", "")
 
 #EMP stations: Subset to just the four relevant to SMSCG
 #Two different naming systems for stations: EMP (DFW)
 #D22 (NZ064), D4 (NZ060), NZ032 (NZ032), NZS42 (NZS42)
 
+unique(phyto_vis$station)
+
 #create data frame that groups names of stations that represent the same general location and adds the three broad regions
 #RV = Sacramento River, ME = East Suisun Marsh, MW = West Suisun Marsh
 station_key <- data.frame(
-  station2 = c("STN706", "FMWT706", "NZ064", "D22","STN704","FMWT704","STN801", "FMWT802", "NZ060", "D4","STN609","MONT","STN610","FMWT605", "STN606","FMWT606","NZ032","NZS42"),
-  station_comb = c(rep("PHY706", 4), rep("PHY704",2), rep("PHY801", 4),"STN609","MONT","STN610", "FMWT605", rep("PHY606",3),"NZS42"),
-  region = c(rep("RV",10), rep("ME",3), rep("MW",5))
+  station = c("706", "NZ064", "D22","704","801", "802", "NZ060", "D4","609","MON","610","605", "606","NZ032","NZS42","GZB","602"),
+  station_comb = c(rep("706", 3), "704",rep("801", 4),"609","MON","610", "605", rep("606",2),"NZS42","GZB","602"),
+  region = c(rep("RV",8), rep("ME",3), rep("MW",4),rep("GB",2))
 )
 #glimpse(station_key)
 
@@ -67,13 +46,15 @@ station_key <- data.frame(
 #by using inner_join, only the SMSCG relevant stations are kept
 phyto_gates<- inner_join(phyto_vis,station_key) %>% 
   #add a column for month by extracting month from date
-  mutate(month = month(date)) %>% 
+  mutate(month = month(date)
+         ,year = year(date)
+         ) %>% 
   #remove the June samples from EMP because we don't have any other June samples
   filter(month!=6) 
 
 #check for NAs
 check_na <- phyto_gates[rowSums(is.na(phyto_gates)) > 0,]
-#no NAs now that I've updated the taxonomy dataset
+#the only NAs are for the time for one sample
 
 #export data as csv for publishing on EDI
 edi<-phyto_gates[,c(1,14,2:11)]
@@ -81,7 +62,7 @@ edi<-phyto_gates[,c(1,14,2:11)]
 
 #how many genera didn't match up with higher taxonomy?
 #sum(is.na(phyto_gates$class))
-#there are 10 rows that aren't matched with higher level taxonomy
+#there are now zero rows that aren't matched with higher level taxonomy
 
 #look at distinct genera and taxa
 #taxon_na<-phyto_gates %>% 
@@ -96,18 +77,16 @@ s_samp_count<-phyto_gates %>%
   distinct(station_comb, date) %>% 
   group_by(station_comb) %>% 
   summarize(count = n(), .groups = 'drop')  
-#generally 6-8 as expected 
 
 #count total number of samples
-sum(s_samp_count$count) #70
+sum(s_samp_count$count) #138
 
 #look at number of samples per region
 r_samp_count<-phyto_gates %>% 
   distinct(region, date) %>% 
   group_by(region) %>% 
   summarize(count = n(), .groups = 'drop')  
-#twice as many samples in river as east marsh
-#west marsh intermediate in sample number
+#sample size varies a lot among regions; river is most; bay is fewest
 
 #look at number of samples per region and month
 rm_samp_count<-phyto_gates %>% 
@@ -115,7 +94,14 @@ rm_samp_count<-phyto_gates %>%
   group_by(region, month) %>% 
   summarize(count = n(), .groups = 'drop') 
 range(rm_samp_count$count)
-#4-7 samples per month x region
+#generally 8-14 samples per month x region
+
+#look at number of samples per region and month and year
+ry_samp_count<-phyto_gates %>% 
+  distinct(region,station_comb, year, month,date) %>% 
+  group_by(region, year,month) %>% 
+  summarize(count = n(), .groups = 'drop') 
+range(ry_samp_count$count)
 
 
 #try to get diatom trait data using the diathor package--------------
@@ -169,29 +155,29 @@ glimpse(diat_sampleData)
 #summarize density and biovolume data by sample (station x date combo)
 #so sum all the taxon specific densities and biovolumes within a sample
 s_phyto_sum<-phyto_gates %>% 
-  group_by(region, station_comb, station2, month, date, time) %>% 
+  group_by(region, station_comb, station, year, month, date, time) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
     ,tot_bvol = sum(biovolume_per_ml), 
     .groups = 'drop'
   ) %>% 
-  #make month a factor
-    mutate_at(vars(month), factor)
+  #make month and year factors
+    mutate_at(vars(year,month), factor)
 #write_csv(s_phyto_sum,file = paste0(sharepoint_path,"./Plots/SMSCG_phytoplankton_sample_summary_2020.csv"))
 
 #reorder region factor levels for plotting
-s_phyto_sum$region <- factor(s_phyto_sum$region, levels=c('MW','ME','RV'))
+s_phyto_sum$region <- factor(s_phyto_sum$region, levels=c('GB','MW','ME','RV'))
 
 
 #plot total phytoplankton density by station 
-(plot_st_tot_den <-ggplot(s_phyto_sum, aes(x=date, y=tot_den))+ #specified what to plot on the x and y axes
+(plot_st_tot_den <-ggplot(s_phyto_sum, aes(x=date, y=tot_den, group=year))+ #specified what to plot on the x and y axes
     geom_line() + 
     geom_point() + 
     facet_wrap(~station_comb, nrow=2)
   )
 
 #plot total phytoplankton biovolume by station
-(plot_st_tot_bvol <-ggplot(s_phyto_sum, aes(x=date, y=tot_bvol))+ 
+(plot_st_tot_bvol <-ggplot(s_phyto_sum, aes(x=date, y=tot_bvol, group=year))+ 
     geom_line() + 
     geom_point() + 
     facet_wrap(~station_comb, nrow=2)
@@ -216,7 +202,7 @@ r_phyto_sum<-s_phyto_sum %>%
 #glimpse(r_phyto_sum)
 
 #reorder region factor levels for plotting
-r_phyto_sum$region <- factor(r_phyto_sum$region, levels=c('MW','ME','RV'))
+r_phyto_sum$region <- factor(r_phyto_sum$region, levels=c('GB','MW','ME','RV'))
 
 
 #plot mean total phytoplankton density by region
@@ -277,7 +263,7 @@ genera_rich<-phyto_gates %>%
   distinct(genus, taxon) %>% 
   filter(genus=="Nitzschia" | genus =="Navicula") %>% 
   arrange(genus)
-#not just unique because of variants of same name
+#not just unique because of variants of same name (though there are variants of genus sp.)
 #actually quite a few different species within these genera present
 
 #create df that counts genera by sample
@@ -426,7 +412,7 @@ r_phyto_phylum_sum_rg<-phyto_gates %>%
   )
 
 #reorder region factor levels for plotting
-r_phyto_phylum_sum_rg$region <- factor(r_phyto_phylum_sum_rg$region, levels=c('MW','ME','RV'))
+r_phyto_phylum_sum_rg$region <- factor(r_phyto_phylum_sum_rg$region, levels=c('GB','MW','ME','RV'))
 
 
 #stacked bar plot time series of diatom biovolume by region, class
@@ -449,7 +435,7 @@ r_phyto_phylum_sum_rg$region <- factor(r_phyto_phylum_sum_rg$region, levels=c('M
 s_diatom_sum<-phyto_gates %>% 
   #subset data to just the phylum with diatoms
   filter(phylum == "Ochrophyta") %>% 
-  group_by(region, station_comb, station2, month, date, time) %>% 
+  group_by(region, station_comb, station, month, date, time) %>% 
   summarize(
     d_tot_den = sum(organisms_per_ml)
     ,d_tot_bvol = sum(biovolume_per_ml)
@@ -488,7 +474,7 @@ diatom_sum<-phyto_gates %>%
     )
 
 #reorder region factor levels for plotting
-diatom_sum$region <- factor(diatom_sum$region, levels=c('MW','ME','RV'))
+diatom_sum$region <- factor(diatom_sum$region, levels=c('GB','MW','ME','RV'))
 
   
 #stacked bar plot time series of diatom biovolume by region, month, class
@@ -530,7 +516,7 @@ diatom_sum_rg<-phyto_gates %>%
   )
 
 #reorder region factor levels for plotting
-diatom_sum_rg$region <- factor(diatom_sum_rg$region, levels=c('MW','ME','RV'))
+diatom_sum_rg$region <- factor(diatom_sum_rg$region, levels=c('GB','MW','ME','RV'))
 
 
 #stacked bar plot time series of diatom biovolume by region, class
@@ -558,13 +544,13 @@ s_pd_sum_l<- s_pd_sum_z %>%
   #converts some columns from character to factor
   mutate_at(vars(region,type), factor) %>% 
   #reorder factor levels for plotting
-  mutate(region = factor(region, levels=c('RV','ME','MW'))
+  mutate(region = factor(region, levels=c('RV','ME','MW','GB'))
          ,type = factor(type, levels=c("tot_bvol","d_tot_bvol"))
   #create new columns with better names for labeling facets
          ,type2 = recode(
            type, "tot_bvol" = "All Phytoplankton","d_tot_bvol" = "Diatoms")
         ,region2 = recode(
-    region, "RV" = "Lower Sacramento", "ME" = "East Suisun Marsh", "MW" = "West Suisun Marsh")) %>% 
+    region, "RV" = "Lower Sacramento", "ME" = "East Suisun Marsh", "MW" = "West Suisun Marsh", "GB"="Grizzly Bay")) %>% 
   #convert from cubic microns per mL to cubic mm per mL
   mutate(tot_bvol2 = tot_bvol/1000000000)
 glimpse(s_pd_sum_l)

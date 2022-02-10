@@ -245,7 +245,7 @@ phyto_final<-phyto_tax %>%
   glimpse()
 
 #write the formatted data as csv 
-write_csv(phyto_final,file = "Data/phytoplankton/SMSCG_phytoplankton_formatted_2020-2021.csv")
+#write_csv(phyto_final,file = "Data/phytoplankton/SMSCG_phytoplankton_formatted_2020-2021.csv")
 #NOTE: the time look fine in df in R but is wrong when viewed in exported csv
 
 
