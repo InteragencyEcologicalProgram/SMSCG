@@ -90,7 +90,9 @@ phyto_cleanest <- phytoplankton %>%
     ,organisms_per_ml = (`Unit Abundance`*`Slide/ Chamber Area (mm²)`)/(`Volume Analyzed (mL)`*`Field-of-view (mm²)`*`Number of Fields Counted`)
     #create a column that calculates biovolume per mL
     #units for biovolume both for individual cells and per mL is cubic microns
-    ,biovolume_per_ml = organisms_per_ml * `Number of cells per unit` * mean_cell_biovolume) %>% 
+    ,biovolume_per_ml_old = organisms_per_ml * `Number of cells per unit` * mean_cell_biovolume
+    ,biovolume_per_ml_new = Factor * `Number of cells per unit` * mean_cell_biovolume
+    ) %>% 
   #simplify column names
   rename(station = StationCode
          ,date = SampleDate2 
@@ -106,7 +108,8 @@ phyto_cleanest <- phytoplankton %>%
          ,"taxon"                              
          ,"phyto_form"           
          , "organisms_per_ml"
-         ,"biovolume_per_ml"
+         ,"biovolume_per_ml_old"
+         ,"biovolume_per_ml_new"
   ) %>% 
   glimpse()
 #organisms per ml can also be calculated by simply multiplying factor by unit abundance
@@ -240,12 +243,13 @@ phyto_final<-phyto_tax %>%
          ,genus
          ,taxon
          ,organisms_per_ml
-         ,biovolume_per_ml
+         ,biovolume_per_ml_old
+         ,biovolume_per_ml_new
   ) %>%
   glimpse()
 
 #write the formatted data as csv 
-#write_csv(phyto_final,file = "Data/phytoplankton/SMSCG_phytoplankton_formatted_2020-2021.csv")
+write_csv(phyto_final,file = "Data/phytoplankton/SMSCG_phytoplankton_formatted_2020-2021.csv")
 #NOTE: the time look fine in df in R but is wrong when viewed in exported csv
 
 

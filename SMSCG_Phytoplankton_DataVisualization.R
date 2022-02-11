@@ -57,6 +57,7 @@ check_na <- phyto_gates[rowSums(is.na(phyto_gates)) > 0,]
 #the only NAs are for the time for one sample
 
 #export data as csv for publishing on EDI
+#note: need to update this line of code
 edi<-phyto_gates[,c(1,14,2:11)]
 #write_csv(edi,file = paste0(sharepoint_path,"./Phytoplankton/SMSCG_phytoplankton_EDI_2020.csv"))
 
@@ -158,8 +159,9 @@ s_phyto_sum<-phyto_gates %>%
   group_by(region, station_comb, station, year, month, date, time) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
-    ,tot_bvol = sum(biovolume_per_ml), 
-    .groups = 'drop'
+    ,tot_bvol_old = sum(biovolume_per_ml_old)
+    ,tot_bvol_new = sum(biovolume_per_ml_new) 
+    ,.groups = 'drop'
   ) %>% 
   #make month and year factors
     mutate_at(vars(year,month), factor)
@@ -176,8 +178,15 @@ s_phyto_sum$region <- factor(s_phyto_sum$region, levels=c('GB','MW','ME','RV'))
     facet_wrap(~station_comb, nrow=2)
   )
 
-#plot total phytoplankton biovolume by station
-(plot_st_tot_bvol <-ggplot(s_phyto_sum, aes(x=date, y=tot_bvol, group=year))+ 
+#plot total phytoplankton biovolume OLD by station
+(plot_st_tot_bvol <-ggplot(s_phyto_sum, aes(x=date, y=tot_bvol_old, group=year))+ 
+    geom_line() + 
+    geom_point() + 
+    facet_wrap(~station_comb, nrow=2)
+)
+
+#plot total phytoplankton biovolume NEW by station
+(plot_st_tot_bvol <-ggplot(s_phyto_sum, aes(x=date, y=tot_bvol_new, group=year))+ 
     geom_line() + 
     geom_point() + 
     facet_wrap(~station_comb, nrow=2)
@@ -195,9 +204,11 @@ r_phyto_sum<-s_phyto_sum %>%
   summarize(
     tot_den_avg = mean(tot_den),
     tot_den_se = se(tot_den),
-    tot_bvol_avg = mean(tot_bvol),
-    tot_bvol_se = se(tot_bvol), 
-    .groups = 'drop'
+    tot_bvol_old_avg = mean(tot_bvol_old),
+    tot_bvol_old_se = se(tot_bvol_old),
+    tot_bvol_new_avg = mean(tot_bvol_new),
+    tot_bvol_new_se = se(tot_bvol_new)
+    ,.groups = 'drop'
   )
 #glimpse(r_phyto_sum)
 
@@ -213,11 +224,21 @@ r_phyto_sum$region <- factor(r_phyto_sum$region, levels=c('GB','MW','ME','RV'))
     facet_wrap(~region)
 )
 
-#plot mean total phytoplankton biovolume by region
-(plot_rg_tot_bvol <-ggplot(r_phyto_sum, aes(x=month, y=tot_bvol_avg))+ 
+#plot mean total phytoplankton biovolume OLD by region
+(plot_rg_tot_bvol_old <-ggplot(r_phyto_sum, aes(x=month, y=tot_bvol_old_avg))+ 
     geom_line() + 
     geom_point() + 
-    geom_errorbar(aes(ymin=tot_bvol_avg-tot_bvol_se, ymax=tot_bvol_avg+tot_bvol_se), width = 0.2) +
+    geom_errorbar(aes(ymin=tot_bvol_old_avg-tot_bvol_old_se, ymax=tot_bvol_old_avg+tot_bvol_old_se), width = 0.2) +
+    facet_wrap(~region)+
+    labs(x="Month", y="Total Biovolume (cubic microns per mL)")
+  
+)
+
+#plot mean total phytoplankton biovolume NEW by region
+(plot_rg_tot_bvol_new <-ggplot(r_phyto_sum, aes(x=month, y=tot_bvol_new_avg))+ 
+    geom_line() + 
+    geom_point() + 
+    geom_errorbar(aes(ymin=tot_bvol_new_avg-tot_bvol_new_se, ymax=tot_bvol_new_avg+tot_bvol_new_se), width = 0.2) +
     facet_wrap(~region)+
     labs(x="Month", y="Total Biovolume (cubic microns per mL)")
   
@@ -232,16 +253,26 @@ r_phyto_sum$region <- factor(r_phyto_sum$region, levels=c('GB','MW','ME','RV'))
    geom_jitter() #adds all points to plot, not just outliers
 )
 
-(plot_rg_tot_bvol_bx<-ggplot(data=s_phyto_sum, aes(x = region, y = tot_bvol)) + 
+#OLD
+(plot_rg_tot_bvol_old_bx<-ggplot(data=s_phyto_sum, aes(x = region, y = tot_bvol_old)) + 
     geom_boxplot()+
     #geom_jitter()+ #adds all points to plot, not just outliers; need to remove default outlier points to avoid duplication
     labs(x = "Region", y = "Phytoplankton Biovolume (cubic microns per mL)")+
-    scale_x_discrete(labels = c('West Suisun Marsh','East Suisun Marsh','Lower Sacramento'))
+    scale_x_discrete(labels = c('Grizzly Bay','West Suisun Marsh','East Suisun Marsh','Lower Sacramento'))
+)
+
+#NEW
+(plot_rg_tot_bvol_new_bx<-ggplot(data=s_phyto_sum, aes(x = region, y = tot_bvol_new)) + 
+    geom_boxplot()+
+    #geom_jitter()+ #adds all points to plot, not just outliers; need to remove default outlier points to avoid duplication
+    labs(x = "Region", y = "Phytoplankton Biovolume (cubic microns per mL)")+
+    scale_x_discrete(labels = c('Grizzly Bay','West Suisun Marsh','East Suisun Marsh','Lower Sacramento'))
 )
 #ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_BoxPlot_TotalBiovolume_Region_Report.png"),type ="cairo-png",width=8, height=5,units="in",dpi=300)
 
+
 #look at high end outliers
-out<-filter(s_phyto_sum, tot_bvol>40000000)
+#out<-filter(s_phyto_sum, tot_bvol>40000000)
 
 #plot number of genera by station and region-------
 
@@ -306,8 +337,9 @@ s_phyto_phylum_sum<-phyto_gates %>%
   group_by(region, station_comb, date, month,phylum) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
-    ,tot_bvol = sum(biovolume_per_ml), 
-    .groups = 'drop'
+    ,tot_bvol_old = sum(biovolume_per_ml_old) 
+    ,tot_bvol_new = sum(biovolume_per_ml_new)
+    ,.groups = 'drop'
   )
 
 #stacked bar plot time series of density by phylum and station
@@ -326,8 +358,8 @@ s_phyto_phylum_sum<-phyto_gates %>%
 #cyanobacteria dominates the community numerically at all stations and times
 #figure out why there is "NA" category for phylum
 
-#stacked bar plot time series of density by phylum and station
-(plot_st_bvol_per_phylum <-ggplot(s_phyto_phylum_sum, aes(x=date, y= tot_bvol,  fill = phylum))+
+#stacked bar plot time series of biovolume OLD by phylum and station
+(plot_st_bvol_old_per_phylum <-ggplot(s_phyto_phylum_sum, aes(x=date, y= tot_bvol_old,  fill = phylum))+
     geom_bar(position = "stack", stat = "identity") + 
     ylab("Phytoplankton Biovolume") + xlab("Date") + 
     #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
@@ -340,6 +372,19 @@ s_phyto_phylum_sum<-phyto_gates %>%
     ))
 #mostly cyanobactera as well as diatoms and allies
 
+#stacked bar plot time series of biovolume NEW by phylum and station
+(plot_st_bvol_new_per_phylum <-ggplot(s_phyto_phylum_sum, aes(x=date, y= tot_bvol_new,  fill = phylum))+
+    geom_bar(position = "stack", stat = "identity") + 
+    ylab("Phytoplankton Biovolume") + xlab("Date") + 
+    #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
+    #scale_fill_manual(name = "Phylum",
+    #                 values=phylum_colors,
+    #                breaks=phylum_names,
+    #               labels = phylum_names)+ 
+    facet_grid(~station_comb
+               #,labeller = labeller(island = island_label) 
+    ))
+
 
 #stacked bar plot showing phyla by region and month-------
 
@@ -350,8 +395,10 @@ r_phyto_phylum_sum<-s_phyto_phylum_sum %>%
   summarize(
     tot_den_avg = mean(tot_den),
     tot_den_se = se(tot_den),
-    tot_bvol_avg = mean(tot_bvol),
-    tot_bvol_se = se(tot_bvol), 
+    tot_bvol_old_avg = mean(tot_bvol_old),
+    tot_bvol_old_se = se(tot_bvol_old),
+    tot_bvol_new_avg = mean(tot_bvol_new),
+    tot_bvol_new_se = se(tot_bvol_new), 
     .groups = 'drop'
       )
 #NOTE: calculating the means probably isn't this simple
@@ -376,9 +423,9 @@ r_phyto_phylum_sum<-s_phyto_phylum_sum %>%
 #cyanobacteria dominates the community numerically at all stations and times
 #figure out why there is "NA" category for phylum
 
-#stacked bar plot time series of biovolume by phylum and station
-(plot_rg_bvol_per_phylum <-ggplot(r_phyto_phylum_sum
-                                 , aes(x=month, y= tot_bvol_avg,  fill = phylum))+
+#stacked bar plot time series of biovolume OLD by phylum and station
+(plot_rg_bvol_old_per_phylum <-ggplot(r_phyto_phylum_sum
+                                 , aes(x=month, y= tot_bvol_old_avg,  fill = phylum))+
     geom_bar(position = "stack", stat = "identity") + 
     ylab("Phytoplankton Biovolume") + xlab("Month") + 
     #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
@@ -390,6 +437,20 @@ r_phyto_phylum_sum<-s_phyto_phylum_sum %>%
                #,labeller = labeller(island = island_label) 
     ))
 #mostly cyanobactera as well as diatoms and allies
+
+#stacked bar plot time series of biovolume NEW by phylum and station
+(plot_rg_bvol_new_per_phylum <-ggplot(r_phyto_phylum_sum
+                                  , aes(x=month, y= tot_bvol_new_avg,  fill = phylum))+
+    geom_bar(position = "stack", stat = "identity") + 
+    ylab("Phytoplankton Biovolume") + xlab("Month") + 
+    #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
+    #scale_fill_manual(name = "Phylum",
+    #                 values=phylum_colors,
+    #                breaks=phylum_names,
+    #               labels = phylum_names)+ 
+    facet_grid(~region
+               #,labeller = labeller(island = island_label) 
+    ))
 #ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_StackedBar_TotalBiovolume_AllPhyto_Region.png"),type ="cairo-png",width=8, height=5,units="in",dpi=300)
 
 
@@ -401,13 +462,15 @@ r_phyto_phylum_sum_rg<-phyto_gates %>%
   group_by(region, station_comb, date, month,phylum) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
-    ,tot_bvol = sum(biovolume_per_ml)
+    ,tot_bvol_old = sum(biovolume_per_ml_old)
+    ,tot_bvol_new = sum(biovolume_per_ml_new)
     , .groups = 'drop') %>% 
   #calculate mean densities and biovolumes within regions by phylum
   group_by(region, phylum) %>% 
   summarize(
     tot_den_avg = mean(tot_den),
-    tot_bvol_avg = mean(tot_bvol)
+    tot_bvol_old_avg = mean(tot_bvol_old),
+    tot_bvol_new_avg = mean(tot_bvol_new)
     , .groups = 'drop'
   )
 
@@ -415,18 +478,29 @@ r_phyto_phylum_sum_rg<-phyto_gates %>%
 r_phyto_phylum_sum_rg$region <- factor(r_phyto_phylum_sum_rg$region, levels=c('GB','MW','ME','RV'))
 
 
-#stacked bar plot time series of diatom biovolume by region, class
-(plot_all_phyto_rg_only_bvol_per_phylum <-ggplot(r_phyto_phylum_sum_rg
-                                             , aes(x=region, y= tot_bvol_avg,  fill = phylum))+
+#stacked bar plot time series of diatom biovolume OLD by region, phylum
+ggplot(r_phyto_phylum_sum_rg, aes(x=region, y= tot_bvol_old_avg,  fill = phylum))+
     geom_bar(position = "stack", stat = "identity") + 
     ylab("Biovolume (cubic microns per mL)") + xlab("Region")  
   #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
   #scale_fill_manual(name = "Phylum",
   #                 values=phylum_colors,
   #                breaks=phylum_names,
-  #               labels = phylum_names)+ 
-)
+  #               labels = phylum_names) 
+
+#stacked bar plot time series of diatom biovolume NEW by region, phylum
+ggplot(r_phyto_phylum_sum_rg, aes(x=region, y= tot_bvol_new_avg,  fill = phylum))+
+  geom_bar(position = "stack", stat = "identity") + 
+  ylab("Biovolume (cubic microns per mL)") + xlab("Region")  
+#scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
+#scale_fill_manual(name = "Phylum",
+#                 values=phylum_colors,
+#                breaks=phylum_names,
+#               labels = phylum_names) 
+
 #ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_StackedBar_AllPhyto_Region.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
+
+
 
 #stacked barplots for diatoms-------------
 
@@ -438,7 +512,8 @@ s_diatom_sum<-phyto_gates %>%
   group_by(region, station_comb, station, month, date, time) %>% 
   summarize(
     d_tot_den = sum(organisms_per_ml)
-    ,d_tot_bvol = sum(biovolume_per_ml)
+    ,d_tot_bvol_old = sum(biovolume_per_ml_old)
+    ,d_tot_bvol_new = sum(biovolume_per_ml_new)
     , .groups = 'drop'
   )  %>% 
   #make month a factor
@@ -451,7 +526,7 @@ s_pd_sum <- left_join(s_phyto_sum,s_diatom_sum)
 
 #replace NAs with zeros for density and biovolume
 s_pd_sum_z <- s_pd_sum %>% 
-    replace_na(list(d_tot_den = 0, d_tot_bvol = 0))
+    replace_na(list(d_tot_den = 0, d_tot_bvol_old = 0, d_tot_bvol_new = 0))
 
 #summarize diatom density and biovolume data by class, region, and month
 diatom_sum<-phyto_gates %>% 
@@ -461,15 +536,18 @@ diatom_sum<-phyto_gates %>%
   group_by(region, station_comb, date, month,class) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
-    ,tot_bvol = sum(biovolume_per_ml)
+    ,tot_bvol_old = sum(biovolume_per_ml_old)
+    ,tot_bvol_new = sum(biovolume_per_ml_new)
     , .groups = 'drop') %>% 
   #calculate mean densities and biovolumes within regions and months by class
     group_by(region, month, class) %>% 
     summarize(
       tot_den_avg = mean(tot_den),
       tot_den_se = se(tot_den),
-      tot_bvol_avg = mean(tot_bvol),
-      tot_bvol_se = se(tot_bvol)
+      tot_bvol_old_avg = mean(tot_bvol_old),
+      tot_bvol_old_se = se(tot_bvol_old),
+      tot_bvol_new_avg = mean(tot_bvol_new),
+      tot_bvol_new_se = se(tot_bvol_new)
       , .groups = 'drop'
     )
 
@@ -477,9 +555,8 @@ diatom_sum<-phyto_gates %>%
 diatom_sum$region <- factor(diatom_sum$region, levels=c('GB','MW','ME','RV'))
 
   
-#stacked bar plot time series of diatom biovolume by region, month, class
-(plot_diatom_rg_bvol_per_class <-ggplot(diatom_sum
-                                  , aes(x=month, y= tot_bvol_avg,  fill = class))+
+#stacked bar plot time series of diatom biovolume OLD by region, month, class
+ggplot(diatom_sum, aes(x=month, y= tot_bvol_old_avg,  fill = class))+
     geom_bar(position = "stack", stat = "identity") + 
     ylab("Phytoplankton Biovolume") + xlab("Date") + 
     #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
@@ -489,8 +566,22 @@ diatom_sum$region <- factor(diatom_sum$region, levels=c('GB','MW','ME','RV'))
     #               labels = phylum_names)+ 
     facet_grid(~region
                #,labeller = labeller(island = island_label) 
-    ))
+    )
+
+#stacked bar plot time series of diatom biovolume NEW by region, month, class
+ggplot(diatom_sum, aes(x=month, y= tot_bvol_new_avg,  fill = class))+
+  geom_bar(position = "stack", stat = "identity") + 
+  ylab("Phytoplankton Biovolume") + xlab("Date") + 
+  #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
+  #scale_fill_manual(name = "Phylum",
+  #                 values=phylum_colors,
+  #                breaks=phylum_names,
+  #               labels = phylum_names)+ 
+  facet_grid(~region
+             #,labeller = labeller(island = island_label) 
+  )
 #ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_StackedBar_Diatom_RegionMonth.png"),type ="cairo-png",width=9, height=5,units="in",dpi=300)
+
 
 #similar stacked bar plot but averaged over months too
 #facilitate comparisons among regions
@@ -503,15 +594,18 @@ diatom_sum_rg<-phyto_gates %>%
   group_by(region, station_comb, date, month,class) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
-    ,tot_bvol = sum(biovolume_per_ml)
+    ,tot_bvol_old = sum(biovolume_per_ml_old)
+    ,tot_bvol_new = sum(biovolume_per_ml_new)
     , .groups = 'drop') %>% 
   #calculate mean densities and biovolumes within regions by class
   group_by(region, class) %>% 
   summarize(
     tot_den_avg = mean(tot_den),
     tot_den_se = se(tot_den),
-    tot_bvol_avg = mean(tot_bvol),
-    tot_bvol_se = se(tot_bvol)
+    tot_bvol_old_avg = mean(tot_bvol_old),
+    tot_bvol_old_se = se(tot_bvol_old),
+    tot_bvol_new_avg = mean(tot_bvol_new),
+    tot_bvol_new_se = se(tot_bvol_new)
     , .groups = 'drop'
   )
 
@@ -519,9 +613,8 @@ diatom_sum_rg<-phyto_gates %>%
 diatom_sum_rg$region <- factor(diatom_sum_rg$region, levels=c('GB','MW','ME','RV'))
 
 
-#stacked bar plot time series of diatom biovolume by region, class
-(plot_diatom_rg_only_bvol_per_class <-ggplot(diatom_sum_rg
-                                        , aes(x=region, y= tot_bvol_avg,  fill = class))+
+#stacked bar plot time series of diatom biovolume OLD by region, class
+ggplot(diatom_sum_rg, aes(x=region, y= tot_bvol_old_avg,  fill = class))+
     geom_bar(position = "stack", stat = "identity") + 
     ylab("Biovolume (cubic microns per mL)") + xlab("Region")  
     #scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
@@ -529,7 +622,18 @@ diatom_sum_rg$region <- factor(diatom_sum_rg$region, levels=c('GB','MW','ME','RV
     #                 values=phylum_colors,
     #                breaks=phylum_names,
     #               labels = phylum_names)+ 
-)
+
+
+#stacked bar plot time series of diatom biovolume NEW by region, class
+ggplot(diatom_sum_rg, aes(x=region, y= tot_bvol_new_avg,  fill = class))+
+  geom_bar(position = "stack", stat = "identity") + 
+  ylab("Biovolume (cubic microns per mL)") + xlab("Region")  
+#scale_colour_discrete(drop=T, limits = levels(phylum$phylum))+
+#scale_fill_manual(name = "Phylum",
+#                 values=phylum_colors,
+#                breaks=phylum_names,
+#               labels = phylum_names)+ 
+
 #ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_StackedBar_Diatom_Region.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
 
 #boxplot of total phyto biovolume and diatom biovolume by region and month---------
@@ -538,17 +642,17 @@ diatom_sum_rg$region <- factor(diatom_sum_rg$region, levels=c('GB','MW','ME','RV
 #use version with zeros for samples without diatoms (instead of NAs)
 s_pd_sum_l<- s_pd_sum_z %>% 
   #reduce data frame to just needed columns
-  select("region","station_comb","month","date","tot_bvol","d_tot_bvol") %>% 
+  select("region","station_comb","month","date","tot_bvol_old","tot_bvol_new","d_tot_bvol_old","d_tot_bvol_new") %>% 
   #convert wide to long
-  pivot_longer(c("tot_bvol","d_tot_bvol"), names_to = "type", values_to = "tot_bvol") %>% 
+  pivot_longer(c("tot_bvol_old","tot_bvol_new","d_tot_bvol_old","d_tot_bvol_new"), names_to = "type", values_to = "tot_bvol") %>% 
   #converts some columns from character to factor
   mutate_at(vars(region,type), factor) %>% 
   #reorder factor levels for plotting
   mutate(region = factor(region, levels=c('RV','ME','MW','GB'))
-         ,type = factor(type, levels=c("tot_bvol","d_tot_bvol"))
+         ,type = factor(type, levels=c("tot_bvol_old","tot_bvol_new","d_tot_bvol_old","d_tot_bvol_new"))
   #create new columns with better names for labeling facets
          ,type2 = recode(
-           type, "tot_bvol" = "All Phytoplankton","d_tot_bvol" = "Diatoms")
+           type, "tot_bvol_old" = "All Phytoplankton OLD","tot_bvol_new" = "All Phytoplankton NEW","d_tot_bvol_old" = "Diatoms OLD","d_tot_bvol_new" = "Diatoms NEW")
         ,region2 = recode(
     region, "RV" = "Lower Sacramento", "ME" = "East Suisun Marsh", "MW" = "West Suisun Marsh", "GB"="Grizzly Bay")) %>% 
   #convert from cubic microns per mL to cubic mm per mL
@@ -565,8 +669,11 @@ effsz<-s_pd_sum_l %>%
     ,bvol_sd = sd(tot_bvol2)
     , .groups = 'drop')
 
-#calculate % of phyto biovolume comprised of diatoms
-(sum(s_pd_sum_z$d_tot_bvol)/sum(s_pd_sum_z$tot_bvol))*100
+#calculate % of phyto biovolume OLD comprised of diatoms
+(sum(s_pd_sum_z$d_tot_bvol_old)/sum(s_pd_sum_z$tot_bvol_old))*100
+
+#calculate % of phyto biovolume NEW comprised of diatoms
+(sum(s_pd_sum_z$d_tot_bvol_new)/sum(s_pd_sum_z$tot_bvol_new))*100
 
 #plot: col: phyto and diatoms, row: region, x-axis: month
 (plot_rm_pd_bvol_bx<-ggplot(data=s_pd_sum_l
@@ -588,6 +695,7 @@ effsz<-s_pd_sum_l %>%
 #ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_Boxplot_Phyto&Diatom_Region&Month.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
 
 #Statistics: total phyto biovolume--------
+#still need to redo this with corrected biovolume calculations
 
 #predictors to include: region, month, maybe salinity
 #could include station as a random effect. there are only 9 though
