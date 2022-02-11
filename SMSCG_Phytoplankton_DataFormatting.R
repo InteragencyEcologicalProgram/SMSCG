@@ -9,6 +9,11 @@ library(hms) #working with date/time
 library(readxl) #importing data from excel files
 #library(algaeClassify) #grab taxonomy info from AlgaeBase; doesn't work currently
 
+#Notes
+#For all BSA files from 2013 to 2021, the column "Number of cells per unit" really means "Total cells", 
+#which is the total number of cells counted for that taxon in a particular sample
+#calculations in this script were corrected accordingly on 2/10/2022
+
 #to do list
 #round up higher taxonomy data for the 12 new genera present in the 2021 data set
 
@@ -65,20 +70,22 @@ phytoplankton$SampleTime2<-as_hms(as.numeric(phytoplankton$SampleTime)*60*60*24)
 #glimpse(phytoplankton)
 
 phyto_cleanest <- phytoplankton %>% 
+  #rename the confusingly incorrectly name column
+  rename(total_cells='Number of cells per unit') %>% 
   #subset to just the needed columns
-  select("StationCode"
-         , "SampleDate2"
-         , "SampleTime2"
-         , "Genus"
-         , "Taxon"
+  select(StationCode
+         , SampleDate2
+         , SampleTime2
+         , Genus
+         , Taxon
          , "Colony/Filament/Individual Group Code"
          , "Unit Abundance"
          , "Slide/ Chamber Area (mm²)"
          , "Volume Analyzed (mL)"
          , "Field-of-view (mm²)"
          , "Number of Fields Counted"
-         , "Factor"
-         , "Number of cells per unit"
+         , Factor
+         , total_cells
          , "Biovolume 1":"Biovolume 10") %>% 
   #remove empty rows created by linear cell measurement rows (length, width, depth)  
   remove_empty(which = "rows") %>% 
@@ -87,11 +94,17 @@ phyto_cleanest <- phytoplankton %>%
     #create new column that calculates mean biovolume per cell
     mean_cell_biovolume = mean(c_across(`Biovolume 1`:`Biovolume 10`),na.rm=T)
     #create new column that calculates organisms per mL
+    #different from cells per mL because some organisms are multicellular
     ,organisms_per_ml = (`Unit Abundance`*`Slide/ Chamber Area (mm²)`)/(`Volume Analyzed (mL)`*`Field-of-view (mm²)`*`Number of Fields Counted`)
+    #,organisms_per_ml_easy = (`Unit Abundance`*Factor)
+    #create new column that calculates cells per mL
+    ,cells_per_ml = (total_cells*`Slide/ Chamber Area (mm²)`)/(`Volume Analyzed (mL)`*`Field-of-view (mm²)`*`Number of Fields Counted`)
+    #,cells_per_ml_easy = (total_cells*Factor)
     #create a column that calculates biovolume per mL
-    #units for biovolume both for individual cells and per mL is cubic microns
-    ,biovolume_per_ml_old = organisms_per_ml * `Number of cells per unit` * mean_cell_biovolume
-    ,biovolume_per_ml_new = Factor * `Number of cells per unit` * mean_cell_biovolume
+    #units for biovolume are cubic microns
+    ,biovolume_per_ml_old = organisms_per_ml * total_cells * mean_cell_biovolume
+    ,biovolume_per_ml_new = (total_cells* mean_cell_biovolume*`Slide/ Chamber Area (mm²)`)/(`Volume Analyzed (mL)`*`Field-of-view (mm²)`*`Number of Fields Counted`)
+    #,biovolume_per_ml_new_easy = Factor * total_cells * mean_cell_biovolume
     ) %>% 
   #simplify column names
   rename(station = StationCode
@@ -101,21 +114,24 @@ phyto_cleanest <- phytoplankton %>%
          ,taxon = Taxon
          ,phyto_form =  "Colony/Filament/Individual Group Code") %>% 
   #subset and reorder columns again to just those needed
-  select("station"
-         , "date"
-         ,"time"
-         ,"genus"
-         ,"taxon"                              
-         ,"phyto_form"           
-         , "organisms_per_ml"
-         ,"biovolume_per_ml_old"
-         ,"biovolume_per_ml_new"
-  ) %>% 
+  select(station
+         , date
+         ,time
+         ,genus
+         ,taxon                              
+         ,phyto_form           
+         ,organisms_per_ml
+         #,organisms_per_ml_easy
+         ,cells_per_ml
+         #,cells_per_ml_easy
+         ,biovolume_per_ml_old
+         ,biovolume_per_ml_new
+         #,biovolume_per_ml_new_easy
+           ) %>% 
   glimpse()
-#organisms per ml can also be calculated by simply multiplying factor by unit abundance
-#Though it requires more calculations, I think I prefer to use the formula based on the more raw
-#version of the data rather than the one based on the factor column which is a derived column
-#phyto_cleaner$organisms_per_ml_alt<-(phyto_cleaner$Factor*phyto_cleaner$`Unit Abundance`)
+#I prefer to use the formulas based on the more raw version of the data 
+#rather than the ones based on the factor column
+#which is a derived column and therefore more prone to errors
 
 #look at station names
 unique(phyto_cleanest$station)
@@ -243,13 +259,14 @@ phyto_final<-phyto_tax %>%
          ,genus
          ,taxon
          ,organisms_per_ml
+         ,cells_per_ml
          ,biovolume_per_ml_old
          ,biovolume_per_ml_new
   ) %>%
   glimpse()
 
 #write the formatted data as csv 
-write_csv(phyto_final,file = "Data/phytoplankton/SMSCG_phytoplankton_formatted_2020-2021.csv")
+#write_csv(phyto_final,file = "Data/phytoplankton/SMSCG_phytoplankton_formatted_2020-2021.csv")
 #NOTE: the time look fine in df in R but is wrong when viewed in exported csv
 
 
