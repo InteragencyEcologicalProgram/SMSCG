@@ -2,21 +2,23 @@
 #phytoplantkon data
 #data visualizations
 
-#Note: refer to DSRS plotting code
-#also compare DFW and EMP samples where possible
-
+#responses
 #total organisms per ml
+#total cells per ml
 #total biovolume per ml
-#both responses by major taxonomic group (likely phylum)
-#maybe nmds by region
 
-#NOTE: don't forget to compare data with notes about some samples not looking not well preserved
-#also note that EMP data starts in June but DFW data starts in July
+#To do list
+#see if all the phyla are up to date; Tiffany's file is probably out of date
+#make some plots to look at cells per mL which is a response I added to the source file
+#compare DFW and EMP samples when they are collected close to same time
+#compare the two Grizzly Bay stations, though there aren't many samples
+#maybe do nmds by region
 
 #load packages
 library(tidyverse) #variety of data science tools
 library(ggplot2) #making plots
-library(lubridate) #format dates
+library(lubridate) #format datesx
+library(scales) #log scale axes in ggplot
 #library(diathor) #diatom trait data
 
 # 1. Read in the Data----------------------------------------------
@@ -101,9 +103,13 @@ range(rm_samp_count$count)
 ry_samp_count<-phyto_gates %>% 
   distinct(region,station_comb, year, month,date) %>% 
   group_by(region, year,month) %>% 
-  summarize(count = n(), .groups = 'drop') 
+  summarize(count = n(), .groups = 'drop') %>% 
+  arrange(year,region)
 range(ry_samp_count$count)
 
+#look closer at Grizzly Bay samlpes
+gzb <- phyto_gates %>% 
+  filter(region=="GB")
 
 #try to get diatom trait data using the diathor package--------------
 #NOTE: so far, not having much luck; at least some of the examples worked
@@ -192,7 +198,7 @@ s_phyto_sum$region <- factor(s_phyto_sum$region, levels=c('GB','MW','ME','RV'))
     facet_wrap(~station_comb, nrow=2)
 )
 
-#plot time series of density and biovolume by region-----------
+#plot time series of density and biovolume by region and month-----------
 
 #function to calculate standard error
 se <- function(x) sd(x)/sqrt(length(x))
@@ -270,9 +276,6 @@ r_phyto_sum$region <- factor(r_phyto_sum$region, levels=c('GB','MW','ME','RV'))
 )
 #ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_BoxPlot_TotalBiovolume_Region_Report.png"),type ="cairo-png",width=8, height=5,units="in",dpi=300)
 
-
-#look at high end outliers
-#out<-filter(s_phyto_sum, tot_bvol>40000000)
 
 #plot number of genera by station and region-------
 
@@ -509,7 +512,7 @@ ggplot(r_phyto_phylum_sum_rg, aes(x=region, y= tot_bvol_new_avg,  fill = phylum)
 s_diatom_sum<-phyto_gates %>% 
   #subset data to just the phylum with diatoms
   filter(phylum == "Ochrophyta") %>% 
-  group_by(region, station_comb, station, month, date, time) %>% 
+  group_by(region, station_comb, station,year, month, date, time) %>% 
   summarize(
     d_tot_den = sum(organisms_per_ml)
     ,d_tot_bvol_old = sum(biovolume_per_ml_old)
@@ -642,7 +645,7 @@ ggplot(diatom_sum_rg, aes(x=region, y= tot_bvol_new_avg,  fill = class))+
 #use version with zeros for samples without diatoms (instead of NAs)
 s_pd_sum_l<- s_pd_sum_z %>% 
   #reduce data frame to just needed columns
-  select("region","station_comb","month","date","tot_bvol_old","tot_bvol_new","d_tot_bvol_old","d_tot_bvol_new") %>% 
+  select("region","station_comb","year","month","date","tot_bvol_old","tot_bvol_new","d_tot_bvol_old","d_tot_bvol_new") %>% 
   #convert wide to long
   pivot_longer(c("tot_bvol_old","tot_bvol_new","d_tot_bvol_old","d_tot_bvol_new"), names_to = "type", values_to = "tot_bvol") %>% 
   #converts some columns from character to factor
@@ -654,26 +657,13 @@ s_pd_sum_l<- s_pd_sum_z %>%
          ,type2 = recode(
            type, "tot_bvol_old" = "All Phytoplankton OLD","tot_bvol_new" = "All Phytoplankton NEW","d_tot_bvol_old" = "Diatoms OLD","d_tot_bvol_new" = "Diatoms NEW")
         ,region2 = recode(
-    region, "RV" = "Lower Sacramento", "ME" = "East Suisun Marsh", "MW" = "West Suisun Marsh", "GB"="Grizzly Bay")) %>% 
+    region, "RV" = "Lower Sac", "ME" = "E Suisun Marsh", "MW" = "W Suisun Marsh", "GB"="Grizzly Bay")
+    ,month2 = recode(
+    month, "7"="July" ,"8"="August", "9"="September", "10"="October")
+  ) %>% 
   #convert from cubic microns per mL to cubic mm per mL
   mutate(tot_bvol2 = tot_bvol/1000000000)
 glimpse(s_pd_sum_l)
-
-#generate effect sizes for total phyto and diatoms across regions and months
-#needed for USBR report
-#start with means and SD for total phyto and diatoms
-effsz<-s_pd_sum_l %>% 
-  group_by(type) %>% 
-  summarize(
-    bvol_mean = mean(tot_bvol2)
-    ,bvol_sd = sd(tot_bvol2)
-    , .groups = 'drop')
-
-#calculate % of phyto biovolume OLD comprised of diatoms
-(sum(s_pd_sum_z$d_tot_bvol_old)/sum(s_pd_sum_z$tot_bvol_old))*100
-
-#calculate % of phyto biovolume NEW comprised of diatoms
-(sum(s_pd_sum_z$d_tot_bvol_new)/sum(s_pd_sum_z$tot_bvol_new))*100
 
 #plot: col: phyto and diatoms, row: region, x-axis: month
 (plot_rm_pd_bvol_bx<-ggplot(data=s_pd_sum_l
@@ -692,19 +682,134 @@ effsz<-s_pd_sum_l %>%
 )
 #log transforming data means we lose 7 data points for the diatoms plot because they are zeros
 #could switch month and region to better emphasize region comparisons but either month nor region differ
-#ggsave(file = paste0(sharepoint_path,"./Plots/SMSCG_Phyto_Boxplot_Phyto&Diatom_Region&Month.png"),type ="cairo-png",width=6, height=5,units="in",dpi=300)
+
+#create separate panels for 2020 and 2021
+#this is necessary in part because Grizzly Bay samples are new in 2021
+#also just use the new and correct calculations
+
+#2020
+s_pd_sum_l_n20 <- s_pd_sum_l %>% 
+  #just keep the new calculations
+  filter(grepl("new",type) & date < "2021-01-01") %>% 
+  #create new columns with better names for labeling facets
+  mutate(type2 = recode(
+    type, "tot_bvol_new" = "2020 All Phytoplankton","d_tot_bvol_new" = "2020 Diatoms"
+    )    )
+unique(s_pd_sum_l_n20$type) #tot_bvol_new   d_tot_bvol_new
+range(s_pd_sum_l_n20$date) #"2020-07-14" "2020-10-22"
+
+#2021
+s_pd_sum_l_n21 <- s_pd_sum_l %>% 
+  #just keep the new calculations
+  filter(grepl("new",type) & date > "2021-01-01") %>% 
+  mutate(type2 = recode(
+    type, "tot_bvol_new" = "2021 All Phytoplankton","d_tot_bvol_new" = "2021 Diatoms"
+  ))
+unique(s_pd_sum_l_n21$type) #tot_bvol_new   d_tot_bvol_new
+range(s_pd_sum_l_n21$date) #"2020-07-14" "2020-10-22"
+
+#2020 plot: col: phyto and diatoms, row: region, x-axis: month
+
+group.colors20 <- c('2020 All Phytoplankton' = "darkolivegreen", "2020 Diatoms"= "darkolivegreen2")
+
+ggplot(data=s_pd_sum_l_n20, aes(x = region2, y = tot_bvol2, fill=type2
+                                  #, y = log(tot_bvol2)
+                            )) + 
+    geom_boxplot(
+       #fill="darkolivegreen4"
+      )+
+    #ylim(0,0.05)+ #drops a high end outlier for all phyto, july, sac river
+    facet_grid(month2~type2)+
+    labs(x = "Region"
+         , y = bquote("Biovolume"~(mm^3~mL^-1) )
+         #, y = bquote("Biovolume"~LN(mm^3~mL^-1) )
+    )+
+  scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                labels = trans_format("log10", math_format(10^.x))) +
+  annotation_logticks(sides="l")+
+  scale_fill_manual(values=group.colors20)+
+  theme(legend.position="none"
+        , axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+#ggsave(file = "Data/phytoplankton/SMSCG_Phyto_Boxplot_Phyto&Diatom_Region&Month_2020.png",type ="cairo-png",scale=0.9,width=8.5, height=6,units="in",dpi=300)
+
+#2021 plot: col: phyto and diatoms, row: region, x-axis: month
+
+group.colors21 <- c('2021 All Phytoplankton' = "darkolivegreen", "2021 Diatoms"= "darkolivegreen2")
+
+ggplot(data=s_pd_sum_l_n21, aes(x = region2, y = tot_bvol2, fill=type2
+                                #, y = log(tot_bvol2)
+)) + 
+  geom_boxplot()+
+  #ylim(0,0.05)+ #drops a high end outlier for all phyto, july, sac river
+  facet_grid(month2~type2)+
+  labs(x = "Region"
+       , y = bquote("Biovolume"~(mm^3~mL^-1) )
+       #, y = bquote("Biovolume"~LN(mm^3~mL^-1) )
+  )+
+  scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                labels = trans_format("log10", math_format(10^.x))) + 
+  annotation_logticks(sides="l")+
+  scale_fill_manual(values=group.colors21)+
+  theme(legend.position="none"
+        , axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+#ggsave(file = "Data/phytoplankton/SMSCG_Phyto_Boxplot_Phyto&Diatom_Region&Month_2021.png",type ="cairo-png",scale=0.9,width=8.5, height=8,units="in",dpi=300)
+
+
+#generate effect sizes for total phyto and diatoms across regions and months
+#needed for USBR report
+effsz<-s_pd_sum_l %>% 
+  filter(region!="GB" & grepl("new",type)) %>% 
+  group_by(type,year) %>% 
+  summarize(
+    bvol_mean = mean(tot_bvol2)
+    ,bvol_sd = sd(tot_bvol2)
+    , .groups = 'drop')
+
+#total phyto: compare 2020 vs 2021
+effsz$bvol_mean[1]/effsz$bvol_mean[2] #2.122569
+
+#diatoms: compare 2020 vs 2021
+effsz$bvol_mean[3]/effsz$bvol_mean[4] #1.654778
+
+#proportion of diatom biovolume in samples
+#2020
+effsz$bvol_mean[3]/effsz$bvol_mean[1] #0.5478529
+#2021
+effsz$bvol_mean[4]/effsz$bvol_mean[2] #0.7027262
+
+
+#compare regions
+effszr<-s_pd_sum_l %>% 
+  filter(region!="GB" & grepl("new",type)) %>% 
+  group_by(type,region) %>% 
+  summarize(
+    bvol_mean = mean(tot_bvol2)
+    ,bvol_sd = sd(tot_bvol2)
+    , .groups = 'drop')
+
+#diatoms: compare RV vs. MW
+effszr$bvol_mean[6]/effszr$bvol_mean[4] #2.240234
+
 
 #Statistics: total phyto biovolume--------
-#still need to redo this with corrected biovolume calculations
 
-#predictors to include: region, month, maybe salinity
+#glimpse(s_phyto_sum)
+
+#create subset without Grizzly Bay samples
+#samples sizes are too small for this region in 2021 and it is missing from 2020
+s_phyto_sum_g <- s_phyto_sum %>% 
+  filter(region!="GB")
+
+#predictors to include: region, month, year
 #could include station as a random effect. there are only 9 though
 
 #build model
-tbmod = glm(tot_bvol ~ region * month, data = s_phyto_sum)
+tbmod_new = glm(tot_bvol_new ~ region * month* year, data = s_phyto_sum_g)
 
 #model checking plots
-#plot(tbmod)
+#plot(tbmod_new)
 #plots aren't great
 #residuals vs fitted: spread gets larger with higher values 
 #Q-Q plot: points stray pretty far off diagonal at upper end 
@@ -712,30 +817,33 @@ tbmod = glm(tot_bvol ~ region * month, data = s_phyto_sum)
 #residuals vs leverage: looks OK
 
 #redo analysis with log transformed response
-tblmod = glm(log(tot_bvol) ~ region * month, data = s_phyto_sum)
+tblmod_new_lg = glm(log(tot_bvol_new) ~ region * month* year, data = s_phyto_sum_g)
 
 #model checking plots
-#plot(tblmod)
+#plot(tblmod_new_lg)
 #looks like log transformation did the trick
 #could also try a different error distribution like gamma
 
 #look at model results
-summary(tblmod)
-drop1(tblmod, test="Chi")
-#interaction term isn't significant 
+summary(tblmod_new_lg)
+drop1(tblmod_new_lg, test="Chi")
+#three-way interaction term isn't significant; p=0.2615
 
-#redo model with log transformed response and without interaction term
-tblmod2 = glm(log(tot_bvol) ~ region  + month, data = s_phyto_sum)
+tblmod_new_lg2 = glm(log(tot_bvol_new) ~ region + month + year + region:month + region:year, data = s_phyto_sum_g)
 
 #look at model results
-summary(tblmod2)
-drop1(tblmod2, test="Chi")
-#neither region nor month is significant
-#Df Deviance    AIC scaled dev. Pr(>Chi)
-#<none>      19.120 122.34                     
-#region  2   19.645 120.27      1.9235   0.3822
-#month   3   19.894 119.16      2.8168   0.4207
+summary(tblmod_new_lg2)
+drop1(tblmod_new_lg2, test="Chi")
+#neither two-way interaction is significant
 
+#redo model with log transformed response and without interaction term
+tblmod_new_lg3 = glm(log(tot_bvol_new) ~ region  + month + year, data = s_phyto_sum_g)
+#plot(tblmod_new_lg3)
+
+#look at model results
+summary(tblmod_new_lg3)
+drop1(tblmod_new_lg3, test="Chi")
+#neither region (p=0.6708) nor month (p=0.5262) are significant but year is (p=1.387e-05)
 
 #Statistics: total diatom biovolume--------
 
@@ -743,43 +851,68 @@ drop1(tblmod2, test="Chi")
 #could include station as a random effect. there are only 9 though
 
 #Note: there are 7 zeros that are currently excluded from the data set used in these models
-#s_pd_sum: these 7 samples are NAs
-#s_pd_sum_z: these 7 samples are zeros
-zeros <-filter(s_pd_sum_z, d_tot_bvol == 0)
-#RV = 3, ME = 1, MW = 3
+#s_pd_sum: these 27 samples are NAs
+#s_pd_sum_z: these 27 samples are zeros
+zeros <-filter(s_pd_sum_z, d_tot_bvol_new == 0)
+#RV = 13, ME = 6, MW = 8
+
+#create subset without Grizzly Bay samples
+#samples sizes are too small for this region in 2021 and it is missing from 2020
+s_diatom_sum_g <- s_diatom_sum %>% 
+  filter(region!="GB") %>% 
+  mutate(year=factor(year)
+         ,region=factor(region)) %>% 
+  glimpse()
+
+#predictors to include: region, month, year
+#could include station as a random effect. there are only 9 though
 
 #build model
-dbmod = glm(d_tot_bvol ~ region * month, data = s_pd_sum)
+tbmod_new = glm(d_tot_bvol_new ~ region * month* year, data = s_diatom_sum_g)
 
 #model checking plots
-#plot(dbmod)
-#as with full data set, should do log transform
+#plot(tbmod_new)
+#plots aren't great
+#residuals vs fitted: spread gets larger with higher values 
+#Q-Q plot: points stray pretty far off diagonal at upper end 
+#scale-location: line drifts up with higher values
+#residuals vs leverage: looks OK
 
 #redo analysis with log transformed response
-dblmod = glm(log(d_tot_bvol) ~ region * month, data = s_pd_sum)
+tblmod_new_lg = glm(log(d_tot_bvol_new) ~ region * month* year, data = s_diatom_sum_g)
 
 #model checking plots
-#plot(dblmod)
+#plot(tblmod_new_lg)
 #looks like log transformation did the trick
 #could also try a different error distribution like gamma
 
 #look at model results
-summary(dblmod)
-drop1(dblmod, test="Chi")
-#interaction term isn't significant 
+summary(tblmod_new_lg)
+drop1(tblmod_new_lg, test="Chi")
+#three-way interaction term isn't significant; p=0.5824
 
-#redo model with log transformed response and without interaction term
-dblmod2 = glm(log(d_tot_bvol) ~ region  + month, data = s_pd_sum)
+tblmod_new_lg2 = glm(log(d_tot_bvol_new) ~ region + month + year + region:month + region:year, data = s_diatom_sum_g)
 
 #look at model results
-summary(dblmod2)
-drop1(dblmod2, test="Chi")
-#neither region nor month is significant
-#       Df Deviance    AIC scaled dev. Pr(>Chi)
-#<none>      183.02 262.87                     
-#region  2   184.86 259.51     0.64225   0.7253
-#month   3   189.84 259.21     2.34374   0.5042
+summary(tblmod_new_lg2)
+drop1(tblmod_new_lg2, test="Chi")
+#neither two-way interaction is significant, though region:month is somewhat close (p=0.09659)
 
+#redo model with log transformed response and without interaction term
+tblmod_new_lg3 = glm(log(d_tot_bvol_new) ~ region  + month + year, data = s_diatom_sum_g)
+#plot(tblmod_new_lg3)
+
+#look at model results
+summary(tblmod_new_lg3)
+drop1(tblmod_new_lg3, test="Chi")
+#region (p=0.03468)
+#month (p=0.65924) 
+#year is (p=3.835e-05)
+
+#pairwise comparisons among the three regions
+tblmod_new_lg4 = aov(log(d_tot_bvol_new) ~ region  + month + year, data = s_diatom_sum_g)
+TukeyHSD(tblmod_new_lg4,"region")
+names(s_diatom_sum_g)
 
 #NMDS plots---------------
 #next step is use these plots to see how much regions overlap in composition
