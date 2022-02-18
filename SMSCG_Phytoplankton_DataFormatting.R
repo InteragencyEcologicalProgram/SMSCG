@@ -7,7 +7,12 @@ library(tidyverse) #suite of data science tools
 library(janitor) #functions for cleaning up data sets
 library(hms) #working with date/time
 library(readxl) #importing data from excel files
-library(algaeClassify) #grab taxonomy info from AlgaeBase
+#library(algaeClassify) #grab taxonomy info from AlgaeBase; doesn't work currently
+
+#Notes
+#For all BSA files from 2013 to 2021, the column "Number of cells per unit" really means "Total cells", 
+#which is the total number of cells counted for that taxon in a particular sample
+#calculations in this script were corrected accordingly on 2/10/2022
 
 #to do list
 #round up higher taxonomy data for the 12 new genera present in the 2021 data set
@@ -16,7 +21,7 @@ library(algaeClassify) #grab taxonomy info from AlgaeBase
 
 #read in taxonomy data
 #this probably needs to be updated with each new batch of data
-taxonomy <- read_excel(path = "Data/phytoplankton/PhytoplanktonTaxonomy_2021-04-23.xlsx")
+taxonomy <- read_excel(path = "Data/phytoplankton/PhytoplanktonTaxonomy_2022-02-09.xlsx")
 
 #Create character vectors of all 2020 phytoplankton files
 #five from EMP and one from DFW
@@ -65,20 +70,22 @@ phytoplankton$SampleTime2<-as_hms(as.numeric(phytoplankton$SampleTime)*60*60*24)
 #glimpse(phytoplankton)
 
 phyto_cleanest <- phytoplankton %>% 
+  #rename the confusingly incorrectly name column
+  rename(total_cells='Number of cells per unit') %>% 
   #subset to just the needed columns
-  select("StationCode"
-         , "SampleDate2"
-         , "SampleTime2"
-         , "Genus"
-         , "Taxon"
+  select(StationCode
+         , SampleDate2
+         , SampleTime2
+         , Genus
+         , Taxon
          , "Colony/Filament/Individual Group Code"
          , "Unit Abundance"
          , "Slide/ Chamber Area (mm²)"
          , "Volume Analyzed (mL)"
          , "Field-of-view (mm²)"
          , "Number of Fields Counted"
-         , "Factor"
-         , "Number of cells per unit"
+         , Factor
+         , total_cells
          , "Biovolume 1":"Biovolume 10") %>% 
   #remove empty rows created by linear cell measurement rows (length, width, depth)  
   remove_empty(which = "rows") %>% 
@@ -87,10 +94,18 @@ phyto_cleanest <- phytoplankton %>%
     #create new column that calculates mean biovolume per cell
     mean_cell_biovolume = mean(c_across(`Biovolume 1`:`Biovolume 10`),na.rm=T)
     #create new column that calculates organisms per mL
+    #different from cells per mL because some organisms are multicellular
     ,organisms_per_ml = (`Unit Abundance`*`Slide/ Chamber Area (mm²)`)/(`Volume Analyzed (mL)`*`Field-of-view (mm²)`*`Number of Fields Counted`)
+    #,organisms_per_ml_easy = (`Unit Abundance`*Factor)
+    #create new column that calculates cells per mL
+    ,cells_per_ml = (total_cells*`Slide/ Chamber Area (mm²)`)/(`Volume Analyzed (mL)`*`Field-of-view (mm²)`*`Number of Fields Counted`)
+    #,cells_per_ml_easy = (total_cells*Factor)
     #create a column that calculates biovolume per mL
-    #units for biovolume both for individual cells and per mL is cubic microns
-    ,biovolume_per_ml = organisms_per_ml * `Number of cells per unit` * mean_cell_biovolume) %>% 
+    #units for biovolume are cubic microns
+    ,biovolume_per_ml_old = organisms_per_ml * total_cells * mean_cell_biovolume
+    ,biovolume_per_ml_new = (total_cells* mean_cell_biovolume*`Slide/ Chamber Area (mm²)`)/(`Volume Analyzed (mL)`*`Field-of-view (mm²)`*`Number of Fields Counted`)
+    #,biovolume_per_ml_new_easy = Factor * total_cells * mean_cell_biovolume
+    ) %>% 
   #simplify column names
   rename(station = StationCode
          ,date = SampleDate2 
@@ -99,41 +114,69 @@ phyto_cleanest <- phytoplankton %>%
          ,taxon = Taxon
          ,phyto_form =  "Colony/Filament/Individual Group Code") %>% 
   #subset and reorder columns again to just those needed
-  select("station"
-         , "date"
-         ,"time"
-         ,"genus"
-         ,"taxon"                              
-         ,"phyto_form"           
-         , "organisms_per_ml"
-         ,"biovolume_per_ml"
-  ) %>% 
+  select(station
+         , date
+         ,time
+         ,genus
+         ,taxon                              
+         ,phyto_form           
+         ,organisms_per_ml
+         #,organisms_per_ml_easy
+         ,cells_per_ml
+         #,cells_per_ml_easy
+         ,biovolume_per_ml_old
+         ,biovolume_per_ml_new
+         #,biovolume_per_ml_new_easy
+           ) %>% 
   glimpse()
-#organisms per ml can also be calculated by simply multiplying factor by unit abundance
-#Though it requires more calculations, I think I prefer to use the formula based on the more raw
-#version of the data rather than the one based on the factor column which is a derived column
-#phyto_cleaner$organisms_per_ml_alt<-(phyto_cleaner$Factor*phyto_cleaner$`Unit Abundance`)
+#I prefer to use the formulas based on the more raw version of the data 
+#rather than the ones based on the factor column
+#which is a derived column and therefore more prone to errors
 
 #look at station names
 unique(phyto_cleanest$station)
-#station names mostly but not entirely formatted consistently; why is NA present?
+#station names need to be cleaned up
+#why is NA present?
+
+#clean up station names
+#delete all spaces in names
+#then delete "STN" and "FMWT" from names
+#change all "MONT" to "MON"
+#fix case of NZS42 incorrectly called NZ542
+
+# Making data frame with existing strings and their replacement
+stnm <- data.frame(target = c(" ","STN","FMWT","MONT","NZ542"),
+                 replacement = c("","","","MON","NZS42"))
+
+# Making the named replacement vector from stnm
+replacements <- c(stnm$replacement)
+names(replacements) <- c(stnm$target)
+
+#fix the names
+phyto_clean_stnm <- phyto_cleanest %>% 
+  mutate(station_clean = str_replace_all(station,pattern = replacements)) 
+
+#look at station names again
+unique(phyto_clean_stnm$station_clean)
+#all the relevant station names look fixed now
 
 #look at number of samples per station
-samp_count<-phyto_cleanest %>% 
-  distinct(station, date) %>% 
-  group_by(station) %>% 
+samp_count<-phyto_clean_stnm %>% 
+  distinct(station_clean, date) %>% 
+  group_by(station_clean) %>% 
   summarize(count = n())
 #there is one NA but there shouldn't be any
 
 #look closer at rows with NA for station
-station_na<-phyto_cleanest %>% 
+station_na<-phyto_clean_stnm %>% 
   filter(is.na(station))
 #There are two rows with the value 4 for Biovolume2 but are otherwise blank rows
 #maybe values were typed into wrong row?
 
 #check for NAs
-check_na <- phyto_cleanest[rowSums(is.na(phyto_cleanest)) > 0,]
-#none of these rows are needed for SMSCG data set
+check_na <- phyto_clean_stnm[rowSums(is.na(phyto_clean_stnm)) > 0,]
+#most of these rows aren't needed for SMSCG data set
+#of the rows that are relevant, most are just missing time, which is fine
 
 #Add higher level taxonomic information using the algaeClassify package--------
 #NOTE: couldn't get the functions from this package that interface with AlgaeBase to work
@@ -197,13 +240,30 @@ tax_gen_sum_sub<-filter(tax_gen_sum, Freq >1)
 #remove the combos that are duplicates from the main data set
 
 #combine sample data and high level taxonomy by genus----------
-names(phyto_cleanest)
+names(phyto_clean_stnm)
 names(taxon_high_cond)
-phyto_tax<-left_join(phyto_cleanest,taxon_high_cond)
+phyto_tax<-left_join(phyto_clean_stnm,taxon_high_cond)
 
 #reorder columns once more for data frame export
 #decided to drop the common names column here too
-phyto_final<-phyto_tax[,c(1:3,9:11,6,4,5,7,8)]
+phyto_final<-phyto_tax %>% 
+  select(-station) %>% 
+  rename(station=station_clean) %>% 
+  select(station
+         ,date
+         ,time
+         ,kingdom
+         ,phylum
+         ,class
+         ,phyto_form
+         ,genus
+         ,taxon
+         ,organisms_per_ml
+         ,cells_per_ml
+         ,biovolume_per_ml_old
+         ,biovolume_per_ml_new
+  ) %>%
+  glimpse()
 
 #write the formatted data as csv 
 #write_csv(phyto_final,file = "Data/phytoplankton/SMSCG_phytoplankton_formatted_2020-2021.csv")
