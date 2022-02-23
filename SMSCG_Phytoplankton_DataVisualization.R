@@ -11,7 +11,6 @@
 #see if all the phyla are up to date; Tiffany's file is probably out of date
 #make some plots to look at cells per mL which is a response I added to the source file
 #compare DFW and EMP samples when they are collected close to same time
-#compare the two Grizzly Bay stations, though there aren't many samples
 #maybe do nmds by region
 
 #load packages
@@ -38,9 +37,9 @@ unique(phyto_vis$station)
 #create data frame that groups names of stations that represent the same general location and adds the three broad regions
 #RV = Sacramento River, ME = East Suisun Marsh, MW = West Suisun Marsh
 station_key <- data.frame(
-  station = c("706", "NZ064", "D22","704","801", "802", "NZ060", "D4","609","MON","610","605", "606","NZ032","NZS42","GZB","602"),
-  station_comb = c(rep("706", 3), "704",rep("801", 4),"609","MON","610", "605", rep("606",2),"NZS42","GZB","602"),
-  region = c(rep("RV",8), rep("ME",3), rep("MW",4),rep("GB",2))
+  station = c("706", "NZ064", "D22","704","801", "802", "NZ060", "D4","609","MON","610","605", "606","NZ032","NZS42","GZB","602","D7"),
+  station_comb = c(rep("706", 3), "704",rep("801", 4),"609","MON","610", "605", rep("606",2),"NZS42","GZB",rep("602",2)),
+  region = c(rep("RV",8), rep("ME",3), rep("MW",4),rep("GB",3))
 )
 #glimpse(station_key)
 
@@ -116,31 +115,31 @@ gzb <- phyto_gates %>%
 
 #first make a df with just the diatoms
 #and format it into a matrix like this package needs
-diatoms_only<-phyto_gates %>% 
-  filter(phylum == "Ochrophyta") %>% 
+#diatoms_only<-phyto_gates %>% 
+#  filter(phylum == "Ochrophyta") %>% 
   #for diaThorAll function, there must be a column called "species"
-  rename(species=taxon) %>% 
+#  rename(species=taxon) %>% 
   #create combined station-date column
-  unite(station_date, station, date) %>% 
+#  unite(station_date, station, date) %>% 
   #reduce to just needed columns
-  select(species
-         ,station_date
-         ,organisms_per_ml
-  )   %>% 
+#  select(species
+#         ,station_date
+#         ,organisms_per_ml
+#  )   %>% 
   #convert from long to wide
-  pivot_wider(names_from = station_date, values_from = organisms_per_ml) %>%  
+#  pivot_wider(names_from = station_date, values_from = organisms_per_ml) %>%  
   #convert all NAs to zeros
-  replace(is.na(.), 0) %>% 
+#  replace(is.na(.), 0) %>% 
   #make species a factor and everything else integers
   #NOTE that abundances are actually densities instead of counts but fine for now
-  mutate(across(c(species),as.factor)
-         ,across(c('STN 609_2020-08-12':'NZS42_2020-10-13'),as.integer)
-         ) %>% 
-  glimpse()
+#  mutate(across(c(species),as.factor)
+#         ,across(c('STN 609_2020-08-12':'NZS42_2020-10-13'),as.integer)
+#         ) %>% 
+#  glimpse()
   
 
-data("diat_sampleData")
-glimpse(diat_sampleData)
+#data("diat_sampleData")
+#glimpse(diat_sampleData)
 #species is a factor and all other columns are integers
 
 
@@ -337,7 +336,7 @@ phyto_genera_sum_rg<-phyto_gates %>%
 #summarize density and biovolume data by sample and phylum
 #so sum densities and biovolumes within a sample by phylum
 s_phyto_phylum_sum<-phyto_gates %>% 
-  group_by(region, station_comb, date, month,phylum) %>% 
+  group_by(region, station_comb, station, date, year,month,phylum) %>% 
   summarize(
     tot_den = sum(organisms_per_ml)
     ,tot_bvol_old = sum(biovolume_per_ml_old) 
@@ -520,11 +519,13 @@ s_diatom_sum<-phyto_gates %>%
     , .groups = 'drop'
   )  %>% 
   #make month a factor
-  mutate_at(vars(month), factor)
+  mutate_at(vars(month,year), factor)
 #there are 7 samples without diatoms
 #combine diatom data with total phyto data
 
 #join diatom data set and all phyto data set
+glimpse(s_phyto_sum)
+glimpse(s_diatom_sum)
 s_pd_sum <- left_join(s_phyto_sum,s_diatom_sum)
 
 #replace NAs with zeros for density and biovolume
@@ -914,12 +915,48 @@ tblmod_new_lg4 = aov(log(d_tot_bvol_new) ~ region  + month + year, data = s_diat
 TukeyHSD(tblmod_new_lg4,"region")
 names(s_diatom_sum_g)
 
-#NMDS plots---------------
-#next step is use these plots to see how much regions overlap in composition
-#the large number of rare taxa may make it difficult to generate these plots
+#look at Grizzly Bay stations----------
 
-#first create histogram of genera per sample
+#s_samp_count shows sample sizes
+#602 = 13, GZB = 2
 
+#look closer at Grizzly bay samples
+gzb_sum <- gzb %>% 
+  distinct(station_comb, station, date) %>% 
+  arrange(date,station_comb,station)
+
+#create a subset of 2021 GB samples with density and biovolume summed by sample
+gb_sum <- s_phyto_sum %>% 
+  filter(region=="GB" & year=="2021")
+
+#plot time series of biovolume and density by station
+ggplot(gb_sum, aes(x=date, y=tot_den, group=station,col=station))+ #specified what to plot on the x and y axes
+    geom_line() + 
+    geom_point()  
+
+
+#plot total phytoplankton biovolume NEW by station
+ggplot(gb_sum, aes(x=date, y=tot_bvol_new, group=station,col=station))+ 
+    geom_line() + 
+    geom_point() 
+
+#next look closer at taxonomic composition
+
+gb_phylum_sum <- s_phyto_phylum_sum %>% 
+  filter(region=="GB" & year=="2021")
+
+
+#stacked bar plot time series of density by phylum and station
+ggplot(gb_phylum_sum, aes(x=station, y= tot_den,fill = phylum))+
+    geom_bar(position = "stack", stat = "identity") + 
+    ylab("Phytoplankton Density (Organisms / mL)") + xlab("Station")+
+  facet_grid(~date)
+
+#stacked bar plot time series of biovolume NEW by phylum and station
+ggplot(gb_phylum_sum, aes(x=station, y= tot_bvol_new,fill = phylum))+
+  geom_bar(position = "stack", stat = "identity") + 
+  ylab("Phytoplankton Biovolume (cubic microns per mL)") + xlab("Station")+
+  facet_grid(~date)
 
 
 
