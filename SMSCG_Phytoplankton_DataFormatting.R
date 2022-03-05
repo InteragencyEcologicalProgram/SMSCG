@@ -1,5 +1,5 @@
 #Suisun Marsh Salinity Control Gate
-#Phytoplankton Data
+#Phytoplankton Data 2020-2021
 #Format raw data in preparation for visualization and analysis
 
 #required packages
@@ -9,18 +9,28 @@ library(hms) #working with date/time
 library(readxl) #importing data from excel files
 #library(algaeClassify) #grab taxonomy info from AlgaeBase; doesn't work currently
 
+#missing times from a few 2021 samples; could request the times from DFW to make sure records are complete
+
 #Notes
 #For all BSA files from 2013 to 2021, the column "Number of cells per unit" really means "Total cells", 
 #which is the total number of cells counted for that taxon in a particular sample
 #calculations in this script were corrected accordingly on 2/10/2022
 
+#create version of data set for phytoplankton synthesis effort
+#just needs to include the samples specific to the SMSCG action
+#hard to split the SMSCG and EMP data sets because NZS42 and NZ032 station names are
+#shared by the two surveys
+#probably should add a column to the imported data sets with the source file
+#that will allow us to keep track of which samples are from which survey
+
 #to do list
 #round up higher taxonomy data for the 12 new genera present in the 2021 data set
 
-# 1. Read in the Data----------------------------------------------
+# 1. Read in the data----------------------------------------------
 
 #read in taxonomy data
 #this probably needs to be updated with each new batch of data
+#update this file with the updates/corrections I got from AlgaeBase 2/24/2022
 taxonomy <- read_excel(path = "Data/phytoplankton/PhytoplanktonTaxonomy_2022-02-09.xlsx")
 
 #Create character vectors of all 2020 phytoplankton files
@@ -37,8 +47,15 @@ phyto_files21 <- dir(path = "Data/phytoplankton/2021", pattern = "\\.xlsx", full
 #specify format of columns because column types not automatically read consistently among files
 column_type20<-c(rep("text",4),rep("numeric",10),rep("text",5),rep("numeric",5),rep("text",5)
                ,rep("numeric",10),"text",rep("numeric",26)) 
-phytoplankton20 <- map_dfr(phyto_files20, ~read_excel(.x, col_types = column_type20))
-#glimpse(phytoplankton20)
+
+phytoplankton20 <- phyto_files20 %>% 
+  #set_names() grabs the file names
+  set_names() %>%  
+  #reads in the files, .id adds the file name column
+  map_dfr(~read_excel(.x, col_types = column_type20), .id = "source") %>% 
+  #reduce file name to just the needed info (ie, survey)
+  mutate(survey = as.factor(str_sub(source,25,27))) %>% 
+  glimpse()
 #succeeded in combining all the sample files
 #but date and time are in weird format
 #also the sampling depth column has three variations: "Depth (m)", "Depth (ft.)", "Depth (ft)"
@@ -49,73 +66,77 @@ phytoplankton20 <- map_dfr(phyto_files20, ~read_excel(.x, col_types = column_typ
 #accounts for extra column in 2021 files
 column_type21<-c(rep("text",5),rep("numeric",10),rep("text",5),rep("numeric",5),rep("text",5)
                  ,rep("numeric",10),"text",rep("numeric",26)) 
-phytoplankton21 <- map_dfr(phyto_files21, ~read_excel(.x, col_types = column_type21))
-#glimpse(phytoplankton21)
+phytoplankton21 <- phyto_files21 %>% 
+  #set_names() grabs the file names
+  set_names() %>%  
+  #reads in the files, .id adds the file name column
+  map_dfr(~read_excel(.x, col_types = column_type21), .id = "source") %>% 
+  #reduce file name to just the needed info (ie, survey)
+  mutate(survey = str_sub(source,25,27)) %>% 
+  glimpse()
 #succeeded in combining all the sample files
 #but date and time are in weird format
 
 #combine the 2020 and 2021 data sets
 #bind_rows can handle the fact that not all columns will match between data sets
-phytoplankton <- bind_rows(phytoplankton20,phytoplankton21)
-#glimpse(phytoplankton) 
+phytoplankton <- bind_rows(phytoplankton20,phytoplankton21) %>% 
+  clean_names() %>% 
+  glimpse()
 #the three non-matching columns get kicked to the end of the combined df
 
 #format the sample data set------------
 
-#format date and time columns
-phytoplankton$SampleDate2<-as.Date(as.numeric(phytoplankton$SampleDate),origin = "1899-12-30")
-#converted numeric excel dates to date format; compared with some original data and looks correct
-phytoplankton$SampleTime2<-as_hms(as.numeric(phytoplankton$SampleTime)*60*60*24)
-#checked some formatted times against original data and it looks like they converted correctly
-#glimpse(phytoplankton)
-
 phyto_cleanest <- phytoplankton %>% 
   #rename the confusingly incorrectly name column
-  rename(total_cells='Number of cells per unit') %>% 
+  rename(total_cells=number_of_cells_per_unit) %>% 
   #subset to just the needed columns
-  select(StationCode
-         , SampleDate2
-         , SampleTime2
-         , Genus
-         , Taxon
-         , "Colony/Filament/Individual Group Code"
-         , "Unit Abundance"
-         , "Slide/ Chamber Area (mm²)"
-         , "Volume Analyzed (mL)"
-         , "Field-of-view (mm²)"
-         , "Number of Fields Counted"
-         , Factor
+  select(survey
+         , station_code
+         , sample_date
+         , sample_time
+         , genus
+         , taxon
+         , colony_filament_individual_group_code
+         , unit_abundance
+         , slide_chamber_area_mm2
+         , volume_analyzed_m_l
+         , field_of_view_mm2
+         , number_of_fields_counted
+         , factor
          , total_cells
-         , "Biovolume 1":"Biovolume 10") %>% 
+         , biovolume_1:biovolume_10) %>%     
   #remove empty rows created by linear cell measurement rows (length, width, depth)  
-  remove_empty(which = "rows") %>% 
+  #a little tricky just because the survey name appears in every row including the othewise empty ones
+  #chose the genus and taxon column as the ones to check for missing data
+  drop_na(genus:taxon) %>%   
   rowwise() %>% 
   mutate(
+    #format date
+    date = as.Date(as.numeric(sample_date),origin = "1899-12-30")
+    #format time
+    ,time = as_hms(as.numeric(sample_time)*60*60*24)
     #create new column that calculates mean biovolume per cell
-    mean_cell_biovolume = mean(c_across(`Biovolume 1`:`Biovolume 10`),na.rm=T)
+    ,mean_cell_biovolume = mean(c_across(biovolume_1:biovolume_10),na.rm=T)
     #create new column that calculates organisms per mL
     #different from cells per mL because some organisms are multicellular
-    ,organisms_per_ml = (`Unit Abundance`*`Slide/ Chamber Area (mm²)`)/(`Volume Analyzed (mL)`*`Field-of-view (mm²)`*`Number of Fields Counted`)
-    #,organisms_per_ml_easy = (`Unit Abundance`*Factor)
+    ,organisms_per_ml = (unit_abundance*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted)
+    #,organisms_per_ml_easy = (unit_abundance*factor)
     #create new column that calculates cells per mL
-    ,cells_per_ml = (total_cells*`Slide/ Chamber Area (mm²)`)/(`Volume Analyzed (mL)`*`Field-of-view (mm²)`*`Number of Fields Counted`)
-    #,cells_per_ml_easy = (total_cells*Factor)
+    ,cells_per_ml = (total_cells*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted)
+    #,cells_per_ml_easy = (total_cells*factor)
     #create a column that calculates biovolume per mL
-    #units for biovolume are cubic microns
-    ,biovolume_per_ml_old = organisms_per_ml * total_cells * mean_cell_biovolume
-    ,biovolume_per_ml_new = (total_cells* mean_cell_biovolume*`Slide/ Chamber Area (mm²)`)/(`Volume Analyzed (mL)`*`Field-of-view (mm²)`*`Number of Fields Counted`)
-    #,biovolume_per_ml_new_easy = Factor * total_cells * mean_cell_biovolume
+    #units for biovolume are cubic microns; old version is incorrect calculations
+    #,biovolume_per_ml_old = organisms_per_ml * total_cells * mean_cell_biovolume
+    ,biovolume_per_ml = (total_cells* mean_cell_biovolume*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted)
+    #,biovolume_per_ml_easy = factor * total_cells * mean_cell_biovolume
     ) %>% 
   #simplify column names
-  rename(station = StationCode
-         ,date = SampleDate2 
-         ,time = SampleTime2
-         ,genus = Genus
-         ,taxon = Taxon
-         ,phyto_form =  "Colony/Filament/Individual Group Code") %>% 
+  rename(station = station_code
+         ,phyto_form =  colony_filament_individual_group_code) %>% 
   #subset and reorder columns again to just those needed
-  select(station
-         , date
+  select(survey
+         ,station
+         ,date
          ,time
          ,genus
          ,taxon                              
@@ -124,14 +145,15 @@ phyto_cleanest <- phytoplankton %>%
          #,organisms_per_ml_easy
          ,cells_per_ml
          #,cells_per_ml_easy
-         ,biovolume_per_ml_old
-         ,biovolume_per_ml_new
-         #,biovolume_per_ml_new_easy
+         #,biovolume_per_ml_old
+         ,biovolume_per_ml
+         #,biovolume_per_ml_easy
            ) %>% 
   glimpse()
 #I prefer to use the formulas based on the more raw version of the data 
 #rather than the ones based on the factor column
 #which is a derived column and therefore more prone to errors
+#should check the NAs for dates and times; should be some NAs for time but not date
 
 #look at station names
 unique(phyto_cleanest$station)
@@ -170,7 +192,7 @@ samp_count<-phyto_clean_stnm %>%
 #look closer at rows with NA for station
 station_na<-phyto_clean_stnm %>% 
   filter(is.na(station))
-#There are two rows with the value 4 for Biovolume2 but are otherwise blank rows
+#There are two rows with the value 4 for biovolume_2 but are otherwise blank rows
 #maybe values were typed into wrong row?
 
 #check for NAs
@@ -179,9 +201,7 @@ check_na <- phyto_clean_stnm[rowSums(is.na(phyto_clean_stnm)) > 0,]
 #of the rows that are relevant, most are just missing time, which is fine
 
 #Add higher level taxonomic information using the algaeClassify package--------
-#NOTE: couldn't get the functions from this package that interface with AlgaeBase to work
-#Package hasn't been updated in over two years and AlgaeBase has launched a new website since then
-#emailed the package author on 12/13/2021
+#as of 3/4/2022 this package wasn't working
 
 #started by trying out examples from documentation. they didn't work
 #algae_search(genus='Anabaena',species='flos-aquae',long=FALSE)
@@ -198,27 +218,23 @@ check_na <- phyto_clean_stnm[rowSums(is.na(phyto_clean_stnm)) > 0,]
 #subset to just the needed columns
 #will match genus name between the two data frames
 taxon_high<-taxonomy %>% 
-  select("Kingdom"
-  ,"Phylum"
-  ,"Class"
-  ,"Genus"
-  ,"Algal Type") %>%  #confirmed that there is just one type per genus
+  clean_names() %>% 
+  select(kingdom
+  ,phylum
+  ,class
+  ,genus
+  ,algal_type) %>%  #confirmed that there is just one type per genus
 #this approach is very simple because it removes the need for exact matches in the taxon names
 #part of the difficulty in matching taxon names is presence of "cf." for many taxa
 #unfortunately by just matching by genus and not taxon, we lose the habitat type, and salinity range info
 #also with species level data, there's a chance the taxonomy dataset doesn't include every species in the samples
-  rename(kingdom = Kingdom
-         ,phylum = Phylum
-         ,class = Class
-         ,genus = Genus
-         ,common_name = 'Algal Type')%>% 
-#remove some (likely incorrect) combinations that are creating duplicates for genus
+  #remove some (likely incorrect) combinations that are creating duplicates for genus
+  #check AlgaeBase to see which taxonomic info is correct
   filter(!(genus == "Achnanthidium" & class =="Fragilariophyceae") & 
            !(genus == "Elakatothrix" & class =="Chlorophyceae") &
-           !(genus == "Leptocylindrus" & common_name =="Centric diatom"))
-
-#condense taxonomy data set to just the unique combinations
-taxon_high_cond<-unique(taxon_high[,c('kingdom','phylum','class','genus','common_name')])
+           !(genus == "Leptocylindrus" & algal_type =="Centric diatom"))%>% 
+  #condense taxonomy data set to just the unique combinations
+  distinct(kingdom,phylum,class,genus)  
 #initially some genera appeared more than once in this taxonomy data set
 #but this has been corrected
 
@@ -226,7 +242,7 @@ taxon_high_cond<-unique(taxon_high[,c('kingdom','phylum','class','genus','common
 
 #count number of times each genus appears
 #ideally this would be once
-tax_gen_sum<-data.frame(table(taxon_high_cond$genus)) 
+tax_gen_sum<-data.frame(table(taxon_high$genus)) 
 
 #look at repeat genera
 tax_gen_sum_sub<-filter(tax_gen_sum, Freq >1)
@@ -241,11 +257,10 @@ tax_gen_sum_sub<-filter(tax_gen_sum, Freq >1)
 
 #combine sample data and high level taxonomy by genus----------
 names(phyto_clean_stnm)
-names(taxon_high_cond)
-phyto_tax<-left_join(phyto_clean_stnm,taxon_high_cond)
+names(taxon_high)
+phyto_tax<-left_join(phyto_clean_stnm,taxon_high)
 
 #reorder columns once more for data frame export
-#decided to drop the common names column here too
 phyto_final<-phyto_tax %>% 
   select(-station) %>% 
   rename(station=station_clean) %>% 
@@ -260,14 +275,60 @@ phyto_final<-phyto_tax %>%
          ,taxon
          ,organisms_per_ml
          ,cells_per_ml
-         ,biovolume_per_ml_old
-         ,biovolume_per_ml_new
+         #,biovolume_per_ml_old
+         ,biovolume_per_ml
   ) %>%
   glimpse()
 
 #write the formatted data as csv 
 #write_csv(phyto_final,file = "Data/phytoplankton/SMSCG_phytoplankton_formatted_2020-2021.csv")
 #NOTE: the time look fine in df in R but is wrong when viewed in exported csv
+
+#write version of data set that includes only the samples collected by DFW
+#this is for the phytoplankton synthesis effort
+
+#look at number of rows associated with DFW vs EMP
+phyto_surv_sum <- phyto_tax %>% 
+  group_by(survey) %>% 
+  summarize(n = n())
+
+#look at number of samples associated with DFW vs EMP
+phyto_surv_sum2 <- phyto_tax %>%
+  distinct(survey,station,date) %>% 
+  group_by(survey) %>% 
+  summarize(n = n())
+
+phyto_dfw<-phyto_tax %>% 
+  filter(survey=="DFW") %>% 
+  select(-station) %>% 
+  rename(station=station_clean) %>% 
+  select(station
+         ,date
+         ,time
+         ,kingdom
+         ,phylum
+         ,class
+         ,phyto_form
+         ,genus
+         ,taxon
+         ,organisms_per_ml
+         ,cells_per_ml
+         #,biovolume_per_ml_old
+         ,biovolume_per_ml
+  ) %>%
+  glimpse()
+#write_csv(phyto_dfw,file = "Data/phytoplankton/SMSCG_phytoplankton_formatted_DFW_only_2020-2021.csv")
+
+#look at list of station names in DFW samples data set
+unique(phyto_dfw$station)
+
+#look for NAs
+check_na <- as.data.frame(colSums(is.na(phyto_dfw))) 
+#only time column has NAs
+check_time <- phyto_dfw %>% 
+  distinct(station,date,time) %>% 
+  filter(is.na(time))
+#three samples are missing times which makes sense
 
 
 #exploring taxonomy data set--------------------
