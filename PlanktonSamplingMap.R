@@ -24,23 +24,20 @@ st_crs(WW_Delta)
 
 #format the data set
 
-#need to add a column that indicates
-#add column that indicates whether sampling is specific to SMSCG; then use it as shape
-
 stations_p <- stations_all %>%
   #filter stations to just those used in 2020 for plankton sampling
-  #add Grizzly Bay stations (GZM and 602)
-  filter(Zoops == "Y" | Phyto == "Y" | StationCode == "GZM" | StationCode == "602") %>% 
+  #add Grizzly Bay station (602)
+  filter(Zoops == "Y" | Phyto == "Y" | StationCode == "602") %>% 
   #filter some other stations that aren't currently sampled by DFW
   filter(StationCode != "NZ032" & StationCode != "NZ028" & StationCode!="HONK" & StationCode != "NZ054" & StationCode != "D22" & StationCode!="520" &
          StationCode != "D4" & StationCode!="NZ068" & StationCode!="707" & StationCode!="GRIZZ" & StationCode!="NZ060" & StationCode!="NZ064" & Longitude > -122.0833 &
            StationCode!="501" & StationCode!="504"
          ) %>% 
   #correct location of GZM
-  mutate(
-    Longitude = ifelse(grepl("GZM",StationCode),-122.05770, Longitude)
-    ,Latitude = ifelse(grepl("GZM",StationCode),38.13234,Latitude)
-    ) %>% 
+  #mutate(
+  #  Longitude = ifelse(grepl("GZM",StationCode),-122.05770, Longitude)
+  #  ,Latitude = ifelse(grepl("GZM",StationCode),38.13234,Latitude)
+  #  ) %>% 
   #drop clam column
   select(-Clams) %>% 
   #convert coordinates data frame to sf object
@@ -52,18 +49,20 @@ stations_p <- stations_all %>%
   glimpse()
 
 #add column to use for color coding stations
-#zoop only, phyto only, both
+#zoop only, phyto only (none currently), both
 stations <- stations_p %>% 
   mutate(
     #change the N to Y for phyto in two 602 stations
     Phyto = ifelse(grepl("602",StationCode),"Y",Phyto)
-    #change the N to Y for phyto in GZM station
-    #couldn't quickly figure out how to change 602 and GZM in same line
-    ,Phyto = ifelse(grepl("GZM",StationCode),"Y",Phyto)
+    #couldn't quickly figure out how to change 602 and 519 in same line
+    #change the N to Y for phyto in two 519 stations
+    ,Phyto = ifelse(grepl("519",StationCode),"Y",Phyto)
     ,Type = as.factor(
     if_else(Zoops=="Y" & Phyto == "Y", "B" 
-         ,if_else(Zoops=="N" & Phyto == "Y", "P"
-                  ,if_else(Zoops=="Y" & Phyto == "N","Z","N")))
+         #,if_else(Zoops=="N" & Phyto == "Y", "P"
+                  ,if_else(Zoops=="Y" & Phyto == "N","Z","N")
+         #)
+    )
   )) %>% 
   glimpse()
 
@@ -73,22 +72,31 @@ stations <- stations_p %>%
 bbox_p <- st_bbox(st_buffer(stations,2000))
 
 #reorder station type factor levels for plotting
-stations$Type <- factor(stations$Type, levels=c('P','Z','B'))
+stations$Type <- factor(stations$Type
+                        , levels=c(
+                          #'P',
+                          'Z','B'))
 
 #plot bay-delta base layer with phytoplankton and zooplankton stations
 #move legend into plot space
 ggplot()+
   #plot waterways base layer
   geom_sf(data= WW_Delta, fill= "skyblue3", color= "black") +
-  #plot the 2014-2016 sampling locations based on Excel data
+  #plot station locations using different shapes and colors for different types of stations
   geom_sf(data= stations, aes(fill= Type, shape= Type), color= "black",  size= 3.5)+
   scale_shape_manual(
-    labels=c('Phyto','Zoop','Both'),
-    values=c(21:23)
+    labels=c(
+      #'Phyto',
+      'Zoop','Zoop + Phyto'),
+    values=c(21:22)
   )+
   scale_fill_manual(
-    labels=c('Phyto','Zoop','Both'),
-    values=c("#7FFF00","#CD6600","#7A378B"))+
+    labels=c(
+      #'Phyto',
+      'Zoop','Zoop + Phyto'),
+    values=c(
+      #"#7FFF00",
+      "#CD6600","#7A378B"))+
   #add station names as labels and make sure they don't overlap each other or the points
   geom_label_repel(data = stations, aes(x=Longitude,y=Latitude, label=StationCode) #label the points
                 #,nudge_x = -0.008, nudge_y = 0.008 #can specify the magnitude of nudges if necessary
