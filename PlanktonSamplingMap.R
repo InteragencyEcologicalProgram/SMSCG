@@ -113,7 +113,7 @@ ggplot()+
     theme_bw()+
   labs(x="Latitude",y="Longitude")+
   annotate("text", label = "2022 SMSCG Plankton Stations", x = -121.80, y = 38.20, size = 4)
-#ggsave(file = "SMSCG_Plankton_Map.png",type ="cairo-png",width=8.5, units="in",scale=1, dpi=300)
+#ggsave(file = "SMSCG_Plankton_Map_2022.png",type ="cairo-png",width=7, units="in",scale=1.4, dpi=300)
 
 #make a map with just phyto samples 
 
