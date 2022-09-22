@@ -206,4 +206,76 @@ ggplot(allmean, aes(x = Date, y = Valuem)) + geom_point() +
   geom_smooth()+facet_wrap(~cdec_code) + ylab("Temperature (C)")+
   geom_hline(yintercept = 23.9, color = "red", linetype = 2)
 
+###############################################################
+#plot the most recent months of data real quick
 
+WQ = cdec_query(c("GZB", "GZM", "GZL", "BDL", "NSL"), sensors = c(100, 25, 27, 28),
+                start.date = as.Date("2022-06-01"), end.date = as.Date("2022-08-24"))
+str(WQ)
+
+ggplot(WQ, aes(x = DateTime, y = Value, color = StationID)) + facet_wrap(~SensorType, scales = "free_y")+
+  geom_line()
+
+WQ = mutate(WQ, Value2 = case_when(SensorNumber == 100 ~ ec2pss(Value/1000, 25),
+                               SensorNumber == 25 ~ (Value - 32)*5/9,
+            TRUE~ Value),
+            Analyte = factor(SensorType, levels = c("EL COND", "CHLORPH", "TEMP W", "TURB W"), 
+                             labels = c("Salinity", "Chlorophyll", "Temperature", "Turbidity"))) %>%
+  filter(Value2 >0)
+
+ggplot(WQ, aes(x = DateTime, y = Value2, color = StationID)) + 
+  facet_wrap(~Analyte, scales = "free_y")+
+  geom_line()   + theme_bw()       
+
+#looks like there is some issue with GZM for a few days
+test = filter(WQ ,StationID == "GZM", Analyte == "Temperature", Value2 < 10)
+mindate = min(test$DateTime) - 1
+maxdate = max(test$DateTime) +1
+
+#Shaun says there was also some issues with the sonde before that, the spike in chlorophyll is probably bad
+WQx = filter(WQ, !(StationID == "GZM"&DateTime > mindate & DateTime < maxdate), 
+             !(Analyte == "Salinity" & Value2 < 1), !(Analyte == "Chlorophyll" & Value2 > 41))
+
+#some of those other spikes might be bad too, but idduno
+
+ggplot(WQx, aes(x = DateTime, y = Value2, color = StationID)) + 
+  facet_wrap(~Analyte, scales = "free_y")+
+  geom_line()   + theme_bw()       
+
+
+ggplot(filter(WQx, Analyte == "Turbidity"), aes(x = DateTime, y = Value2, color = StationID)) + 
+  coord_cartesian(ylim = c(0, 250)) +
+  geom_line()   + theme_bw()       +
+  geom_hline(yintercept = 12, color = "red", linetype = "dashed", size = 1)+ 
+  ylab("Turbidity NTU") + xlab("Date")
+
+ggplot(filter(WQx, Analyte == "Chlorophyll"), aes(x = DateTime, y = Value2, color = StationID)) + 
+  #coord_cartesian(ylim = c(0, 50)) +
+  geom_line()   + theme_bw()       +
+  geom_hline(yintercept = 10, color = "red", linetype = "dashed", size = 1)+ 
+  ylab("Chlroophyll ug/L") + xlab("Date")
+
+test = filter(WQx, Analyte == "Chlorophyll", Value2 >50)
+
+test = filter(WQ, StationID == "GZM"&DateTime > ymd("2022-08-10") & DateTime < ymd("2022-08-20"))
+
+ggplot(test, aes(x = DateTime, y = Value2, color = StationID)) + 
+  facet_wrap(~Analyte, scales = "free_y")+
+  geom_line()   + theme_bw()       
+
+
+#Do daily means instead
+WQmean = WQx %>%
+  mutate(Date = date(DateTime)) %>%
+  group_by(Date, StationID, SensorType, Analyte) %>%
+  summarize(Value = mean(Value, na.rm = T), Value2 = mean(Value2, na.rm = T))
+
+ggplot(WQmean, aes(x = Date, y = Value2, color = StationID)) + 
+  facet_wrap(~Analyte, scales = "free_y")+
+  geom_line(size = 1)   + theme_bw() 
+
+ggplot(filter(WQmean, Analyte == "Turbidity"), aes(x = Date, y = Value2, color = StationID)) + 
+  coord_cartesian(ylim = c(0, 150)) +
+  geom_line(size = 1)   + theme_bw()       +
+  geom_hline(yintercept = 12, color = "red", linetype = "dashed", size = 1)+ 
+  ylab("Turbidity NTU") + xlab("Date")
