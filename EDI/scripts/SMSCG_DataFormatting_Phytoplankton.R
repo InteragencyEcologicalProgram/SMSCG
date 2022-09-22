@@ -30,7 +30,7 @@ library(readxl) #importing data from excel files
 
 
 #Create character vectors of all 2020 EMP phytoplankton files (n = 5) 
-phyto_emp_20 <- dir(path = "Data/phytoplankton/2020", pattern = "EMP", full.names = T)
+phyto_emp_20 <- dir(path = "EDI/data_input/phytoplankton/2020", pattern = "EMP", full.names = T)
 
 #Combine all of the 2020 emp sample data files into a single df
 #specify format of columns because column types not automatically read consistently among files
@@ -54,7 +54,7 @@ phytoplankton_emp_20 <- phyto_emp_20 %>%
 #Create character vectors of all 2021 EMP phytoplankton files (n = 5) and then for the DFW file
 #doing this separately from 2020 because there's an extra column in these files
 #the "Full Code" column is the FLIMS code; relevant to EMP samples but not DFW samples
-phyto_emp_21 <- dir(path = "Data/phytoplankton/2021", pattern = "EMP", full.names = T)
+phyto_emp_21 <- dir(path = "EDI/data_input/phytoplankton/2021", pattern = "EMP", full.names = T)
 
 #Combine all of the 2021 sample data files into a single df
 #specify format of columns because column types not automatically read consistently among files
@@ -84,7 +84,7 @@ phytoplankton_emp <- bind_rows(phytoplankton_emp_20,phytoplankton_emp_21) %>%
 # Read in and combine the DFW data----------------------------------------------
 
 #Create character vectors of all 2020 DFW phytoplankton files 
-phyto_dfw_20 <- dir(path = "Data/phytoplankton/2020", pattern = "DFW", full.names = T)
+phyto_dfw_20 <- dir(path = "EDI/data_input/phytoplankton/2020", pattern = "DFW", full.names = T)
 
 phytoplankton_dfw_20 <- phyto_dfw_20 %>% 
   #set_names() grabs the file names
@@ -96,7 +96,7 @@ phytoplankton_dfw_20 <- phyto_dfw_20 %>%
 #Create character vectors of all 2020 EMP phytoplankton files (n = 5) and then for the DFW file
 #doing this separately from 2020 because there's an extra column in these files
 #the "Full Code" column is the FLIMS code; relevant to EMP samples but not DFW samples
-phyto_dfw_21 <- dir(path = "Data/phytoplankton/2021", pattern = "DFW", full.names = T)
+phyto_dfw_21 <- dir(path = "EDI/data_input/phytoplankton/2021", pattern = "DFW", full.names = T)
 
 phytoplankton_dfw_21 <- phyto_dfw_21 %>% 
   #set_names() grabs the file names
@@ -117,11 +117,11 @@ phytoplankton_dfw <- bind_rows(phytoplankton_dfw_20,phytoplankton_dfw_21) %>%
 #read in taxonomy data
 #this probably needs to be updated with each new batch of data
 #update this file with the updates/corrections I got from AlgaeBase 2/24/2022
-taxonomy <- read_excel(path = "Data/phytoplankton/PhytoplanktonTaxonomy_2022-02-09.xlsx")
+taxonomy <- read_excel(path = "EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-02-09.xlsx")
 
 #read in station name info
 #includes region categories, station names, and names that identify comparable stations through time
-stations <- read_csv("Data/phytoplankton/stations.csv")
+stations <- read_csv("EDI/data_input/phytoplankton/stations.csv")
 
 
 #clean up EMP station names and drop unneeded stations-------------
@@ -437,7 +437,7 @@ phyto_final<-phyto_tax %>%
 #check_na2 <- phyto_final[rowSums(is.na(phyto_final)) > 0,]
 
 #write the formatted data as csv 
-#write_csv(phyto_final,file = "Data/phytoplankton/SMSCG_phytoplankton_formatted_2020-2021.csv")
+#write_csv(phyto_final,file = "EDI/data_output/SMSCG_phytoplankton_formatted_2020-2021.csv")
 
 #write version of data set that includes only the samples collected by DFW--------
 #this is for the phytoplankton synthesis effort
@@ -472,7 +472,7 @@ phyto_dfw<-phyto_tax %>%
          ,biovolume_per_ml
   ) %>%
   glimpse()
-#write_csv(phyto_dfw,file = "Data/phytoplankton/SMSCG_phytoplankton_formatted_DFW_only_2020-2021.csv")
+#write_csv(phyto_dfw,file = "EDI/data_output/SMSCG_phytoplankton_formatted_DFW_only_2020-2021.csv")
 
 #look at list of station names in DFW samples data set
 unique(phyto_dfw$station)
