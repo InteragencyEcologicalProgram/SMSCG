@@ -1,0 +1,1156 @@
+station,station_comb,region,collected_by,date,time_pst,kingdom,phylum,class,genus,taxon,phyto_form,organisms_per_ml,cells_per_ml,biovolume_per_ml
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-07-09,7:05:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula cf. weberi,i,184,184,261519.5
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-07-09,7:05:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia cf. alpina,i,184,184,8654.8
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-07-09,7:05:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,368,17110.9,864694.2
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-07-09,7:05:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,3127.8,3495.8,190035.3
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-07-09,7:05:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,71939.2,143878.4,25898.1
+EMP_D4,801,RV,EMP,2020-07-14,11:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,1331.5,1694.6,155824.4
+EMP_D4,801,RV,EMP,2020-07-14,11:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,48902,97804,17604.7
+EMP_EZ6,EZ6,FT,EMP,2020-07-14,11:15:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,42.6,42.6,9158.6
+EMP_EZ6,EZ6,FT,EMP,2020-07-14,11:15:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula cf. erifuga,i,42.6,42.6,41030.4
+EMP_EZ6,EZ6,FT,EMP,2020-07-14,11:15:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia angustata,i,42.6,42.6,17296.2
+EMP_EZ6,EZ6,FT,EMP,2020-07-14,11:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,42.6,2086.9,131123.5
+EMP_EZ6,EZ6,FT,EMP,2020-07-14,11:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,2512.8,2981.3,142245.6
+EMP_EZ6,EZ6,FT,EMP,2020-07-14,11:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,14437.9,28875.8,5197.7
+EMP_EZ6,EZ6,FT,EMP,2020-07-14,11:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena sp.,f,255.5,1405.5,10729.4
+EMP_D22,706,RV,EMP,2020-07-14,13:05:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,613.3,613.3,1780678.8
+EMP_D22,706,RV,EMP,2020-07-14,13:05:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia exilis,i,153.3,153.3,7942.1
+EMP_D22,706,RV,EMP,2020-07-14,13:05:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,613.3,613.3,22131.8
+EMP_D22,706,RV,EMP,2020-07-14,13:05:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,61482.6,122965.1,22133.7
+STN_801,801,RV,STN,2020-07-15,10:25:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,146,146,7339.9
+STN_801,801,RV,STN,2020-07-15,10:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,146,6571,437639.1
+STN_801,801,RV,STN,2020-07-15,10:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,13434,16354.5,680831.9
+STN_801,801,RV,STN,2020-07-15,10:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,43660.6,87321.1,15717.8
+STN_801,801,RV,STN,2020-07-15,10:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena sp.,f,1022.2,8469.3,85142.4
+EMP_EZ2,EZ2,FT,EMP,2020-07-15,12:25:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,484.2,484.2,150259.3
+EMP_EZ2,EZ2,FT,EMP,2020-07-15,12:25:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,242.1,242.1,33391
+EMP_EZ2,EZ2,FT,EMP,2020-07-15,12:25:00,Chromista,Ochrophyta,Coscinodiscophyceae,Melosira,Melosira varians,i,242.1,242.1,3303421.6
+EMP_EZ2,EZ2,FT,EMP,2020-07-15,12:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,242.1,5568,305327.7
+EMP_EZ2,EZ2,FT,EMP,2020-07-15,12:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,968.4,968.4,59651.5
+EMP_EZ2,EZ2,FT,EMP,2020-07-15,12:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,95141,190282,34250.8
+EMP_EZ2,EZ2,FT,EMP,2020-07-15,12:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Planktolyngbya,Planktolyngbya sp.,f,242.1,4115.5,11959.6
+STN_610,610,ME,STN,2020-07-16,6:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Bacillaria,Bacillaria cf. paxillifera,i,74.8,74.8,178158.4
+STN_610,610,ME,STN,2020-07-16,6:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,74.8,74.8,70940.6
+STN_610,610,ME,STN,2020-07-16,6:10:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,74.8,74.8,160904
+STN_610,610,ME,STN,2020-07-16,6:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis paludosa,i,149.6,149.6,2207825.2
+STN_610,610,ME,STN,2020-07-16,6:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula lanceolata,i,74.8,74.8,131165.1
+STN_610,610,ME,STN,2020-07-16,6:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia clausii,i,74.8,74.8,42070.4
+STN_610,610,ME,STN,2020-07-16,6:10:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas marssonii,i,74.8,74.8,30022.3
+STN_610,610,ME,STN,2020-07-16,6:10:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,30141.1,60282.1,10850.8
+MONT,MONT,ME,STN,2020-07-16,7:03:00,Chromista,Ochrophyta,Coscinodiscophyceae,Chaetoceros,Chaetoceros sp.,i,287.5,287.5,84968
+MONT,MONT,ME,STN,2020-07-16,7:03:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,143.7,143.7,69238.8
+MONT,MONT,ME,STN,2020-07-16,7:03:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia cf. acicularis,i,575,575,89464
+MONT,MONT,ME,STN,2020-07-16,7:03:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,287.5,287.5,16646.8
+MONT,MONT,ME,STN,2020-07-16,7:03:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,56058.8,112117.5,20181.2
+MONT,MONT,ME,STN,2020-07-16,7:03:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena sp.,f,143.7,1437.4,14901.9
+MONT,MONT,ME,STN,2020-07-16,7:03:00,Protozoa,Euglenozoa,Euglenophyceae,Trachelomonas,Trachelomonas volvocina,i,143.7,143.7,165351.1
+STN_609,609,ME,STN,2020-07-16,7:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella meneghiniana,i,102.2,102.2,248520.2
+STN_609,609,ME,STN,2020-07-16,7:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,102.2,102.2,21980.6
+STN_609,609,ME,STN,2020-07-16,7:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis paludosa,i,102.2,102.2,1305369.8
+STN_609,609,ME,STN,2020-07-16,7:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula lanceolata,i,102.2,102.2,154695.8
+STN_609,609,ME,STN,2020-07-16,7:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,102.2,102.2,4066.4
+STN_609,609,ME,STN,2020-07-16,7:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,43032.7,86065.4,15491.8
+STN_606,606,MW,STN,2020-07-16,8:43:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella meneghiniana,i,80.7,80.7,33986.1
+STN_606,606,MW,STN,2020-07-16,8:43:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,80.7,80.7,173348.7
+STN_606,606,MW,STN,2020-07-16,8:43:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula antonii,i,80.7,80.7,8442
+STN_606,606,MW,STN,2020-07-16,8:43:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,80.7,80.7,3210.3
+STN_606,606,MW,STN,2020-07-16,8:43:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,242.1,242.1,13160.3
+STN_606,606,MW,STN,2020-07-16,8:43:00,Bacteria,Cyanobacteria,Cyanophyceae,Dolichospermum,Dolichospermum sp.,f,80.7,2501.6,79572
+STN_606,606,MW,STN,2020-07-16,8:43:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,31794.4,63588.7,11446
+STN_606,606,MW,STN,2020-07-16,8:43:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena sp.,f,161.4,887.7,7808.3
+STN_606,606,MW,STN,2020-07-16,8:43:00,Protozoa,Dinozoa,Dinophyceae,Peridinium,Peridinium sp.,i,80.7,80.7,105681.9
+FMWT_605,605,MW,STN,2020-07-16,9:41:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,105.7,105.7,4130275.6
+FMWT_605,605,MW,STN,2020-07-16,9:41:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,105.7,105.7,75719.3
+FMWT_605,605,MW,STN,2020-07-16,9:41:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,105.7,105.7,7567.7
+FMWT_605,605,MW,STN,2020-07-16,9:41:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,42401.8,84803.5,15264.6
+FMWT_605,605,MW,STN,2020-07-16,9:41:00,Protozoa,Dinozoa,Dinophyceae,Peridinium,Peridinium sp.,i,105.7,105.7,301096.3
+EMP_D7,602,BY,EMP,2020-07-16,12:25:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,143.7,143.7,23491.8
+EMP_D7,602,BY,EMP,2020-07-16,12:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,59077.3,118154.6,21267.8
+EMP_D7,602,BY,EMP,2020-07-16,12:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,cf. Eucapsis sp.,c,431.2,862.4,3612.6
+EMP_NZS42,NZS42,MW,EMP,2020-07-16,13:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Cylindrotheca,Cylindrotheca closterium,i,184,184,73099.5
+EMP_NZS42,NZS42,MW,EMP,2020-07-16,13:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Cylindrospermum,Cylindrospermum sp.,f,184,7911.5,403763
+EMP_NZS42,NZS42,MW,EMP,2020-07-16,13:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,74515,149030,26825.4
+EMP_NZ032,606,MW,EMP,2020-07-16,14:20:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,211167.7,422335.4,76020.4
+STN_801,801,RV,STN,2020-07-28,7:54:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,85.2,85.2,48669.6
+STN_801,801,RV,STN,2020-07-28,7:54:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella meneghiniana,i,85.2,85.2,23120.6
+STN_801,801,RV,STN,2020-07-28,7:54:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,511.1,511.1,98342.6
+STN_801,801,RV,STN,2020-07-28,7:54:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula cf. oppugnata,i,85.2,85.2,82060.9
+STN_801,801,RV,STN,2020-07-28,7:54:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,cf. Navicula sp.,i,85.2,85.2,15841.9
+STN_801,801,RV,STN,2020-07-28,7:54:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,85.2,85.2,11748.7
+STN_801,801,RV,STN,2020-07-28,7:54:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,cf. Aphanizomenon sp.,f,85.2,766.6,39497.6
+STN_801,801,RV,STN,2020-07-28,7:54:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,4599.7,5281.1,176972.2
+STN_801,801,RV,STN,2020-07-28,7:54:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,29131.4,58262.8,10487.3
+STN_801,801,RV,STN,2020-07-28,7:54:00,Bacteria,Cyanobacteria,Cyanophyceae,Komvophoron,Komvophoron sp.,f,85.2,596.3,3746.4
+STN_704,704,RV,STN,2020-07-29,5:48:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,242.1,242.1,94973
+STN_704,704,RV,STN,2020-07-29,5:48:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,484.2,484.2,219645.3
+STN_704,704,RV,STN,2020-07-29,5:48:00,Chromista,Ochrophyta,Coscinodiscophyceae,Melosira,Melosira sp.,i,242.1,242.1,2661434.9
+STN_704,704,RV,STN,2020-07-29,5:48:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sociabilis,i,242.1,242.1,13557
+STN_704,704,RV,STN,2020-07-29,5:48:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,242.1,242.1,7650
+STN_704,704,RV,STN,2020-07-29,5:48:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,242.1,242.1,17326.2
+STN_704,704,RV,STN,2020-07-29,5:48:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,95141,190282,34250.8
+STN_610,610,ME,STN,2020-07-29,6:09:00,Chromista,Ochrophyta,Coscinodiscophyceae,Chaetoceros,Chaetoceros sp.,i,368,368,85546.1
+STN_610,610,ME,STN,2020-07-29,6:09:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis paludosa,i,122.7,122.7,429412.7
+STN_610,610,ME,STN,2020-07-29,6:09:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia acicularis,i,122.7,122.7,44524
+STN_610,610,ME,STN,2020-07-29,6:09:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,245.3,245.3,6506.3
+STN_610,610,ME,STN,2020-07-29,6:09:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,48327.4,96654.9,17397.9
+STN_706,706,RV,STN,2020-07-29,6:38:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,191.7,191.7,1066653
+STN_706,706,RV,STN,2020-07-29,6:38:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,383.3,383.3,263618
+STN_706,706,RV,STN,2020-07-29,6:38:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,1629.1,1629.1,350315.6
+STN_706,706,RV,STN,2020-07-29,6:38:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia liebetruthii,i,191.7,191.7,25652.5
+STN_706,706,RV,STN,2020-07-29,6:38:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,191.7,191.7,14912.8
+STN_706,706,RV,STN,2020-07-29,6:38:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,95.8,95.8,10837.8
+STN_706,706,RV,STN,2020-07-29,6:38:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,35935.1,71870.2,12936.6
+MONT,MONT,ME,STN,2020-07-29,7:06:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia acicularis,i,153.3,153.3,24409
+MONT,MONT,ME,STN,2020-07-29,7:06:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,306.6,306.6,25004.6
+MONT,MONT,ME,STN,2020-07-29,7:06:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,61482.6,122965.1,22133.7
+MONT,MONT,ME,STN,2020-07-29,7:06:00,Protozoa,Euglenozoa,Euglenophyceae,Trachelomonas,Trachelomonas volvocina,i,153.3,153.3,176374.5
+STN_609,609,ME,STN,2020-07-29,7:27:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,657.1,657.1,1597630
+STN_609,609,ME,STN,2020-07-29,7:27:00,Chromista,Bacillariophyta,Bacillariophyceae,Geissleria,Geissleria decussis,i,328.5,328.5,256638.2
+STN_609,609,ME,STN,2020-07-29,7:27:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,135362.4,270724.8,48730.5
+STN_606,606,MW,STN,2020-07-29,8:29:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,153.3,153.3,177052.9
+STN_606,606,MW,STN,2020-07-29,8:29:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,153.3,153.3,82592
+STN_606,606,MW,STN,2020-07-29,8:29:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,61482.6,122965.1,22133.7
+FMWT_605,605,MW,STN,2020-07-29,9:33:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,605.2,605.2,445106.8
+FMWT_605,605,MW,STN,2020-07-29,9:33:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,484.2,484.2,19261.9
+FMWT_605,605,MW,STN,2020-07-29,9:33:00,Chromista,Bacillariophyta,Bacillariophyceae,Tryblionella,Tryblionella cf. compressa,i,121,121,98138.8
+FMWT_605,605,MW,STN,2020-07-29,9:33:00,Plantae,Chlorophyta,Chlorophyceae,Vitreochlamys,cf. Vitreochalmys sp.,i,121,121,469945.3
+FMWT_605,605,MW,STN,2020-07-29,9:33:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,47812.6,95625.2,17212.5
+FMWT_605,605,MW,STN,2020-07-29,9:33:00,Protozoa,Dinozoa,Dinophyceae,Peridinium,Peridinium sp.,i,121,121,400496.7
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-08-10,9:15:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,219,219,28676.7
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-08-10,9:15:00,Chromista,Ochrophyta,Fragilariophyceae,Fragilaria,cf. Fragilaria sp.,i,219,219,60996.1
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-08-10,9:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,10951.6,12703.9,647454.5
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-08-10,9:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,81042.2,162084.4,29175.2
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-08-10,9:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena sp.,f,219,1095.2,10311.4
+STN_610,610,ME,STN,2020-08-12,6:13:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,153.3,153.3,846284.8
+STN_610,610,ME,STN,2020-08-12,6:13:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,76.7,76.7,28053.5
+STN_610,610,ME,STN,2020-08-12,6:13:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella meneghiniana,i,76.7,76.7,32286.8
+STN_610,610,ME,STN,2020-08-12,6:13:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,153.3,153.3,510249.9
+STN_610,610,ME,STN,2020-08-12,6:13:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia acicularis,i,76.7,76.7,26839.2
+STN_610,610,ME,STN,2020-08-12,6:13:00,Chromista,Ochrophyta,Coscinodiscophyceae,Rhizosolenia,cf. Rhizosolenia sp.,i,153.3,153.3,1007319.8
+STN_610,610,ME,STN,2020-08-12,6:13:00,Plantae,Chlorophyta,Chlorophyceae,Scenedesmus,Scenedesmus sp.,c,76.7,153.3,2023
+STN_610,610,ME,STN,2020-08-12,6:13:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,76.7,76.7,23954.7
+STN_610,610,ME,STN,2020-08-12,6:13:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,76.7,2453.2,118695.2
+STN_610,610,ME,STN,2020-08-12,6:13:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,29898,59796,10763.3
+MONT,MONT,ME,STN,2020-08-12,7:05:00,Chromista,Ochrophyta,Coscinodiscophyceae,Chaetoceros,Chaetoceros sp.,i,681.4,681.4,80921.9
+MONT,MONT,ME,STN,2020-08-12,7:05:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,340.7,340.7,1096579
+MONT,MONT,ME,STN,2020-08-12,7:05:00,Chromista,Ochrophyta,Coscinodiscophyceae,Rhizosolenia,cf. Rhizosolenia sp.,i,170.4,170.4,902048.5
+MONT,MONT,ME,STN,2020-08-12,7:05:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,170.4,170.4,2937.2
+MONT,MONT,ME,STN,2020-08-12,7:05:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,68654.7,137309.3,24715.7
+STN_609,609,ME,STN,2020-08-12,7:21:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella meneghiniana,i,164.3,164.3,35325.9
+STN_609,609,ME,STN,2020-08-12,7:21:00,Chromista,Bacillariophyta,Bacillariophyceae,Diploneis,cf. Diploneis sp.,i,164.3,164.3,148368.9
+STN_609,609,ME,STN,2020-08-12,7:21:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,164.3,164.3,34854.9
+STN_609,609,ME,STN,2020-08-12,7:21:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,67024.1,134048.2,24128.7
+FMWT_605,605,MW,STN,2020-08-12,8:57:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,153.3,153.3,884278.9
+FMWT_605,605,MW,STN,2020-08-12,8:57:00,Chromista,Bacillariophyta,Bacillariophyceae,Neidium,cf. Neidium sp.,i,153.3,153.3,1529724
+FMWT_605,605,MW,STN,2020-08-12,8:57:00,Chromista,Ochrophyta,Coscinodiscophyceae,Rhizosolenia,Rhizosolenia sp.,i,153.3,153.3,650226.6
+FMWT_605,605,MW,STN,2020-08-12,8:57:00,Chromista,Bacillariophyta,Bacillariophyceae,Surirella,Surirella brebissonii,i,153.3,153.3,1428243.5
+FMWT_605,605,MW,STN,2020-08-12,8:57:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,63475.8,126951.5,22851.3
+FMWT_605,605,MW,STN,2020-08-12,8:57:00,Protozoa,Dinozoa,Dinophyceae,Peridinium,cf. Peridinium sp.,i,153.3,153.3,267492
+EMP_D4,801,RV,EMP,2020-08-12,10:55:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,191.7,191.7,5673
+EMP_D4,801,RV,EMP,2020-08-12,10:55:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,383.3,383.3,35246
+EMP_D4,801,RV,EMP,2020-08-12,10:55:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,4599.7,5558,172626.6
+EMP_D4,801,RV,EMP,2020-08-12,10:55:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,73595.1,147190.2,26494.2
+EMP_EZ6,EZ6,FT,EMP,2020-08-12,10:55:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma fasciola,i,328.5,328.5,1290344.4
+EMP_EZ6,EZ6,FT,EMP,2020-08-12,10:55:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,328.5,13634.8,674372.2
+EMP_EZ6,EZ6,FT,EMP,2020-08-12,10:55:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,5092.5,5913.9,410754.2
+EMP_EZ6,EZ6,FT,EMP,2020-08-12,10:55:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,59796,119592,21526.6
+EMP_EZ6,EZ6,FT,EMP,2020-08-12,10:55:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena sp.,f,164.3,492.8,3511.4
+EMP_EZ2,EZ2,FT,EMP,2020-08-12,12:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,460,460,1314159.8
+EMP_EZ2,EZ2,FT,EMP,2020-08-12,12:00:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,230,230,69683.9
+EMP_EZ2,EZ2,FT,EMP,2020-08-12,12:00:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,230,230,126855.5
+EMP_EZ2,EZ2,FT,EMP,2020-08-12,12:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,5289.6,5749.6,332936
+EMP_EZ2,EZ2,FT,EMP,2020-08-12,12:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,85784.3,171568.5,30882.3
+EMP_EZ2,EZ2,FT,EMP,2020-08-12,12:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,Microcystis sp.,i,230,5749.6,528690.1
+EMP_D22,706,RV,EMP,2020-08-12,12:35:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,460,460,102483.2
+EMP_D22,706,RV,EMP,2020-08-12,12:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,6209.6,7819.5,262033
+EMP_D22,706,RV,EMP,2020-08-12,12:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,85784.3,171568.5,30882.3
+EMP_D22,706,RV,EMP,2020-08-12,12:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena sp.,i,230,1149.9,8778.6
+STN_704,704,RV,STN,2020-08-14,5:22:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,230,230,296737.9
+STN_704,704,RV,STN,2020-08-14,5:22:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,690,690,154303.7
+STN_704,704,RV,STN,2020-08-14,5:22:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis sp.,i,230,230,351053.1
+STN_704,704,RV,STN,2020-08-14,5:22:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,230,230,8412.8
+STN_704,704,RV,STN,2020-08-14,5:22:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,690,690,24898.3
+STN_704,704,RV,STN,2020-08-14,5:22:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,96823.5,193647.1,34856.5
+EMP_D7,602,BY,EMP,2020-08-17,14:00:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella meneghiniana,i,67.6,67.6,164461.9
+EMP_D7,602,BY,EMP,2020-08-17,14:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma fasciola,i,135.3,135.3,532622.2
+EMP_D7,602,BY,EMP,2020-08-17,14:00:00,Chromista,Ochrophyta,Coscinodiscophyceae,Rhizosolenia,cf. Rhizosolenia sp.,i,608.8,608.8,3617024.3
+EMP_D7,602,BY,EMP,2020-08-17,14:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,26245.3,52490.6,9448.3
+EMP_NZS42,NZS42,MW,EMP,2020-08-17,14:55:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,79994.7,159989.3,28798.1
+EMP_NZS42,NZS42,MW,EMP,2020-08-17,14:55:00,Protozoa,Dinozoa,Dinophyceae,Peridinium,cf. Peridinium sp.,i,200,200,167721.4
+EMP_NZ032,606,MW,EMP,2020-08-17,15:45:00,Chromista,Ochrophyta,Coscinodiscophyceae,Rhizosolenia,cf. Rhizosolenia sp.,i,497.3,497.3,2340956.4
+EMP_NZ032,606,MW,EMP,2020-08-17,15:45:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,49477.8,98955.5,17812
+STN_801,801,RV,STN,2020-08-24,12:41:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,431.2,143.7,73026.9
+STN_801,801,RV,STN,2020-08-24,12:41:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia alpina,i,143.7,143.7,9409.8
+STN_801,801,RV,STN,2020-08-24,12:41:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,5030.9,5462.1,243623.2
+STN_801,801,RV,STN,2020-08-24,12:41:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,53615.2,107230.3,19301.5
+STN_801,801,RV,STN,2020-08-24,12:41:00,Protozoa,Dinozoa,Dinophyceae,Peridinium,Peridinium sp.,i,143.7,143.7,571838.7
+STN_704,704,RV,STN,2020-08-26,5:31:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,153.3,153.3,4069265.7
+STN_704,704,RV,STN,2020-08-26,5:31:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,306.6,306.6,198530.4
+STN_704,704,RV,STN,2020-08-26,5:31:00,Chromista,Bacillariophyta,Bacillariophyceae,Hantzschia,Hantzschia sp.,i,153.3,153.3,57183.4
+STN_704,704,RV,STN,2020-08-26,5:31:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia amphibia,i,153.3,153.3,49043.8
+STN_704,704,RV,STN,2020-08-26,5:31:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia incognita,i,766.6,766.6,44310.4
+STN_704,704,RV,STN,2020-08-26,5:31:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,613.3,613.3,19048.4
+STN_704,704,RV,STN,2020-08-26,5:31:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,66848.9,133697.7,24065.6
+STN_610,610,ME,STN,2020-08-26,6:25:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,85.2,85.2,381421.8
+STN_610,610,ME,STN,2020-08-26,6:25:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,85.2,85.2,250515.4
+STN_610,610,ME,STN,2020-08-26,6:25:00,Chromista,Bacillariophyta,Bacillariophyceae,Pinnularia,Pinnularia cf. hustedtii,i,85.2,85.2,5103256
+STN_610,610,ME,STN,2020-08-26,6:25:00,Chromista,Ochrophyta,Coscinodiscophyceae,Rhizosolenia,cf. Rhizosolenia sp.,i,85.2,85.2,250945
+STN_610,610,ME,STN,2020-08-26,6:25:00,Chromista,Ochrophyta,Fragilariophyceae,Synedra,Synedra sp.,i,85.2,85.2,291408.9
+STN_610,610,ME,STN,2020-08-26,6:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,34071.8,68143.6,12265.8
+STN_706,706,RV,STN,2020-08-26,6:26:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,65.7,65.7,113043
+STN_706,706,RV,STN,2020-08-26,6:26:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,65.7,65.7,56139.6
+STN_706,706,RV,STN,2020-08-26,6:26:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia amphibia,i,131.4,131.4,19610.6
+STN_706,706,RV,STN,2020-08-26,6:26:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sociabilis,i,65.7,65.7,12504
+STN_706,706,RV,STN,2020-08-26,6:26:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,131.4,131.4,12837.3
+STN_706,706,RV,STN,2020-08-26,6:26:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,131.4,131.4,25809
+STN_706,706,RV,STN,2020-08-26,6:26:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,26284,52567.9,9462.2
+MONT,MONT,ME,STN,2020-08-26,6:36:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,176.9,176.9,78657.1
+MONT,MONT,ME,STN,2020-08-26,6:36:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,176.9,176.9,8440.9
+MONT,MONT,ME,STN,2020-08-26,6:36:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,75364.2,150728.4,27131.1
+STN_609,609,ME,STN,2020-08-26,6:55:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,176.9,176.9,120049
+STN_609,609,ME,STN,2020-08-26,6:55:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,Skeletonema ardens,i,530.7,530.7,1168309
+STN_609,609,ME,STN,2020-08-26,6:55:00,Chromista,Ochrophyta,Fragilariophyceae,Synedra,Synedra sp.,i,176.9,176.9,633093.6
+STN_609,609,ME,STN,2020-08-26,6:55:00,Plantae,Chlorophyta,Chlorophyceae,Dictyochloris,Dictyochloris fragrans,i,176.9,176.9,126684.3
+STN_609,609,ME,STN,2020-08-26,6:55:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,70056.9,140113.7,25220.5
+EMP_NZS42,NZS42,MW,STN,2020-08-26,9:11:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,65.7,65.7,29215.5
+EMP_NZS42,NZS42,MW,STN,2020-08-26,9:11:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,65.7,65.7,39733.1
+EMP_NZS42,NZS42,MW,STN,2020-08-26,9:11:00,Chromista,Ochrophyta,Coscinodiscophyceae,Rhizosolenia,cf. Rhizosolenia sp.,i,131.4,131.4,234997.3
+EMP_NZS42,NZS42,MW,STN,2020-08-26,9:11:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,26218.2,52436.5,9438.6
+FMWT_605,605,MW,STN,2020-08-26,9:32:00,Chromista,Ochrophyta,Coscinodiscophyceae,Rhizosolenia,cf. Rhizosolenia sp.,i,127.8,127.8,486681.3
+FMWT_605,605,MW,STN,2020-08-26,9:32:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,52640.9,105281.9,18950.7
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-09-08,8:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,95.8,95.8,27339.6
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-09-08,8:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,95.8,95.8,10954.1
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-09-08,8:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,cf. Skeletonema sp.,i,191.7,191.7,28347.5
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-09-08,8:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Surirella,Surirella brebissonii,i,95.8,95.8,179588.2
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-09-08,8:30:00,Chromista,Cryptophyta,Cryptophyceae,Chroomonas,cf. Chroomonas sp.,i,95.8,95.8,41239.5
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-09-08,8:30:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,95.8,95.8,32330.2
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-09-08,8:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,12170,13607.4,1060722.5
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-09-08,8:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Dolichospermum,Dolichospermum sp.,i,95.8,862.4,148368.9
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-09-08,8:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,25969.1,51938.2,9348.9
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-09-08,8:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena sp.,i,191.7,958.3,6827.8
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,18.4,18.4,283978.2
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Chromista,Bacillariophyta,Bacillariophyceae,Bacillaria,Bacillaria cf. paxillifera,i,36.8,36.8,151697.1
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella meneghiniana,i,18.4,18.4,21246.3
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,18.4,18.4,9681.7
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,73.6,73.6,219199.4
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Chromista,Ochrophyta,Coscinodiscophyceae,Melosira,Melosira sp.,i,18.4,18.4,46845
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,18.4,18.4,1676.7
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,128.8,128.8,23130.2
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Plantae,Chlorophyta,Chlorophyceae,Chlorococcum,Chlorococcum minutum,i,128.8,128.8,18519.3
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas marssonii,i,36.8,36.8,13758.4
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,55.2,55.2,19310.3
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,1674.3,1711.1,87205.4
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,4342.1,8684.2,1563.2
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Protozoa,Euglenozoa,Euglenophyceae,Euglena,Euglena viridis,i,55.2,55.2,115346.7
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Protozoa,Euglenozoa,Euglenophyceae,Trachelomonas,Trachelomonas volvocina,i,18.4,18.4,13175.2
+STN_610,610,ME,FMWT,2020-09-10,8:35:00,Protozoa,Dinozoa,Dinophyceae,Peridinium,Peridinium sp.,i,18.4,18.4,21164.9
+MONT,MONT,ME,FMWT,2020-09-10,9:10:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,63.9,63.9,3513936.3
+MONT,MONT,ME,FMWT,2020-09-10,9:10:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella cf. atomus,i,63.9,63.9,7225.2
+MONT,MONT,ME,FMWT,2020-09-10,9:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,255.5,255.5,855988.6
+MONT,MONT,ME,FMWT,2020-09-10,9:10:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,63.9,63.9,1923.3
+MONT,MONT,ME,FMWT,2020-09-10,9:10:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,447.2,447.2,21336.8
+MONT,MONT,ME,FMWT,2020-09-10,9:10:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,25298.3,50596.6,9107.4
+STN_609,609,ME,FMWT,2020-09-10,9:22:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,46341.9,92683.8,16683.1
+STN_609,609,ME,FMWT,2020-09-10,9:22:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis sp.,i,115,115,481.7
+EMP_D4,801,RV,EMP,2020-09-10,9:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Achnanthidium,cf. Achnanthidium sp.,i,306.6,306.6,27695.5
+EMP_D4,801,RV,EMP,2020-09-10,9:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,306.6,306.6,129147.1
+EMP_D4,801,RV,EMP,2020-09-10,9:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,3373.1,3986.4,203166.8
+EMP_D4,801,RV,EMP,2020-09-10,9:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,64089,128178.1,23072.1
+EMP_EZ2,EZ2,FT,EMP,2020-09-10,10:15:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma fasciola,i,287.5,287.5,1560227.2
+EMP_EZ2,EZ2,FT,EMP,2020-09-10,10:15:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia dissipata,i,287.5,287.5,166784.9
+EMP_EZ2,EZ2,FT,EMP,2020-09-10,10:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,2012.4,2587.3,123448.9
+EMP_EZ2,EZ2,FT,EMP,2020-09-10,10:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,116142.2,232284.5,41811.2
+EMP_D22,706,RV,EMP,2020-09-10,10:45:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,95.8,95.8,68620.6
+EMP_D22,706,RV,EMP,2020-09-10,10:45:00,Chromista,Bacillariophyta,Bacillariophyceae,Tryblionella,cf. Tryblionella sp.,i,95.8,95.8,396812.6
+EMP_D22,706,RV,EMP,2020-09-10,10:45:00,Chromista,Ochrophyta,Fragilariophyceae,Ulnaria,cf. Ulnaria sp.,i,95.8,95.8,136074.1
+EMP_D22,706,RV,EMP,2020-09-10,10:45:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,39480.7,78961.4,14213
+EMP_D22,706,RV,EMP,2020-09-10,10:45:00,Protozoa,Euglenozoa,Euglenophyceae,Eutreptiella,Eutreptiella sp.,i,95.8,95.8,235315.9
+EMP_D7,602,BY,EMP,2020-09-14,8:50:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,122.7,122.7,545238.2
+EMP_D7,602,BY,EMP,2020-09-14,8:50:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,122.7,184,7659.4
+EMP_D7,602,BY,EMP,2020-09-14,8:50:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,24286.4,48572.8,8743.1
+EMP_NZS42,NZS42,MW,EMP,2020-09-14,9:55:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,230,230,262526.7
+EMP_NZS42,NZS42,MW,EMP,2020-09-14,9:55:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia acicularis,i,230,230,72859.1
+EMP_NZS42,NZS42,MW,EMP,2020-09-14,9:55:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,Skeletonema sp.,i,919.9,919.9,107510.6
+EMP_NZS42,NZS42,MW,EMP,2020-09-14,9:55:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,91533.9,183067.8,32952.2
+EMP_NZ032,606,MW,EMP,2020-09-14,10:45:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,133.3,133.3,143094.3
+EMP_NZ032,606,MW,EMP,2020-09-14,10:45:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,133.3,133.3,153959
+EMP_NZ032,606,MW,EMP,2020-09-14,10:45:00,Chromista,Bacillariophyta,Bacillariophyceae,Tryblionella,cf. Tryblionella sp.,i,133.3,133.3,1549747.5
+EMP_NZ032,606,MW,EMP,2020-09-14,10:45:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,53596.4,107192.8,19294.7
+FMWT_704,704,RV,FMWT,2020-09-15,15:43:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,69.7,69.7,142368.8
+FMWT_704,704,RV,FMWT,2020-09-15,15:43:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,69.7,69.7,63187.4
+FMWT_704,704,RV,FMWT,2020-09-15,15:43:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella meneghiniana,i,69.7,69.7,100845.9
+FMWT_704,704,RV,FMWT,2020-09-15,15:43:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,69.7,69.7,14986.8
+FMWT_704,704,RV,FMWT,2020-09-15,15:43:00,Chromista,Bacillariophyta,Bacillariophyceae,Encyonema,Encyonema cf. lange-bertalotii,i,69.7,69.7,67194
+FMWT_704,704,RV,FMWT,2020-09-15,15:43:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis cf. paludosa,i,139.4,139.4,844511.2
+FMWT_704,704,RV,FMWT,2020-09-15,15:43:00,Chromista,Bacillariophyta,Mediophyceae,Lindavia,cf. Lindavia sp.,i,69.7,69.7,49905.9
+FMWT_704,704,RV,FMWT,2020-09-15,15:43:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,69.7,69.7,15286.5
+FMWT_704,704,RV,FMWT,2020-09-15,15:43:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,1045.4,1045.4,144188.2
+FMWT_704,704,RV,FMWT,2020-09-15,15:43:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,69.7,69.7,2335.4
+FMWT_704,704,RV,FMWT,2020-09-15,15:43:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,26692.2,53384.3,9609.2
+FMWT_605,605,MW,FMWT,2020-09-16,9:20:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella cf. atomus,i,104.5,104.5,13686.6
+FMWT_605,605,MW,FMWT,2020-09-16,9:20:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,209.1,209.1,218985.8
+FMWT_605,605,MW,FMWT,2020-09-16,9:20:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia cf. acicularis,i,104.5,104.5,52264
+FMWT_605,605,MW,FMWT,2020-09-16,9:20:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,209.1,209.1,12303.3
+FMWT_605,605,MW,FMWT,2020-09-16,9:20:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,41501.8,83003.5,14940.6
+FMWT_605,605,MW,FMWT,2020-09-16,9:20:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis sp.,c,104.5,209.1,875.8
+FMWT_802,801,RV,FMWT,2020-09-16,14:23:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,153.3,153.3,68169.5
+FMWT_802,801,RV,FMWT,2020-09-16,14:23:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis paludosa,i,153.3,153.3,1078236.8
+FMWT_802,801,RV,FMWT,2020-09-16,14:23:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas marssonii,i,460,460,126491.8
+FMWT_802,801,RV,FMWT,2020-09-16,14:23:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,306.6,306.6,114879.9
+FMWT_802,801,RV,FMWT,2020-09-16,14:23:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,1226.6,1533.2,148672.4
+FMWT_802,801,RV,FMWT,2020-09-16,14:23:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,62095.8,124191.7,22354.5
+FMWT_802,801,RV,FMWT,2020-09-16,14:23:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,Microcystis sp.,c,153.3,1073.3,98688.8
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,287.5,71.9,480943.8
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,71.9,71.9,29134.9
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella meneghiniana,i,71.9,71.9,174740.8
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,575,575,247386.3
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Gomphonema,Gomphonema affinopsis,i,71.9,71.9,69927.3
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia liebetruthii,i,71.9,71.9,3881
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia palea,i,71.9,71.9,6630
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sociabilis,i,71.9,71.9,10187.6
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,143.7,143.7,6540.8
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Stauroforma,cf. Stauroforma sp.,i,71.9,71.9,17611.4
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,718.7,718.7,66408.9
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,71.9,71.9,30268.9
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,71.9,71.9,6608.6
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,26735.7,53471.4,9624.9
+FMWT_706,706,RV,FMWT,2020-09-23,6:40:00,Protozoa,Euglenozoa,Euglenophyceae,Euglena,Euglena acus,i,71.9,71.9,2350764.6
+FMWT_704,704,RV,FMWT,2020-09-23,7:01:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,170.4,170.4,86882.7
+FMWT_704,704,RV,FMWT,2020-09-23,7:01:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,170.4,170.4,982532.1
+FMWT_704,704,RV,FMWT,2020-09-23,7:01:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,170.4,170.4,246512.2
+FMWT_704,704,RV,FMWT,2020-09-23,7:01:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula goersii,i,170.4,170.4,18020.1
+FMWT_704,704,RV,FMWT,2020-09-23,7:01:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia fonticola,i,170.4,170.4,32417.8
+FMWT_704,704,RV,FMWT,2020-09-23,7:01:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,3747.9,4429.3,256484
+FMWT_704,704,RV,FMWT,2020-09-23,7:01:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,64395.7,128791.4,23182.5
+FMWT_704,704,RV,FMWT,2020-09-23,7:01:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena sp.,f,170.4,511.1,5940.7
+FMWT_802,801,RV,FMWT,2020-09-23,7:37:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,127.8,127.8,38713.3
+FMWT_802,801,RV,FMWT,2020-09-23,7:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Cymbella,cf. Cymbella sp.,i,127.8,127.8,233000.1
+FMWT_802,801,RV,FMWT,2020-09-23,7:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,127.8,127.8,460029.3
+FMWT_802,801,RV,FMWT,2020-09-23,7:37:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,127.8,127.8,17623
+FMWT_802,801,RV,FMWT,2020-09-23,7:37:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,127.8,127.8,39924.5
+FMWT_802,801,RV,FMWT,2020-09-23,7:37:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,766.6,766.6,34192.7
+FMWT_802,801,RV,FMWT,2020-09-23,7:37:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,50341.1,100682.2,18122.8
+STN_610,610,ME,FMWT,2020-09-23,8:48:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,66.7,66.7,99539.9
+STN_610,610,ME,FMWT,2020-09-23,8:48:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,133.3,133.3,375554.6
+STN_610,610,ME,FMWT,2020-09-23,8:48:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia palea,i,66.7,66.7,7499.5
+STN_610,610,ME,FMWT,2020-09-23,8:48:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,133.3,133.3,8977.1
+STN_610,610,ME,FMWT,2020-09-23,8:48:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,200,200,4489.6
+STN_610,610,ME,FMWT,2020-09-23,8:48:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,26064.9,52129.8,9383.4
+MONT,MONT,ME,FMWT,2020-09-23,11:08:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis paludosa,i,143.7,143.7,1029309.6
+MONT,MONT,ME,FMWT,2020-09-23,11:08:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,143.7,143.7,10287.4
+MONT,MONT,ME,FMWT,2020-09-23,11:08:00,Chromista,Bacillariophyta,Bacillariophyceae,Tryblionella,cf. Tryblionella sp.,i,143.7,143.7,791833.9
+MONT,MONT,ME,FMWT,2020-09-23,11:08:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,60227.2,120454.4,21681.8
+STN_609,609,ME,FMWT,2020-09-23,11:26:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,139.4,139.4,4231586.1
+STN_609,609,ME,FMWT,2020-09-23,11:26:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,278.8,278.8,82957
+STN_609,609,ME,FMWT,2020-09-23,11:26:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula rostellata,i,139.4,139.4,323957.1
+STN_609,609,ME,FMWT,2020-09-23,11:26:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,139.4,139.4,61503.3
+STN_609,609,ME,FMWT,2020-09-23,11:26:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,56172,112344,20221.9
+FMWT_605,605,MW,FMWT,2020-09-23,12:00:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,105.7,105.7,122105.4
+FMWT_605,605,MW,FMWT,2020-09-23,12:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,42190.3,84380.6,15188.5
+FMWT_605,605,MW,FMWT,2020-09-23,12:00:00,Protozoa,Dinozoa,Dinophyceae,Peridinium,Peridinium sp.,i,105.7,105.7,138479.7
+STN_610,610,ME,FMWT,2020-10-07,10:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia cf. acicularis,i,245.3,245.3,69526.7
+STN_610,610,ME,FMWT,2020-10-07,10:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,122.7,122.7,7803.2
+STN_610,610,ME,FMWT,2020-10-07,10:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,2821.1,3066.5,127656
+STN_610,610,ME,FMWT,2020-10-07,10:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,47223.5,94447,17000.5
+MONT,MONT,ME,FMWT,2020-10-07,10:57:00,Chromista,Ochrophyta,Coscinodiscophyceae,Chaetoceros,Chaetoceros muelleri,i,958.3,958.3,538907.7
+MONT,MONT,ME,FMWT,2020-10-07,10:57:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,63.9,63.9,26100.9
+MONT,MONT,ME,FMWT,2020-10-07,10:57:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula subrostellata,i,63.9,63.9,41301.8
+MONT,MONT,ME,FMWT,2020-10-07,10:57:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,63.9,63.9,4572.2
+MONT,MONT,ME,FMWT,2020-10-07,10:57:00,Plantae,Chlorophyta,Chlorophyceae,Schroederia,Schroederia sp.,i,63.9,63.9,12389.8
+MONT,MONT,ME,FMWT,2020-10-07,10:57:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,63.9,63.9,16015.3
+MONT,MONT,ME,FMWT,2020-10-07,10:57:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,24340,48680.1,8762.4
+STN_609,609,ME,FMWT,2020-10-07,11:18:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,184,184,284983.4
+STN_609,609,ME,FMWT,2020-10-07,11:18:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia cf. acicularis,i,184,184,28628.5
+STN_609,609,ME,FMWT,2020-10-07,11:18:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,184,184,5298.8
+STN_609,609,ME,FMWT,2020-10-07,11:18:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,92,92,5202.1
+STN_609,609,ME,FMWT,2020-10-07,11:18:00,Chromista,Bacillariophyta,Bacillariophyceae,Tryblionella,cf. Tryblionella sp.,i,92,92,891416
+STN_609,609,ME,FMWT,2020-10-07,11:18:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,36613.6,73227.1,13180.9
+FMWT_605,605,MW,FMWT,2020-10-08,11:23:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,69.7,69.7,163890.7
+FMWT_605,605,MW,FMWT,2020-10-08,11:23:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,348.5,348.5,110463.1
+FMWT_605,605,MW,FMWT,2020-10-08,11:23:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,27598.2,55196.3,9935.3
+FMWT_802,801,RV,FMWT,2020-10-08,13:47:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,30.7,30.7,264345
+FMWT_802,801,RV,FMWT,2020-10-08,13:47:00,Chromista,Bacillariophyta,Bacillariophyceae,Bacillaria,Bacillaria sp.,i,61.3,61.3,67032.9
+FMWT_802,801,RV,FMWT,2020-10-08,13:47:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,61.3,61.3,63220.3
+FMWT_802,801,RV,FMWT,2020-10-08,13:47:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis paludosa,i,30.7,30.7,572110.7
+FMWT_802,801,RV,FMWT,2020-10-08,13:47:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,184,184,543628.5
+FMWT_802,801,RV,FMWT,2020-10-08,13:47:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula antonii,i,30.7,30.7,22156.4
+FMWT_802,801,RV,FMWT,2020-10-08,13:47:00,Chromista,Bacillariophyta,Bacillariophyceae,Planothidium,Planothidium incuriatum,i,30.7,30.7,24052.7
+FMWT_802,801,RV,FMWT,2020-10-08,13:47:00,Chromista,Bacillariophyta,Bacillariophyceae,Tryblionella,Tryblionella persuadens,i,30.7,30.7,52708.8
+FMWT_802,801,RV,FMWT,2020-10-08,13:47:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas marssonii,i,30.7,30.7,13358.5
+FMWT_802,801,RV,FMWT,2020-10-08,13:47:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,61.3,92,8920.3
+FMWT_802,801,RV,FMWT,2020-10-08,13:47:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,10027.3,20054.7,3609.8
+FMWT_802,801,RV,FMWT,2020-10-08,13:47:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis sp.,c,30.7,61.3,256.9
+FMWT_802,801,RV,FMWT,2020-10-08,13:47:00,Protozoa,Euglenozoa,Euglenophyceae,Euglena,Euglena viridis,i,30.7,30.7,86313.3
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2020-10-09,9:35:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,cf. Chlorella sp.,i,1690.2,1690.2,6070.3
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2020-10-09,9:35:00,Chromista,Cryptophyta,Cryptophyceae,Hemiselmis,cf. Hemiselmis sp.,i,563.4,563.4,3940.3
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2020-10-09,9:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,cf. Chroococcus sp.,i,2253.7,2253.7,93818.9
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2020-10-09,9:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,232689.5,474393.6,85390.9
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-10-09,10:15:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,214.6,214.6,117695.7
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-10-09,10:15:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,858.5,858.5,39918
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-10-09,10:15:00,Chromista,Bacillariophyta,Bacillariophyceae,Hippodonta,Hippodonta sp.,i,214.6,214.6,52704.2
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-10-09,10:15:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,643.9,643.9,178629.6
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-10-09,10:15:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,214.6,214.6,9868.7
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-10-09,10:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,cf. Chroococcus sp.,c,1931.7,2575.6,200772.6
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-10-09,10:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Cuspidothrix,Cuspidothrix sp.,f,214.6,7082.9,563554.7
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2020-10-09,10:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,85424.1,175140.9,31525.4
+EMP_D4,801,RV,EMP,2020-10-09,10:25:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,cf. Chlorella sp.,i,1590.8,3446.8,77377.3
+EMP_D4,801,RV,EMP,2020-10-09,10:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,265.1,530.3,48759.6
+EMP_D4,801,RV,EMP,2020-10-09,10:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,106319.3,215290,38752.2
+EMP_EZ6,EZ6,FT,EMP,2020-10-09,11:20:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,209.1,209.1,188158.8
+EMP_EZ6,EZ6,FT,EMP,2020-10-09,11:20:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis paludosa,i,209.1,209.1,1520570.7
+EMP_EZ6,EZ6,FT,EMP,2020-10-09,11:20:00,Chromista,Bacillariophyta,Bacillariophyceae,Psammodictyon,Psammodictyon sp.,i,209.1,209.1,787412.6
+EMP_EZ6,EZ6,FT,EMP,2020-10-09,11:20:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,209.1,209.1,11264.7
+EMP_EZ6,EZ6,FT,EMP,2020-10-09,11:20:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,1463.5,2090.8,172379.5
+EMP_EZ6,EZ6,FT,EMP,2020-10-09,11:20:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,81330.9,162661.9,29279.1
+EMP_D22,706,RV,EMP,2020-10-09,11:55:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,167589.7,341735.5,61512.4
+EMP_EZ2,EZ2,FT,EMP,2020-10-09,13:05:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,340.7,340.7,142480.4
+EMP_EZ2,EZ2,FT,EMP,2020-10-09,13:05:00,Chromista,Bacillariophyta,Bacillariophyceae,Fallacia,Fallacia hodgeana,i,170.4,170.4,46575.1
+EMP_EZ2,EZ2,FT,EMP,2020-10-09,13:05:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula antonii,i,170.4,170.4,69862.6
+EMP_EZ2,EZ2,FT,EMP,2020-10-09,13:05:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,170.4,170.4,12354.4
+EMP_EZ2,EZ2,FT,EMP,2020-10-09,13:05:00,Chromista,Bacillariophyta,Bacillariophyceae,Stauroforma,Stauroforma exiguiformis,i,170.4,170.4,47525.6
+EMP_EZ2,EZ2,FT,EMP,2020-10-09,13:05:00,Chromista,Bacillariophyta,Bacillariophyceae,Tryblionella,Tryblionella acuminata,i,170.4,170.4,278420.7
+EMP_EZ2,EZ2,FT,EMP,2020-10-09,13:05:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,cf. Cryptomonas sp.,i,340.7,340.7,159845.8
+EMP_EZ2,EZ2,FT,EMP,2020-10-09,13:05:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,511.1,511.1,325873.5
+EMP_EZ2,EZ2,FT,EMP,2020-10-09,13:05:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,67802.9,135605.8,24409
+FMWT_704,704,RV,FMWT,2020-10-12,7:00:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,76.7,76.7,2198662
+FMWT_704,704,RV,FMWT,2020-10-12,7:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,76.7,76.7,227231.7
+FMWT_704,704,RV,FMWT,2020-10-12,7:00:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,230,230,26884.9
+FMWT_704,704,RV,FMWT,2020-10-12,7:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,76.7,76.7,682435.1
+FMWT_704,704,RV,FMWT,2020-10-12,7:00:00,Chromista,Ochrophyta,Coscinodiscophyceae,Melosira,Melosira sp.,i,76.7,76.7,1293604.3
+FMWT_704,704,RV,FMWT,2020-10-12,7:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia alpina,i,153.3,153.3,12764.1
+FMWT_704,704,RV,FMWT,2020-10-12,7:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia palea,i,76.7,76.7,14588
+FMWT_704,704,RV,FMWT,2020-10-12,7:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sociabilis,i,76.7,76.7,7658.5
+FMWT_704,704,RV,FMWT,2020-10-12,7:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Stauroneis,cf. Stauroneis sp.,i,76.7,76.7,329096.1
+FMWT_704,704,RV,FMWT,2020-10-12,7:00:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,383.3,383.3,55701.3
+FMWT_704,704,RV,FMWT,2020-10-12,7:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,230,230,5618.3
+FMWT_704,704,RV,FMWT,2020-10-12,7:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,29744.7,59489.4,10708.1
+EMP_D7,602,BY,EMP,2020-10-13,12:15:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella meneghiniana,i,74.2,74.2,15634.6
+EMP_D7,602,BY,EMP,2020-10-13,12:15:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,74.2,74.2,6760.9
+EMP_D7,602,BY,EMP,2020-10-13,12:15:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,148.4,148.4,3880.6
+EMP_D7,602,BY,EMP,2020-10-13,12:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,29527.1,59054.1,10629.7
+EMP_D7,602,BY,EMP,2020-10-13,12:15:00,Protozoa,Euglenozoa,Euglenophyceae,Eutreptiella,Eutreptiella sp.,i,74.2,74.2,163533.7
+EMP_NZS42,NZS42,MW,EMP,2020-10-13,13:10:00,Chromista,Ochrophyta,Fragilariophyceae,Diatoma,Diatoma moniliformis,i,164.3,164.3,86181.9
+EMP_NZS42,NZS42,MW,EMP,2020-10-13,13:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Fragilariforma,Fragilariforma sp.,i,164.3,164.3,546792.1
+EMP_NZS42,NZS42,MW,EMP,2020-10-13,13:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia incognita,i,164.3,164.3,17815.6
+EMP_NZS42,NZS42,MW,EMP,2020-10-13,13:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia liebetruthii,i,164.3,164.3,12481.5
+EMP_NZS42,NZS42,MW,EMP,2020-10-13,13:10:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,67681.2,135362.4,24365.2
+EMP_NZ032,606,MW,EMP,2020-10-13,14:05:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,85433.9,172506.8,31051.2
+FMWT_706,706,RV,FMWT,2020-10-21,7:54:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,143.7,143.7,130324.1
+FMWT_706,706,RV,FMWT,2020-10-21,7:54:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella gamma,i,143.7,143.7,2363588.7
+FMWT_706,706,RV,FMWT,2020-10-21,7:54:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,143.7,143.7,248169.9
+FMWT_706,706,RV,FMWT,2020-10-21,7:54:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,143.7,143.7,6254.4
+FMWT_706,706,RV,FMWT,2020-10-21,7:54:00,Chromista,Bacillariophyta,Bacillariophyceae,Tryblionella,Tryblionella cf. compressa,i,143.7,143.7,176480.5
+FMWT_706,706,RV,FMWT,2020-10-21,7:54:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,1724.9,2156.1,124851
+FMWT_706,706,RV,FMWT,2020-10-21,7:54:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,55340.1,110680.1,19922.4
+FMWT_704,704,RV,FMWT,2020-10-21,8:12:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,54.8,54.8,235270.8
+FMWT_704,704,RV,FMWT,2020-10-21,8:12:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,54.8,54.8,27926.6
+FMWT_704,704,RV,FMWT,2020-10-21,8:12:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,54.8,54.8,63233.2
+FMWT_704,704,RV,FMWT,2020-10-21,8:12:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,109.5,109.5,422197.5
+FMWT_704,704,RV,FMWT,2020-10-21,8:12:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia cf. soratensis,i,54.8,54.8,810.4
+FMWT_704,704,RV,FMWT,2020-10-21,8:12:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,54.8,54.8,4990.2
+FMWT_704,704,RV,FMWT,2020-10-21,8:12:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,54.8,54.8,24162
+FMWT_704,704,RV,FMWT,2020-10-21,8:12:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,273.8,273.8,8503.8
+FMWT_704,704,RV,FMWT,2020-10-21,8:12:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,21355.7,42711.4,7688.1
+FMWT_802,801,RV,FMWT,2020-10-21,8:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,71.9,71.9,273328.2
+FMWT_802,801,RV,FMWT,2020-10-21,8:37:00,Chromista,Bacillariophyta,Mediophyceae,Lindavia,Lindavia sp.,i,71.9,71.9,51465.5
+FMWT_802,801,RV,FMWT,2020-10-21,8:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia cf. soratensis,i,71.9,71.9,1437.4
+FMWT_802,801,RV,FMWT,2020-10-21,8:37:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,71.9,71.9,6608.6
+FMWT_802,801,RV,FMWT,2020-10-21,8:37:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas marssonii,i,71.9,71.9,16256.6
+FMWT_802,801,RV,FMWT,2020-10-21,8:37:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,143.7,143.7,49146.2
+FMWT_802,801,RV,FMWT,2020-10-21,8:37:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,575,934.3,44578.8
+FMWT_802,801,RV,FMWT,2020-10-21,8:37:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,27741.9,55483.8,9987.1
+FMWT_802,801,RV,FMWT,2020-10-21,8:37:00,Protozoa,Euglenozoa,Euglenophyceae,Euglena,Euglena viridis,i,71.9,71.9,237143.8
+STN_610,610,ME,FMWT,2020-10-21,9:43:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,164.3,164.3,406416
+STN_610,610,ME,FMWT,2020-10-21,9:43:00,Chromista,Bacillariophyta,Mediophyceae,Lindavia,Lindavia sp.,i,164.3,164.3,91278.7
+STN_610,610,ME,FMWT,2020-10-21,9:43:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,164.3,164.3,56911
+STN_610,610,ME,FMWT,2020-10-21,9:43:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,i,164.3,164.3,4356.9
+STN_610,610,ME,FMWT,2020-10-21,9:43:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,65052.8,130105.6,23419
+MONT,MONT,ME,FMWT,2020-10-21,10:02:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,cf. Cyclotella sp.,i,124.3,124.3,32295.8
+MONT,MONT,ME,FMWT,2020-10-21,10:02:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia reversa,i,62.2,62.2,53620.6
+MONT,MONT,ME,FMWT,2020-10-21,10:02:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,248.6,248.6,102193.9
+MONT,MONT,ME,FMWT,2020-10-21,10:02:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,435.1,683.7,24674
+MONT,MONT,ME,FMWT,2020-10-21,10:02:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,24117.3,48234.6,8682.2
+MONT,MONT,ME,FMWT,2020-10-21,10:02:00,Protozoa,Euglenozoa,Euglenophyceae,Trachelomonas,Trachelomonas volvocina,i,62.2,62.2,34537.9
+STN_609,609,ME,FMWT,2020-10-21,10:20:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,131.4,131.4,6775797.9
+STN_609,609,ME,FMWT,2020-10-21,10:20:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,262.8,262.8,110697.5
+STN_609,609,ME,FMWT,2020-10-21,10:20:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis paludosa,i,131.4,131.4,835468.8
+STN_609,609,ME,FMWT,2020-10-21,10:20:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,131.4,131.4,486486.6
+STN_609,609,ME,FMWT,2020-10-21,10:20:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia acicularis,i,131.4,131.4,60262.5
+STN_609,609,ME,FMWT,2020-10-21,10:20:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia cf. sigma,i,131.4,131.4,127761.1
+STN_609,609,ME,FMWT,2020-10-21,10:20:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,262.8,262.8,8305.7
+STN_609,609,ME,FMWT,2020-10-21,10:20:00,Chromista,Cryptophyta,Cryptophyceae,Chroomonas,Chroomonas sp.,i,131.4,131.4,57988.8
+STN_609,609,ME,FMWT,2020-10-21,10:20:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas marssonii,i,394.3,394.3,175215.8
+STN_609,609,ME,FMWT,2020-10-21,10:20:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,262.8,262.8,158796.4
+STN_609,609,ME,FMWT,2020-10-21,10:20:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,394.3,394.3,101531
+STN_609,609,ME,FMWT,2020-10-21,10:20:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,50465.2,100930.4,18167.5
+STN_609,609,ME,FMWT,2020-10-21,10:20:00,Protozoa,Euglenozoa,Euglenophyceae,Euglena,Euglena viridis,i,131.4,131.4,423911.3
+FMWT_606,606,MW,FMWT,2020-10-22,8:37:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,115,115,1433835.8
+FMWT_606,606,MW,FMWT,2020-10-22,8:37:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella cf. bodanica,i,115,115,10620655
+FMWT_606,606,MW,FMWT,2020-10-22,8:37:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,115,115,15055.3
+FMWT_606,606,MW,FMWT,2020-10-22,8:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Cymbella,Cymbella sp.,i,115,115,134936.6
+FMWT_606,606,MW,FMWT,2020-10-22,8:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Diploneis,Diploneis sp.,i,115,115,212158.2
+FMWT_606,606,MW,FMWT,2020-10-22,8:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis paludosa,i,115,115,1887580.3
+FMWT_606,606,MW,FMWT,2020-10-22,8:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,115,115,319988.7
+FMWT_606,606,MW,FMWT,2020-10-22,8:37:00,Chromista,Bacillariophyta,Mediophyceae,Lindavia,cf. Lindavia sp.,i,115,115,82344.8
+FMWT_606,606,MW,FMWT,2020-10-22,8:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,115,115,123787.8
+FMWT_606,606,MW,FMWT,2020-10-22,8:37:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,46686.9,93373.8,16807.3
+EMP_NZS42,NZS42,MW,FMWT,2020-10-22,9:09:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,95.8,95.8,2568332.6
+EMP_NZS42,NZS42,MW,FMWT,2020-10-22,9:09:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,143.7,143.7,79868.9
+EMP_NZS42,NZS42,MW,FMWT,2020-10-22,9:09:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis paludosa,i,287.5,287.5,3292367.3
+EMP_NZS42,NZS42,MW,FMWT,2020-10-22,9:09:00,Chromista,Bacillariophyta,Mediophyceae,Lindavia,Lindavia sp.,i,47.9,47.9,34310.3
+EMP_NZS42,NZS42,MW,FMWT,2020-10-22,9:09:00,Chromista,Bacillariophyta,Bacillariophyceae,Stauroforma,cf. Stauroforma sp.,i,47.9,47.9,19061.3
+EMP_NZS42,NZS42,MW,FMWT,2020-10-22,9:09:00,Chromista,Bacillariophyta,Bacillariophyceae,Tryblionella,Tryblionella cf. victoriae,i,47.9,47.9,65496.2
+EMP_NZS42,NZS42,MW,FMWT,2020-10-22,9:09:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,18638.3,37276.7,6709.8
+FMWT_605,605,MW,FMWT,2020-10-22,9:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Tryblionella,cf. Tryblionella sp.,i,1149.9,1149.9,4243164.1
+FMWT_605,605,MW,FMWT,2020-10-22,9:37:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,247808.4,495616.9,89211
+STN_610,610,ME,STN,2021-07-06,6:16:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,67.6,67.6,4664.9
+STN_610,610,ME,STN,2021-07-06,6:16:00,Chromista,Bacillariophyta,Bacillariophyceae,Gomphonema,Gomphonema sp.,i,67.6,67.6,7992.7
+STN_610,610,ME,STN,2021-07-06,6:16:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,1488.1,1488.1,299932.3
+STN_610,610,ME,STN,2021-07-06,6:16:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,26042.4,52084.8,9375.3
+MONT,MONT,ME,STN,2021-07-06,7:15:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,63.9,63.9,56668.7
+MONT,MONT,ME,STN,2021-07-06,7:15:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,191.7,191.7,189318.8
+MONT,MONT,ME,STN,2021-07-06,7:15:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,63.9,63.9,58523.3
+MONT,MONT,ME,STN,2021-07-06,7:15:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,319.4,319.4,57479.9
+MONT,MONT,ME,STN,2021-07-06,7:15:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,191.7,191.7,2940731.6
+MONT,MONT,ME,STN,2021-07-06,7:15:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,255.5,255.5,149166.1
+MONT,MONT,ME,STN,2021-07-06,7:15:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,127.8,127.8,21073.4
+MONT,MONT,ME,STN,2021-07-06,7:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,24595.6,49191.2,8854.4
+STN_609,609,ME,STN,2021-07-06,8:02:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,cf. Navicula sp.,i,92,92,17687.2
+STN_609,609,ME,STN,2021-07-06,8:02:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,92,92,6986.9
+STN_609,609,ME,STN,2021-07-06,8:02:00,Plantae,Chlorophyta,Chlorophyceae,Chlamydomonas,Chlamydomonas sp.,i,92,92,17465.7
+STN_609,609,ME,STN,2021-07-06,8:02:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,92,92,2439.8
+STN_609,609,ME,STN,2021-07-06,8:02:00,Chromista,Haptophyta,Prymnesiophyceae,Chrysochromulina,Chrysochromulina sp.,i,92,92,4315.8
+STN_609,609,ME,STN,2021-07-06,8:02:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,92,92,84987.1
+STN_609,609,ME,STN,2021-07-06,8:02:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,36797.5,73595.1,13247.1
+STN_606,606,MW,STN,2021-07-06,8:37:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,255.5,255.5,85845.9
+STN_606,606,MW,STN,2021-07-06,8:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis sp.,i,42.6,42.6,5619.6
+STN_606,606,MW,STN,2021-07-06,8:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,85.2,85.2,19101.5
+STN_606,606,MW,STN,2021-07-06,8:37:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,42.6,42.6,14369
+STN_606,606,MW,STN,2021-07-06,8:37:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,16652.6,33305.2,5994.9
+FMWT_605,605,MW,STN,2021-07-06,10:12:00,Chromista,Bacillariophyta,Bacillariophyceae,Achnanthidium,Achnanthidium sp.,i,92,92,2406
+FMWT_605,605,MW,STN,2021-07-06,10:12:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,92,92,3251328.3
+FMWT_605,605,MW,STN,2021-07-06,10:12:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,184,184,2601.1
+FMWT_605,605,MW,STN,2021-07-06,10:12:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,37717.5,75435,13578.3
+FMWT_605,605,MW,STN,2021-07-06,10:12:00,Protozoa,Euglenozoa,Euglenophyceae,Lepocinclis,cf. Lepocinclis sp.,i,92,92,144760
+STN_602,602,BY,STN,2021-07-06,10:37:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,67.6,67.6,39274.1
+STN_602,602,BY,STN,2021-07-06,10:37:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,cf. Chlorella sp.,i,67.6,67.6,1794
+STN_602,602,BY,STN,2021-07-06,10:37:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,67.6,67.6,13600.3
+STN_602,602,BY,STN,2021-07-06,10:37:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,27665.8,55331.6,9959.7
+STN_704,704,RV,STN,2021-07-07,13:13:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,47.9,47.9,34771.2
+STN_704,704,RV,STN,2021-07-07,13:13:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,47.9,47.9,1270.8
+STN_704,704,RV,STN,2021-07-07,13:13:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,143.7,143.7,43287.7
+STN_704,704,RV,STN,2021-07-07,13:13:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,143.7,7905.7,476017
+STN_704,704,RV,STN,2021-07-07,13:13:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,19117.5,38234.9,6882.3
+STN_801,801,RV,STN,2021-07-08,5:29:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,31.9,31.9,4917.1
+STN_801,801,RV,STN,2021-07-08,5:29:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,Skeletonema sp.,i,31.9,31.9,1670.8
+STN_801,801,RV,STN,2021-07-08,5:29:00,Plantae,Chlorophyta,Chlorophyceae,Chlamydomonas,Chlamydomonas sp.,i,31.9,31.9,3913.6
+STN_801,801,RV,STN,2021-07-08,5:29:00,Chromista,Haptophyta,Prymnesiophyceae,Chrysochromulina,Chrysochromulina sp.,i,31.9,31.9,915.9
+STN_801,801,RV,STN,2021-07-08,5:29:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,95.8,95.8,8760.5
+STN_801,801,RV,STN,2021-07-08,5:29:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,12649.2,25298.3,4553.7
+STN_801,801,RV,STN,2021-07-08,5:29:00,Protozoa,Euglenozoa,Euglenophyceae,Lepocinclis,Lepocinclis sp.,i,31.9,31.9,31683.7
+STN_801,801,RV,STN,2021-07-08,5:29:00,Protozoa,Dinozoa,Dinophyceae,Gymnodinium,cf. Gymnodinium sp.,i,31.9,31.9,17358.5
+STN_706,706,RV,STN,2021-07-09,9:03:00,Chromista,Bacillariophyta,Bacillariophyceae,Achnanthidium,Achnanthidium sp.,i,115,115,8253.9
+STN_706,706,RV,STN,2021-07-09,9:03:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,115,115,102003.7
+STN_706,706,RV,STN,2021-07-09,9:03:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,460,460,87930
+STN_706,706,RV,STN,2021-07-09,9:03:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,230,230,24251.9
+STN_706,706,RV,STN,2021-07-09,9:03:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,115,115,1406951.4
+STN_706,706,RV,STN,2021-07-09,9:03:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,46456.9,92913.8,16724.5
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-07-15,8:35:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,54.1,54.1,5661.1
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-07-15,8:35:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,cf. Skeletonema sp.,i,108.2,108.2,3448.7
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-07-15,8:35:00,Plantae,Chlorophyta,Chlorophyceae,Monoraphidium,Monoraphidium contortum,i,54.1,54.1,471.8
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-07-15,8:35:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,108.2,108.2,27022.2
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-07-15,8:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,19426.9,38962.1,7013.2
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-07-15,8:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,c,2381,3138.6,181743.9
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-07-15,8:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena cf. mucicola,f,54.1,324.7,1147.5
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-07-15,9:35:00,Plantae,Chlorophyta,Chlorophyceae,Chlamydomonas,Chlamydomonas sp.,i,92,92,14245.6
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-07-15,9:35:00,Plantae,Chlorophyta,Chlorophyceae,Drepanochloris,Drepanochloris nannoselene,i,368,368,5060.1
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-07-15,9:35:00,Plantae,Chlorophyta,Chlorophyceae,Monoraphidium,Monoraphidium contortum,i,92,92,1007.9
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-07-15,9:35:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,368,368,56432.7
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-07-15,9:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus sp.,c,184,368,6924
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-07-15,9:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,32289.8,64671.7,11640.9
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-07-15,9:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,c,4323.7,5059.7,292983.7
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-07-15,9:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena cf. mucicola,f,184,827.9,3758.5
+STN_610,610,ME,STN,2021-07-19,6:12:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,67.6,67.6,21136.5
+STN_610,610,ME,STN,2021-07-19,6:12:00,Chromista,Bacillariophyta,Bacillariophyceae,Encyonema,Encyonema sp.,i,135.3,135.3,19661.1
+STN_610,610,ME,STN,2021-07-19,6:12:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,67.6,67.6,123439.3
+STN_610,610,ME,STN,2021-07-19,6:12:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,202.9,202.9,32538.8
+STN_610,610,ME,STN,2021-07-19,6:12:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,27327.6,54655.2,9837.9
+MONT,MONT,ME,STN,2021-07-19,7:13:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia reversa,i,79.3,79.3,31151
+MONT,MONT,ME,STN,2021-07-19,7:13:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,237.9,237.9,22007.1
+MONT,MONT,ME,STN,2021-07-19,7:13:00,Chromista,Ochrophyta,Fragilariophyceae,Ulnaria,cf. Ulnaria sp.,i,79.3,79.3,227443.5
+MONT,MONT,ME,STN,2021-07-19,7:13:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,79.3,79.3,2657.5
+MONT,MONT,ME,STN,2021-07-19,7:13:00,Plantae,Chlorophyta,Chlorophyceae,Lagerheimia,Lagerheimia cf. genevensis,i,79.3,79.3,2092.8
+MONT,MONT,ME,STN,2021-07-19,7:13:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,31008.3,62016.5,11163
+MONT,MONT,ME,STN,2021-07-19,7:13:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,i,237.9,237.9,21876.8
+STN_609,609,ME,STN,2021-07-19,7:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,31.3,31.3,11450.4
+STN_609,609,ME,STN,2021-07-19,7:37:00,Chromista,Bacillariophyta,Bacillariophyceae,Cylindrotheca,Cylindrotheca closterium,i,31.3,31.3,1703.3
+STN_609,609,ME,STN,2021-07-19,7:37:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,93.9,93.9,768
+STN_609,609,ME,STN,2021-07-19,7:37:00,Plantae,Chlorophyta,Ulvophyceae,Ulothrix,cf. Ulothrix sp.,f,62.6,250.3,94697.3
+STN_609,609,ME,STN,2021-07-19,7:37:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,93.9,93.9,8847.2
+STN_609,609,ME,STN,2021-07-19,7:37:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,12516.2,25032.3,4505.8
+STN_606,606,MW,STN,2021-07-19,8:43:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,cf. Cocconeis sp.,i,90.2,90.2,68143.3
+STN_606,606,MW,STN,2021-07-19,8:43:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,180.4,180.4,13772.6
+STN_606,606,MW,STN,2021-07-19,8:43:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,36977.9,73955.8,13312.1
+FMWT_605,605,MW,STN,2021-07-19,9:48:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,139.4,139.4,35031.1
+FMWT_605,605,MW,STN,2021-07-19,9:48:00,Chromista,Ochrophyta,Chrysophyceae,Ochromonas,Ochromonas sp.,i,139.4,139.4,24138.6
+FMWT_605,605,MW,STN,2021-07-19,9:48:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,557.5,557.5,347465.2
+FMWT_605,605,MW,STN,2021-07-19,9:48:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,56311.4,112622.8,20272.1
+STN_602,602,BY,STN,2021-07-19,10:09:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,Skeletonema sp.,i,34.6,34.6,2273.5
+STN_602,602,BY,STN,2021-07-19,10:09:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,103.8,103.8,9485.1
+STN_602,602,BY,STN,2021-07-19,10:09:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,103.8,103.8,7921.8
+STN_602,602,BY,STN,2021-07-19,10:09:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,13937.4,27874.8,5017.5
+STN_602,602,BY,STN,2021-07-19,10:09:00,Protozoa,Dinozoa,Dinophyceae,Glenodinium,Glenodinium sp.,i,34.6,34.6,128975.7
+EMP_D4,801,RV,EMP,2021-07-19,12:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,95.8,95.8,18713.2
+EMP_D4,801,RV,EMP,2021-07-19,12:00:00,Plantae,Chlorophyta,Chlorophyceae,Drepanochloris,Drepanochloris nannoselene,i,287.5,287.5,4515.7
+EMP_D4,801,RV,EMP,2021-07-19,12:00:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,383.3,383.3,96428.5
+EMP_D4,801,RV,EMP,2021-07-19,12:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,37564.2,75128.3,13523.1
+EMP_EZ6,EZ6,FT,EMP,2021-07-19,12:40:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,255.5,255.5,91169.3
+EMP_EZ6,EZ6,FT,EMP,2021-07-19,12:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,52640.9,105281.9,18950.7
+EMP_EZ6,EZ6,FT,EMP,2021-07-19,12:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,i,127.8,127.8,8362.5
+EMP_D22,706,RV,EMP,2021-07-19,13:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,204.4,204.4,133636.8
+EMP_D22,706,RV,EMP,2021-07-19,13:10:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,613.3,613.3,84984.9
+EMP_D22,706,RV,EMP,2021-07-19,13:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,102.2,102.2,85504.5
+EMP_D22,706,RV,EMP,2021-07-19,13:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,204.4,204.4,105448.3
+EMP_D22,706,RV,EMP,2021-07-19,13:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Planothidium,Planothidium sp.,i,102.2,102.2,10990
+EMP_D22,706,RV,EMP,2021-07-19,13:10:00,Plantae,Chlorophyta,Chlorophyceae,Monoraphidium,Monoraphidium cf. contortum,i,102.2,102.2,1082
+EMP_D22,706,RV,EMP,2021-07-19,13:10:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,204.4,5826.3,363238.4
+EMP_D22,706,RV,EMP,2021-07-19,13:10:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,40886.2,81772.3,14719
+EMP_D22,706,RV,EMP,2021-07-19,13:10:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena sp.,f,204.4,919.9,9129
+EMP_D22,706,RV,EMP,2021-07-19,13:10:00,Protozoa,Dinozoa,Dinophyceae,Gymnodinium,Gymnodinium sp.,i,102.2,102.2,97886.9
+EMP_EZ2,EZ2,FT,EMP,2021-07-19,14:00:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,95.8,95.8,14424.8
+EMP_EZ2,EZ2,FT,EMP,2021-07-19,14:00:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,383.3,383.3,161739.3
+EMP_EZ2,EZ2,FT,EMP,2021-07-19,14:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,38809.9,77619.8,13971.6
+EMP_EZ2,EZ2,FT,EMP,2021-07-19,14:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,i,479.1,479.1,29515.1
+EMP_EZ2,EZ2,FT,EMP,2021-07-19,14:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena cf. mucicola,f,191.7,766.6,3901.6
+STN_706,706,RV,STN,2021-07-20,10:04:00,Chromista,Bacillariophyta,Bacillariophyceae,Achnanthidium,Achnanthidium sp.,i,60.5,60.5,879.4
+STN_706,706,RV,STN,2021-07-20,10:04:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,121,121,19713.3
+STN_706,706,RV,STN,2021-07-20,10:04:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,cf. Skeletonema sp.,i,121,121,10830.6
+STN_706,706,RV,STN,2021-07-20,10:04:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,60.5,60.5,5565.2
+STN_706,706,RV,STN,2021-07-20,10:04:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,60.5,121,4658.3
+STN_706,706,RV,STN,2021-07-20,10:04:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus cf. minutus,c,60.5,484.2,2028.1
+STN_706,706,RV,STN,2021-07-20,10:04:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,23543.2,47086.3,8475.5
+STN_706,706,RV,STN,2021-07-20,10:04:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,c,302.6,423.7,21591.6
+STN_706,706,RV,STN,2021-07-20,10:04:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena sp.,f,60.5,302.6,594.2
+STN_704,704,RV,STN,2021-07-20,10:57:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,345,345,69361.7
+STN_704,704,RV,STN,2021-07-20,10:57:00,Chromista,Bacillariophyta,Bacillariophyceae,Tryblionella,cf. Tryblionella sp.,i,115,115,142805.1
+STN_704,704,RV,STN,2021-07-20,10:57:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,115,1954.9,94585.2
+STN_704,704,RV,STN,2021-07-20,10:57:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,46686.9,93373.8,16807.3
+STN_801,801,RV,STN,2021-07-21,8:22:00,Chromista,Bacillariophyta,Mediophyceae,Acanthoceras,Acanthoceras sp.,i,34.8,34.8,8046.2
+STN_801,801,RV,STN,2021-07-21,8:22:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,34.8,34.8,1908.2
+STN_801,801,RV,STN,2021-07-21,8:22:00,Chromista,Ochrophyta,Chrysophyceae,Ochromonas,Ochromonas sp.,i,104.5,104.5,2955.5
+STN_801,801,RV,STN,2021-07-21,8:22:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,34.8,453,24406.9
+STN_801,801,RV,STN,2021-07-21,8:22:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,13241.5,26483.1,4767
+STN_801,801,RV,STN,2021-07-21,8:22:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,c,418.2,940.8,29222.1
+EMP_D7,602,BY,EMP,2021-07-21,13:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,51.1,51.1,166436.1
+EMP_D7,602,BY,EMP,2021-07-21,13:30:00,Plantae,Chlorophyta,Chlorophyceae,Scenedesmus,Scenedesmus sp.,c,51.1,102.2,714.9
+EMP_D7,602,BY,EMP,2021-07-21,13:30:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,51.1,51.1,17242.8
+EMP_D7,602,BY,EMP,2021-07-21,13:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,20596.4,41192.8,7414.7
+EMP_NZS42,NZS42,MW,EMP,2021-07-21,14:25:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,139.4,139.4,223003
+EMP_NZS42,NZS42,MW,EMP,2021-07-21,14:25:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,418.2,418.2,43449.6
+EMP_NZS42,NZS42,MW,EMP,2021-07-21,14:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,57147.7,114295.4,20573.2
+EMP_NZ032,606,MW,EMP,2021-07-21,15:16:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,139.4,139.4,28178.2
+EMP_NZ032,606,MW,EMP,2021-07-21,15:16:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,278.8,278.8,148063.5
+EMP_NZ032,606,MW,EMP,2021-07-21,15:16:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,278.8,278.8,7393.5
+EMP_NZ032,606,MW,EMP,2021-07-21,15:16:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,139.4,139.4,59147.8
+EMP_NZ032,606,MW,EMP,2021-07-21,15:16:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,696.9,696.9,83450.8
+EMP_NZ032,606,MW,EMP,2021-07-21,15:16:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,57984,115968,20874.2
+GZB,GZB,BY,EMP,2021-07-27,NA,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,230,230,82800
+GZB,GZB,BY,EMP,2021-07-27,NA,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,cf. Skeletonema sp.,i,115,115,26906.5
+GZB,GZB,BY,EMP,2021-07-27,NA,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,230,230,17560.1
+GZB,GZB,BY,EMP,2021-07-27,NA,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,47951.8,95903.6,17262.6
+STN_706,706,RV,STN,2021-08-03,9:40:00,Chromista,Bacillariophyta,Mediophyceae,Acanthoceras,Acanthoceras sp.,i,172.5,172.5,23387.9
+STN_706,706,RV,STN,2021-08-03,9:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,115,115,14603.9
+STN_706,706,RV,STN,2021-08-03,9:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,172.5,172.5,12472.9
+STN_706,706,RV,STN,2021-08-03,9:40:00,Chromista,Ochrophyta,Fragilariophyceae,Ulnaria,Ulnaria sp.,i,57.5,57.5,45645
+STN_706,706,RV,STN,2021-08-03,9:40:00,Plantae,Chlorophyta,Chlorophyceae,Chlamydomonas,Chlamydomonas sp.,i,57.5,57.5,5868.6
+STN_706,706,RV,STN,2021-08-03,9:40:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,287.5,287.5,4932.4
+STN_706,706,RV,STN,2021-08-03,9:40:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,57.5,57.5,19782.5
+STN_706,706,RV,STN,2021-08-03,9:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus minutus,c,115,460,416.2
+STN_706,706,RV,STN,2021-08-03,9:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,22308.5,44502,8010.4
+STN_706,706,RV,STN,2021-08-03,9:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,c,115,172.5,4574.7
+STN_704,704,RV,STN,2021-08-03,10:29:00,Chromista,Bacillariophyta,Mediophyceae,Acanthoceras,Acanthoceras sp.,i,70.8,70.8,18877.7
+STN_704,704,RV,STN,2021-08-03,10:29:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,70.8,70.8,15294.2
+STN_704,704,RV,STN,2021-08-03,10:29:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis paludosa,i,35.4,35.4,61815.3
+STN_704,704,RV,STN,2021-08-03,10:29:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,cf. Navicula sp.,i,35.4,35.4,1008.7
+STN_704,704,RV,STN,2021-08-03,10:29:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,cf. Nitzschia sp.,i,35.4,35.4,41282.6
+STN_704,704,RV,STN,2021-08-03,10:29:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,70.8,70.8,6312.2
+STN_704,704,RV,STN,2021-08-03,10:29:00,Plantae,Chlorophyta,Chlorophyceae,Chlamydomonas,Chlamydomonas sp.,i,35.4,35.4,3253.5
+STN_704,704,RV,STN,2021-08-03,10:29:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,283.1,283.1,49507
+STN_704,704,RV,STN,2021-08-03,10:29:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,35.4,2158.3,129956
+STN_704,704,RV,STN,2021-08-03,10:29:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,13799.1,27598.2,4967.7
+FMWT_605,605,MW,STN,2021-08-04,8:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,51.1,51.1,15969.8
+FMWT_605,605,MW,STN,2021-08-04,8:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,51.1,51.1,107188.6
+FMWT_605,605,MW,STN,2021-08-04,8:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,51.1,51.1,1349772.8
+FMWT_605,605,MW,STN,2021-08-04,8:40:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,357.8,357.8,58981.2
+FMWT_605,605,MW,STN,2021-08-04,8:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,19932,39864,7175.5
+FMWT_605,605,MW,STN,2021-08-04,8:40:00,Protozoa,Euglenozoa,Euglenophyceae,Euglena,Euglena sp.,i,102.2,102.2,113938.1
+EMP_NZS42,NZS42,MW,STN,2021-08-04,9:10:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,451,451,218967.4
+EMP_NZS42,NZS42,MW,STN,2021-08-04,9:10:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,180.4,180.4,2029609.2
+EMP_NZS42,NZS42,MW,STN,2021-08-04,9:10:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,360.8,12175.7,141538
+EMP_NZS42,NZS42,MW,STN,2021-08-04,9:10:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,35534.9,71069.8,12792.6
+EMP_NZS42,NZS42,MW,STN,2021-08-04,9:10:00,Bacteria,Cyanobacteria,Cyanophyceae,Planktolyngbya,Planktolyngbya sp.,f,90.2,1082.3,3825.1
+STN_606,606,MW,STN,2021-08-04,10:37:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,90.2,90.2,4427190
+STN_606,606,MW,STN,2021-08-04,10:37:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,90.2,90.2,16438.3
+STN_606,606,MW,STN,2021-08-04,10:37:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,360.8,360.8,51832.4
+STN_606,606,MW,STN,2021-08-04,10:37:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,36527,73053.9,13149.7
+STN_606,606,MW,STN,2021-08-04,10:37:00,Protozoa,Euglenozoa,Euglenophyceae,Euglena,Euglena sp.,i,90.2,90.2,218189.6
+STN_609,609,ME,STN,2021-08-04,11:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,34.8,34.8,16785.2
+STN_609,609,ME,STN,2021-08-04,11:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,69.7,69.7,6095.1
+STN_609,609,ME,STN,2021-08-04,11:00:00,Plantae,Chlorophyta,Chlorophyceae,Chlamydomonas,Chlamydomonas sp.,i,34.8,34.8,12428.9
+STN_609,609,ME,STN,2021-08-04,11:00:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,174.2,174.2,2989.3
+STN_609,609,ME,STN,2021-08-04,11:00:00,Chromista,Haptophyta,Prymnesiophyceae,Chrysochromulina,Chrysochromulina sp.,i,34.8,34.8,827
+STN_609,609,ME,STN,2021-08-04,11:00:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,cf. Cryptomonas sp.,i,34.8,34.8,8468.2
+STN_609,609,ME,STN,2021-08-04,11:00:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,104.5,104.5,8447.3
+STN_609,609,ME,STN,2021-08-04,11:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,13694.5,27389.1,4930
+MONT,MONT,ME,STN,2021-08-04,11:55:00,Chromista,Bacillariophyta,Mediophyceae,Acanthoceras,Acanthoceras sp.,i,35.4,35.4,8987
+MONT,MONT,ME,STN,2021-08-04,11:55:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,35.4,35.4,9562.2
+MONT,MONT,ME,STN,2021-08-04,11:55:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,70.8,70.8,106951.5
+MONT,MONT,ME,STN,2021-08-04,11:55:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,70.8,70.8,8969.4
+MONT,MONT,ME,STN,2021-08-04,11:55:00,Chromista,Bacillariophyta,Bacillariophyceae,Rhoicosphenia,Rhoicosphenia sp.,i,70.8,70.8,17422
+MONT,MONT,ME,STN,2021-08-04,11:55:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,Skeletonema sp.,i,35.4,35.4,1997.3
+MONT,MONT,ME,STN,2021-08-04,11:55:00,Chromista,Ochrophyta,Chrysophyceae,Ochromonas,Ochromonas sp.,i,35.4,35.4,760.3
+MONT,MONT,ME,STN,2021-08-04,11:55:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,70.8,70.8,5403.1
+MONT,MONT,ME,STN,2021-08-04,11:55:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,70.8,70.8,11671.4
+MONT,MONT,ME,STN,2021-08-04,11:55:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,13692.9,27385.9,4929.5
+MONT,MONT,ME,STN,2021-08-04,11:55:00,Bacteria,Cyanobacteria,Cyanophyceae,Planktolyngbya,cf. Planktolyngbya sp.,f,35.4,424.6,666.9
+STN_610,610,ME,STN,2021-08-04,12:18:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,28.4,28.4,433798.7
+STN_610,610,ME,STN,2021-08-04,12:18:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,28.4,28.4,376160.6
+STN_610,610,ME,STN,2021-08-04,12:18:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,28.4,28.4,50371.7
+STN_610,610,ME,STN,2021-08-04,12:18:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia reversa,i,56.8,56.8,12942.7
+STN_610,610,ME,STN,2021-08-04,12:18:00,Chromista,Ochrophyta,Chrysophyceae,Ochromonas,Ochromonas sp.,i,28.4,28.4,732.7
+STN_610,610,ME,STN,2021-08-04,12:18:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,11328.9,22373.8,4027.3
+STN_610,610,ME,STN,2021-08-04,12:18:00,Bacteria,Cyanobacteria,Cyanophyceae,Oscillatoria,Oscillatoria sp.,f,28.4,14991.6,956666.6
+STN_801,801,RV,STN,2021-08-05,5:32:00,Chromista,Bacillariophyta,Mediophyceae,Acanthoceras,Acanthoceras sp.,i,143.7,143.7,17123.7
+STN_801,801,RV,STN,2021-08-05,5:32:00,Chromista,Haptophyta,Prymnesiophyceae,Chrysochromulina,Chrysochromulina sp.,i,71.9,71.9,1705.6
+STN_801,801,RV,STN,2021-08-05,5:32:00,Chromista,Ochrophyta,Synurophyceae,Mallomonas,cf. Mallomonas sp.,i,71.9,71.9,10055
+STN_801,801,RV,STN,2021-08-05,5:32:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,71.9,2515.5,151460
+STN_801,801,RV,STN,2021-08-05,5:32:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus cf. minutus,c,71.9,143.7,1176
+STN_801,801,RV,STN,2021-08-05,5:32:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,28173.1,56346.2,10142.3
+STN_801,801,RV,STN,2021-08-05,5:32:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,Microcystis sp.,c,287.5,12433.5,448688.3
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-08-13,8:30:00,Chromista,Bacillariophyta,Mediophyceae,Acanthoceras,Acanthoceras sp.,i,135.3,135.3,39109.4
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-08-13,8:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,202.9,202.9,45574.1
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-08-13,8:30:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,135.3,135.3,15263.2
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-08-13,8:30:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,135.3,135.3,23508.4
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-08-13,8:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,26312.9,52625.9,9472.7
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-08-13,8:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,c,608.8,947,54836.5
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-08-13,8:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena mucicola,f,67.6,338.2,1893.4
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-08-13,8:30:00,Protozoa,Euglenozoa,Euglenophyceae,Phacus,cf. Phacus sp.,i,67.6,67.6,172224.3
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-08-13,9:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,608.8,608.8,82000.4
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-08-13,9:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Gomphonema,Gomphonema sp.,i,67.6,67.6,2904.9
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-08-13,9:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,135.3,135.3,5737.8
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-08-13,9:30:00,Plantae,Chlorophyta,Chlorophyceae,Monoraphidium,Monoraphidium sp.,i,67.6,67.6,741.1
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-08-13,9:30:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,67.6,67.6,34002.2
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-08-13,9:30:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,338.2,338.2,68953.7
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-08-13,9:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,202.9,6493.7,286264.8
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-08-13,9:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Dolichospermum,Dolichospermum sp.,f,1285.2,6155.5,453178.8
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-08-13,9:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,21713.3,43426.5,7816.8
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-08-13,9:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Komvophoron,cf. Komvophoron sp.,f,67.6,541.1,2915.1
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-08-13,9:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,i,3111.6,3111.6,169149
+STN_610,610,ME,STN,2021-08-16,6:04:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,127.8,127.8,20332
+STN_610,610,ME,STN,2021-08-16,6:04:00,Chromista,Bacillariophyta,Bacillariophyceae,Encyonema,Encyonema sp.,i,191.7,191.7,8811.6
+STN_610,610,ME,STN,2021-08-16,6:04:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,191.7,191.7,43574.4
+STN_610,610,ME,STN,2021-08-16,6:04:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,63.9,63.9,42817.6
+STN_610,610,ME,STN,2021-08-16,6:04:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,63.9,63.9,4877.8
+STN_610,610,ME,STN,2021-08-16,6:04:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,25234.4,50468.8,9084.4
+STN_610,610,ME,STN,2021-08-16,6:04:00,Bacteria,Cyanobacteria,Cyanophyceae,Planktolyngbya,Planktolyngbya sp.,f,63.9,638.8,1003.5
+MONT,MONT,ME,STN,2021-08-16,6:59:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,63.9,63.9,35846.2
+MONT,MONT,ME,STN,2021-08-16,6:59:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,319.4,319.4,31863
+MONT,MONT,ME,STN,2021-08-16,6:59:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,cf. Entomoneis sp.,i,63.9,63.9,285198.1
+MONT,MONT,ME,STN,2021-08-16,6:59:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,319.4,319.4,225660.2
+MONT,MONT,ME,STN,2021-08-16,6:59:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,191.7,191.7,38845.2
+MONT,MONT,ME,STN,2021-08-16,6:59:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,24915,49830,8969.4
+MONT,MONT,ME,STN,2021-08-16,6:59:00,Protozoa,Dinozoa,Dinophyceae,Peridinium,Peridinium sp.,i,63.9,63.9,135546.9
+STN_609,609,ME,STN,2021-08-16,7:24:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,161.4,161.4,218504.5
+STN_609,609,ME,STN,2021-08-16,7:24:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,80.7,80.7,5565.2
+STN_609,609,ME,STN,2021-08-16,7:24:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,80.7,80.7,22269.6
+STN_609,609,ME,STN,2021-08-16,7:24:00,Chromista,Bacillariophyta,Bacillariophyceae,Surirella,Surirella sp.,i,80.7,80.7,71581.5
+STN_609,609,ME,STN,2021-08-16,7:24:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,80.7,80.7,54085.4
+STN_609,609,ME,STN,2021-08-16,7:24:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,80.7,80.7,6161.4
+STN_609,609,ME,STN,2021-08-16,7:24:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,32682,65364.1,11765.5
+STN_606,606,MW,STN,2021-08-16,8:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,230,230,71864.1
+STN_606,606,MW,STN,2021-08-16,8:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,306.6,306.6,8380604.6
+STN_606,606,MW,STN,2021-08-16,8:40:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,76.7,76.7,51381.1
+STN_606,606,MW,STN,2021-08-16,8:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,31661.2,63322.4,11398
+FMWT_605,605,MW,STN,2021-08-16,9:35:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,80.7,80.7,50300.5
+FMWT_605,605,MW,STN,2021-08-16,9:35:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,80.7,80.7,5565.2
+FMWT_605,605,MW,STN,2021-08-16,9:35:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,80.7,80.7,34243.4
+FMWT_605,605,MW,STN,2021-08-16,9:35:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,161.4,161.4,37243.4
+FMWT_605,605,MW,STN,2021-08-16,9:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,31794.4,63588.7,11446
+FMWT_605,605,MW,STN,2021-08-16,9:35:00,Protozoa,Euglenozoa,Euglenophyceae,Euglena,Euglena sp.,i,161.4,161.4,277735.7
+STN_602,602,BY,STN,2021-08-16,9:54:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,54.1,54.1,3296858
+STN_602,602,BY,STN,2021-08-16,9:54:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,108.2,108.2,24190.9
+STN_602,602,BY,STN,2021-08-16,9:54:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,21970.3,43940.6,7909.3
+STN_704,704,RV,STN,2021-08-17,5:57:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,242.1,242.1,29892.4
+STN_704,704,RV,STN,2021-08-17,5:57:00,Chromista,Bacillariophyta,Bacillariophyceae,Epithemia,Epithemia sp.,i,80.7,80.7,1549178.3
+STN_704,704,RV,STN,2021-08-17,5:57:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,161.4,161.4,15247.1
+STN_704,704,RV,STN,2021-08-17,5:57:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,Skeletonema sp.,i,161.4,161.4,28560.7
+STN_704,704,RV,STN,2021-08-17,5:57:00,Chromista,Bacillariophyta,Bacillariophyceae,Surirella,cf. Surirella sp.,i,80.7,80.7,171435.6
+STN_704,704,RV,STN,2021-08-17,5:57:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,161.4,161.4,39055.5
+STN_704,704,RV,STN,2021-08-17,5:57:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,31794.4,63588.7,11446
+STN_706,706,RV,STN,2021-08-17,6:59:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,230,230,25184.2
+STN_706,706,RV,STN,2021-08-17,6:59:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,230,230,16491.3
+STN_706,706,RV,STN,2021-08-17,6:59:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,46456.9,92913.8,16724.5
+EMP_D4,801,RV,EMP,2021-08-17,12:30:00,Plantae,Chlorophyta,Chlorophyceae,Drepanochloris,Drepanochloris nannoselene,i,161.4,161.4,1786.5
+EMP_D4,801,RV,EMP,2021-08-17,12:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,33246.9,66493.8,11968.9
+EMP_D4,801,RV,EMP,2021-08-17,12:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena cf. mucicola,f,80.7,161.4,903.5
+EMP_D22,706,RV,EMP,2021-08-17,13:20:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,90.2,90.2,48874.5
+EMP_D22,706,RV,EMP,2021-08-17,13:20:00,Plantae,Chlorophyta,Chlorophyceae,Drepanochloris,Drepanochloris nannoselene,i,90.2,90.2,1388.4
+EMP_D22,706,RV,EMP,2021-08-17,13:20:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,180.4,180.4,34998.4
+EMP_D22,706,RV,EMP,2021-08-17,13:20:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,39052.3,78645.7,14156.2
+EMP_D22,706,RV,EMP,2021-08-17,13:20:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,Microcystis sp.,c,180.4,360.8,11205
+EMP_EZ6,EZ6,FT,EMP,2021-08-17,13:20:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,115,115,39015.9
+EMP_EZ6,EZ6,FT,EMP,2021-08-17,13:20:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,230,230,19542.7
+EMP_EZ6,EZ6,FT,EMP,2021-08-17,13:20:00,Chromista,Cryptophyta,Cryptophyceae,Hemiselmis,Hemiselmis sp.,i,115,115,20958.8
+EMP_EZ6,EZ6,FT,EMP,2021-08-17,13:20:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,230,230,50556
+EMP_EZ6,EZ6,FT,EMP,2021-08-17,13:20:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,230,230,17824
+EMP_EZ6,EZ6,FT,EMP,2021-08-17,13:20:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,44502,88889.1,16000
+EMP_EZ6,EZ6,FT,EMP,2021-08-17,13:20:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,c,575,804.9,55908.2
+EMP_EZ2,EZ2,FT,EMP,2021-08-17,14:15:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,230,230,33539.1
+EMP_EZ2,EZ2,FT,EMP,2021-08-17,14:15:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,76.7,76.7,5569.4
+EMP_EZ2,EZ2,FT,EMP,2021-08-17,14:15:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,153.3,153.3,4762.1
+EMP_EZ2,EZ2,FT,EMP,2021-08-17,14:15:00,Chromista,Ochrophyta,Chrysophyceae,Ochromonas,Ochromonas sp.,i,76.7,76.7,2569
+EMP_EZ2,EZ2,FT,EMP,2021-08-17,14:15:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,306.6,306.6,69125.3
+EMP_EZ2,EZ2,FT,EMP,2021-08-17,14:15:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,306.6,306.6,34969.8
+EMP_EZ2,EZ2,FT,EMP,2021-08-17,14:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,28901.4,57802.8,10404.5
+EMP_EZ2,EZ2,FT,EMP,2021-08-17,14:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,Microcystis sp.,c,1686.6,2146.5,132227.6
+EMP_EZ2,EZ2,FT,EMP,2021-08-17,14:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena cf. mucicola,f,383.3,1149.9,7172.8
+STN_801,801,RV,STN,2021-08-18,7:38:00,Chromista,Bacillariophyta,Mediophyceae,Acanthoceras,Acanthoceras sp.,i,63.9,63.9,8429.4
+STN_801,801,RV,STN,2021-08-18,7:38:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,63.9,63.9,32113.2
+STN_801,801,RV,STN,2021-08-18,7:38:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,cf. Nitzschia sp.,i,63.9,63.9,138949.6
+STN_801,801,RV,STN,2021-08-18,7:38:00,Chromista,Ochrophyta,Fragilariophyceae,Ulnaria,Ulnaria sp.,i,63.9,63.9,22679
+STN_801,801,RV,STN,2021-08-18,7:38:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,255.5,255.5,52663.5
+STN_801,801,RV,STN,2021-08-18,7:38:00,Bacteria,Cyanobacteria,Cyanophyceae,Aphanizomenon,Aphanizomenon sp.,f,63.9,3194.2,192330.1
+STN_801,801,RV,STN,2021-08-18,7:38:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,25042.8,50085.5,9015.4
+STN_801,801,RV,STN,2021-08-18,7:38:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,i,191.7,191.7,11097.9
+STN_801,801,RV,STN,2021-08-18,7:38:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena cf. mucicola,f,63.9,191.7,846.7
+GZB,GZB,BY,EMP,2021-08-19,11:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,230,230,6344408
+GZB,GZB,BY,EMP,2021-08-19,11:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,115,115,87785.9
+GZB,GZB,BY,EMP,2021-08-19,11:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,230,230,58727.1
+GZB,GZB,BY,EMP,2021-08-19,11:30:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,230,230,4327.5
+GZB,GZB,BY,EMP,2021-08-19,11:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,45537,91073.9,16393.3
+EMP_D7,602,BY,EMP,2021-08-19,12:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,121,121,37823.2
+EMP_D7,602,BY,EMP,2021-08-19,12:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,121,121,5941755
+EMP_D7,602,BY,EMP,2021-08-19,12:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,49628.3,99256.5,17866.2
+EMP_NZS42,NZS42,MW,EMP,2021-08-19,13:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,80.7,80.7,129107
+EMP_NZS42,NZS42,MW,EMP,2021-08-19,13:40:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,80.7,80.7,26693
+EMP_NZS42,NZS42,MW,EMP,2021-08-19,13:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,32601.3,65202.7,11736.5
+EMP_NZ032,606,MW,EMP,2021-08-19,14:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Coscinodiscus,Coscinodiscus sp.,i,82.1,82.1,3902884.2
+EMP_NZ032,606,MW,EMP,2021-08-19,14:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,164.3,164.3,35325.9
+EMP_NZ032,606,MW,EMP,2021-08-19,14:30:00,Plantae,Chlorophyta,Chlorophyceae,Monoraphidium,Monoraphidium contortum,i,82.1,82.1,2236.4
+EMP_NZ032,606,MW,EMP,2021-08-19,14:30:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,82.1,82.1,16101.8
+EMP_NZ032,606,MW,EMP,2021-08-19,14:30:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,82.1,82.1,6271.5
+EMP_NZ032,606,MW,EMP,2021-08-19,14:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,32526.4,65052.8,11709.5
+EMP_NZ032,606,MW,EMP,2021-08-19,14:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,i,82.1,82.1,2178.4
+EMP_NZ032,606,MW,EMP,2021-08-19,14:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena sp.,f,82.1,985.6,5016.3
+FMWT_606,606,MW,FMWT,2021-09-07,10:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,76.7,76.7,68002.4
+FMWT_606,606,MW,FMWT,2021-09-07,10:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,536.6,536.6,85394.6
+FMWT_606,606,MW,FMWT,2021-09-07,10:40:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,76.7,76.7,70822.6
+FMWT_606,606,MW,FMWT,2021-09-07,10:40:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,153.3,153.3,34270.4
+FMWT_606,606,MW,FMWT,2021-09-07,10:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,30128,60256,10846.1
+FMWT_605,605,MW,FMWT,2021-09-07,11:18:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,250.9,250.9,63056.1
+FMWT_605,605,MW,FMWT,2021-09-07,11:18:00,Plantae,Chlorophyta,Chlorophyceae,Chlamydomonas,Chlamydomonas sp.,i,83.6,83.6,29422.9
+FMWT_605,605,MW,FMWT,2021-09-07,11:18:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,418.2,418.2,7868.2
+FMWT_605,605,MW,FMWT,2021-09-07,11:18:00,Chromista,Haptophyta,Prymnesiophyceae,Chrysochromulina,cf. Chrysochromulina sp.,i,83.6,83.6,2397.9
+FMWT_605,605,MW,FMWT,2021-09-07,11:18:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,250.9,250.9,44388.3
+FMWT_605,605,MW,FMWT,2021-09-07,11:18:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,32950.5,65901,11862.2
+FMWT_802,801,RV,FMWT,2021-09-07,12:51:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,40.3,40.3,25079.9
+FMWT_802,801,RV,FMWT,2021-09-07,12:51:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,40.3,40.3,2484.4
+FMWT_802,801,RV,FMWT,2021-09-07,12:51:00,Chromista,Ochrophyta,Fragilariophyceae,Fragilaria,Fragilaria sp.,i,40.3,40.3,17490.5
+FMWT_802,801,RV,FMWT,2021-09-07,12:51:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,121,121,23359.7
+FMWT_802,801,RV,FMWT,2021-09-07,12:51:00,Plantae,Chlorophyta,Chlorophyceae,Scenedesmus,Scenedesmus sp.,c,40.3,161.4,3026.6
+FMWT_802,801,RV,FMWT,2021-09-07,12:51:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,161.4,161.4,44172.4
+FMWT_802,801,RV,FMWT,2021-09-07,12:51:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,15856.8,31713.7,5708.5
+FMWT_802,801,RV,FMWT,2021-09-07,12:51:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,Microcystis sp.,c,242.1,2824.4,134759
+STN_610,610,ME,FMWT,2021-09-08,7:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,76.7,76.7,5286.9
+STN_610,610,ME,FMWT,2021-09-08,7:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,76.7,76.7,19259.4
+STN_610,610,ME,FMWT,2021-09-08,7:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia reversa,i,76.7,76.7,9997.2
+STN_610,610,ME,FMWT,2021-09-08,7:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,76.7,76.7,1847.5
+STN_610,610,ME,FMWT,2021-09-08,7:40:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,230,230,25143.6
+STN_610,610,ME,FMWT,2021-09-08,7:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,31354.6,62709.1,11287.6
+MONT,MONT,ME,FMWT,2021-09-08,8:03:00,Chromista,Bacillariophyta,Bacillariophyceae,Achnanthidium,Achnanthidium sp.,i,60.5,60.5,3107.7
+MONT,MONT,ME,FMWT,2021-09-08,8:03:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,60.5,60.5,52216.1
+MONT,MONT,ME,FMWT,2021-09-08,8:03:00,Chromista,Ochrophyta,Fragilariophyceae,Fragilaria,Fragilaria sp.,i,60.5,60.5,28892.9
+MONT,MONT,ME,FMWT,2021-09-08,8:03:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,60.5,60.5,574.4
+MONT,MONT,ME,FMWT,2021-09-08,8:03:00,Chromista,Bacillariophyta,Bacillariophyceae,Pleurosigma,Pleurosigma sp.,i,60.5,60.5,546675
+MONT,MONT,ME,FMWT,2021-09-08,8:03:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,121,121,5941755
+MONT,MONT,ME,FMWT,2021-09-08,8:03:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,60.5,60.5,19261.9
+MONT,MONT,ME,FMWT,2021-09-08,8:03:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,60.5,60.5,20419.1
+MONT,MONT,ME,FMWT,2021-09-08,8:03:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,23845.8,47691.5,8584.5
+STN_609,609,ME,FMWT,2021-09-08,8:42:00,Chromista,Haptophyta,Prymnesiophyceae,Chrysochromulina,cf. Chrysochromulina sp.,i,143.7,143.7,3812.3
+STN_609,609,ME,FMWT,2021-09-08,8:42:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,59652.3,119304.5,21474.8
+EMP_NZS42,NZS42,MW,FMWT,2021-09-08,9:13:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,109.5,109.5,49136
+EMP_NZS42,NZS42,MW,FMWT,2021-09-08,9:13:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,547.6,547.6,8541.5
+EMP_NZS42,NZS42,MW,FMWT,2021-09-08,9:13:00,Plantae,Chlorophyta,Trebouxiophyceae,Nannochloris,cf. Nannochloris sp.,i,109.5,109.5,3669.9
+EMP_NZS42,NZS42,MW,FMWT,2021-09-08,9:13:00,Chromista,Haptophyta,Prymnesiophyceae,Chrysochromulina,Chrysochromulina sp.,i,109.5,109.5,6653.6
+EMP_NZS42,NZS42,MW,FMWT,2021-09-08,9:13:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,219,219,16723.9
+EMP_NZS42,NZS42,MW,FMWT,2021-09-08,9:13:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,42930.5,85860.9,15455
+FMWT_602,602,BY,FMWT,2021-09-08,12:26:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,322.8,322.8,75129.6
+FMWT_602,602,BY,FMWT,2021-09-08,12:26:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,80.7,80.7,30078.7
+FMWT_602,602,BY,FMWT,2021-09-08,12:26:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,32762.7,65525.4,11794.6
+FMWT_704,704,RV,FMWT,2021-09-09,7:36:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,cf. Nitzschia sp.,i,127.8,127.8,11870
+FMWT_704,704,RV,FMWT,2021-09-09,7:36:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,127.8,127.8,3670.9
+FMWT_704,704,RV,FMWT,2021-09-09,7:36:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,191.7,191.7,25560.4
+FMWT_704,704,RV,FMWT,2021-09-09,7:36:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,25170.5,50341.1,9061.4
+FMWT_706,706,RV,FMWT,2021-09-09,8:27:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,63.9,63.9,206068
+FMWT_706,706,RV,FMWT,2021-09-09,8:27:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,cf. Chlorella sp.,i,63.9,63.9,5874.3
+FMWT_706,706,RV,FMWT,2021-09-09,8:27:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,26001,52002.1,9360.4
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-09-13,8:50:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,41.8,41.8,36717
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-09-13,8:50:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,83.6,83.6,10167.2
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-09-13,8:50:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,cf. Navicula sp.,i,41.8,41.8,7678.4
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-09-13,8:50:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,250.9,250.9,5632.4
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-09-13,8:50:00,Plantae,Chlorophyta,Chlorophyceae,Drepanochloris,Drepanochloris nannoselene,i,41.8,41.8,563.2
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-09-13,8:50:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,125.4,125.4,43881.2
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-09-13,8:50:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,83.6,83.6,28051.6
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-09-13,8:50:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,334.5,334.5,29951.6
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-09-13,8:50:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus minutus,c,41.8,83.6,2043
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-09-13,8:50:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,15680.8,31361.5,5645.1
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-09-13,8:50:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,c,209.1,250.9,11190.3
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-09-13,9:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,138,138,109472.2
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-09-13,9:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,414,414,182865.1
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-09-13,9:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Encyonema,Encyonema sp.,i,46,46,3558.8
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-09-13,9:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,92,92,18214.8
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-09-13,9:40:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,46,46,17144.9
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-09-13,9:40:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,552,552,112532.4
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-09-13,9:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Dolichospermum,Dolichospermum sp.,f,46,1103.9,29278.1
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-09-13,9:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,17248.8,34497.7,6209.6
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-09-13,9:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,Microcystis sp.,i,230,230,6099.6
+EMP_D4,801,RV,EMP,2021-09-14,10:40:00,Chromista,Bacillariophyta,Mediophyceae,Acanthoceras,Acanthoceras sp.,i,57.5,57.5,17780.7
+EMP_D4,801,RV,EMP,2021-09-14,10:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,57.5,57.5,1121.2
+EMP_D4,801,RV,EMP,2021-09-14,10:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,Skeletonema sp.,i,57.5,57.5,1264.4
+EMP_D4,801,RV,EMP,2021-09-14,10:40:00,Plantae,Chlorophyta,Chlorophyceae,Chlamydomonas,Chlamydomonas sp.,i,57.5,57.5,12364.1
+EMP_D4,801,RV,EMP,2021-09-14,10:40:00,Plantae,Chlorophyta,Chlorophyceae,Drepanochloris,Drepanochloris nannoselene,i,345,345,4499.3
+EMP_D4,801,RV,EMP,2021-09-14,10:40:00,Plantae,Chlorophyta,Chlorophyceae,Lagerheimia,cf. Lagerheimia sp.,i,57.5,57.5,541.9
+EMP_D4,801,RV,EMP,2021-09-14,10:40:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,115,115,33070.2
+EMP_D4,801,RV,EMP,2021-09-14,10:40:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,57.5,57.5,11560.3
+EMP_D4,801,RV,EMP,2021-09-14,10:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,22193.5,44617,8031.1
+EMP_EZ6,EZ6,FT,EMP,2021-09-14,11:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,115,115,11545.1
+EMP_EZ6,EZ6,FT,EMP,2021-09-14,11:40:00,Chromista,Ochrophyta,Chrysophyceae,Ochromonas,Ochromonas sp.,i,57.5,57.5,1926.7
+EMP_EZ6,EZ6,FT,EMP,2021-09-14,11:40:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,287.5,287.5,41539.9
+EMP_EZ6,EZ6,FT,EMP,2021-09-14,11:40:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,57.5,57.5,9149.4
+EMP_EZ6,EZ6,FT,EMP,2021-09-14,11:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus minimus,c,115,230,2643.5
+EMP_EZ6,EZ6,FT,EMP,2021-09-14,11:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,22941,45881.9,8258.7
+EMP_EZ6,EZ6,FT,EMP,2021-09-14,11:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,cf. Microcystis sp.,c,57.5,115,3571.6
+EMP_D22,706,RV,EMP,2021-09-14,11:50:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,67.6,67.6,11636.8
+EMP_D22,706,RV,EMP,2021-09-14,11:50:00,Plantae,Chlorophyta,Chlorophyceae,Drepanochloris,Drepanochloris nannoselene,i,338.2,338.2,4002
+EMP_D22,706,RV,EMP,2021-09-14,11:50:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,135.3,135.3,9996.2
+EMP_D22,706,RV,EMP,2021-09-14,11:50:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,811.7,811.7,397632.8
+EMP_D22,706,RV,EMP,2021-09-14,11:50:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,26718.8,53572.9,9643.1
+EMP_D22,706,RV,EMP,2021-09-14,11:50:00,Bacteria,Cyanobacteria,Cyanophyceae,Merismopedia,Merismopedia cf. tenuissima,c,135.3,1082.3,1082.3
+EMP_D22,706,RV,EMP,2021-09-14,11:50:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,Microcystis sp.,c,202.9,1149.9,38534.3
+EMP_D22,706,RV,EMP,2021-09-14,11:50:00,Bacteria,Cyanobacteria,Cyanophyceae,Pseudanabaena,Pseudanabaena mucicola,f,67.6,338.2,2109.6
+EMP_EZ2,EZ2,FT,EMP,2021-09-14,12:35:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,96.8,96.8,107670.3
+EMP_EZ2,EZ2,FT,EMP,2021-09-14,12:35:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,96.8,96.8,30258.6
+EMP_EZ2,EZ2,FT,EMP,2021-09-14,12:35:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,48.4,48.4,14766.3
+EMP_EZ2,EZ2,FT,EMP,2021-09-14,12:35:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,145.3,145.3,61638.2
+EMP_EZ2,EZ2,FT,EMP,2021-09-14,12:35:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,96.8,96.8,17397.5
+EMP_EZ2,EZ2,FT,EMP,2021-09-14,12:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,19076.6,38153.2,6867.6
+EMP_EZ2,EZ2,FT,EMP,2021-09-14,12:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Microcystis,Microcystis sp.,c,242.1,290.5,10483.5
+EMP_D7,602,BY,EMP,2021-09-16,10:45:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,67.6,67.6,553.4
+EMP_D7,602,BY,EMP,2021-09-16,10:45:00,Plantae,Chlorophyta,Chlorophyceae,Schroederia,cf. Schroederia sp.,i,67.6,67.6,1317.5
+EMP_D7,602,BY,EMP,2021-09-16,10:45:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis sp.,i,338.2,338.2,42580.4
+EMP_D7,602,BY,EMP,2021-09-16,10:45:00,Bacteria,Cyanobacteria,Cyanophyceae,Chroococcus,Chroococcus minutus,c,67.6,270.6,1133.4
+EMP_D7,602,BY,EMP,2021-09-16,10:45:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,26718.8,53437.6,9618.8
+EMP_NZS42,NZS42,MW,EMP,2021-09-16,11:45:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,1199.9,1199.9,1035241.8
+EMP_NZS42,NZS42,MW,EMP,2021-09-16,11:45:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,200,200,139385.9
+EMP_NZS42,NZS42,MW,EMP,2021-09-16,11:45:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,200,200,172540.3
+EMP_NZS42,NZS42,MW,EMP,2021-09-16,11:45:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,79594.7,159189.4,28654.1
+EMP_NZS42,NZS42,MW,EMP,2021-09-16,11:45:00,Protozoa,Euglenozoa,Euglenophyceae,Euglena,Euglena sp.,i,200,200,185382.7
+EMP_NZ032,606,MW,EMP,2021-09-16,12:50:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,176.9,176.9,23604.6
+EMP_NZ032,606,MW,EMP,2021-09-16,12:50:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,59,59,29641.7
+EMP_NZ032,606,MW,EMP,2021-09-16,12:50:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,353.8,353.8,26434.5
+EMP_NZ032,606,MW,EMP,2021-09-16,12:50:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,24001,48001.9,8640.3
+EMP_NZ032,606,MW,EMP,2021-09-16,12:50:00,Protozoa,Euglenozoa,Euglenophyceae,Lepocinclis,Lepocinclis sp.,i,59,59,98411.3
+FMWT_704,704,RV,FMWT,2021-09-22,7:59:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,45.1,45.1,4855.4
+FMWT_704,704,RV,FMWT,2021-09-22,7:59:00,Plantae,Chlorophyta,Chlorophyceae,Chlamydomonas,Chlamydomonas sp.,i,45.1,45.1,8561.6
+FMWT_704,704,RV,FMWT,2021-09-22,7:59:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,135.3,135.3,2321.1
+FMWT_704,704,RV,FMWT,2021-09-22,7:59:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,90.2,90.2,17382.1
+FMWT_704,704,RV,FMWT,2021-09-22,7:59:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,45.1,45.1,20955.7
+FMWT_704,704,RV,FMWT,2021-09-22,7:59:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,18489,36977.9,6656
+FMWT_605,605,MW,FMWT,2021-09-22,9:28:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,170.4,170.4,146978.8
+FMWT_605,605,MW,FMWT,2021-09-22,9:28:00,Chromista,Bacillariophyta,Bacillariophyceae,Encyonema,Encyonema sp.,i,85.2,85.2,630.5
+FMWT_605,605,MW,FMWT,2021-09-22,9:28:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,255.5,255.5,72410.1
+FMWT_605,605,MW,FMWT,2021-09-22,9:28:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,33901.4,67802.9,12204.5
+STN_609,609,ME,FMWT,2021-09-22,10:03:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,109.5,109.5,599493.3
+STN_609,609,ME,FMWT,2021-09-22,10:03:00,Chromista,Bacillariophyta,Bacillariophyceae,Cylindrotheca,Cylindrotheca closterium,i,109.5,109.5,23601.7
+STN_609,609,ME,FMWT,2021-09-22,10:03:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,219,219,87112.4
+STN_609,609,ME,FMWT,2021-09-22,10:03:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,44573.2,89146.4,16046.4
+MONT,MONT,ME,FMWT,2021-09-22,10:24:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,235.9,235.9,18010.3
+MONT,MONT,ME,FMWT,2021-09-22,10:24:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,117.9,117.9,9005.2
+MONT,MONT,ME,FMWT,2021-09-22,10:24:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,47884,95768,17238.2
+STN_610,610,ME,FMWT,2021-09-22,10:44:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,153.3,153.3,45916
+STN_610,610,ME,FMWT,2021-09-22,10:44:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,76.7,76.7,115723.2
+STN_610,610,ME,FMWT,2021-09-22,10:44:00,Chromista,Bacillariophyta,Bacillariophyceae,Cylindrotheca,Cylindrotheca closterium,i,76.7,76.7,6646.2
+STN_610,610,ME,FMWT,2021-09-22,10:44:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,76.7,76.7,5265.5
+STN_610,610,ME,FMWT,2021-09-22,10:44:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,153.3,153.3,64730.3
+STN_610,610,ME,FMWT,2021-09-22,10:44:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,306.6,306.6,78968.6
+STN_610,610,ME,FMWT,2021-09-22,10:44:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,30511.3,61022.6,10984.1
+FMWT_802,801,RV,FMWT,2021-09-22,11:40:00,Chromista,Bacillariophyta,Mediophyceae,Acanthoceras,Acanthoceras sp.,i,184,184,53573.2
+FMWT_802,801,RV,FMWT,2021-09-22,11:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,61.3,61.3,4826.4
+FMWT_802,801,RV,FMWT,2021-09-22,11:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,61.3,61.3,2361.2
+FMWT_802,801,RV,FMWT,2021-09-22,11:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,Skeletonema sp.,i,61.3,61.3,1541.4
+FMWT_802,801,RV,FMWT,2021-09-22,11:40:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,61.3,61.3,2055.2
+FMWT_802,801,RV,FMWT,2021-09-22,11:40:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,490.6,490.6,46839.4
+FMWT_802,801,RV,FMWT,2021-09-22,11:40:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,61.3,61.3,4682.7
+FMWT_802,801,RV,FMWT,2021-09-22,11:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,23673.1,47346.2,8522.3
+STN_610,610,ME,FMWT,2021-10-06,7:38:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,242.1,242.1,100887
+STN_610,610,ME,FMWT,2021-10-06,7:38:00,Chromista,Bacillariophyta,Bacillariophyceae,Cylindrotheca,Cylindrotheca closterium,i,121,121,18478.7
+STN_610,610,ME,FMWT,2021-10-06,7:38:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,121,121,214760.1
+STN_610,610,ME,FMWT,2021-10-06,7:38:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,242.1,242.1,94894.1
+STN_610,610,ME,FMWT,2021-10-06,7:38:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,Skeletonema sp.,i,121,121,33092.8
+STN_610,610,ME,FMWT,2021-10-06,7:38:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,48902,97804,17604.7
+MONT,MONT,ME,FMWT,2021-10-06,8:09:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,117.9,117.9,90652.8
+MONT,MONT,ME,FMWT,2021-10-06,8:09:00,Chromista,Bacillariophyta,Bacillariophyceae,Diadesmis,cf. Diadesmis sp.,i,707.6,707.6,299411.2
+MONT,MONT,ME,FMWT,2021-10-06,8:09:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,117.9,117.9,16451.2
+MONT,MONT,ME,FMWT,2021-10-06,8:09:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia reversa,i,117.9,117.9,121431.9
+MONT,MONT,ME,FMWT,2021-10-06,8:09:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,117.9,117.9,34872.7
+MONT,MONT,ME,FMWT,2021-10-06,8:09:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,Skeletonema sp.,i,117.9,117.9,2741.9
+MONT,MONT,ME,FMWT,2021-10-06,8:09:00,Plantae,Chlorophyta,Chlorophyceae,Chlamydomonas,Chlamydomonas sp.,i,117.9,117.9,46519
+MONT,MONT,ME,FMWT,2021-10-06,8:09:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,117.9,117.9,3128
+MONT,MONT,ME,FMWT,2021-10-06,8:09:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,117.9,117.9,10004.1
+MONT,MONT,ME,FMWT,2021-10-06,8:09:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,45761,91522.1,16474
+STN_609,609,ME,FMWT,2021-10-06,8:35:00,Chromista,Bacillariophyta,Mediophyceae,Acanthoceras,Acanthoceras sp.,i,95.8,95.8,18364
+STN_609,609,ME,FMWT,2021-10-06,8:35:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,95.8,95.8,260160.8
+STN_609,609,ME,FMWT,2021-10-06,8:35:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,95.8,95.8,2541.5
+STN_609,609,ME,FMWT,2021-10-06,8:35:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,191.7,191.7,14633.4
+STN_609,609,ME,FMWT,2021-10-06,8:35:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,38809.9,77619.8,13971.6
+EMP_NZS42,NZS42,MW,FMWT,2021-10-06,9:18:00,Chromista,Bacillariophyta,Mediophyceae,Acanthoceras,Acanthoceras sp.,i,102.2,102.2,7369.7
+EMP_NZS42,NZS42,MW,FMWT,2021-10-06,9:18:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,102.2,102.2,3200.6
+EMP_NZS42,NZS42,MW,FMWT,2021-10-06,9:18:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,Skeletonema sp.,i,102.2,102.2,5569.4
+EMP_NZS42,NZS42,MW,FMWT,2021-10-06,9:18:00,Chromista,Haptophyta,Prymnesiophyceae,Chrysochromulina,Chrysochromulina sp.,i,102.2,102.2,3091.3
+EMP_NZS42,NZS42,MW,FMWT,2021-10-06,9:18:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,42215,84429.9,15197.4
+FMWT_605,605,MW,FMWT,2021-10-07,9:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Actinocyclus,Actinocyclus sp.,i,143.7,143.7,793392
+FMWT_605,605,MW,FMWT,2021-10-07,9:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,287.5,287.5,228867.1
+FMWT_605,605,MW,FMWT,2021-10-07,9:40:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,cf. Chlorella sp.,i,431.2,431.2,2404.2
+FMWT_605,605,MW,FMWT,2021-10-07,9:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,58646.1,117292.2,21112.6
+FMWT_606,606,MW,FMWT,2021-10-07,10:15:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis placentula,i,102.2,102.2,52129.6
+FMWT_606,606,MW,FMWT,2021-10-07,10:15:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,102.2,102.2,17584.5
+FMWT_606,606,MW,FMWT,2021-10-07,10:15:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,cf. Thalassiosira sp.,i,102.2,102.2,289809.8
+FMWT_606,606,MW,FMWT,2021-10-07,10:15:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,41397.2,82794.5,14903
+FMWT_602,602,BY,FMWT,2021-10-07,11:05:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,215.6,215.6,134449.5
+FMWT_602,602,BY,FMWT,2021-10-07,11:05:00,Chromista,Bacillariophyta,Bacillariophyceae,Epithemia,Epithemia sp.,i,71.9,71.9,37928
+FMWT_602,602,BY,FMWT,2021-10-07,11:05:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,287.5,287.5,313023.5
+FMWT_602,602,BY,FMWT,2021-10-07,11:05:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,71.9,71.9,16904.5
+FMWT_602,602,BY,FMWT,2021-10-07,11:05:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,71.9,71.9,606377
+FMWT_602,602,BY,FMWT,2021-10-07,11:05:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,215.6,215.6,16462.6
+FMWT_602,602,BY,FMWT,2021-10-07,11:05:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,28101.2,56202.5,10116.4
+FMWT_802,801,RV,FMWT,2021-10-07,13:34:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia cf. reversa,i,34.6,34.6,38927.9
+FMWT_802,801,RV,FMWT,2021-10-07,13:34:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,138.3,138.3,1955.7
+FMWT_802,801,RV,FMWT,2021-10-07,13:34:00,Chromista,Haptophyta,Prymnesiophyceae,Chrysochromulina,cf. Chrysochromulina sp.,i,69.2,69.2,9945.9
+FMWT_802,801,RV,FMWT,2021-10-07,13:34:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,138.3,138.3,69071.9
+FMWT_802,801,RV,FMWT,2021-10-07,13:34:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,103.8,103.8,27549.3
+FMWT_802,801,RV,FMWT,2021-10-07,13:34:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,103.8,103.8,13941.4
+FMWT_802,801,RV,FMWT,2021-10-07,13:34:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,13418.7,26837.3,4830.7
+FMWT_706,706,RV,FMWT,2021-10-14,6:50:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,360.8,360.8,266620.8
+FMWT_706,706,RV,FMWT,2021-10-14,6:50:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,90.2,90.2,9876.2
+FMWT_706,706,RV,FMWT,2021-10-14,6:50:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis sp.,i,45.1,45.1,165446.7
+FMWT_706,706,RV,FMWT,2021-10-14,6:50:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,225.5,225.5,7637.2
+FMWT_706,706,RV,FMWT,2021-10-14,6:50:00,Chromista,Bacillariophyta,Bacillariophyceae,Planothidium,Planothidium sp.,i,45.1,45.1,2315.6
+FMWT_706,706,RV,FMWT,2021-10-14,6:50:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,45.1,45.1,3043774.8
+FMWT_706,706,RV,FMWT,2021-10-14,6:50:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,90.2,90.2,11173
+FMWT_706,706,RV,FMWT,2021-10-14,6:50:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,17316.5,34633,6233.9
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-10-14,13:20:00,Chromista,Bacillariophyta,Bacillariophyceae,Achnanthidium,Achnanthidium sp.,i,92,92,5340.8
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-10-14,13:20:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,46,46,40143.1
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-10-14,13:20:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,46,46,3574
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-10-14,13:20:00,Chromista,Bacillariophyta,Coscinodiscophyceae,Urosolenia,Urosolenia sp.,i,46,46,40356.4
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-10-14,13:20:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,552,552,7803.2
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-10-14,13:20:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,92,92,39411
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-10-14,13:20:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,92,92,8603.2
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-10-14,13:20:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,184,184,20981.9
+EMP_EZ6-SJR,EZ6-SJR,FT,EMP,2021-10-14,13:20:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,17708.8,35417.6,6375.2
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-10-14,15:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,54.1,54.1,19433.4
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-10-14,15:00:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,54.1,54.1,3731.9
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-10-14,15:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Gomphonema,Gomphonema sp.,i,54.1,54.1,7150
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-10-14,15:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,54.1,54.1,40363.9
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-10-14,15:00:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,54.1,54.1,42425.4
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-10-14,15:00:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,54.1,54.1,22963.2
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-10-14,15:00:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,595.3,595.3,184292.9
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-10-14,15:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,21320.9,42641.9,7675.5
+EMP_EZ2-SJR,EZ2-SJR,FT,EMP,2021-10-14,15:00:00,Bacteria,Cyanobacteria,Cyanophyceae,Planktothrix,Planktothrix sp.,f,54.1,3625.6,432713.7
+EMP_D7,602,BY,EMP,2021-10-18,12:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,66.7,66.7,29433.9
+EMP_D7,602,BY,EMP,2021-10-18,12:30:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,66.7,66.7,942.4
+EMP_D7,602,BY,EMP,2021-10-18,12:30:00,Plantae,Chlorophyta,Chlorophyceae,Sphaerocystis,cf. Sphaerocystis sp.,c,200,266.6,4575
+EMP_D7,602,BY,EMP,2021-10-18,12:30:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,66.7,66.7,22234
+EMP_D7,602,BY,EMP,2021-10-18,12:30:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,133.3,133.3,31524.4
+EMP_D7,602,BY,EMP,2021-10-18,12:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,26664.9,53329.8,9599.4
+EMP_NZS42,NZS42,MW,EMP,2021-10-18,13:25:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia acicularis,i,255.5,255.5,43398.1
+EMP_NZS42,NZS42,MW,EMP,2021-10-18,13:25:00,Plantae,Chlorophyta,Chlorophyceae,Chlamydomonas,Chlamydomonas sp.,i,127.8,127.8,47368.4
+EMP_NZS42,NZS42,MW,EMP,2021-10-18,13:25:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,52640.9,105281.9,18950.7
+EMP_NZ032,606,MW,EMP,2021-10-18,14:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,139.4,139.4,72123.1
+EMP_NZ032,606,MW,EMP,2021-10-18,14:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,92.9,92.9,6584.1
+EMP_NZ032,606,MW,EMP,2021-10-18,14:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,46.5,46.5,1658.7
+EMP_NZ032,606,MW,EMP,2021-10-18,14:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,cf. Nitzschia sp.,i,46.5,46.5,75457
+EMP_NZ032,606,MW,EMP,2021-10-18,14:30:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,139.4,139.4,1602.1
+EMP_NZ032,606,MW,EMP,2021-10-18,14:30:00,Plantae,Chlorophyta,Chlorophyceae,Drepanochloris,Drepanochloris nannoselene,i,92.9,92.9,1330.5
+EMP_NZ032,606,MW,EMP,2021-10-18,14:30:00,Plantae,Chlorophyta,Chlorophyceae,Sphaerocystis,cf. Sphaerocystis sp.,c,46.5,139.4,3696.7
+EMP_NZ032,606,MW,EMP,2021-10-18,14:30:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,278.8,278.8,46388.9
+EMP_NZ032,606,MW,EMP,2021-10-18,14:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,17934.2,35868.3,6456.3
+FMWT_704,704,RV,FMWT,2021-10-21,8:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,45.1,45.1,32001.1
+FMWT_704,704,RV,FMWT,2021-10-21,8:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,135.3,135.3,12661.5
+FMWT_704,704,RV,FMWT,2021-10-21,8:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis sp.,i,45.1,45.1,525543.9
+FMWT_704,704,RV,FMWT,2021-10-21,8:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,45.1,45.1,753.1
+FMWT_704,704,RV,FMWT,2021-10-21,8:40:00,Chromista,Ochrophyta,Fragilariophyceae,Pseudostaurosira,Pseudostaurosira sp.,i,45.1,45.1,5382
+FMWT_704,704,RV,FMWT,2021-10-21,8:40:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,315.7,315.7,161146.4
+FMWT_704,704,RV,FMWT,2021-10-21,8:40:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,496,496,84625.3
+FMWT_704,704,RV,FMWT,2021-10-21,8:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,17361.6,34723.2,6250.2
+FMWT_704,704,RV,FMWT,2021-10-21,8:40:00,Protozoa,Euglenozoa,Euglenophyceae,Euglena,Euglena sp.,i,45.1,45.1,141001.4
+STN_610,610,ME,FMWT,2021-10-21,9:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,230,230,20135.8
+STN_610,610,ME,FMWT,2021-10-21,9:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Cylindrotheca,Cylindrotheca closterium,i,76.7,76.7,108404.6
+STN_610,610,ME,FMWT,2021-10-21,9:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Diploneis,Diploneis sp.,i,76.7,76.7,103789.6
+STN_610,610,ME,FMWT,2021-10-21,9:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,153.3,153.3,202133
+STN_610,610,ME,FMWT,2021-10-21,9:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,230,230,20124.8
+STN_610,610,ME,FMWT,2021-10-21,9:40:00,Plantae,Chlorophyta,Chlorophyceae,Chlamydomonas,cf. Chlamydomonas sp.,i,76.7,76.7,16265.6
+STN_610,610,ME,FMWT,2021-10-21,9:40:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,230,230,79068.5
+STN_610,610,ME,FMWT,2021-10-21,9:40:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,76.7,76.7,14287.4
+STN_610,610,ME,FMWT,2021-10-21,9:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,29131.4,58262.8,10487.3
+STN_610,610,ME,FMWT,2021-10-21,9:40:00,Protozoa,Euglenozoa,Euglenophyceae,Euglena,Euglena sp.,i,76.7,76.7,239702.4
+MONT,MONT,ME,FMWT,2021-10-21,10:04:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,230,230,40974.9
+MONT,MONT,ME,FMWT,2021-10-21,10:04:00,Chromista,Bacillariophyta,Bacillariophyceae,Cylindrotheca,Cylindrotheca closterium,i,153.3,153.3,13193.6
+MONT,MONT,ME,FMWT,2021-10-21,10:04:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula spp.,i,153.3,153.3,91348.1
+MONT,MONT,ME,FMWT,2021-10-21,10:04:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,230,230,4327.5
+MONT,MONT,ME,FMWT,2021-10-21,10:04:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,230,230,17560.1
+MONT,MONT,ME,FMWT,2021-10-21,10:04:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,31354.6,62709.1,11287.6
+STN_609,609,ME,FMWT,2021-10-21,10:26:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,83.6,83.6,6179.5
+STN_609,609,ME,FMWT,2021-10-21,10:26:00,Chromista,Bacillariophyta,Bacillariophyceae,Cylindrotheca,Cylindrotheca closterium,i,83.6,83.6,19888.9
+STN_609,609,ME,FMWT,2021-10-21,10:26:00,Chromista,Bacillariophyta,Bacillariophyceae,Rhoicosphenia,Rhoicosphenia sp.,i,83.6,83.6,51755.4
+STN_609,609,ME,FMWT,2021-10-21,10:26:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,418.2,418.2,5911.5
+STN_609,609,ME,FMWT,2021-10-21,10:26:00,Chromista,Haptophyta,Prymnesiophyceae,Chrysochromulina,Chrysochromulina sp.,i,83.6,83.6,2397.9
+STN_609,609,ME,FMWT,2021-10-21,10:26:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,83.6,83.6,6385.5
+STN_609,609,ME,FMWT,2021-10-21,10:26:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,167.3,167.3,31109.8
+STN_609,609,ME,FMWT,2021-10-21,10:26:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,33034.2,66068.3,11892.3
+FMWT_605,605,MW,FMWT,2021-10-21,11:01:00,Chromista,Bacillariophyta,Bacillariophyceae,Cylindrotheca,Cylindrotheca closterium,i,69.7,69.7,14999.5
+FMWT_605,605,MW,FMWT,2021-10-21,11:01:00,Plantae,Chlorophyta,Chlorophyceae,Chlamydomonas,cf. Chlamydomonas sp.,i,139.4,139.4,29168.9
+FMWT_605,605,MW,FMWT,2021-10-21,11:01:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,139.4,139.4,888
+FMWT_605,605,MW,FMWT,2021-10-21,11:01:00,Chromista,Haptophyta,Prymnesiophyceae,Chrysochromulina,Chrysochromulina sp.,i,69.7,69.7,1653.9
+FMWT_605,605,MW,FMWT,2021-10-21,11:01:00,Chromista,Ochrophyta,Chrysophyceae,Ochromonas,Ochromonas sp.,i,69.7,69.7,6408.4
+FMWT_605,605,MW,FMWT,2021-10-21,11:01:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,69.7,69.7,58387.6
+FMWT_605,605,MW,FMWT,2021-10-21,11:01:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,139.4,139.4,47025.7
+FMWT_605,605,MW,FMWT,2021-10-21,11:01:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,28643.5,57287.1,10311.7
+FMWT_605,605,MW,FMWT,2021-10-21,11:01:00,Protozoa,Euglenozoa,Euglenophyceae,Euglena,Euglena sp.,i,69.7,69.7,320206.6
+FMWT_802,801,RV,FMWT,2021-10-21,12:36:00,Chromista,Bacillariophyta,Bacillariophyceae,Achnanthidium,Achnanthidium sp.,i,45.1,45.1,1842.5
+FMWT_802,801,RV,FMWT,2021-10-21,12:36:00,Chromista,Bacillariophyta,Bacillariophyceae,Cocconeis,Cocconeis sp.,i,135.3,135.3,75909.6
+FMWT_802,801,RV,FMWT,2021-10-21,12:36:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,90.2,90.2,20992.1
+FMWT_802,801,RV,FMWT,2021-10-21,12:36:00,Chromista,Bacillariophyta,Bacillariophyceae,Gyrosigma,Gyrosigma sp.,i,45.1,45.1,48435.7
+FMWT_802,801,RV,FMWT,2021-10-21,12:36:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,45.1,45.1,34134.6
+FMWT_802,801,RV,FMWT,2021-10-21,12:36:00,Chromista,Ochrophyta,Coscinodiscophyceae,Thalassiosira,Thalassiosira sp.,i,45.1,45.1,2213595
+FMWT_802,801,RV,FMWT,2021-10-21,12:36:00,Chromista,Cryptophyta,Cryptophyceae,Cryptomonas,Cryptomonas sp.,i,225.5,225.5,165380
+FMWT_802,801,RV,FMWT,2021-10-21,12:36:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,721.5,721.5,186971.4
+FMWT_802,801,RV,FMWT,2021-10-21,12:36:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,16730.3,33460.5,6022.9
+EMP_D4,801,RV,EMP,2021-10-22,6:30:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,88.5,88.5,74030.2
+EMP_D4,801,RV,EMP,2021-10-22,6:30:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis paludosa,i,88.5,88.5,273184.5
+EMP_D4,801,RV,EMP,2021-10-22,6:30:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,973,973,13755.6
+EMP_D4,801,RV,EMP,2021-10-22,6:30:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,88.5,88.5,28641.5
+EMP_D4,801,RV,EMP,2021-10-22,6:30:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,35736.1,71472.1,12865
+EMP_D22,706,RV,EMP,2021-10-22,7:10:00,Chromista,Bacillariophyta,Bacillariophyceae,Navicula,Navicula sp.,i,90.2,90.2,95455.2
+EMP_D22,706,RV,EMP,2021-10-22,7:10:00,Chromista,Ochrophyta,Chrysophyceae,Ochromonas,cf. Ochromonas sp.,i,90.2,90.2,8293.2
+EMP_D22,706,RV,EMP,2021-10-22,7:10:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,37789.6,75579.3,13604.3
+EMP_EZ6,EZ6,FT,EMP,2021-10-22,7:50:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis paludosa,i,70.8,70.8,124417.5
+EMP_EZ6,EZ6,FT,EMP,2021-10-22,7:50:00,Chromista,Bacillariophyta,Bacillariophyceae,Nitzschia,Nitzschia sp.,i,141.5,141.5,5556.6
+EMP_EZ6,EZ6,FT,EMP,2021-10-22,7:50:00,Chromista,Ochrophyta,Coscinodiscophyceae,Skeletonema,cf. Skeletonema sp.,i,70.8,70.8,5787.1
+EMP_EZ6,EZ6,FT,EMP,2021-10-22,7:50:00,Plantae,Chlorophyta,Chlorophyceae,Chlorella,Chlorella sp.,i,141.5,141.5,2663.1
+EMP_EZ6,EZ6,FT,EMP,2021-10-22,7:50:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis prolonga,i,212.3,212.3,47769
+EMP_EZ6,EZ6,FT,EMP,2021-10-22,7:50:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,28871.9,57743.8,10393.9
+EMP_EZ2,EZ2,FT,EMP,2021-10-22,8:40:00,Chromista,Ochrophyta,Coscinodiscophyceae,Cyclotella,Cyclotella sp.,i,204.4,204.4,33416.4
+EMP_EZ2,EZ2,FT,EMP,2021-10-22,8:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Entomoneis,Entomoneis sp.,i,204.4,204.4,1138335.8
+EMP_EZ2,EZ2,FT,EMP,2021-10-22,8:40:00,Chromista,Bacillariophyta,Bacillariophyceae,Gomphonema,Gomphonema sp.,i,102.2,102.2,70251
+EMP_EZ2,EZ2,FT,EMP,2021-10-22,8:40:00,Chromista,Cryptophyta,Cryptophyceae,Plagioselmis,Plagioselmis nannoplanctica,i,306.6,306.6,39348.6
+EMP_EZ2,EZ2,FT,EMP,2021-10-22,8:40:00,Bacteria,Cyanobacteria,Cyanophyceae,Eucapsis,Eucapsis microscopica,c,42010.5,84021.1,15123.8

@@ -22,7 +22,7 @@ library(scales) #log scale axes in ggplot
 # 1. Read in the Data----------------------------------------------
 
 #read in the aggregated and formatted phytoplankton data
-phyto_vis<-read_csv("Data/phytoplankton/SMSCG_phytoplankton_formatted_2020-2021.csv")
+phyto_vis<-read_csv("EDI/data_output/SMSCG_phytoplankton_formatted_2020-2021.csv")
 #looks like column types are all correct, even date and time
 
 #format data---------------
@@ -74,7 +74,7 @@ edi <- phyto_gates %>%
   ) %>% 
   #arrange(date,time)
   glimpse()
-#write_csv(edi,"Data/phytoplankton/SMSCG_phytoplankton_formatted_2020_EDI_bvol_corr.csv")
+#write_csv(edi,"EDI/data_output/SMSCG_phytoplankton_formatted_2020_EDI_bvol_corr.csv")
 
 #how many genera didn't match up with higher taxonomy?
 #sum(is.na(phyto_gates$class))

@@ -9,8 +9,15 @@ library(tidyverse) #suite of data science tools
 
 #read in the data
 #NOTE: this file was too big for github; it's now on the SMSCG sharepoint site instead
-wq <- read_csv("Data/WQdata_smscg_2018-2021 (Flagged Bad Removed).csv")
-glimpse(wq)
+# Define path on SharePoint site 
+sharepoint_path <- normalizePath(
+  file.path(
+    Sys.getenv("USERPROFILE"),
+    "California Department of Water Resources/SMSCG - Summer Action - Data Package 2021"
+  )
+) 
+
+wq<-read_csv(file = paste0(sharepoint_path,"./WQdata_smscg_2018-2021 (Flagged Bad Removed).csv"))
 
 #find and replace micro with "u"
 wq_final <- wq %>% 
@@ -30,4 +37,4 @@ wq_final <- wq %>%
 unique(wq_final$unit_name)
 #"uS/cm" "ug/L"  "NTU"   "FNU"  
   
-#write_csv(wq_final,"Data/WQdata_smscg_2018-2021_FlaggedBadRemoved_clean.csv")
+#write_csv(wq_final,file = paste0(sharepoint_path,"./WQdata_smscg_2018-2021_FlaggedBadRemoved_clean.csv"))
