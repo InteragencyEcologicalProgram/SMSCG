@@ -1,22 +1,35 @@
 ## Script dedicated to updating the SMSCG zoop graphs and analysis for the Summer- Fall Action Report each year
+#Nick's quick update to plot 2021 data
 
 library(tidyverse)
 library(readxl)
 library(ggthemes)
 library(ggplot2)
 
+#read in data-----------------
 #read in CPUE data from the ftp site. This also includes EMP data for the specified stations in the SMSCG footprint
 #found path to data by right clicking file in the project file, saying import dataset, and copying path
-
-SMSCG_CPUE = read.csv("D:/Data/Suisun Marsh Salinity Gate Project/2021 Report/SMSCG Zoop 2021 Report/Data/SMSCG_CBNet_2018to2020CPUE_16Oct2021.csv")
+#SMSCG_CPUE = read.csv("D:/Data/Suisun Marsh Salinity Gate Project/2021 Report/SMSCG Zoop 2021 Report/Data/SMSCG_CBNet_2018to2020CPUE_16Oct2021.csv")
 
 #read in file to convert to biomass
+#zoop_biomass = read.csv("D:/Data/Suisun Marsh Salinity Gate Project/2021 Report/SMSCG Zoop 2021 Report/Data/Copepod and Cladoceran Biomass Values.csv")
 
-zoop_biomass = read.csv("D:/Data/Suisun Marsh Salinity Gate Project/2021 Report/SMSCG Zoop 2021 Report/Data/Copepod and Cladoceran Biomass Values.csv")
+#read in zoop abundance data from SMSCG data package on EDI
+#already includes 2021 data
+SMSCG_CPUE <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.876.4&entityid=98795b108d5c1b34ebce4d8567a962d1")
+
+#read in mass data from GitHub
+#Note: there is a newer version of mass data; two files on the GitHub repo
+#zoop_Biomass conversions_CEB Updated 2021.csv
+#zoop_Copepod and Cladoceran Biomass Values.csv
+zoop_biomass <- read_csv("./Data/zoop_individual_mass.csv")
 
 #Editing file------
 
 #filter the CPUE file so it only has the stations we're interested in 
+
+#look at all stations names in data set
+unique(SMSCG_CPUE$Station)
 
 stations = data.frame(Station = as.character(c(602, "Grizz", "NZ028", 519, "Honk", 605, 606, "NZ032", "NZS42", 609, 610, "Mont", 508, 513, 520, 801, 802, 704, 706, "NZ054", "NZ060", "NZ064")),
                   Region = c(rep("Grizzly", 3), rep("Honker", 2), rep("West Marsh", 4), rep("East Marsh", 3), rep("River", 10)))
@@ -24,16 +37,18 @@ stations = data.frame(Station = as.character(c(602, "Grizz", "NZ028", 519, "Honk
 
 stations = mutate(stations, Region = factor(Region, levels = c("Grizzly", "Honker", "West Marsh", "East Marsh", "River")))
 
+#look at df structure
+glimpse(stations)
+
 #edited file with regions designated and added to csv
 
-SMSCG_CPUE2 = filter(merge(select(SMSCG_CPUE, -Region), stations, by = "Station"), Year %in% c(2018, 2019, 2020), Month == 7 | Month ==8 | Month==9| Month==10) 
-
-View(SMSCG_CPUE2)
+SMSCG_CPUE2 = filter(merge(select(SMSCG_CPUE, -Region), stations, by = "Station"), Year %in% c(2018, 2019, 2020,2021), Month == 7 | Month ==8 | Month==9| Month==10) %>% 
+  arrange(Year,Month,Station)
 
 #Converting to BPUE------
 
 Zoop_BPUE = pivot_longer(SMSCG_CPUE2, cols = ACARTELA:CUMAC, 
-                         names_to = "taxon", values_to = "CPUE") %>%
+                         names_to = "taxon", values_to = "CPUE") %>% 
   left_join(zoop_biomass) %>%
   mutate(BPUE = CPUE*mass_indiv_ug) %>%
   filter(!is.na(BPUE)) %>%
@@ -41,15 +56,21 @@ Zoop_BPUE = pivot_longer(SMSCG_CPUE2, cols = ACARTELA:CUMAC,
 
 #Pick out just the columns we are interested in.
 
-zoop_BPUE2= mutate(Zoop_BPUE, Acartiella = ACARTELA + ASINEJUV, 
-                         Tortanus = TORTANUS + TORTJUV,
-                         Limnoithona = LIMNOSPP + LIMNOSINE + LIMNOTET + LIMNOJUV,
-                         Pseudodiaptomus = PDIAPFOR + PDIAPMAR + PDIAPJUV + PDIAPNAUP,
-                         `Other Calanoids` = ACARTIA + DIAPTOM + EURYTEM + OTHCALAD + 
-                           SINOCAL + EURYJUV + OTHCALJUV + SINOCALJUV + ACARJUV + DIAPTJUV + SINONAUP + EURYNAUP,
-                         `Other Cyclopoids` = ACANTHO + OITHDAV + OITHSIM + OITHSPP + OTHCYCAD + OITHJUV + OTHCYCJUV + OITHSPP,
-                         Other = BOSMINA + DAPHNIA + DIAPHAN + OTHCLADO + HARPACT + OTHCOPNAUP)
-zoop_BPUE2a = zoop_BPUE2[,c(1,3,5, 6, 22, 60:66)]
+#look at all taxon names
+names(Zoop_BPUE)
+
+zoop_BPUE2= mutate(Zoop_BPUE
+                   , Acartiella = ACARTELA + ASINEJUV 
+                         ,Tortanus = TORTANUS + TORTJUV
+                         ,Limnoithona = LIMNOSPP + LIMNOSINE + LIMNOTET + LIMNOJUV
+                         ,Pseudodiaptomus = PDIAPFOR + PDIAPMAR + PDIAPJUV + PDIAPNAUP
+                         ,`Other Calanoids` = ACARTIA + DIAPTOM + EURYTEM + OTHCALAD + 
+                           SINOCAL + EURYJUV + OTHCALJUV + SINOCALJUV + ACARJUV + DIAPTJUV + SINONAUP + EURYNAUP
+                         ,`Other Cyclopoids` = OITHDAV + OITHSIM + OITHSPP + OTHCYCAD + OITHJUV + OTHCYCJUV + OITHSPP #+ ACANTHO  
+                         ,Other = BOSMINA + DAPHNIA + DIAPHAN + OTHCLADO + HARPACT + OTHCOPNAUP)
+#zoop_BPUE2a = zoop_BPUE2[,c(1,3,5, 6, 22, 60:66)]
+zoop_BPUE2a <- zoop_BPUE2 %>% 
+  select(Station,Year,Month,Date,Region,Acartiella:Other)
 
 #create a sample ID
 zoop_BPUE2a$sample = 1:nrow(zoop_BPUE2a)
@@ -58,7 +79,7 @@ zoop_BPUE2a$sample = 1:nrow(zoop_BPUE2a)
 zoop_BPUE2a$Month = factor(zoop_BPUE2a$Month, labels = c("Jul", "Aug", "Sep", "Oct"))
 
 #write a csv 
-write.csv(zoop_BPUE2a, "SMSCG_2018to2020_BPUE.csv")
+#write.csv(zoop_BPUE2a, "SMSCG_2018to2020_BPUE.csv")
 
 #Convert to long format
 zooplong = gather(zoop_BPUE2a, key = "Taxa", value = "BPUE", -Station, -Month, - Year, -Region, -Date, -sample)
@@ -82,7 +103,7 @@ bpue2 = bpue1+ geom_bar(stat = "identity", aes(fill = Taxa)) +
                       legend.text = element_text(face = "italic"))
 
 
-ggsave(plot = bpue2, filename = "SMSCG2018to2020.tiff", device = "tiff", width = 6, height =5, units = "in", dpi = 300)
+#ggsave(plot = bpue2, filename = "smscg_zoop_bpue_2018to2021.tiff", device = "tiff", width = 6, height =5, units = "in", dpi = 300)
 
 ##Removing n from graph b/c its super big and can't figure out how to reduce the text
 
@@ -90,11 +111,11 @@ bpue1_noN = ggplot(zoopsummary2, aes(x = Month, y = meanB))
 bpue2_noN = bpue1_noN+ geom_bar(stat = "identity", aes(fill = Taxa)) + 
   facet_wrap(Year~Region, ncol = 5)+ (coord_cartesian (ylim = c(1, 15000))) +
   scale_fill_brewer(palette = "Set3", name = NULL) +
-  ylab("Mean BPUE (µgC/m3)") + 
+  ylab("Mean BPUE (?gC/m3)") + 
   theme_few() + theme(text = element_text(family = "sans", size = 9),
                       legend.text = element_text(face = "italic"))
 
-ggsave(plot = bpue2_noN, filename = "SMSCG2018to2020_noN.tiff", device = "tiff", width = 6, height =4, units = "in", dpi = 300)
+#ggsave(plot = bpue2_noN, filename = "smscg_zoop_bpue_2018to2021_noN.tiff", device = "tiff", width = 6, height =4, units = "in", dpi = 300)
 
 
 ##Analysis----
@@ -133,7 +154,7 @@ stations_SB = data.frame(Station = as.character(c(602, "Grizz", "NZ028", 519, "H
 
 stations_SB = mutate(stations_SB, Region = factor(Region, levels = c("Suisun Bay", "West Marsh", "East Marsh", "River")))
 
-SMSCG_CPUE_SB = filter(merge(select(SMSCG_CPUE, -Region), stations_SB, by = "Station"), Year %in% c(2018, 2019, 2020), Month == 7 | Month ==8 | Month==9| Month==10) 
+SMSCG_CPUE_SB = filter(merge(select(SMSCG_CPUE, -Region), stations_SB, by = "Station"), Year %in% c(2018, 2019, 2020,2021), Month == 7 | Month ==8 | Month==9| Month==10) 
 
 
 zoop_BPUE_SB = pivot_longer(SMSCG_CPUE_SB, cols = ACARTELA:CUMAC, 
@@ -150,9 +171,11 @@ zoop_BPUE_SB= mutate(zoop_BPUE_SB, Acartiella = ACARTELA + ASINEJUV,
                    Pseudodiaptomus = PDIAPFOR + PDIAPMAR + PDIAPJUV + PDIAPNAUP,
                    `Other Calanoids` = ACARTIA + DIAPTOM + EURYTEM + OTHCALAD + 
                      SINOCAL + EURYJUV + OTHCALJUV + SINOCALJUV + ACARJUV + DIAPTJUV + SINONAUP + EURYNAUP,
-                   `Other Cyclopoids` = ACANTHO + OITHDAV + OITHSIM + OITHSPP + OTHCYCAD + OITHJUV + OTHCYCJUV + OITHSPP,
+                   `Other Cyclopoids` =  OITHDAV + OITHSIM + OITHSPP + OTHCYCAD + OITHJUV + OTHCYCJUV + OITHSPP,#ACANTHO
                    Other = BOSMINA + DAPHNIA + DIAPHAN + OTHCLADO + HARPACT + OTHCOPNAUP)
-zoop_BPUE_SBa = zoop_BPUE_SB[,c(1,3,5, 6, 22, 60:66)]
+#zoop_BPUE_SBa = zoop_BPUE_SB[,c(1,3,5, 6, 22, 60:66)]
+zoop_BPUE_SBa <- zoop_BPUE_SB %>% 
+  select(Station,Year,Month,Date,Region,Acartiella:Other)
 
 #create a sample ID
 zoop_BPUE_SBa$sample = 1:nrow(zoop_BPUE_SBa)
@@ -161,7 +184,7 @@ zoop_BPUE_SBa$sample = 1:nrow(zoop_BPUE_SBa)
 zoop_BPUE_SBa$Month = factor(zoop_BPUE_SBa$Month, labels = c("Jul", "Aug", "Sep", "Oct"))
 
 #write a csv 
-write.csv(zoop_BPUE_SBa, "SMSCG_2018to2020_BPUE2.csv")
+#write.csv(zoop_BPUE_SBa, "SMSCG_2018to2021_BPUE2.csv")
 
 #Convert to long format
 zooplong_SB = gather(zoop_BPUE_SBa, key = "Taxa", value = "BPUE", -Station, -Month, - Year, -Region, -Date, -sample)
@@ -179,11 +202,11 @@ bpue_SB = ggplot(zoopsummary_SB2, aes(x = Month, y = meanB))
 bpue_SB2 = bpue_SB+ geom_bar(stat = "identity", aes(fill = Taxa)) + 
   facet_wrap(Year~Region, ncol = 4)+ (coord_cartesian (ylim = c(1, 15000))) +
   scale_fill_brewer(palette = "Set3", name = NULL) +
-  ylab("Mean BPUE (µgC/m3)") + 
+  ylab("Mean BPUE (?gC/m3)") + 
   theme_few() + theme(text = element_text(family = "sans", size = 9),
                       legend.text = element_text(face = "italic"))
 
-ggsave(plot = bpue_SB2, filename = "SMSCG2018to2020_SB.tiff", device = "tiff", width = 6, height =5, units = "in", dpi = 300)
+ggsave(plot = bpue_SB2, filename = "./Plots/smscg_zoop_bpue_2018to2021_SB.tiff", device = "tiff", width = 6.5, height =5, units = "in", dpi = 300)
 
 #Combining to SB looks better, and not big changes in trend
 
