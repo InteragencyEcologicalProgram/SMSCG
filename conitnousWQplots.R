@@ -193,7 +193,7 @@ ggplot(Sal, aes(x = Date, y = Salinity)) +geom_point()+#+ geom_point(aes(color =
 
 #just pull temperature from CDEC because I"m tired
 
-all = cdec_query(c("MAL", "SSI", "GZB", "GZL", "GZM",  "NSL", "BDL", "HUN", "RVB"), 25, "E", start.date = as.Date("2021-01-01"), end.date = as.Date("2021-09-30"))
+all = cdec_query(c("MAL",  "SSI", "GZB", "GZL", "GZM",  "NSL", "BDL", "HUN", "RVB"), 25, "E", start.date = as.Date("2021-01-01"), end.date = as.Date("2021-09-30"))
 
 
 allmean = mutate(all, Date = date(ObsDate), analyte_name = "Temperature") %>%
@@ -209,8 +209,8 @@ ggplot(allmean, aes(x = Date, y = Valuem)) + geom_point() +
 ###############################################################
 #plot the most recent months of data real quick
 
-WQ = cdec_query(c("GZB", "GZM", "GZL", "BDL", "NSL"), sensors = c(100, 25, 27, 28),
-                start.date = as.Date("2022-06-01"), end.date = as.Date("2022-08-24"))
+WQ = cdec_query(c("GZB", "GZM", "GZL", "BDL", "NSL", "RVB", "HUN", "MAL"), sensors = c(100, 25, 27, 28),
+                start.date = as.Date("2022-06-01"), end.date = as.Date("2022-10-31"))
 str(WQ)
 
 ggplot(WQ, aes(x = DateTime, y = Value, color = StationID)) + facet_wrap(~SensorType, scales = "free_y")+
@@ -270,6 +270,7 @@ WQmean = WQx %>%
   group_by(Date, StationID, SensorType, Analyte) %>%
   summarize(Value = mean(Value, na.rm = T), Value2 = mean(Value2, na.rm = T))
 
+
 ggplot(WQmean, aes(x = Date, y = Value2, color = StationID)) + 
   facet_wrap(~Analyte, scales = "free_y")+
   geom_line(size = 1)   + theme_bw() 
@@ -279,3 +280,193 @@ ggplot(filter(WQmean, Analyte == "Turbidity"), aes(x = Date, y = Value2, color =
   geom_line(size = 1)   + theme_bw()       +
   geom_hline(yintercept = 12, color = "red", linetype = "dashed", size = 1)+ 
   ylab("Turbidity NTU") + xlab("Date")
+
+ggplot(filter(WQmean, Analyte == "Salinity"), aes(x = Date, y = Value2, color = StationID)) + 
+  geom_line(size = 1)   + theme_bw()       +
+  geom_hline(yintercept = 6, color = "red", linetype = "dashed", size = 1)+ 
+  scale_color_manual(values = brewer.pal(5, "Set2"), 
+                     name = "Station",
+                     labels = c("Belden's Landing", "Grizzly Bay Buoy", "Grizly Bay Pile", "Mouth of Monetzuma", "National Steel"))+
+  ylab("Salinity (ppt)") + xlab("Date")
+
+ggplot(filter(WQmean, Analyte == "Chlorophyll"), aes(x = Date, y = Value2, color = StationID)) + 
+  geom_line(size = 1)   + theme_bw()       +
+  facet_wrap(~StationID)+
+ # scale_color_manual(values = brewer.pal(5, "Set2"), 
+  #                   name = "Station",
+   #                  labels = c("Belden's Landing", "Grizzly Bay Buoy", "Grizly Bay Pile", "Mouth of Monetzuma", "National Steel"))+
+  ylab("Chlorophyll (ug/L)") + xlab("Date - 2022")
+
+
+ggplot(filter(WQmean, Analyte == "Chlorophyll"), aes(x = Date, y = Value2)) + 
+  geom_point(aes(color = StationID), size = 1)   + theme_bw() + geom_smooth()+
+  scale_color_manual(values = brewer.pal(5, "Set2"), 
+                     name = "Station",
+                     labels = c("Belden's Landing", "Grizzly Bay Buoy", "Grizly Bay Pile", "Mouth of Monetzuma", "National Steel"))+
+  ylab("Chlorophyll (ug/L") + xlab("Date")
+
+stage = cdec_query(c("GZB", "GZM", "GZL", "BDL", "NSL"), sensors = 1,
+                start.date = as.Date("2022-06-01"), end.date = as.Date("2022-09-26"))
+
+WQ2 = stage %>%
+  rename(Stage = Value) %>%
+  select(StationID, DateTime, ObsDate, Stage) %>%
+  left_join(WQx)  %>%
+  dplyr::filter(Analyte == "Chlorophyll")
+
+ggplot(WQ2, aes(x = Stage, y = Value, color = StationID)) + geom_line()+ylab("Chlorophyll mg/L")
+  
+WQ3 = WQ2 %>%
+  mutate(Date = date(DateTime)) %>%
+  group_by(Date, StationID, SensorType, Analyte) %>%
+  summarize(Value = mean(Value, na.rm = T), Value2 = mean(Value2, na.rm = T), Stage = max(Stage, na.rm = T))
+
+ggplot(WQ3, aes(x = Stage, y = Value, color = StationID)) + geom_line()+ylab("Chlorophyll mg/L")
+
+WQ4 = rename(WQ3, Chla = Value) %>%
+  filter(StationID == "NSL") %>%
+  pivot_longer(c(Stage, Chla), names_to = "Parameter", values_to = "Value")
+
+ggplot(WQ4, aes(x = Date, y = Value, color = Parameter)) + geom_line()
+
+#########################################################################
+#Does salinity really stay high in the winter?
+
+
+WQwinter = cdec_query(c("VOL", "HUN", "GZL", "BDL", "NSL"), sensors = c(100, 25),
+                start.date = as.Date("2010-06-01"), end.date = as.Date("2022-09-26"))
+str(WQ)
+
+ggplot(WQ, aes(x = DateTime, y = Value, color = StationID)) + facet_wrap(~SensorType, scales = "free_y")+
+  geom_line()
+
+WQwinter = mutate(WQwinter, Value2 = case_when(SensorNumber == 100 ~ ec2pss(Value/1000, 25),
+                                   SensorNumber == 25 ~ (Value - 32)*5/9,
+                                   TRUE~ Value),
+            Analyte = factor(SensorType, levels = c("EL COND", "CHLORPH", "TEMP W", "TURB W"), 
+                             labels = c("Salinity", "Chlorophyll", "Temperature", "Turbidity"))) %>%
+  filter(Value2 >0, !(Analyte== "Temperature" & Value2 >100))
+
+
+ggplot(WQwinter, aes(x = DateTime, y = Value2, color = StationID)) + 
+  facet_wrap(~Analyte, scales = "free_y")+
+  geom_line()   + theme_bw()       
+
+
+
+#Do daily means instead
+WQmeanW = WQwinter %>%
+  mutate(Date = date(DateTime)) %>%
+  group_by(Date, StationID, SensorType, Analyte) %>%
+  summarize(Value = mean(Value, na.rm = T), Value2 = mean(Value2, na.rm = T)) %>%
+  mutate(DOY = yday(Date), Year = year(Date))
+
+ggplot(filter(WQmeanW, Analyte == "Salinity", StationID != "GZM"), aes(x = Date, y = Value2, color = StationID)) + 
+  geom_line()   + theme_bw()+
+  geom_hline(yintercept = 6, size = 2, linetype =2)+ ylab("Salinity, PSU")
+
+ggplot(filter(WQmeanW, Analyte == "Salinity", StationID == "BDL", Year == 2022), aes(x = DOY, y = Value2, color = as.factor(Year))) + 
+  geom_line()   + theme_bw()+
+  geom_hline(yintercept = 6, size = 2, linetype =2)+ ylab("Salinity, PSU")
+
+#################################################################
+#2022 plot
+
+Tulered = read_csv("Data/2022-08-09_TuleRedBreach_2022-09-21 (formatted).csv") %>%
+  mutate(time = mdy_hm(time), qaqc_flag_id = "G")
+WQ2022 = read_csv("Data/SMSG Data 2022.csv") 
+  
+
+
+
+WQ = cdec_query(c( "GZL",  "RVB","MAL"), sensors = c(100, 25, 27, 28),
+                start.date = as.Date("2022-06-01"), end.date = as.Date("2022-10-31"))
+WQp = mutate(WQ, time = DateTime) %>%
+  rename(analyte_name = SensorType, cdec_code = StationID, value = Value, qaqc_flag_id = DataFlag) %>%
+  mutate(analyte_name = case_when(analyte_name == "EL COND" ~ "Specific Conductance",
+                                  analyte_name == "CHLORPH" ~ "Chlorophyll",
+                                  analyte_name == "TURB W" ~ "Turbidity",
+                                  analyte_name == "TEMP W" ~ "Water Temperature",
+                                  TRUE ~ analyte_name)) %>%
+  select(time, cdec_code, analyte_name, value, qaqc_flag_id) %>%
+  mutate(value = case_when(analyte_name == "Water Temperature" ~ (value-31)*5/9,
+                           TRUE ~ value))
+
+
+WQall = bind_rows(Tulered, WQ2022, WQp) %>%
+  filter(qaqc_flag_id != "X")
+
+
+WQmean = WQall %>%
+  mutate(Date = date(time)) %>%
+  group_by(Date, cdec_code, analyte_name) %>%
+  summarize(Value = mean(value, na.rm = T))
+
+
+ggplot(WQmean, aes(x = Date, y = Value, color = cdec_code)) + 
+  facet_wrap(~analyte_name, scales = "free_y")+
+  geom_line(size = 1)   + theme_bw() 
+
+test = filter(WQmean, cdec_code == "GZL", analyte_name == "Chlorophyll")
+
+ggplot(filter(WQmean, analyte_name == "Chlorophyll", !cdec_code %in% c("CSE", "TRB", "MSL")), aes(x = Date, y = Value)) + 
+  geom_point(aes(color = cdec_code), size = 1)   + theme_bw() + 
+  geom_line(aes(color = cdec_code))+
+  scale_color_discrete(guide = NULL)+
+  facet_wrap(~cdec_code)+
+   ylab("Chlorophyll (ug/L)") + xlab("Date")+
+  coord_cartesian(xlim = c(ymd("2022-06-01", "2022-10-31")))
+
+ggplot(filter(WQmean, analyte_name == "Turbidity", !cdec_code %in% c("CSE", "MSL")), aes(x = Date, y = Value)) + 
+  geom_point(aes(color = cdec_code), size = 1)   + theme_bw() + 
+  geom_line(aes(color = cdec_code))+
+  scale_color_discrete(guide = NULL)+
+  facet_wrap(~cdec_code, scales = "free_y")+
+  ylab("Turbidity (NTU)") + xlab("Date")+
+  coord_cartesian(xlim = c(ymd("2022-06-01", "2022-10-31")))
+
+
+
+ggplot(filter(WQmean, analyte_name == "Water Temperature", !cdec_code %in% c("CSE", "MSL")), aes(x = Date, y = Value)) + 
+  geom_point(aes(color = cdec_code), size = 1)   + theme_bw() + 
+  geom_line(aes(color = cdec_code))+
+  scale_color_discrete(guide = NULL)+
+  geom_hline(yintercept = 23.9, linetype = 2, color = "red")+
+  facet_wrap(~cdec_code)+
+  ylab("Tempearture (c)") + xlab("Date")+
+  coord_cartesian(xlim = c(ymd("2022-06-01", "2022-10-31")))
+
+#temperature
+Temp = cdec_query(c( "GZL",  "RVB","MAL", "GZM", "GZB", "BDL", "HUN", "NSL"), sensors = c(25),
+                start.date = as.Date("2022-06-01"), end.date = as.Date("2022-10-31"))
+Tempp = mutate(Temp, time = DateTime) %>%
+  rename(analyte_name = SensorType, cdec_code = StationID, value = Value, qaqc_flag_id = DataFlag) %>%
+  mutate(analyte_name = case_when(analyte_name == "EL COND" ~ "Specific Conductance",
+                                  analyte_name == "CHLORPH" ~ "Chlorophyll",
+                                  analyte_name == "TURB W" ~ "Turbidity",
+                                  analyte_name == "TEMP W" ~ "Water Temperature",
+                                  TRUE ~ analyte_name)) %>%
+  select(time, cdec_code, analyte_name, value, qaqc_flag_id) %>%
+  mutate(value = case_when(analyte_name == "Water Temperature" ~ (value-31)*5/9,
+                           TRUE ~ value))
+
+
+Tempall = bind_rows(Tulered, Tempp) %>%
+  filter(qaqc_flag_id != "X")
+
+Tempmean = Tempall %>%
+  mutate(Date = date(time)) %>%
+  group_by(Date, cdec_code, analyte_name) %>%
+  summarize(Value = mean(value, na.rm = T)) %>%
+  filter(Value > 15)
+
+
+ggplot(filter(Tempmean, analyte_name == "Water Temperature", !cdec_code %in% c("CSE", "MSL")), aes(x = Date, y = Value)) + 
+  geom_point(aes(color = cdec_code), size = 1)   + theme_bw() + 
+  geom_line(aes(color = cdec_code))+
+  geom_hline(yintercept = 23.9, linetype = 2, color = "red")+
+  scale_color_discrete(guide = NULL)+
+  facet_wrap(~cdec_code)+
+  ylab("Tempearture (C)") + xlab("Date")+
+  coord_cartesian(xlim = c(ymd("2022-06-01", "2022-10-31")))
+
