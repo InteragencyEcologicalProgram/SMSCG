@@ -5,14 +5,15 @@ library(tidyverse)
 library(readxl)
 library(ggthemes)
 library(ggplot2)
+library(car)
 
 #read in data-----------------
 #read in CPUE data from the ftp site. This also includes EMP data for the specified stations in the SMSCG footprint
 #found path to data by right clicking file in the project file, saying import dataset, and copying path
-#SMSCG_CPUE = read.csv("D:/Data/Suisun Marsh Salinity Gate Project/2021 Report/SMSCG Zoop 2021 Report/Data/SMSCG_CBNet_2018to2020CPUE_16Oct2021.csv")
+#SMSCG_CPUE <- read.csv("D:/Data/Suisun Marsh Salinity Gate Project/2021 Report/SMSCG Zoop 2021 Report/Data/SMSCG_CBNet_2018to2020CPUE_16Oct2021.csv")
 
 #read in file to convert to biomass
-#zoop_biomass = read.csv("D:/Data/Suisun Marsh Salinity Gate Project/2021 Report/SMSCG Zoop 2021 Report/Data/Copepod and Cladoceran Biomass Values.csv")
+#zoop_biomass <- read.csv("D:/Data/Suisun Marsh Salinity Gate Project/2021 Report/SMSCG Zoop 2021 Report/Data/Copepod and Cladoceran Biomass Values.csv")
 
 #read in zoop abundance data from SMSCG data package on EDI
 #already includes 2021 data
@@ -22,7 +23,7 @@ SMSCG_CPUE <- read_csv("https://portal.edirepository.org/nis/dataviewer?packagei
 #Note: there is a newer version of mass data; two files on the GitHub repo
 #zoop_Biomass conversions_CEB Updated 2021.csv
 #zoop_Copepod and Cladoceran Biomass Values.csv
-zoop_biomass <- read_csv("./Data/zoop_individual_mass.csv")
+zoop_biomass <- read_csv("./Data/zoop_Copepod and Cladoceran Biomass Values.csv")
 
 #Editing file------
 
@@ -31,23 +32,23 @@ zoop_biomass <- read_csv("./Data/zoop_individual_mass.csv")
 #look at all stations names in data set
 unique(SMSCG_CPUE$Station)
 
-stations = data.frame(Station = as.character(c(602, "Grizz", "NZ028", 519, "Honk", 605, 606, "NZ032", "NZS42", 609, 610, "Mont", 508, 513, 520, 801, 802, 704, 706, "NZ054", "NZ060", "NZ064")),
+stations <- data.frame(Station = as.character(c(602, "Grizz", "NZ028", 519, "Honk", 605, 606, "NZ032", "NZS42", 609, 610, "Mont", 508, 513, 520, 801, 802, 704, 706, "NZ054", "NZ060", "NZ064")),
                   Region = c(rep("Grizzly", 3), rep("Honker", 2), rep("West Marsh", 4), rep("East Marsh", 3), rep("River", 10)))
 
 
-stations = mutate(stations, Region = factor(Region, levels = c("Grizzly", "Honker", "West Marsh", "East Marsh", "River")))
+stations <- mutate(stations, Region = factor(Region, levels = c("Grizzly", "Honker", "West Marsh", "East Marsh", "River")))
 
 #look at df structure
 glimpse(stations)
 
 #edited file with regions designated and added to csv
 
-SMSCG_CPUE2 = filter(merge(select(SMSCG_CPUE, -Region), stations, by = "Station"), Year %in% c(2018, 2019, 2020,2021), Month == 7 | Month ==8 | Month==9| Month==10) %>% 
+SMSCG_CPUE2 <- filter(merge(select(SMSCG_CPUE, -Region), stations, by = "Station"), Year %in% c(2018, 2019, 2020,2021), Month == 7 | Month ==8 | Month==9| Month==10) %>% 
   arrange(Year,Month,Station)
 
 #Converting to BPUE------
 
-Zoop_BPUE = pivot_longer(SMSCG_CPUE2, cols = ACARTELA:CUMAC, 
+Zoop_BPUE <- pivot_longer(SMSCG_CPUE2, cols = ACARTELA:CUMAC, 
                          names_to = "taxon", values_to = "CPUE") %>% 
   left_join(zoop_biomass) %>%
   mutate(BPUE = CPUE*mass_indiv_ug) %>%
@@ -66,7 +67,7 @@ zoop_BPUE2= mutate(Zoop_BPUE
                          ,Pseudodiaptomus = PDIAPFOR + PDIAPMAR + PDIAPJUV + PDIAPNAUP
                          ,`Other Calanoids` = ACARTIA + DIAPTOM + EURYTEM + OTHCALAD + 
                            SINOCAL + EURYJUV + OTHCALJUV + SINOCALJUV + ACARJUV + DIAPTJUV + SINONAUP + EURYNAUP
-                         ,`Other Cyclopoids` = OITHDAV + OITHSIM + OITHSPP + OTHCYCAD + OITHJUV + OTHCYCJUV + OITHSPP #+ ACANTHO  
+                         ,`Other Cyclopoids` = OITHDAV + OITHSIM + OITHSPP + OTHCYCAD + OITHJUV + OTHCYCJUV + OITHSPP + ACANTHO  
                          ,Other = BOSMINA + DAPHNIA + DIAPHAN + OTHCLADO + HARPACT + OTHCOPNAUP)
 #zoop_BPUE2a = zoop_BPUE2[,c(1,3,5, 6, 22, 60:66)]
 zoop_BPUE2a <- zoop_BPUE2 %>% 
@@ -111,7 +112,7 @@ bpue1_noN = ggplot(zoopsummary2, aes(x = Month, y = meanB))
 bpue2_noN = bpue1_noN+ geom_bar(stat = "identity", aes(fill = Taxa)) + 
   facet_wrap(Year~Region, ncol = 5)+ (coord_cartesian (ylim = c(1, 15000))) +
   scale_fill_brewer(palette = "Set3", name = NULL) +
-  ylab("Mean BPUE (?gC/m3)") + 
+  ylab("Mean BPUE (µgC/m3)") + 
   theme_few() + theme(text = element_text(family = "sans", size = 9),
                       legend.text = element_text(face = "italic"))
 
@@ -136,14 +137,16 @@ shapiro.test(zooptots$BPUE)
 shapiro.test(zooptots$logBPUE)
 #need log transformed data, but still pretty significant----- transform again?
 
-#With Region*Month interaction. Region*Month only significant for River in Sept, don't need interaction
-zlm = glm(logBPUE~Region*Month + Year, data = zooptots)
+#based on plots, maybe start will full model with all interactions included
+zlm = glm(logBPUE~Region*Month*Year, data = zooptots)
 summary(zlm)
+Anova(zlm) #region, month, year all significant but not interactions
 plot(zlm)
 
 #No interaction terms
 zlm2 = glm(logBPUE~Region + Month + Year, data= zooptots)
 summary(zlm2)
+Anova(zlm2)
 plot(zlm2)
 
 ######Combining Grizzly and Honker into Suisun------
@@ -171,7 +174,7 @@ zoop_BPUE_SB= mutate(zoop_BPUE_SB, Acartiella = ACARTELA + ASINEJUV,
                    Pseudodiaptomus = PDIAPFOR + PDIAPMAR + PDIAPJUV + PDIAPNAUP,
                    `Other Calanoids` = ACARTIA + DIAPTOM + EURYTEM + OTHCALAD + 
                      SINOCAL + EURYJUV + OTHCALJUV + SINOCALJUV + ACARJUV + DIAPTJUV + SINONAUP + EURYNAUP,
-                   `Other Cyclopoids` =  OITHDAV + OITHSIM + OITHSPP + OTHCYCAD + OITHJUV + OTHCYCJUV + OITHSPP,#ACANTHO
+                   `Other Cyclopoids` =  OITHDAV + OITHSIM + OITHSPP + OTHCYCAD + OITHJUV + OTHCYCJUV + OITHSPP + ACANTHO,
                    Other = BOSMINA + DAPHNIA + DIAPHAN + OTHCLADO + HARPACT + OTHCOPNAUP)
 #zoop_BPUE_SBa = zoop_BPUE_SB[,c(1,3,5, 6, 22, 60:66)]
 zoop_BPUE_SBa <- zoop_BPUE_SB %>% 
@@ -202,11 +205,11 @@ bpue_SB = ggplot(zoopsummary_SB2, aes(x = Month, y = meanB))
 bpue_SB2 = bpue_SB+ geom_bar(stat = "identity", aes(fill = Taxa)) + 
   facet_wrap(Year~Region, ncol = 4)+ (coord_cartesian (ylim = c(1, 15000))) +
   scale_fill_brewer(palette = "Set3", name = NULL) +
-  ylab("Mean BPUE (?gC/m3)") + 
+  ylab("Mean BPUE (µgC/m3)") + 
   theme_few() + theme(text = element_text(family = "sans", size = 9),
                       legend.text = element_text(face = "italic"))
 
-ggsave(plot = bpue_SB2, filename = "./Plots/smscg_zoop_bpue_2018to2021_SB.tiff", device = "tiff", width = 6.5, height =5, units = "in", dpi = 300)
+#ggsave(plot = bpue_SB2, filename = "./Plots/smscg_zoop_bpue_2018to2021_SB.tiff", device = "tiff", width = 6.5, height =5, units = "in", dpi = 300)
 
 #Combining to SB looks better, and not big changes in trend
 
@@ -220,20 +223,23 @@ zooptots_SB$Month = factor(zooptots_SB$Month, labels = c("July", "August", "Sept
 hist(zooptots_SB$BPUE)
 hist(zooptots_SB$logBPUE)
 
-#With Region*Month interaction. Region*Month not significant, don't need interaction
-zlm_SB = glm(logBPUE~Region*Month + Year, data = zooptots_SB)
+#start with full model
+zlm_SB = glm(logBPUE~Region*Month*Year, data = zooptots_SB)
 summary(zlm_SB)
+Anova(zlm_SB) #no significant interaction terms
 plot(zlm_SB)
 
 #No interaction terms
 zlm_SB2 = glm(logBPUE~Region + Month + Year, data= zooptots_SB)
 summary(zlm_SB2)
-plot(zlm_SB2)
+Anova(zlm_SB2) #all predictors are significant
+plot(zlm_SB2) #normality could be better but other plots look pretty good
 
 ##Anovas with Suisun Bay Region------
 
-anov_SB = aov(logBPUE~Region + Month, data = zooptots_SB)
+anov_SB = aov(logBPUE~Region + Month + Year, data = zooptots_SB)
 summary(anov_SB)
+Anova(anov_SB) #basically same as GLM unsurprisingly
 
 TukeyHSD(anov_SB)
 
@@ -243,7 +249,7 @@ TukeyHSD(anov_SB)
 #problem with year. it says its a number, need to be a factor?
 
 #turn year into a factor
-zoop_BPUE_SBa$Year = factor(zoop_BPUE_SBa$Year, labels = c("2018", "2019", "2020"))
+zoop_BPUE_SBa$Year = factor(zoop_BPUE_SBa$Year, labels = c("2018", "2019", "2020","2021"))
 
 #Convert to long format
 zooplong_SB_Y = gather(zoop_BPUE_SBa, key = "Taxa", value = "BPUE", -Station, -Month, - Year, -Region, -Date, -sample)
@@ -251,7 +257,7 @@ zooplong_SB_Y = gather(zoop_BPUE_SBa, key = "Taxa", value = "BPUE", -Station, -M
 #File with summary stats
 zoopsummary_SB_Y = group_by(zooplong_SB_Y, Region, Year, Month, Taxa) %>% summarize(meanB = mean(BPUE), sdB = sd(BPUE), n = length(BPUE))
 
-write.csv(zoopsummary_SB_Y, "ZoopSummarySB.csv")
+#write.csv(zoopsummary_SB_Y, "ZoopSummarySB.csv")
 zooptots_SB_Y = group_by(zooplong_SB_Y, Region, Year, Month, Station, sample) %>% 
   summarize(BPUE = sum(BPUE), logBPUE = log(BPUE))
 
@@ -260,11 +266,13 @@ zooptots_SB_Y = group_by(zooplong_SB_Y, Region, Year, Month, Station, sample) %>
 #With Region*Month interaction. Region*Month not significant, don't need interaction
 zlm_SB_Y = glm(logBPUE~Region*Month + Year, data = zooptots_SB_Y)
 summary(zlm_SB_Y)
+Anova(zlm_SB_Y)
 plot(zlm_SB)
 
 #No interaction terms
 zlm_SB_Y2 = glm(logBPUE~Region + Month + Year, data= zooptots_SB_Y)
 summary(zlm_SB_Y2)
+Anova(zlm_SB_Y2)
 plot(zlm_SB_Y2)
 
 ##Anovas with Suisun Bay Region------
@@ -275,8 +283,22 @@ summary(anov_SB_Y)
 TukeyHSD(anov_SB_Y)
 
 
+#summary stats---------
 
+#regions
+zoopsummary_regions <- zooplong_SB_Y %>% 
+  group_by(Region) %>% 
+  summarize(meanB = mean(BPUE), sdB = sd(BPUE), n = length(BPUE))
 
+#months
+zoopsummary_months <- zooplong_SB_Y %>% 
+  group_by(Month) %>% 
+  summarize(meanB = mean(BPUE), sdB = sd(BPUE), n = length(BPUE))
+
+#years
+zoopsummary_years <- zooplong_SB_Y %>% 
+  group_by(Year) %>% 
+  summarize(meanB = mean(BPUE), sdB = sd(BPUE), n = length(BPUE))
 
 
 
