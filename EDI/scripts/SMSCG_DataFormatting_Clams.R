@@ -26,14 +26,14 @@ getwd()
 ## input tables
 
 ## station list
-stations = read_excel('Data/SMSCG_station_list.xlsx', 
+stations = read_excel('./EDI/data_input/clams/SMSCG_station_list.xlsx', 
                         sheet = "Station list", 
                         col_types = c("text", "text","text","text", "numeric", "numeric", "text", "text")) 
 # Input columns = done_all_years	site 	location	comments	north_decimal_degrees	west_decimal_degrees	habitat	habitat_type
 str(stations)
 
 ## field data
-field = read_excel('Data/SMSCG Field data 18-21.xlsx', 
+field = read_excel('./EDI/data_input/clams/SMSCG Field data 18-21.xlsx', 
                       sheet = "compiled field data") 
 field$depth_m <- (field$depth_ft*.3048)
 # Input columns = done_all_years	site 	location	depth_ft_raw date	time	tide	sed_description	orgmatter	clay	silt	mica	fine_sand	coarse_sand	gravel	fines	wtemp	SC	pH	chla	turb	DO	biota	comments	sediment	habitat	habitat_type	year	month	depth_ft		
@@ -41,19 +41,19 @@ field$depth_m <- (field$depth_ft*.3048)
 str(field)
 
 ## filtration rates - note that for Potamocorbula, for temps <15C, filtration rate = 270 L/g AFDM/day
-filt = read_excel('Data/Clam lookup tables - siphons and filtration rates.xlsx', 
+filt = read_excel('./EDI/data_input/clams/Clam lookup tables - siphons and filtration rates.xlsx', 
                    sheet = "filtration rate") 
 # Input columns = species	wtemp	filtration_rate
 str(filt)
 
 ## siphon diameters
-siph = read_excel('Data/Clam lookup tables - siphons and filtration rates.xlsx', 
+siph = read_excel('./EDI/data_input/clams/Clam lookup tables - siphons and filtration rates.xlsx', 
                   sheet = "siphon diameter") 
 # Input columns = species	length_mm	Do_mm
 str(siph)
 
 # SMSCG clam measurements
-sizes = read_excel('Data/SMSCG clam size measurements.xlsx', 
+sizes = read_excel('./EDI/data_input/clams/SMSCG clam size measurements.xlsx', 
                   sheet = "clam measurements")
 # Input columns = year	month	entry_order	site	location	grab	date	species	individuals	size_class	comments
 sizes$length_mm <-(sizes$size_class)+0.5 #add 0.5 to make it the middle of the size bin for easier reference and calculation later
@@ -64,7 +64,7 @@ str(sizes)
 #This is all live sort data ever, from EMP, GRTS, etc.
 #Before importing, duplicate columns from compilation "Total animal weight per individual" and "average weight per individual" were removed
 
-biomass_in = read_excel('Data/SMSCG subset of live sort data, 2018-2021.xlsx', 
+biomass_in = read_excel('./EDI/data_input/clams/SMSCG subset of live sort data, 2018-2021.xlsx', 
                         sheet = "formatted for R", 
                         col_types = c("text", "text","date", "text", "numeric", "numeric", "numeric","numeric","numeric","numeric","numeric","text", "text",  "text", "text", "text",  "text", "numeric", "text")) 
 # Input columns = tray,	station,	date,	species,	no_orgs,	size_class,	pan_mass,	dry_mass_incl_pan,	afdm_incl_pan,	total_afdm,	afdm_per_org,	comments,	Total animal weight,	Average weight per individual,	QC_flag,	QC_exclude,	Check_datasheets,	Year,	Month
@@ -110,7 +110,7 @@ modelmass2 <- modelmass%>%  #includes year as variable
   ungroup()
 
 str(modelmass2)
-view(modelmass2)
+#view(modelmass2)
 
 # modelmass3 <- modelmass%>%
 #   group_by(station, month, species) %>% ## grouping all years together, as a comparison
@@ -122,7 +122,7 @@ view(modelmass2)
 # view(modelmass3)
 
 
-fwrite(modelmass2,"Products/SMSCG clam length-biomass regressions, 2018-2021.csv", row.names=FALSE)    
+#fwrite(modelmass2,"./EDI/data_output/SMSCG clam length-biomass regressions, 2018-2021.csv", row.names=FALSE)    
 
 ##########################
 # Step 3
@@ -227,7 +227,7 @@ clam_wide$Total_grazing_rate_m3_per_m2_per_day <-
   clam_wide$`graze_m3_m2_Corbicula fluminea`+clam_wide$`graze_m3_m2_Potamocorbula amurensis`
 
   
-view(clam_wide)
+#view(clam_wide)
 str(clam_wide)
 
 ## Getting data ready for analysis, step 1: adding data from station and field 
@@ -346,13 +346,13 @@ clam_wide4 <- select(clam_wide3,
 
 str(clam_wide4)
 
-fwrite(clam_wide4,"Products/SMSCG_clam_EDI_2018_2021.csv", row.names=FALSE)
+#fwrite(clam_wide4,"./EDI/data_output/SMSCG_clam_EDI_2018_2021_corr.csv", row.names=FALSE)
 
 ###########################################################################
 
 ## 6) Average the 2018-2022 values (clam and enviromnent) for GIS mapping
 
-clam_wide4 = read.csv("Products/SMSCG_clam_EDI_2018_2021.csv")
+clam_wide4 = read.csv("./EDI/data_output/SMSCG_clam_EDI_2018_2021_corr.csv")
 str(clam_wide4)
 
 clams_avg<- clam_wide4%>%
@@ -365,4 +365,4 @@ ungroup()
 str(clams_avg)
 head(clams_avg)
 
-fwrite(clams_avg,"Products/SMSCG_clam_EDI_2018_2021_AVG.csv", row.names=FALSE)
+#fwrite(clams_avg,"./EDI/data_output/SMSCG_clam_EDI_2018_2021_AVG.csv", row.names=FALSE)
