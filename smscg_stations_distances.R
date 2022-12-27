@@ -1,9 +1,10 @@
 #Suisun Marsh Salinity Control Gate Action
-#calculate distances between salinity control gate and monitoring stations
+#calculate distances along waterways among monitoring stations, including salinity control gates
+
+#Nick Rasmussen 12/27/2022
 
 #To do list-----------
 #need to add a bunch of wq stations missing from the EDI file; started this offline
-#wouldn't hurt to double check station coordinates
 #also would be good to spot check the distances 
 
 #required packages
@@ -123,6 +124,9 @@ distance_wq<-Waterdist(Water_map = Delta_4326
                           , Latitude_column = Latitude
                           ,Longitude_column = Longitude
                           , PointID_column = StationCode)
+#NOTE: BDL coordinates were also used for GZL, which needs to be corrected
+#the updated metadata document in progress fixes this
+
 
 #plankton stations and SMSCG
 distance_plank<-Waterdist(Water_map = Delta_4326
@@ -143,6 +147,14 @@ distance_clam<-Waterdist(Water_map = Delta_4326
 
 #save distance matrices as csv files------
 #need to convert matrix to dataframe and make rownames a column before export
+#maybe it makes more sense to convert wide to long 
+#and delete duplicate comparisons and zero distances (ie, comparisons between station and itself) 
+
+#wq
+library(reshape)
+#this transposes the upper triangle of your table into three columns 
+distance_wq_format <- melt(distance_wq)[melt(upper.tri(distance_wq))$value,]
+names(distance_wq_format) <- c("station1","station2","distance_m")
 
 #wq
 #NOTE: this is incomplete because there are stations missing
