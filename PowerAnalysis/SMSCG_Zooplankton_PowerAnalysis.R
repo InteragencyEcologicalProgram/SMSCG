@@ -14,9 +14,9 @@ library(pwr) #power analysis
 #read in data--------------
 
 #results from the modeling that compared SMSCG action and non-action years
-modout <- read_csv("./PowerAnalysis/zooplanktonmodel.csv") %>% 
+modout <- read_csv("./PowerAnalysis/modeledzoops_fixed.csv") %>% 
   clean_names() %>% 
-  rename("yes_action" = smsc_gaction) %>% 
+  select(prey:bpue3) %>% 
   glimpse()
 
 #format the zoop modeling data------------
@@ -26,37 +26,28 @@ modout <- read_csv("./PowerAnalysis/zooplanktonmodel.csv") %>%
 
 #create vector of distinct taxa
 mod_taxa <- modout %>% 
-  distinct(taxon) %>% 
-  pull(taxon)
+  distinct(prey) %>% 
+  pull(prey)
 #"acartela"   "allcopnaup" "daphnia"    "eurytem"    "limno"      "mysid"      "othcalad"   "othcaljuv"  "othclad"   
 #"othcyc"     "other"      "pdiapfor"
 
 #summarize action and no action results by month
 modout_sum_mo <- modout %>%
-  group_by(month) %>% 
-  summarise(na_sum = sum(no_action)
-            ,ya_sum = sum(yes_action)) %>% 
-  #percent difference
-  #mutate(
-  #  num = abs(na_sum-ya_sum)
-  #  ,denom = (na_sum+ya_sum)/2
-  #  ,pdiff = (num/denom)*100
-  #) %>% 
-  #percent change
+  group_by(month,scenario) %>% 
+  summarise(bpue = sum(bpue3)) %>% 
+  #convert long to wide
+  pivot_wider(names_from = scenario, values_from = bpue) %>% 
+  rename(na_sum = NoAct,ya_sum = SMSCG4ppt) %>% 
+  #calculate percent change
   mutate(
     num = ya_sum-na_sum
     ,denom = (na_sum+ya_sum)/2
     ,perc_change = (num/denom)*100
   )
 
-na = 1674927.3
-ya =1766962.1
-
-pdiff = ((abs(na-ya)/((na+ya)/2))*100)
-
-pchange = ((ya-na)/((na+ya)/2))*100
-
-#write_csv(modout_sum_mo,"./PowerAnalysis/zoop_perc_change_check.csv")
+#look at range of percent change
+range(modout_sum_mo$perc_change)
+#0.00000 86.85506
 
 
 #get data from zooper package-----------------------
