@@ -19,24 +19,25 @@ modout <- read_csv("./PowerAnalysis/modeledzoops_fixed.csv") %>%
   select(prey:bpue3) %>% 
   glimpse()
 
-#zoop BPUE from SMSCG GitHub repo
-zoop_bpue_git <- read_csv("./Data/zoop_Copepod and Cladoceran Biomass Values.csv") %>% 
-  clean_names()
+#zoop mass from SMSCG GitHub repo
+#zoop_bpue_git <- read_csv("./Data/zoop_Copepod and Cladoceran Biomass Values.csv") %>% 
+ # clean_names()
 
-#zoop BPUE from EDI
-zoop_bpue_edi <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.539.3&entityid=e4dc2a5bedb35f15d13b4ca04a46024d") %>% 
+#zoop mass from EDI
+#zoop_bpue_edi <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.539.3&entityid=e4dc2a5bedb35f15d13b4ca04a46024d") %>% 
+ # clean_names()
+
+#zoop mass from Rosie
+#this was the easiest way to match the taxa to the mass
+zoop_bpue_rosie <- read_csv("./PowerAnalysis/Mesomicrotaxa.csv") %>% 
   clean_names()
 
 #sacramento valley water year types from drought synthesis
 #data originates from http://cdec.water.ca.gov/reportapp/javareports?name=WSIHIST
-water_year <- read_csv("https://raw.githubusercontent.com/InteragencyEcologicalProgram/DroughtSynthesis/main/data/yearassignments.csv") %>% 
-  clean_names() %>% 
-  arrange(year)
-
-#format water year type data set--------------
-wy <- water_year %>% 
-  select(year,yr_type)
-
+#water_year <- read_csv("https://raw.githubusercontent.com/InteragencyEcologicalProgram/DroughtSynthesis/main/data/yearassignments.csv") %>% 
+ # clean_names() %>% 
+  #arrange(year)
+#not enough years for this to be worthwhile
 
 #format the zoop modeling data------------
 #results are divided by month and taxa
@@ -76,8 +77,9 @@ zoop_grab <- Zoopsynther(Data_type = "Community"
                          ,Sources=c("EMP","DOP","STN","FMWT")
                          #all the SMSCG monitoring is focused on mesozooplankton so we'll stick to that
                          ,Size_class = "Meso"
-                         #I don't think Eastern Montezuma Slough was sampled prior to 2018
-                         ,Date_range = c("2018-01-01",NA)
+                         #DOP started sampling program in 2017 so start there
+                         #DFW didn't start sampling Eastern Montezuma Slough until 2018
+                         ,Date_range = c("2017-06-01",NA)
                          #probably has been much change in taxonomic resolution since 2018 but specify this anyway
                          ,Time_consistency = T
                          ) %>% 
@@ -106,8 +108,10 @@ zoop_select <- zoop_grab %>%
          ,year
          ,tow_type
          ,tide
+         ,phylum:species
          ,taxname
          ,lifestage
+         ,taxlifestage
          ,undersampled
          ,cpue
          ) %>% 
@@ -259,25 +263,72 @@ unique(zoop_season$month)
 
 #look at all taxa remaining in data set
 zoop_taxa <- zoop_season %>% 
-  distinct(taxname,lifestage)
+  distinct(taxname,lifestage,taxlifestage)
 #45 combos
-#should have kept some of the higher taxonomy info for filtering
 
-#probably quickest thing to do is export this list, manually match it to the BPUE data by taxon code, and then read that back in
-#write_csv(zoop_taxa,"./PowerAnalysis/taxon_list.csv")
+#Match taxa with their estimated mass--------------
+
+#try matching taxa with Rosie's mass
+zoop_mass <- zoop_taxa %>% 
+  left_join(zoop_bpue_rosie, by="taxlifestage") %>% 
+  arrange(carbon_weight_ug,taxlifestage) %>% 
+  #all but three matched
+  #Daphniidae_UnID Adult (4), Acanthocyclops_UnID Adult (3.36), Acartiella sinensis Juvenile (1.16)
+  mutate(c_mass_ug = case_when(taxlifestage=="Daphniidae_UnID Adult" ~ 4 
+                                 ,taxlifestage=="Acanthocyclops_UnID Adult" ~ 3.36
+                               ,taxlifestage=="Acartiella sinensis Juvenile" ~ 1.16
+                               ,TRUE ~ carbon_weight_ug
+                               )) %>% 
+  #drop unneeded column
+  select(-carbon_weight_ug) %>% 
+  glimpse()
+
 
 #Calculate zooplankton BPUE from CPUE-------------
+#did not filter out undersampled taxa
 
-#I guess we could add back all the higher level taxonomy for the zoop samples
-#then try using case when to match mass to taxon names; complicated because of life stage too
+zoop_bpue_all <- left_join(zoop_season,zoop_mass) %>% 
+  #drop taxa we don't need
+  filter(phylum!="Rotifera" & phylum!="Euarthropoda" & taxname!="Decapoda_UnID")  %>% 
+  #add BPUE
+  mutate(bpue = cpue*c_mass_ug) %>% 
+  #sum BPUE by sample
+  group_by(source,station,sample_id,month,year,Region_smscg) %>% 
+  summarize(sample_bpue = sum(bpue), .groups = 'drop') %>% 
+  #rename columns
+  rename(region = Region_smscg, bpue = sample_bpue) %>% 
+  #drop geometry
+  st_set_geometry(NULL) %>% 
+  glimpse()
 
 
-# Formatting and aggregating zoop data by region---------------
-#add water year but 2018-2021 are all different water year types
-#and only 2018 is a type in which we would perform the action (ie, Below Normal)
+#Calculate standard deviation for subsets of the data---------------
 
+#SD for the marsh across all months and years
+sd_marsh_tot <- zoop_bpue_all %>% 
+  filter(region=="Suisun Marsh") %>% 
+  summarize(
+    mean = mean(bpue)
+    ,sd = sd(bpue)
+    )
 
+#SD for the marsh across all months by year
+sd_marsh_year <- zoop_bpue_all %>% 
+  filter(region=="Suisun Marsh") %>% 
+  group_by(year) %>% 
+  summarize(
+    mean = mean(bpue)
+    ,sd = sd(bpue)
+  )
 
+#SD for the marsh by months and year
+sd_marsh_ym <- zoop_bpue_all %>% 
+  filter(region=="Suisun Marsh") %>% 
+  group_by(year,month) %>% 
+  summarize(
+    mean = mean(bpue)
+    ,sd = sd(bpue)
+  )
 
 
 
