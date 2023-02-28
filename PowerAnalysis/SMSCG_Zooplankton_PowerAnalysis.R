@@ -34,10 +34,9 @@ zoop_bpue_rosie <- read_csv("./PowerAnalysis/Mesomicrotaxa.csv") %>%
 
 #sacramento valley water year types from drought synthesis
 #data originates from http://cdec.water.ca.gov/reportapp/javareports?name=WSIHIST
-#water_year <- read_csv("https://raw.githubusercontent.com/InteragencyEcologicalProgram/DroughtSynthesis/main/data/yearassignments.csv") %>% 
- # clean_names() %>% 
-  #arrange(year)
-#not enough years for this to be worthwhile
+water_year <- read_csv("https://raw.githubusercontent.com/InteragencyEcologicalProgram/DroughtSynthesis/main/data/yearassignments.csv") %>% 
+  clean_names() %>% 
+  arrange(year)
 
 #format the zoop modeling data------------
 #results are divided by month and taxa
@@ -288,23 +287,35 @@ zoop_mass <- zoop_taxa %>%
 #did not filter out undersampled taxa
 
 zoop_bpue_all <- left_join(zoop_season,zoop_mass) %>% 
-  #drop taxa we don't need
+  left_join(wy) %>% 
+  #drop taxa we don't need 
   filter(phylum!="Rotifera" & phylum!="Euarthropoda" & taxname!="Decapoda_UnID")  %>% 
   #add BPUE
   mutate(bpue = cpue*c_mass_ug) %>% 
   #sum BPUE by sample
-  group_by(source,station,sample_id,month,year,Region_smscg) %>% 
+  group_by(source,station,sample_id,month,year,yr_type,Region_smscg) %>% 
   summarize(sample_bpue = sum(bpue), .groups = 'drop') %>% 
   #rename columns
   rename(region = Region_smscg, bpue = sample_bpue) %>% 
   #drop geometry
   st_set_geometry(NULL) %>% 
+  #make some columns factors
+  mutate(
+    region = as.factor(region)
+    ,month = as.factor(month)
+    ,year = as.factor(year)
+  ) %>% 
   glimpse()
 
 
-#Calculate standard deviation for subsets of the data---------------
+#look at summary stats for subsets of the Marsh data---------------
+#the two wet years 2017 and 2019 have a lot of variation, especially in June
+#probably should do SD calculations with two approaches
+#min SD: drop wet years and June
+#max SD: keep everything
 
 #SD for the marsh across all months and years
+#represents high SD option
 sd_marsh_tot <- zoop_bpue_all %>% 
   filter(region=="Suisun Marsh") %>% 
   summarize(
@@ -312,14 +323,33 @@ sd_marsh_tot <- zoop_bpue_all %>%
     ,sd = sd(bpue)
     )
 
-#SD for the marsh across all months by year
-sd_marsh_year <- zoop_bpue_all %>% 
-  filter(region=="Suisun Marsh") %>% 
-  group_by(year) %>% 
+#SD for the marsh across all months and years
+#represents low SD option
+sd_marsh_tot_min <- zoop_bpue_all %>% 
+  filter(region=="Suisun Marsh" & year!="2017" & year!="2019" & month!="6") %>%  
   summarize(
     mean = mean(bpue)
     ,sd = sd(bpue)
   )
+#SD is about 1/3 that of SD with June and wet years included
+
+#SD for the marsh across all months by year
+sd_marsh_year <- zoop_bpue_all %>% 
+  filter(region=="Suisun Marsh") %>% 
+  group_by(year,yr_type) %>% 
+  summarize(
+    mean = mean(bpue)
+    ,sd = sd(bpue)
+    , .groups = 'drop'
+  )
+
+#plot mean and SD
+(p_marsh_yr <- ggplot(sd_marsh_year,aes(year,mean))+
+  geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width = 0.2) +
+  labs(x="Year", y="zooplankton BPUE")+
+  ggtitle("Suisun Marsh")
+)
 
 #SD for the marsh by months and year
 sd_marsh_ym <- zoop_bpue_all %>% 
@@ -328,8 +358,47 @@ sd_marsh_ym <- zoop_bpue_all %>%
   summarize(
     mean = mean(bpue)
     ,sd = sd(bpue)
+    , .groups = 'drop'
   )
 
+#plot mean and SD
+(p_marsh_ym <- ggplot(sd_marsh_ym,aes(month,mean))+
+    geom_bar(stat = "identity") +
+    geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width = 0.2) +
+    facet_wrap(.~year)+
+    labs(x="Year", y="zooplankton BPUE")+
+    ggtitle("Suisun Marsh")
+)
+
+#Power analysis calculations ------------------------
+#estimate how many samples needed
+
+#SD including all months and years
+sd_all <- sd_marsh_tot %>% pull(sd)
+
+#SD excluding June and wet years (2017, 2019)
+sd_sel <- sd_marsh_tot_min %>% pull(sd)
+
+#calculate Cohen's d based on Rosie's modeling results
+#assumes similar SD and same sample size
+sd_pooled <- sqrt((sd(endA)^2 + sd(endB)^2)/2)
+Cohens_d <- abs((mean(endA) - mean(endB)))/sd_pooled
+
+#Glass' d is used if SD are different between groups
+#just use SD of control or the group with the smaller SD
+Glass_d <- abs((mean(endA) - mean(endB)))/sd(endA) 
+
+power_t_test(n = NULL, # we want to know the min n
+             delta = , # effect size or Hedges’ g
+             sd = sd_sel, # use the small SD estimate
+             sig.level = 0.05, # ’alpha’, 0.05 is standard
+             power = 0.80, # standard value
+             ratio = 1, #assuming balanced design
+             sd.ratio = 1, # assuming a balanced design
+             type = "two.sample", # type of t-test
+             alternative = "two.sided", # either pop could grow faster; probably change this to one sided
+             df.method = "welch", # corrects for unequal sd; for now assume equal SD 
+             strict = TRUE) # default...but try w strict = FALSE
 
 
 
