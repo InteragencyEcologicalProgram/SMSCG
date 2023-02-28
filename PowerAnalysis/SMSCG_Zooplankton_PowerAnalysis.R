@@ -9,7 +9,8 @@ library(lubridate) #working with dates
 library(zooper) #Bay-Delta zooplankton data
 library(sf) #spatial analysis
 library(deltamapr) #maps of the Bay-Delta
-library(pwr) #power analysis
+#library(pwr) #power analysis
+library(MESS) #power analysis
 
 #read in data--------------
 
@@ -40,15 +41,15 @@ water_year <- read_csv("https://raw.githubusercontent.com/InteragencyEcologicalP
 
 #format the zoop modeling data------------
 #results are divided by month and taxa
-#presumably the values are estimated biomass of carbon
-#combine taxa within month but for now keep months separate
+#biomass is in mg/m^3 and probably total biomass instead of mass of carbon
+#eg, 3.333 means 3,333 ug of biomass per cubic meter
 
 #create vector of distinct taxa
 mod_taxa <- modout %>% 
   distinct(prey) %>% 
   pull(prey)
-#"acartela"   "allcopnaup" "daphnia"    "eurytem"    "limno"      "mysid"      "othcalad"   "othcaljuv"  "othclad"   
-#"othcyc"     "other"      "pdiapfor"
+#"limno"      "othcaljuv"  "pdiapjuv"   "othcalad"   "acartela"   "othclad"    "allcopnaup" "daphnia"    "othcyc"    
+# "other"      "eurytem"    "pdiapfor" 
 
 #summarize action and no action results by month
 modout_sum_mo <- modout %>%
@@ -64,10 +65,39 @@ modout_sum_mo <- modout %>%
     ,perc_change = (num/denom)*100
   )
 
+#calculate mean for action and no action years across months
+#decided to drop June; in model they are the same and in field data I dropped this month
+modout_mean <- modout %>% 
+  #sum BPUE across taxa
+  group_by(month,scenario) %>% 
+  summarise(bpue = sum(bpue3),.groups = "drop") %>%  
+  #filter out June
+  filter(month>6) %>% 
+  #mean of monthly BPUE
+  group_by(scenario) %>% 
+  summarize(bpue_mean_mg = mean(bpue),.groups = "drop") %>% 
+  mutate(bpue_mean_ug = bpue_mean_mg*1000)
+#these values are an order of magnitude higher than the mean estimates I got from field data
+#field data for Marsh for 2017-2021: 4,233 ug/m3
+#presumably the models used total mass instead of carbon mass
+
 #look at range of percent change
 range(modout_sum_mo$perc_change)
 #0.00000 86.85506
 
+#summarize action and no action results across months
+modout_sum_mo <- modout %>%
+  group_by(scenario) %>% 
+  summarise(bpue = sum(bpue3)) %>% 
+  #convert long to wide
+  pivot_wider(names_from = scenario, values_from = bpue) %>% 
+  rename(na_sum = NoAct,ya_sum = SMSCG4ppt) %>% 
+  #calculate percent change
+  mutate(
+    num = ya_sum-na_sum
+    ,denom = (na_sum+ya_sum)/2
+    ,perc_change = (num/denom)*100
+  )
 
 #get data from zooper package-----------------------
 
@@ -310,18 +340,20 @@ zoop_bpue_all <- left_join(zoop_season,zoop_mass) %>%
 
 #look at summary stats for subsets of the Marsh data---------------
 #the two wet years 2017 and 2019 have a lot of variation, especially in June
+#just drop June
 #probably should do SD calculations with two approaches
-#min SD: drop wet years and June
-#max SD: keep everything
+#min SD: drop wet years 
+#max SD: all years
 
-#SD for the marsh across all months and years
+#SD for the marsh across all months (excluding June) and years
 #represents high SD option
 sd_marsh_tot <- zoop_bpue_all %>% 
-  filter(region=="Suisun Marsh") %>% 
+  filter(region=="Suisun Marsh" & month!="6")  %>% 
   summarize(
     mean = mean(bpue)
     ,sd = sd(bpue)
-    )
+  )
+#SD = 5053.081
 
 #SD for the marsh across all months and years
 #represents low SD option
@@ -331,7 +363,7 @@ sd_marsh_tot_min <- zoop_bpue_all %>%
     mean = mean(bpue)
     ,sd = sd(bpue)
   )
-#SD is about 1/3 that of SD with June and wet years included
+#SD = 3579.513
 
 #SD for the marsh across all months by year
 sd_marsh_year <- zoop_bpue_all %>% 
@@ -347,7 +379,7 @@ sd_marsh_year <- zoop_bpue_all %>%
 (p_marsh_yr <- ggplot(sd_marsh_year,aes(year,mean))+
   geom_bar(stat = "identity") +
   geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width = 0.2) +
-  labs(x="Year", y="zooplankton BPUE")+
+  labs(x="Year", y="zooplankton BPUE (µgC/m3)")+
   ggtitle("Suisun Marsh")
 )
 
@@ -366,12 +398,22 @@ sd_marsh_ym <- zoop_bpue_all %>%
     geom_bar(stat = "identity") +
     geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width = 0.2) +
     facet_wrap(.~year)+
-    labs(x="Year", y="zooplankton BPUE")+
+    labs(x="Year", y="zooplankton BPUE (µgC/m3)")+
     ggtitle("Suisun Marsh")
 )
 
 #Power analysis calculations ------------------------
 #estimate how many samples needed
+
+#No action mean monthly BPUE (ug/m3) based on modelling
+#NOTE: probably total mass, not carbon mass
+mean <- modout_mean %>% pull(bpue_mean_ug)
+
+#no action mean
+mean_no <- mean[1]
+
+#action mean
+mean_yes<-mean[2]
 
 #SD including all months and years
 sd_all <- sd_marsh_tot %>% pull(sd)
@@ -381,15 +423,22 @@ sd_sel <- sd_marsh_tot_min %>% pull(sd)
 
 #calculate Cohen's d based on Rosie's modeling results
 #assumes similar SD and same sample size
-sd_pooled <- sqrt((sd(endA)^2 + sd(endB)^2)/2)
-Cohens_d <- abs((mean(endA) - mean(endB)))/sd_pooled
+#SD is almost certainly not similar between action and no action years
+#sd_pooled <- sqrt((sd(A)^2 + sd(B)^2)/2)
+#Cohens_d <- abs((mean(A) - mean(B)))/sd_pooled
 
 #Glass' d is used if SD are different between groups
 #just use SD of control or the group with the smaller SD
-Glass_d <- abs((mean(endA) - mean(endB)))/sd(endA) 
 
+#effect size using low SD
+Glass_d_low_sd <- abs(mean_yes - mean_no)/sd_sel 
+
+#effect size using high SD
+Glass_d_high_sd <- abs(mean_yes - mean_no)/sd_all
+
+#low end sample size estimate
 power_t_test(n = NULL, # we want to know the min n
-             delta = , # effect size or Hedges’ g
+             delta = Glass_d_low_sd, # effect size 
              sd = sd_sel, # use the small SD estimate
              sig.level = 0.05, # ’alpha’, 0.05 is standard
              power = 0.80, # standard value
@@ -399,7 +448,8 @@ power_t_test(n = NULL, # we want to know the min n
              alternative = "two.sided", # either pop could grow faster; probably change this to one sided
              df.method = "welch", # corrects for unequal sd; for now assume equal SD 
              strict = TRUE) # default...but try w strict = FALSE
-
+#n=3,201,540, which is the number of samples needed in each group
+#this is probably wrong; look into power analysis more
 
 
 
