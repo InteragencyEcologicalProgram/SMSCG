@@ -9,8 +9,8 @@ library(lubridate) #working with dates
 library(zooper) #Bay-Delta zooplankton data
 library(sf) #spatial analysis
 library(deltamapr) #maps of the Bay-Delta
-#library(pwr) #power analysis
-library(MESS) #power analysis
+library(pwr) #power analysis
+#library(MESS) #power analysis
 
 #read in data--------------
 
@@ -38,6 +38,12 @@ zoop_bpue_rosie <- read_csv("./PowerAnalysis/Mesomicrotaxa.csv") %>%
 water_year <- read_csv("https://raw.githubusercontent.com/InteragencyEcologicalProgram/DroughtSynthesis/main/data/yearassignments.csv") %>% 
   clean_names() %>% 
   arrange(year)
+
+#format water year------------------
+
+wy <- water_year %>% 
+  select(year,yr_type) %>% 
+  glimpse()
 
 #format the zoop modeling data------------
 #results are divided by month and taxa
@@ -345,25 +351,65 @@ zoop_bpue_all <- left_join(zoop_season,zoop_mass) %>%
 #min SD: drop wet years 
 #max SD: all years
 
-#SD for the marsh across all months (excluding June) and years
+#all years: how many samples per year and month have been collected
+n_marsh_all_ym <- zoop_bpue_all %>% 
+  filter(region=="Suisun Marsh")  %>% 
+  group_by(year,month) %>% 
+  summarize(n = n(),.groups = "drop" ) %>% 
+  arrange(year,month)
+
+#plot n by month and year
+(p_marsh_ym_n <- ggplot(n_marsh_all_ym,aes(month,n))+
+    geom_bar(stat = "identity") +
+    facet_wrap(.~year)+
+    labs(x="Year", y="zooplankton samples")+
+    ggtitle("Suisun Marsh")
+)
+#sampling is relatively low during 2017 and 2018
+#mostly because DOP only samples in Oct during those years
+#for power analysis, just focus on 
+
+#all years: how many samples per year
+n_marsh_all_y <- zoop_bpue_all %>% 
+  filter(region=="Suisun Marsh")  %>% 
+  group_by(year) %>% 
+  summarize(n = n(),.groups = "drop" ) %>% 
+  arrange(year)
+#178-182 samples per year for 2019-2021
+
+#plot n by month and year
+(p_marsh_ym_n <- ggplot(n_marsh_all,aes(year,n))+
+    geom_bar(stat = "identity") +
+    labs(x="Year", y="zooplankton samples")+
+    ggtitle("Suisun Marsh")
+)
+
+#SD for the marsh across all months (July-Oct) and for 2019-2021
+#2019 adds a lot to SD because it was a wet year
 #represents high SD option
 sd_marsh_tot <- zoop_bpue_all %>% 
-  filter(region=="Suisun Marsh" & month!="6")  %>% 
+  filter(region=="Suisun Marsh" & month!="6" & year!="2017" & year!="2018")  %>% 
   summarize(
     mean = mean(bpue)
     ,sd = sd(bpue)
+    ,n = n()
   )
-#SD = 5053.081
+#SD = 5333
 
-#SD for the marsh across all months and years
+#SD for the marsh for just 2020 and 2021
+#sampling low in 2017 and 2018
+#2017 and 2018 had low sampling
+#2017 and 2019 were wet years with lots of variation
+#2018 was an action year
 #represents low SD option
 sd_marsh_tot_min <- zoop_bpue_all %>% 
-  filter(region=="Suisun Marsh" & year!="2017" & year!="2019" & month!="6") %>%  
+  filter(region=="Suisun Marsh" & (year=="2020" | year=="2021") & month!="6") %>%  
   summarize(
     mean = mean(bpue)
     ,sd = sd(bpue)
+    ,n=n()
   )
-#SD = 3579.513
+#SD = 3773
 
 #SD for the marsh across all months by year
 sd_marsh_year <- zoop_bpue_all %>% 
@@ -375,7 +421,7 @@ sd_marsh_year <- zoop_bpue_all %>%
     , .groups = 'drop'
   )
 
-#plot mean and SD
+#plot mean and SD for all months and years
 (p_marsh_yr <- ggplot(sd_marsh_year,aes(year,mean))+
   geom_bar(stat = "identity") +
   geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width = 0.2) +
@@ -404,22 +450,49 @@ sd_marsh_ym <- zoop_bpue_all %>%
 
 #Power analysis calculations ------------------------
 #estimate how many samples needed
+#estimate power with current sampling
 
-#No action mean monthly BPUE (ug/m3) based on modelling
-#NOTE: probably total mass, not carbon mass
-mean <- modout_mean %>% pull(bpue_mean_ug)
+#modelling results means 
+#NOTE: values are an order of magnitude higher than what I get from 
+#the field data
+#maybe because these are likely total mass instead of carbon mass
+mod_mean <- modout_mean %>% pull(bpue_mean_ug)
 
 #no action mean
-mean_no <- mean[1]
+mod_mean_no <- mod_mean[1]
 
 #action mean
-mean_yes<-mean[2]
+mod_mean_yes<-mod_mean[2]
 
-#SD including all months and years
+#difference in means
+mod_mean_diff <- mod_mean_yes - mod_mean_no
+
+#percent difference in means
+mod_mean_diff <-mod_mean_diff / ((mod_mean_yes + mod_mean_no)/2)
+#zoop with action is %59 higher than without action
+
+#Field data means 
+#use mean for selected years as no action mean (2020-2021)
+#then use the 59% difference to estimate the action year mean
+field_mean_sel_no <- 4023
+field_mean_sel_yes <-7390
+#mod_mean_diff2 <- (field_mean_sel_yes-field_mean_sel_no) / ((field_mean_sel_yes+field_mean_sel_no)/2)
+
+#Field data means 
+#use mean for all three years as no action mean (2019-2021)
+#then use the 59% difference to estimate the action year mean
+field_mean_all_no <- 4407
+field_mean_all_yes <-8080
+#mod_mean_diff2 <- (field_mean_all_yes-field_mean_all_no) / ((field_mean_all_yes+field_mean_all_no)/2)
+
+#SD for all years (2017-2021)
 sd_all <- sd_marsh_tot %>% pull(sd)
 
-#SD excluding June and wet years (2017, 2019)
+#SD excluding June and excludes wet years (2017, 2019)
 sd_sel <- sd_marsh_tot_min %>% pull(sd)
+
+#NOTE: there is an r package called 'effectsize' for calculating different 
+#types of effect sizes 
 
 #calculate Cohen's d based on Rosie's modeling results
 #assumes similar SD and same sample size
@@ -427,29 +500,61 @@ sd_sel <- sd_marsh_tot_min %>% pull(sd)
 #sd_pooled <- sqrt((sd(A)^2 + sd(B)^2)/2)
 #Cohens_d <- abs((mean(A) - mean(B)))/sd_pooled
 
-#Glass' d is used if SD are different between groups
-#just use SD of control or the group with the smaller SD
+#Glass' delta is used if SD are different between groups
+#use SD of control if applicable
+#if no control group, calculate Glass' delta twice
+#use the two different SD in the the two different calculations
 
-#effect size using low SD
-Glass_d_low_sd <- abs(mean_yes - mean_no)/sd_sel 
+#effect size using means and SD for 2020-2021
+#this is the low SD option
+glass_d_low_sd <- abs(field_mean_sel_yes - field_mean_sel_no)/sd_sel 
+#0.89 which is high effect size
 
-#effect size using high SD
-Glass_d_high_sd <- abs(mean_yes - mean_no)/sd_all
+#effect size using means and SD for 2019-2021
+#this is hte high SD option
+glass_d_high_sd <- abs(field_mean_all_yes - field_mean_all_no)/sd_all
+#0.69
 
-#low end sample size estimate
-power_t_test(n = NULL, # we want to know the min n
-             delta = Glass_d_low_sd, # effect size 
-             sd = sd_sel, # use the small SD estimate
-             sig.level = 0.05, # ’alpha’, 0.05 is standard
-             power = 0.80, # standard value
-             ratio = 1, #assuming balanced design
-             sd.ratio = 1, # assuming a balanced design
-             type = "two.sample", # type of t-test
-             alternative = "two.sided", # either pop could grow faster; probably change this to one sided
-             df.method = "welch", # corrects for unequal sd; for now assume equal SD 
-             strict = TRUE) # default...but try w strict = FALSE
-#n=3,201,540, which is the number of samples needed in each group
-#this is probably wrong; look into power analysis more
+#power analysis with effect size using low SD option
+pwr.t.test(power = 0.8 #general recommendation is 0.8-0.9
+           ,d= glass_d_low_sd #effect size
+           ,sig.level=.05 #standard alpha
+           ,type="two.sample"
+           ,alternative="two.sided"
+           )
+#21 samples per group
+
+#power analysis with effect size using high SD option
+pwr.t.test(power = 0.8 #general recommendation is 0.8-0.9
+           ,d= glass_d_high_sd #effect size
+           ,sig.level=.05 #standard alpha
+           ,type="two.sample"
+           ,alternative="two.sided"
+)
+#34 samples per group
+
+#power of detecting effect with our current sampling effort
+#low SD
+pwr.t.test(n = 180 #mean annual sample size for July - Oct during 2019-2021
+           ,d= glass_d_low_sd #effect size
+           ,sig.level=.05 #standard alpha
+           ,type="two.sample"
+           ,alternative="two.sided"
+)
+#power = 1
+
+#power of detecting effect with our current sampling effort
+#high SD
+pwr.t.test(n = 180 #mean annual sample size for July - Oct during 2019-2021
+          ,d= glass_d_high_sd #effect size
+           ,sig.level=.05 #standard alpha
+           ,type="two.sample"
+           ,alternative="two.sided"
+)
+#power = 0.9999974
+
+#could also plot sample size vs power
+
 
 
 
