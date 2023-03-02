@@ -10,7 +10,6 @@ library(zooper) #Bay-Delta zooplankton data
 library(sf) #spatial analysis
 library(deltamapr) #maps of the Bay-Delta
 library(pwr) #power analysis
-#library(MESS) #power analysis
 
 #read in data--------------
 
@@ -344,6 +343,7 @@ zoop_bpue_all <- left_join(zoop_season,zoop_mass) %>%
   glimpse()
 
 
+
 #look at summary stats for subsets of the Marsh data---------------
 #the two wet years 2017 and 2019 have a lot of variation, especially in June
 #just drop June
@@ -367,17 +367,24 @@ n_marsh_all_ym <- zoop_bpue_all %>%
 )
 #sampling is relatively low during 2017 and 2018
 #mostly because DOP only samples in Oct during those years
-#for power analysis, just focus on 
 
-#all years: how many samples per year
+#all years: how many samples per year and survey have been collected
+n_marsh_all_ys <- zoop_bpue_all %>% 
+  filter(region=="Suisun Marsh" )  %>% 
+  group_by(year,source) %>% 
+  summarize(n = n(),.groups = "drop" ) %>% 
+  arrange(year,source)
+
+#all years: how many samples per year (exclude June)
 n_marsh_all_y <- zoop_bpue_all %>% 
-  filter(region=="Suisun Marsh")  %>% 
+  filter(region=="Suisun Marsh"& month!="6")  %>% 
   group_by(year) %>% 
   summarize(n = n(),.groups = "drop" ) %>% 
   arrange(year)
-#178-182 samples per year for 2019-2021
+#178-182 samples per year for 2019-2021 (including June)
+#140-147 exluding June
 
-#plot n by month and year
+#plot n by year
 (p_marsh_ym_n <- ggplot(n_marsh_all,aes(year,n))+
     geom_bar(stat = "identity") +
     labs(x="Year", y="zooplankton samples")+
@@ -413,7 +420,7 @@ sd_marsh_tot_min <- zoop_bpue_all %>%
 
 #SD for the marsh across all months by year
 sd_marsh_year <- zoop_bpue_all %>% 
-  filter(region=="Suisun Marsh") %>% 
+  filter(region=="Suisun Marsh" & month!="6") %>% 
   group_by(year,yr_type) %>% 
   summarize(
     mean = mean(bpue)
@@ -448,6 +455,11 @@ sd_marsh_ym <- zoop_bpue_all %>%
     ggtitle("Suisun Marsh")
 )
 
+#histograms of SD and mean
+hist(sd_marsh_ym$mean)
+hist(sd_marsh_ym$sd)
+
+
 #Power analysis calculations ------------------------
 #estimate how many samples needed
 #estimate power with current sampling
@@ -472,24 +484,33 @@ mod_mean_diff <-mod_mean_diff / ((mod_mean_yes + mod_mean_no)/2)
 #zoop with action is %59 higher than without action
 
 #Field data means 
-#use mean for selected years as no action mean (2020-2021)
-#then use the 59% difference to estimate the action year mean
-field_mean_sel_no <- 4023
-field_mean_sel_yes <-7390
-#mod_mean_diff2 <- (field_mean_sel_yes-field_mean_sel_no) / ((field_mean_sel_yes+field_mean_sel_no)/2)
-
-#Field data means 
 #use mean for all three years as no action mean (2019-2021)
 #then use the 59% difference to estimate the action year mean
 field_mean_all_no <- 4407
 field_mean_all_yes <-8080
 #mod_mean_diff2 <- (field_mean_all_yes-field_mean_all_no) / ((field_mean_all_yes+field_mean_all_no)/2)
 
+#Field data means 
+#use mean for selected years as no action mean (2020-2021)
+#then use the 59% difference to estimate the action year mean
+field_mean_sel_no <- 4023
+field_mean_sel_yes <-7390
+
+#field data means
+#use just the 2019 wet year as high end estimate
+field_mean_wet_no <- 5174
+field_mean_wet_yes <- 11150
+
 #SD for all years (2017-2021)
 sd_all <- sd_marsh_tot %>% pull(sd)
 
 #SD excluding June and excludes wet years (2017, 2019)
 sd_sel <- sd_marsh_tot_min %>% pull(sd)
+
+#SD for 2019
+sd_wet <-sd_marsh_year %>% 
+  filter(year=="2019") %>% 
+  pull(sd)
 
 #NOTE: there is an r package called 'effectsize' for calculating different 
 #types of effect sizes 
@@ -515,6 +536,12 @@ glass_d_low_sd <- abs(field_mean_sel_yes - field_mean_sel_no)/sd_sel
 glass_d_high_sd <- abs(field_mean_all_yes - field_mean_all_no)/sd_all
 #0.69
 
+#effect size using means and SD for 2019
+#this is the highest SD option
+glass_d_highest_sd <- abs(field_mean_wet_yes - field_mean_wet_no)/sd_wet
+#0.80; actually effect size is between other two so don't need to try this
+#in power analysis
+
 #power analysis with effect size using low SD option
 pwr.t.test(power = 0.8 #general recommendation is 0.8-0.9
            ,d= glass_d_low_sd #effect size
@@ -535,7 +562,7 @@ pwr.t.test(power = 0.8 #general recommendation is 0.8-0.9
 
 #power of detecting effect with our current sampling effort
 #low SD
-pwr.t.test(n = 180 #mean annual sample size for July - Oct during 2019-2021
+pwr.t.test(n = 140 #mean annual sample size for July - Oct during 2019-2021
            ,d= glass_d_low_sd #effect size
            ,sig.level=.05 #standard alpha
            ,type="two.sample"
@@ -545,7 +572,7 @@ pwr.t.test(n = 180 #mean annual sample size for July - Oct during 2019-2021
 
 #power of detecting effect with our current sampling effort
 #high SD
-pwr.t.test(n = 180 #mean annual sample size for July - Oct during 2019-2021
+pwr.t.test(n = 140 #mean annual sample size for July - Oct during 2019-2021
           ,d= glass_d_high_sd #effect size
            ,sig.level=.05 #standard alpha
            ,type="two.sample"
@@ -553,7 +580,15 @@ pwr.t.test(n = 180 #mean annual sample size for July - Oct during 2019-2021
 )
 #power = 0.9999974
 
-#could also plot sample size vs power
+#how small of an effect size can we detect with current sampling
+pwr.t.test(n = 140 #mean annual sample size for July - Oct during 2019-2021
+           ,power = 0.8 #standard value
+           ,sig.level=.05 #standard alpha
+           ,type="two.sample"
+           ,alternative="two.sided"
+)
+#d = 0.336015 which is fairly small
+
 
 
 
