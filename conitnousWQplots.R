@@ -373,7 +373,8 @@ ggplot(filter(WQmeanW, Analyte == "Salinity", StationID == "BDL", Year == 2022),
 #2022 plot
 
 Tulered = read_csv("Data/2022-08-09_TuleRedBreach_2022-09-21 (formatted).csv") %>%
-  mutate(time = mdy_hm(time), qaqc_flag_id = "G")
+  mutate(time = mdy_hm(time), qaqc_flag_id = "G") %>%
+  filter(!(analyte_name == "Specific Conductance" & value <15000))
 WQ2022 = read_csv("Data/SMSG Data 2022.csv") 
   
 
@@ -400,7 +401,7 @@ WQall = bind_rows(Tulered, WQ2022, WQp) %>%
 WQmean = WQall %>%
   mutate(Date = date(time)) %>%
   group_by(Date, cdec_code, analyte_name) %>%
-  summarize(Value = mean(value, na.rm = T))
+  summarize(Value = mean(value, na.rm = T)) 
 
 
 ggplot(WQmean, aes(x = Date, y = Value, color = cdec_code)) + 
@@ -421,19 +422,45 @@ ggplot(filter(WQmean, analyte_name == "Turbidity", !cdec_code %in% c("CSE", "MSL
   geom_point(aes(color = cdec_code), size = 1)   + theme_bw() + 
   geom_line(aes(color = cdec_code))+
   scale_color_discrete(guide = NULL)+
+  geom_hline(yintercept = 12, color = "red", linetype = 2)+
   facet_wrap(~cdec_code, scales = "free_y")+
   ylab("Turbidity (NTU)") + xlab("Date")+
+  coord_cartesian(xlim = c(ymd("2022-06-01", "2022-10-31")), ylim = c(0,150))
+
+test = filter(WQmean, analyte_name == "Turbidity")
+test2 = filter(WQmean, analyte_name == "Turbidity" & Value >150)
+
+ggplot(filter(WQmean, analyte_name == "Specific Conductance", !cdec_code %in% c("CSE", "MSL", "MAL", "NSL", "RVB")), aes(x = Date, y = Value)) + 
+  geom_point(aes(color = cdec_code), size = 1)   + theme_bw() + 
+  geom_line(aes(color = cdec_code))+
+  #scale_color_discrete(guide = NULL)+
+  #geom_hline(yintercept = 23.9, linetype = 2, color = "red")+
+ # facet_wrap(~cdec_code)+
+  ylab("Specific Conductance") + xlab("Date")+
   coord_cartesian(xlim = c(ymd("2022-06-01", "2022-10-31")))
 
+salinity = filter(WQmean, analyte_name == "Specific Conductance") %>%
+  mutate(Salinity = ec2pss(Value/1000, 22))
 
-
-ggplot(filter(WQmean, analyte_name == "Water Temperature", !cdec_code %in% c("CSE", "MSL")), aes(x = Date, y = Value)) + 
+ggplot(filter(salinity, !cdec_code %in% c("CSE", "MSL")),
+       aes(x = Date, y = Salinity)) + 
   geom_point(aes(color = cdec_code), size = 1)   + theme_bw() + 
   geom_line(aes(color = cdec_code))+
   scale_color_discrete(guide = NULL)+
-  geom_hline(yintercept = 23.9, linetype = 2, color = "red")+
-  facet_wrap(~cdec_code)+
-  ylab("Tempearture (c)") + xlab("Date")+
+  geom_hline(yintercept = 6, linetype = 2, color = "red")+
+   facet_wrap(~cdec_code)+
+  ylab("Saliinty") + xlab("Date")+
+  coord_cartesian(xlim = c(ymd("2022-06-01", "2022-10-31")))
+
+
+#just plot beldon's for a presentation
+ggplot(filter(salinity, cdec_code %in% c("BDL")),
+       aes(x = Date, y = Salinity)) + 
+  geom_point( size = 1)   + theme_bw() + 
+  geom_line()+
+  scale_color_discrete(guide = NULL)+
+  geom_hline(yintercept = 6, linetype = 2, color = "red")+
+  ylab("Daily Mean Salinity") + xlab("Date")+
   coord_cartesian(xlim = c(ymd("2022-06-01", "2022-10-31")))
 
 #temperature
@@ -470,3 +497,13 @@ ggplot(filter(Tempmean, analyte_name == "Water Temperature", !cdec_code %in% c("
   ylab("Tempearture (C)") + xlab("Date")+
   coord_cartesian(xlim = c(ymd("2022-06-01", "2022-10-31")))
 
+###############################################################
+#calculate number of days for each station over 23.9
+
+Temp2 = Tempall %>%
+  mutate(Date = date(time), Month = month(time)) %>%
+  group_by(Date, Month, cdec_code) %>%
+  summarize(Max = max(value, na.rm = T), Meantemp = mean(value, na.rm = T))
+
+daysabove = group_by(Temp2, cdec_code) %>%
+  summarize(n = n(), stress = length(Max[which(Max >23.9)]), stressmean = length(Meantemp[which(Meantemp >23.9)]))
