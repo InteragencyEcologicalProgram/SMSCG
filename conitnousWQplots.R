@@ -242,7 +242,7 @@ ggplot(WQx, aes(x = DateTime, y = Value2, color = StationID)) +
   facet_wrap(~Analyte, scales = "free_y")+
   geom_line()   + theme_bw()       
 
-
+#look at each parameter individually
 ggplot(filter(WQx, Analyte == "Turbidity"), aes(x = DateTime, y = Value2, color = StationID)) + 
   coord_cartesian(ylim = c(0, 250)) +
   geom_line()   + theme_bw()       +
@@ -255,6 +255,7 @@ ggplot(filter(WQx, Analyte == "Chlorophyll"), aes(x = DateTime, y = Value2, colo
   geom_hline(yintercept = 10, color = "red", linetype = "dashed", size = 1)+ 
   ylab("Chlroophyll ug/L") + xlab("Date")
 
+#see where we had really high clorophyll
 test = filter(WQx, Analyte == "Chlorophyll", Value2 >50)
 
 test = filter(WQ, StationID == "GZM"&DateTime > ymd("2022-08-10") & DateTime < ymd("2022-08-20"))
@@ -305,6 +306,7 @@ ggplot(filter(WQmean, Analyte == "Chlorophyll"), aes(x = Date, y = Value2)) +
                      labels = c("Belden's Landing", "Grizzly Bay Buoy", "Grizly Bay Pile", "Mouth of Monetzuma", "National Steel"))+
   ylab("Chlorophyll (ug/L") + xlab("Date")
 
+#look up water stage at each point
 stage = cdec_query(c("GZB", "GZM", "GZL", "BDL", "NSL"), sensors = 1,
                 start.date = as.Date("2022-06-01"), end.date = as.Date("2022-09-26"))
 
@@ -408,8 +410,10 @@ ggplot(WQmean, aes(x = Date, y = Value, color = cdec_code)) +
   facet_wrap(~analyte_name, scales = "free_y")+
   geom_line(size = 1)   + theme_bw() 
 
+#what's going on with GZL chlorophyll?
 test = filter(WQmean, cdec_code == "GZL", analyte_name == "Chlorophyll")
 
+#just the clorophyll plot
 ggplot(filter(WQmean, analyte_name == "Chlorophyll", !cdec_code %in% c("CSE", "TRB", "MSL")), aes(x = Date, y = Value)) + 
   geom_point(aes(color = cdec_code), size = 1)   + theme_bw() + 
   geom_line(aes(color = cdec_code))+

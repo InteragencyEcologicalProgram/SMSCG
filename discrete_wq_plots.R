@@ -112,7 +112,7 @@ Discall%>%
   summarize(Maxturb = max(turbidity, na.rm = t), MeanCHL = mean(turbidity, na.rm = T))
 
 
-ggplot(Discall= region, y = secchi_depth, fill = region)) + geom_boxplot()+
+ggplot(Discall,aes(y = secchi_depth, fill = region)) + geom_boxplot()+
   facet_wrap(~Month, nrow = 1) +
   scale_fill_discrete(guide = NULL)+
   theme_bw()+ theme(axis.text.x = element_text(angle = 90, vjust = .5, hjust = 1))+
@@ -160,3 +160,8 @@ Temps = Discall %>%
   summarize(Temp = max(temperature)) %>%
   group_by(region) %>%
   summarize(n = n(), stress = length(Temp[which(Temp >23.9)]))
+
+###############################################################
+#compare grizzly bay bouys
+
+
