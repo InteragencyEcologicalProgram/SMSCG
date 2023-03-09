@@ -1,0 +1,16 @@
+program,station,location,smscg_region,longitude,latitude
+DWR,BDL,Montezuma Slough at Belden’s Landing,East Marsh,-121.9708,38.1869
+DWR,MSL,Montezuma Slough near SMSCG Facility,East Marsh,-121.8872,38.0934
+DWR,NSL,Montezuma Slough at National Steel,East Marsh,-121.8881,38.1221
+DWR,GZB,Grizzly Bay buoy ,Grizzly Bay,-122.0154125,38.1125669
+DWR,GZL,Grizzly Bay piling ,Grizzly Bay,-122.038117,38.12425
+DWR,GZM,Western mouth of Montezuma Slough,Grizzly Bay,-122.0489879,38.1301321
+DWR,PCT,Port Chicago,Grizzly Bay,-121.999971,38.056788
+DWR,RYC,Ryer Island,Grizzly Bay,-121.995878,38.083971
+DWR,TuRed,Tule Red Restoration Site near breach,Grizzly Bay,-121.992809,38.1349216
+DWR,CSE,Sacramento River at Collinsville,River,-121.850123,38.073981
+USBR,EMM,Sacramento River at Emmaton,River,-121.738924,38.084272
+DWR,MAL,Sacramento River at Mallard Island,River,-121.92009,38.042805
+DWR,GOD,Suisun Slough at Godfather,West Marsh,-122.0812,38.1238
+DWR,HUN,Montezuma Slough at Hunter Cut,West Marsh,-122.0527,38.156
+DWR,VOL,Suisun Slough at Volanti Slough,West Marsh,-122.046,38.181

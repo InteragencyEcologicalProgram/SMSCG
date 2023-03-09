@@ -10,6 +10,7 @@
 ## 3) Add regression coefficients (step 2) to clam measuring data to get biomass per size class
 ## 4) Add temperature, filtration, and density to get filtration and grazing per size class
 ## 5) Output = a) summarized table of biomasses, grazing, and filtration rate, w/ species (Corbicula, Potamocorbula, and totals) turned into wide format ready for R or GIS analysis, and b) rearranged and renamed for EDI
+## 6) Average the values for GIS mapping.
 
 library(tidyverse)
 library(readxl) # lets us read excels directly, instead of needing to generate CSVs.
@@ -109,7 +110,7 @@ modelmass2 <- modelmass%>%  #includes year as variable
   ungroup()
 
 str(modelmass2)
-view(modelmass2)
+#view(modelmass2)
 
 # modelmass3 <- modelmass%>%
 #   group_by(station, month, species) %>% ## grouping all years together, as a comparison
@@ -121,7 +122,7 @@ view(modelmass2)
 # view(modelmass3)
 
 
-fwrite(modelmass2,"Products/SMSCG clam length-biomass regressions, 2018-2021.csv", row.names=FALSE)    
+#fwrite(modelmass2,"./EDI/data_output/SMSCG clam length-biomass regressions, 2018-2021.csv", row.names=FALSE)    
 
 ##########################
 # Step 3
@@ -185,11 +186,12 @@ clams_by_grab<- sizes5%>%
             do_avg_grab = sum((individuals*Do_mm)/tot_clams_grab), ## weighted averages of siphon diameters for each grab
             density_m2_grab=(tot_clams_grab/0.052), ## density by m2
             afdm_g_m2_grab=((sum(afdm_perindiv * individuals))/0.052), ## afdm by m2
-            filt_m3_m2_grab=(((sum(afdm_perindiv * individuals * filtration_rate))/0.052)*.001), #maximum filtration by m2
-            graze_m3_m2_grab= filt_m3_m2_grab*1*(1-(3/((100/sqrt(density_m2_grab))/do_avg_grab)))*.001
+            filt_m3_m2_grab=(((sum(afdm_perindiv * individuals * filtration_rate))/0.052)*.001), # maximum filtration by m2, multiply by 0.001 to convert from L to m3
+            graze_m3_m2_grab= filt_m3_m2_grab*1*(1-(3/((100/sqrt(density_m2_grab))/do_avg_grab))) 
   )%>%
   ungroup()
-str(clams_by_grab)            
+str(clams_by_grab) 
+head(clams_by_grab)
 view(clams_by_grab)
 
 # And now average multiple grabs per event
@@ -203,6 +205,7 @@ clams_by_event<- clams_by_grab%>%
   )%>%
   ungroup()
 str(clams_by_event)
+head(clams_by_event)
 # view(clams_by_event)
 
 clam_wide = clams_by_event%>% #specify the data set you want to pivot
@@ -224,7 +227,7 @@ clam_wide$Total_grazing_rate_m3_per_m2_per_day <-
   clam_wide$`graze_m3_m2_Corbicula fluminea`+clam_wide$`graze_m3_m2_Potamocorbula amurensis`
 
   
-view(clam_wide)
+#view(clam_wide)
 str(clam_wide)
 
 ## Getting data ready for analysis, step 1: adding data from station and field 
@@ -339,8 +342,27 @@ clam_wide4 <- select(clam_wide3,
                     Habitat_type,
                     Done_all_years
 )
+
+
 str(clam_wide4)
 
-fwrite(clam_wide4,"./EDI/data_output/SMSCG_clam_EDI_2018_2021.csv", row.names=FALSE)
+#fwrite(clam_wide4,"./EDI/data_output/SMSCG_clam_EDI_2018_2021_corr.csv", row.names=FALSE)
 
+###########################################################################
 
+## 6) Average the 2018-2022 values (clam and enviromnent) for GIS mapping
+
+clam_wide4 = read.csv("./EDI/data_output/SMSCG_clam_EDI_2018_2021_corr.csv")
+str(clam_wide4)
+
+clams_avg<- clam_wide4%>%
+  filter (Done_all_years =="yes") %>%
+  group_by(Station, Station_alias, North_decimal_degrees, West_decimal_degrees, Habitat, Habitat_type) %>%
+  summarise(across(where(is.numeric), list(mean=mean), na.rm=TRUE))%>%
+  select(1:6,8:38) %>%
+ungroup()
+
+str(clams_avg)
+head(clams_avg)
+
+#fwrite(clams_avg,"./EDI/data_output/SMSCG_clam_EDI_2018_2021_AVG.csv", row.names=FALSE)
