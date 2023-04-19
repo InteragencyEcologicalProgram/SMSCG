@@ -28,88 +28,137 @@ library(readxl) #importing data from excel files
 
 # Read in and combine the EMP data----------------------------------------------
 
+#let's try to read in 2020-2022 all at once
+#read in all columns as text; fix column types later
 
-#Create character vectors of all 2020 EMP phytoplankton files (n = 5) 
-phyto_emp_20 <- dir(path = "EDI/data_input/phytoplankton/2020", pattern = "EMP", full.names = T)
+#Create character vectors of EMP phytoplankton files for all years  
+phyto_files_emp <- dir(path = "EDI/data_input/phytoplankton", pattern = "EMP", full.names = T, recursive=T)
 
-#Combine all of the 2020 emp sample data files into a single df
-#specify format of columns because column types not automatically read consistently among files
-column_type20<-c(rep("text",4),rep("numeric",10),rep("text",5),rep("numeric",5),rep("text",5)
-               ,rep("numeric",10),"text",rep("numeric",26)) 
-
-phytoplankton_emp_20 <- phyto_emp_20 %>% 
+phytoplankton_emp <- phyto_files_emp %>% 
   #set_names() grabs the file names
   set_names() %>%  
   #reads in the files, .id adds the file name column
-  map_dfr(~read_excel(.x, col_types = column_type20), .id = "source") %>% 
-  #reduce file name to just the needed info (ie, survey)
-  mutate(collected_by = as.factor(str_sub(source,25,27))) %>% 
+  map_dfr(~read_excel(.x, col_types = "text"), .id = "source") %>% 
+  #specify the survey
+  mutate(collected_by = as.factor("EMP")) %>% 
+  clean_names() %>% 
   glimpse()
+#succeeded in combining all the sample files
+#but date and time are in weird format
+#columns that don't match across files get kicked to back of data set
+#sampling depth column has three variations: "Depth (m)", "Depth (ft.)", "Depth (ft)"
+#after 2020: 'Full Code' is added as column
+#after 2021: Unit Abundance becomes Unit Abundance (# of Natural Units); Number of cells per unit becomes Total Number of Cells
+
+#Create character vectors of all 2020 EMP phytoplankton files (n = 5) 
+#phyto_emp_20 <- dir(path = "EDI/data_input/phytoplankton/2020", pattern = "EMP", full.names = T)
+
+#Combine all of the 2020 emp sample data files into a single df
+#specify format of columns because column types not automatically read consistently among files
+#column_type20<-c(rep("text",4),rep("numeric",10),rep("text",5),rep("numeric",5),rep("text",5)
+#               ,rep("numeric",10),"text",rep("numeric",26)) 
+
+#phytoplankton_emp_20 <- phyto_emp_20 %>% 
+  #set_names() grabs the file names
+ # set_names() %>%  
+  #reads in the files, .id adds the file name column
+ # map_dfr(~read_excel(.x, col_types = column_type20), .id = "source") %>% 
+  #reduce file name to just the needed info (ie, survey)
+ # mutate(collected_by = as.factor(str_sub(source,25,27))) %>% 
+ # glimpse()
 #succeeded in combining all the sample files
 #but date and time are in weird format
 #also the sampling depth column has three variations: "Depth (m)", "Depth (ft.)", "Depth (ft)"
 #so when the files are combined, there are two extra depth columns added
 
 
-#Create character vectors of all 2021 EMP phytoplankton files (n = 5) and then for the DFW file
+#Create character vectors of all 2021-2022 EMP phytoplankton files (n = 5) and then for the DFW file
 #doing this separately from 2020 because there's an extra column in these files
 #the "Full Code" column is the FLIMS code; relevant to EMP samples but not DFW samples
-phyto_emp_21 <- dir(path = "EDI/data_input/phytoplankton/2021", pattern = "EMP", full.names = T)
+#phyto_emp_21 <- dir(path = "EDI/data_input/phytoplankton/2021", pattern = "EMP", full.names = T)
+#phyto_emp_rec <- dir(path = "EDI/data_input/phytoplankton/recent", pattern = "EMP", full.names = T,recursive = T)
 
-#Combine all of the 2021 sample data files into a single df
+
+#Combine all of the 2021-2022 sample data files into a single df
 #specify format of columns because column types not automatically read consistently among files
 #accounts for extra column in 2021 files
-column_type21<-c(rep("text",5),rep("numeric",10),rep("text",5),rep("numeric",5),rep("text",5)
-                 ,rep("numeric",10),"text",rep("numeric",26)) 
+#column_type21<-c(rep("text",5),rep("numeric",10),rep("text",5),rep("numeric",5),rep("text",5)
+ #                ,rep("numeric",10),"text",rep("numeric",26)) 
+#column_type_rec<-c(rep("text",5),rep("numeric",10),rep("text",5),rep("numeric",5),rep("text",5)
+#                 ,rep("numeric",10),"text",rep("numeric",26)) 
 
-phytoplankton_emp_21 <- phyto_emp_21 %>% 
+
+#phytoplankton_emp_rec <- phyto_emp_rec %>% 
   #set_names() grabs the file names
-  set_names() %>%  
+  #set_names() %>%  
   #reads in the files, .id adds the file name column
-  map_dfr(~read_excel(.x, col_types = column_type21), .id = "source") %>% 
+  #map_dfr(~read_excel(.x, col_types = column_type_rec), .id = "source") %>% 
   #reduce file name to just the needed info (ie, survey)
-  mutate(collected_by = as.factor(str_sub(source,25,27))) %>% 
-  glimpse()
+  #mutate(collected_by = as.factor(str_sub(source,25,27))) %>% 
+  #glimpse()
 #succeeded in combining all the sample files
 #but date and time are in weird format
 
 #combine the 2020 and 2021 EMP data sets
 #bind_rows can handle the fact that not all columns will match between data sets
-phytoplankton_emp <- bind_rows(phytoplankton_emp_20,phytoplankton_emp_21) %>% 
-  clean_names() %>% 
-  glimpse()
+#phytoplankton_emp <- bind_rows(phytoplankton_emp_20,phytoplankton_emp_21) %>% 
+#  clean_names() %>% 
+#  glimpse()
 #the three non-matching columns get kicked to the end of the combined df
 
 
 # Read in and combine the DFW data----------------------------------------------
 
-#Create character vectors of all 2020 DFW phytoplankton files 
-phyto_dfw_20 <- dir(path = "EDI/data_input/phytoplankton/2020", pattern = "DFW", full.names = T)
+#Create character vectors of DFW phytoplankton files for all years  
+phyto_files_dfw <- dir(path = "EDI/data_input/phytoplankton", pattern = "DFW", full.names = T, recursive=T)
 
-phytoplankton_dfw_20 <- phyto_dfw_20 %>% 
+phytoplankton_dfw <- phyto_files_dfw %>% 
   #set_names() grabs the file names
   set_names() %>%  
   #reads in the files, .id adds the file name column
-  map_dfr(~read_excel(.x, col_types = column_type20), .id = "source") %>% 
+  map_dfr(~read_excel(.x, col_types = "text"), .id = "source") %>% 
+  #specify the survey
+  mutate(collected_by = as.factor("DFW")) %>% 
+  clean_names() %>% 
   glimpse()
+#succeeded in combining all the sample files
+#but date and time are in weird format
+#columns that don't match across files get kicked to back of data set
+#sampling depth column has three variations: "Depth (m)", "Depth (ft.)", "Depth (ft)"
+#after 2020: 'Full Code' is added as column
+#after 2021: Unit Abundance becomes Unit Abundance (# of Natural Units); Number of cells per unit becomes Total Number of Cells
+
+unique(phytoplankton_dfw$station_code)
+#why is there an NA for station code?
+
+
+#Create character vectors of all 2020 DFW phytoplankton files 
+#phyto_dfw_20 <- dir(path = "EDI/data_input/phytoplankton/2020", pattern = "DFW", full.names = T)
+
+#phytoplankton_dfw_20 <- phyto_dfw_20 %>% 
+  #set_names() grabs the file names
+  #set_names() %>%  
+  #reads in the files, .id adds the file name column
+  #map_dfr(~read_excel(.x, col_types = column_type20), .id = "source") %>% 
+  #glimpse()
 
 #Create character vectors of all 2020 EMP phytoplankton files (n = 5) and then for the DFW file
 #doing this separately from 2020 because there's an extra column in these files
 #the "Full Code" column is the FLIMS code; relevant to EMP samples but not DFW samples
-phyto_dfw_21 <- dir(path = "EDI/data_input/phytoplankton/2021", pattern = "DFW", full.names = T)
+#phyto_dfw_21 <- dir(path = "EDI/data_input/phytoplankton/2021", pattern = "DFW", full.names = T)
 
-phytoplankton_dfw_21 <- phyto_dfw_21 %>% 
+#phytoplankton_dfw_21 <- phyto_dfw_21 %>% 
   #set_names() grabs the file names
-  set_names() %>%  
+  #set_names() %>%  
   #reads in the files, .id adds the file name column
-  map_dfr(~read_excel(.x, col_types = column_type21), .id = "source") %>% 
-  glimpse()
+  #map_dfr(~read_excel(.x, col_types = column_type_rec), .id = "source") %>% 
+  #glimpse()
 
-#combine the 2020 and 2021 EMP data sets
+#combine the 2020 and 2021 DFW data sets
 #bind_rows can handle the fact that not all columns will match between data sets
-phytoplankton_dfw <- bind_rows(phytoplankton_dfw_20,phytoplankton_dfw_21) %>% 
-  clean_names() %>% 
-  glimpse()
+#phytoplankton_dfw <- bind_rows(phytoplankton_dfw_20,phytoplankton_dfw_21) %>% 
+  #clean_names() %>% 
+  #glimpse()
 
 
 # Read in the other files----------------
@@ -149,9 +198,9 @@ phyto_emp_stations <- phytoplankton_emp %>%
          ,TRUE ~ as.character(station_code)
                   ))  %>% 
   #add column that will be prefix to station names
-  add_column(station_pre = "EMP") %>% 
+  #add_column(station_pre = "EMP") %>% 
   #add prefix to station names
-  unite('station', c(station_pre,station_corr),sep="_",remove=F) %>% 
+  unite('station', c(collected_by,station_corr),sep="_",remove=F) %>% 
   #drop the June samples
   filter(month!=6) %>% 
   #drop one sample that was submitted to BSA empty
@@ -260,6 +309,7 @@ phyto_dfw_combo <- phyto_dfw %>%
 #combine EMP and DFW sample data
 phytoplankton <- bind_rows(phyto_emp,phyto_dfw) %>% 
   glimpse()
+#NOTE: need to deal with some column name inconsistencies among years now
 
 phyto_cleanest <- phytoplankton %>% 
   #rename the confusingly incorrectly name column
@@ -439,13 +489,22 @@ phyto_final<-phyto_tax %>%
 #write the formatted data as csv 
 #write_csv(phyto_final,file = "EDI/data_output/SMSCG_phytoplankton_formatted_2020-2021.csv")
 
+#summary stats----------------
+
+range(phyto_final$date)
+
+
+
+
 #write version of data set that includes only the samples collected by DFW--------
 #this is for the phytoplankton synthesis effort
 
 #look at number of rows associated with DFW vs EMP
 phyto_surv_sum <- phyto_tax %>% 
-  group_by(survey) %>% 
+  group_by(collected_by) %>% 
   summarize(n = n())
+#used to be group by "survey" but there is no longer a column called that
+#also there is a category of collected by that is "kto" which doesn't look right
 
 #look at number of samples associated with DFW vs EMP
 phyto_surv_sum2 <- phyto_tax %>%
