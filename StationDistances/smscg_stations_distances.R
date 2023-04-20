@@ -1,11 +1,14 @@
 #Suisun Marsh Salinity Control Gate Action
 #calculate distances along waterways among monitoring stations, including salinity control gates
 
-#Nick Rasmussen 12/27/2022
+#Nick Rasmussen 4/20/2023
+
+#Notes-----------
+#this script doesn't include WQ because the EDI station file was missing a bunch of WQ stations
+#see SMSCG_DataFormatting_Stations_WQ.R
 
 #To do list-----------
-#need to add a bunch of wq stations missing from the EDI file; started this offline
-#also would be good to spot check the distances 
+#would be good to spot check the distances 
 
 #required packages
 library(sf)
@@ -17,7 +20,7 @@ library(deltamapr)
 #https://portal.edirepository.org/nis/mapbrowse?packageid=edi.876.5
 stn_smscg <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.876.5&entityid=877edca4c29ec491722e9d20a049a31c")
 
-#add geometry column to station dataframe------
+#EDI: add geometry column to station dataframe------
 
 #create geometry column in station data frame
 stn_smscg_4326 <- stn_smscg %>%
@@ -50,10 +53,10 @@ bbox_stn <- st_bbox(st_buffer(stn_smscg_4326,2000))
 
 #just create list of sonde stations to use for filtering stations
 #NOTE: there are a bunch of stations missing from the EDI file
-sondes <- c("BDL","CSE","GZL","HUN","MSL","NSL")
+#sondes <- c("BDL","CSE","GZL","HUN","MSL","NSL")
 
-stn_wq <- stn_smscg_4326 %>% 
-  filter(StationCode %in% sondes)
+#stn_wq <- stn_smscg_4326 %>% 
+#  filter(StationCode %in% sondes)
 
 #zoop: overlaps with phyto but not wq or clams
 #phyto: a subset of zooplankton stations
@@ -119,11 +122,11 @@ Delta_4326 <- st_transform(Delta, crs = 4326)
 
 
 #sonde stations 
-distance_wq<-Waterdist(Water_map = Delta_4326
-                          , Points = stn_wq
-                          , Latitude_column = Latitude
-                          ,Longitude_column = Longitude
-                          , PointID_column = StationCode)
+#distance_wq<-Waterdist(Water_map = Delta_4326
+#                          , Points = stn_wq
+#                          , Latitude_column = Latitude
+#                          ,Longitude_column = Longitude
+#                          , PointID_column = StationCode)
 #NOTE: BDL coordinates were also used for GZL, which needs to be corrected
 #the updated metadata document in progress fixes this
 
@@ -151,15 +154,15 @@ distance_clam<-Waterdist(Water_map = Delta_4326
 #and delete duplicate comparisons and zero distances (ie, comparisons between station and itself) 
 
 #wq
-library(reshape)
+#library(reshape)
 #this transposes the upper triangle of your table into three columns 
-distance_wq_format <- melt(distance_wq)[melt(upper.tri(distance_wq))$value,]
-names(distance_wq_format) <- c("station1","station2","distance_m")
+#distance_wq_format <- melt(distance_wq)[melt(upper.tri(distance_wq))$value,]
+#names(distance_wq_format) <- c("station1","station2","distance_m")
 
 #wq
 #NOTE: this is incomplete because there are stations missing
-distance_wq_df <- as.data.frame(distance_wq) %>% 
-  rownames_to_column("station")
+#distance_wq_df <- as.data.frame(distance_wq) %>% 
+#  rownames_to_column("station")
 
 #write_csv(distance_wq_df,"./StationDistances/station_distances_m_wq.csv")
 
