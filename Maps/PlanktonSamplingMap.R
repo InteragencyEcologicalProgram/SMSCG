@@ -1,11 +1,6 @@
 #Suisun Marsh Salinity Control Gate Action
 #Biological Monitoring
-#2022 phytoplankton and zooplankton station map
-#only show statons sampled by DFW
-
-#To do list
-#add rest of EMP stations to map for study plan
-#NZ032, D7, D8, D10, D4, D22
+#2022 phytoplankton and zooplankton station maps
 
 #load packages
 library(tidyverse) #suite of data science tools
