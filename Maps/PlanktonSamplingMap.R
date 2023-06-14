@@ -16,6 +16,10 @@ library(ggrepel) #nonoverlapping point labels
 #get station names and coordinates from EDI
 stations_all <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.876.3&entityid=877edca4c29ec491722e9d20a049a31c")
 
+#file that indicates which survey samples which stations (STN vs FMWT)
+survey_phyto <- read_csv("./Maps/smscg_phyto_station_surveys.csv")
+
+
 #look at WW_Delta base map CRS
 st_crs(WW_Delta)
 #CRS = NAD83, which is different than our sample data points
@@ -142,6 +146,19 @@ stations_plan_cat$Type <- factor(stations_plan_cat$Type
                         , levels=c(
                           'Z','B'))
 
+#make version of station file with just those with phyto sampling
+stations_phyto <- stations %>% 
+  #add column to indicate which survey sample which stations
+  left_join(survey_phyto) %>% 
+  filter(Phyto=="Y")
+
+#make separate data sets for STN and FMWT to make separate maps
+stations_phyto_stn <- stations_phyto %>% 
+  filter(Survey == "S" | Survey == "B")
+
+stations_phyto_fmwt <- stations_phyto %>% 
+  filter(Survey == "F" | Survey == "B")
+
 #Prepare shapefile for adding regions to map--------------
 
 #look at coordinate reference system (CRS) of regions and basemap
@@ -198,7 +215,7 @@ region_focal <- subregions_4326 %>%
 #overall this matches up pretty well with where our focal stations are
 
 
-#DFW map------------------
+#DFW sites phyto and zoop map------------------
 ggplot()+
   #plot waterways base layer
   geom_sf(data= WW_Delta, fill= "skyblue3", color= "black") +
@@ -243,6 +260,101 @@ ggplot()+
   annotate("text", label = "2023 SMSCG Plankton Stations", x = -121.80, y = 38.20, size = 4)
 #ggsave(file = "./Maps/SMSCG_Plankton_Map_Field_2023.png",type ="cairo-png", scale=2.5, dpi=300)
 
+#DFW sites phyto only map------------------
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= WW_Delta, fill= "skyblue3", color= "black") +
+  #plot station locations using different shapes and colors for different types of stations
+  geom_sf(data= stations_phyto, fill = "#7A378B", shape = 22, color= "black",  size= 3.5)+
+  #add point for SMSCG 
+  geom_sf(data= smscg, fill = "black", shape = 23, color= "black",  size= 4.5)+
+  #add station names as labels and make sure they don't overlap each other or the points
+  geom_label_repel(data = stations_phyto, aes(x=Longitude,y=Latitude, label=Station_label) #label the points
+                   #,nudge_x = -0.008, nudge_y = 0.008 #can specify the magnitude of nudges if necessary
+                   , size = 3 #adjust size and position relative to points
+                   ,inherit.aes = F #tells it to look at points not base layer
+  ) + 
+  #add label for SMSCG
+  geom_label_repel(data = smscg, aes(x=Longitude,y=Latitude, label=Station) #label the points
+                   , size = 3 #adjust size and position relative to points
+                   ,inherit.aes = F #tells it to look at points not base layer
+  ) + 
+  #zoom in on region where stations are located using bounding box
+  coord_sf( 
+    xlim =c(bbox_p$xmin,bbox_p$xmax)
+    ,ylim = c(bbox_p$ymin,bbox_p$ymax)
+  )+
+  north(data = stations, symbol = 12) + #Add north arrow
+  #theme(legend.position =c(-121.80, y = 38.20))+ #this isn't working
+  theme(plot.margin=grid::unit(c(0,0,0,0), "in"))+
+  theme_bw()+
+  labs(x="Longitude",y="Latitude")+
+  annotate("text", label = "2023 SMSCG Phytoplankton Stations", x = -121.80, y = 38.20, size = 4)
+#ggsave(file = "./Maps/SMSCG_Phytoplankton_Map_Field_2023.png",type ="cairo-png", scale=2.5, dpi=300)
+
+#DFW STN sites phyto only map------------------
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= WW_Delta, fill= "skyblue3", color= "black") +
+  #plot station locations using different shapes and colors for different types of stations
+  geom_sf(data= stations_phyto_stn, fill = "#7A378B", shape = 22, color= "black",  size= 3.5)+
+  #add point for SMSCG 
+  #geom_sf(data= smscg, fill = "black", shape = 23, color= "black",  size= 4.5)+
+  #add station names as labels and make sure they don't overlap each other or the points
+  geom_label_repel(data = stations_phyto_stn, aes(x=Longitude,y=Latitude, label=Station_label) #label the points
+                   #,nudge_x = -0.008, nudge_y = 0.008 #can specify the magnitude of nudges if necessary
+                   , size = 3 #adjust size and position relative to points
+                   ,inherit.aes = F #tells it to look at points not base layer
+  ) + 
+  #add label for SMSCG
+  #geom_label_repel(data = smscg, aes(x=Longitude,y=Latitude, label=Station) #label the points
+   #                , size = 3 #adjust size and position relative to points
+    #               ,inherit.aes = F #tells it to look at points not base layer
+  #) + 
+  #zoom in on region where stations are located using bounding box
+  coord_sf( 
+    xlim =c(bbox_p$xmin,bbox_p$xmax)
+    ,ylim = c(bbox_p$ymin,bbox_p$ymax)
+  )+
+  north(data = stations, symbol = 12) + #Add north arrow
+  #theme(legend.position =c(-121.80, y = 38.20))+ #this isn't working
+  theme(plot.margin=grid::unit(c(0,0,0,0), "in"))+
+  theme_bw()+
+  labs(x="Longitude",y="Latitude")+
+  annotate("text", label = "2023 SMSCG Phytoplankton Stations", x = -121.80, y = 38.20, size = 4)
+#ggsave(file = "./Maps/SMSCG_Phytoplankton_Map_Field_STN_2023.png",type ="cairo-png", scale=1.25, height=3.5, units="in",dpi=300)
+
+#DFW FMWT sites phyto only map------------------
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= WW_Delta, fill= "skyblue3", color= "black") +
+  #plot station locations using different shapes and colors for different types of stations
+  geom_sf(data= stations_phyto_fmwt, fill = "#7A378B", shape = 22, color= "black",  size= 3.5)+
+  #add point for SMSCG 
+  #geom_sf(data= smscg, fill = "black", shape = 23, color= "black",  size= 4.5)+
+  #add station names as labels and make sure they don't overlap each other or the points
+  geom_label_repel(data = stations_phyto_fmwt, aes(x=Longitude,y=Latitude, label=Station_label) #label the points
+                   #,nudge_x = -0.008, nudge_y = 0.008 #can specify the magnitude of nudges if necessary
+                   , size = 3 #adjust size and position relative to points
+                   ,inherit.aes = F #tells it to look at points not base layer
+  ) + 
+  #add label for SMSCG
+  #geom_label_repel(data = smscg, aes(x=Longitude,y=Latitude, label=Station) #label the points
+   #                , size = 3 #adjust size and position relative to points
+    #               ,inherit.aes = F #tells it to look at points not base layer
+  #) + 
+  #zoom in on region where stations are located using bounding box
+  coord_sf( 
+    xlim =c(bbox_p$xmin,bbox_p$xmax)
+    ,ylim = c(bbox_p$ymin,bbox_p$ymax)
+  )+
+  north(data = stations, symbol = 12) + #Add north arrow
+  #theme(legend.position =c(-121.80, y = 38.20))+ #this isn't working
+  theme(plot.margin=grid::unit(c(0,0,0,0), "in"))+
+  theme_bw()+
+  labs(x="Longitude",y="Latitude")+
+  annotate("text", label = "2023 SMSCG Phytoplankton Stations", x = -121.80, y = 38.20, size = 4)
+#ggsave(file = "./Maps/SMSCG_Phytoplankton_Map_Field_FMWT_2023.png",type ="cairo-png", scale=1.25, height=3.5, units="in",dpi=300)
 
 #Study plan map-------------------
 #includes shaded regions
