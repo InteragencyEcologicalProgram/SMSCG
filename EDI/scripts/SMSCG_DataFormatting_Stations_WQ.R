@@ -1,7 +1,7 @@
 #Suisun Marsh Salinity Control Gate Action
 #creating metadata file for water quality stations
 
-#Nick Rasmussen 4/20/2023
+#Nick Rasmussen 6/19/2023
 
 #required packages
 library(sf)
@@ -65,8 +65,8 @@ distance_wq<-Waterdist(Water_map = ww_delta_4326
                        , PointID_column = station_wq)
 
 #transposes the upper triangle of table into three columns 
-library(reshape)  
-distance_wq_format <- melt(distance_wq)[melt(upper.tri(distance_wq))$value,]
+#library(reshape)  
+distance_wq_format <- reshape::melt(distance_wq)[reshape::melt(upper.tri(distance_wq))$value,]
 names(distance_wq_format) <- c("station1","station2","distance_m")
 
 distance_wq_df <- as.data.frame(distance_wq) %>% 
@@ -91,6 +91,7 @@ wq_dist_trunc <- distance_wq_df %>%
 wq_format <- wq_meta %>% 
   left_join(wq_dist_trunc) %>% 
   relocate(smscg_distance_m,.after = location) %>% 
+  arrange(region,longitude) %>% 
   glimpse()
 
 #write the output file------
