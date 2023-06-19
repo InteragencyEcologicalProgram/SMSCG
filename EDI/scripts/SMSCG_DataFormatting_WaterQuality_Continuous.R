@@ -18,6 +18,9 @@ sharepoint_path <- normalizePath(
 
 wq<-read_csv(file = paste0(sharepoint_path,"./SMSG Data 2018-2022 (Flagged Bad Removed).csv"))
 
+glimpse(wq)
+#everything looks good
+
 #make sure all the stations are in the file
 stn_names <- unique(wq$cdec_code)
 #"CSE" "NSL" "MSL" "HUN" "GOD" "BDL" "VOL" "GZB" "GZM" "TRB" "MAL" "GZL" "HON" "RYC" "SSI"
@@ -33,20 +36,115 @@ range(wq$time)
 #"2018-01-01 UTC" "2023-01-01 UTC"
 #range looks good; might need to work on time zone though
 
+#I think there are inconsistencies in formatting fo dates in these files
+#look at all unique dates
+dates_all <- unique(wq$time)
+
 #look at unit names
 unique(wq$unit_name)
-#"\xb0C"        "\xb5S/cm"     "mg/L"         "\xb5g/L"      "NTU"          "pH Units"     "% saturation" "FNU"     
+#"\xb0C"        "\xb5S/cm"     "mg/L"         "\xb5g/L"      "NTU"          "pH Units"     "% saturation" "RFU"          "FNU"     
 #a few of these need work; degree and micro symbols didn't translate
 
-#find and replace micro with "u" and drop degrees from Celsius
+#look at all combos of parameter and units
+par_unit <- wq %>% 
+  distinct(analyte_name,unit_name) %>% 
+  arrange(analyte_name)
+#chlorophyll: two types of units (RFU, ug/L)
+#turbidity: two types of units (NTU, FNU); I think they're considered pretty interchangeable
+#DO: two types of units (mg/L, % saturation)
+#for these, do we have two sets of values for each date, a change through time in units, or a mix of the two?
+
+#look at all combos of station, parameter, and units
+par_unit_stn <- wq %>% 
+  distinct(cdec_code, analyte_name,unit_name) %>% 
+  arrange(analyte_name,cdec_code)
+
+par_unit_stn_odd <- par_unit_stn %>% 
+  group_by(cdec_code,analyte_name) %>% 
+  count() %>% 
+  ungroup() %>% 
+  filter(n>1)
+#5 stations have more than one unit type for at least one analyte
+
+stn_odd <- par_unit_stn_odd %>%
+  #select(cdec_code) %>% 
+  distinct(cdec_code) %>% 
+  pull(cdec_code)
+
+#look at how many data points per station,analyte,unit
+par_unit_stn_sum <- wq %>% 
+  filter(cdec_code %in% stn_odd) %>% 
+  group_by(cdec_code,analyte_name,unit_name) %>% 
+  count() %>% 
+  arrange(cdec_code,analyte_name)
+#Except for GZL, can ignore the RFU and % saturation units because only one each 
+#need to look closer at FNU vs NTU for turbidity; probably just changed at some point
+#look at date range for each unit type by station
+
+#turbidity units
+turb_odd <- wq %>% 
+  filter(
+    #cdec_code %in% stn_odd & 
+    analyte_name=="Turbidity") %>% 
+  group_by(cdec_code,unit_name) %>% 
+  summarise(min = min(time)
+            ,max = max(time)) %>% 
+  arrange(cdec_code,unit_name)
+#so looks like probably NTU was old unit
+#then some stations switched to FNU with a period of overlap for unit comparison
+#some stations have stayed on NTU so only one unit type
+#let's just keep both types of data in the data set
+
+#now look closer at GZL chlorophyll
+chlor_odd <- wq %>% 
+  filter(cdec_code == "GZL" & analyte_name == "Chlorophyll")
+
+chlor_odd_summary <- chlor_odd %>% 
+  group_by(unit_name) %>% 
+  summarise(min = min(time)
+            ,max = max(time)) 
+
+#quick plot of GZL Chlorophyll by unit
+(p_gzl_chlor <- ggplot(chlor_odd, aes(x = time,y=value,color=unit_name)) + 
+  geom_line()
+)
+#so always ug/L but in recent years also RFU
+#overall, just keep ug/L for all stations and drop RFU
+
+#now look at DO for GZL too
+#now look closer at GZL chlorophyll
+do_odd <- wq %>% 
+  filter(cdec_code == "GZL" & analyte_name == "Dissolved Oxygen")
+
+do_odd_summary <- do_odd %>% 
+  group_by(unit_name) %>% 
+  summarise(min = min(time)
+            ,max = max(time)) 
+
+#quick plot of GZL Chlorophyll by unit
+(p_gzl_do <- ggplot(do_odd, aes(x = time,y=value,color=unit_name)) + 
+    geom_line()
+)
+#always has mg/L and % saturation included in recent years too
+#just keep mg/L and drop % saturation for all stations
+
+#clean up and format data frame
 wq_final <- wq %>% 
-  mutate(unit_name2 = case_when(grepl("\xb5S/cm", unit_name) ~ "uS/cm"
-                                ,grepl("\xb0C", unit_name) ~ "C"
-                                ,grepl("\xb5g/L", unit_name) ~ "ug/L" 
-                                ,TRUE ~ unit_name)
-         ,date_time_pst = ymd_hms(time,tz="Etc/GMT+8")
-         ,year = year(date_time_pst)
-         )  %>% 
+  mutate(
+    #find and replace micro with "u" and drop degrees from Celsius
+    #this isn't working anymore
+    #unit_name2 = case_when(grepl("\xb5S/cm", unit_name) ~ "uS/cm"
+     #                           grepl("\xb0C", unit_name) ~ "C"
+      #                          ,grepl("\xb5g/L", unit_name) ~ "ug/L" 
+       #                         ,TRUE ~ unit_name)
+    unit_name2 = case_when(analyte_name=="Water Temperature" ~ "C"
+                            ,analyte_name=="Chlorophyll" & unit_name!="RFU"~"ug/L"
+                            ,analyte_name=="Specific Conductance" ~ "uS/cm"
+                            ,TRUE ~ unit_name
+    ))
+        # ,date_time_pst = ymd_hms(time,tz="Etc/GMT+8")
+        # ,year = year(date_time_pst)
+        # )  %>% 
   select(cdec_code    
          ,analyte_name 
          ,unit_name = unit_name2 
@@ -59,10 +157,11 @@ wq_final <- wq %>%
   filter(year < 2023) %>% 
   glimpse()
 
-#check units again after fixing them
-unique(wq_final$unit_name)
-#"C"            "uS/cm"        "mg/L"         "ug/L"         "NTU"          "pH Units"     "% saturation" "FNU"
-#looks good now
+#look at all combos of parameter and units again
+par_unit2 <- wq_final %>% 
+    distinct(analyte_name,unit_name2) %>% 
+    arrange(analyte_name)
+#looks fine now
 
 #check that the date/time again after setting time zone
 range(wq_final$date_time_pst)
