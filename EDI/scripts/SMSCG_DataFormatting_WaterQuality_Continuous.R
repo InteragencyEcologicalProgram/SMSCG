@@ -21,6 +21,9 @@ wq<-read_csv(file = paste0(sharepoint_path,"./SMSG Data 2018-2022 (Flagged Bad R
 glimpse(wq)
 #everything looks good
 
+#integrated discrete WQ data set
+#iwq <-read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.731.7&entityid=6c5f35b1d316e39c8de0bfadfb3c9692")
+
 #make sure all the stations are in the file
 stn_names <- unique(wq$cdec_code)
 #"CSE" "NSL" "MSL" "HUN" "GOD" "BDL" "VOL" "GZB" "GZM" "TRB" "MAL" "GZL" "HON" "RYC" "SSI"
@@ -35,10 +38,6 @@ parameter <- unique(wq$analyte_name)
 range(wq$time)
 #"2018-01-01 UTC" "2023-01-01 UTC"
 #range looks good; might need to work on time zone though
-
-#I think there are inconsistencies in formatting fo dates in these files
-#look at all unique dates
-dates_all <- unique(wq$time)
 
 #look at unit names
 unique(wq$unit_name)
@@ -130,6 +129,8 @@ do_odd_summary <- do_odd %>%
 
 #clean up and format data frame
 wq_final <- wq %>% 
+  #drop the less used types of measurements for chlorophyll and DO
+  filter(unit_name!="RFU" & unit_name!="% saturation") %>% 
   mutate(
     #find and replace micro with "u" and drop degrees from Celsius
     #this isn't working anymore
@@ -138,35 +139,61 @@ wq_final <- wq %>%
       #                          ,grepl("\xb5g/L", unit_name) ~ "ug/L" 
        #                         ,TRUE ~ unit_name)
     unit_name2 = case_when(analyte_name=="Water Temperature" ~ "C"
-                            ,analyte_name=="Chlorophyll" & unit_name!="RFU"~"ug/L"
+                            ,analyte_name=="Chlorophyll" ~"ug/L"
                             ,analyte_name=="Specific Conductance" ~ "uS/cm"
                             ,TRUE ~ unit_name
-    ))
-        # ,date_time_pst = ymd_hms(time,tz="Etc/GMT+8")
-        # ,year = year(date_time_pst)
-        # )  %>% 
-  select(cdec_code    
-         ,analyte_name 
-         ,unit_name = unit_name2 
-         #,time 
-         ,date_time_pst
-         ,year
-         ,value       
-         ,qaqc_flag_id) %>% 
+    )
+    ,date_time_pst = force_tz(time,tzone="Etc/GMT+8")
+    ,year = year(date_time_pst)
+       )  %>% 
+select(cdec_code    
+       ,analyte_name 
+       ,unit_name = unit_name2 
+       #,time 
+       ,date_time_pst
+       ,year
+       ,value       
+       ,qaqc_flag_id) %>% 
   #drop a few stray 2023 values
   filter(year < 2023) %>% 
   glimpse()
 
+#convert long to wide
+wq_final_cleaner <-wq_final %>% 
+  #concatonate analytes and units
+  unite(col = analyte_unit, c(analyte_name,unit_name), remove=T) %>% 
+  #drop units from pH which is unitless
+  mutate(analyte = case_when(analyte_unit =="pH_pH Units"~ "pH"
+                             ,TRUE ~ analyte_unit)) %>% 
+  #reorder columns and drop old analyte column
+  select(cdec_code,year,date_time_pst,analyte,value,qaqc_flag_id) %>% 
+  glimpse()
+
+wq_wide <-wq_final_cleaner %>% 
+  #convert wide to long
+  pivot_wider(id_cols = c(cdec_code,year,date_time_pst),names_from = analyte,values_from = c(value,qaqc_flag_id))
+
+dups <- wq_wide %>%
+  dplyr::group_by(cdec_code, year, date_time_pst) %>%
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
+  dplyr::filter(n > 1L) 
+
+unique(wq_final_wide$analyte)
+  
+#confirm time zone
+tz(wq_final$date_time_pst)
+#works fine
+
 #look at all combos of parameter and units again
 par_unit2 <- wq_final %>% 
-    distinct(analyte_name,unit_name2) %>% 
+    distinct(analyte_name,unit_name) %>% 
     arrange(analyte_name)
 #looks fine now
 
 #check that the date/time again after setting time zone
 range(wq_final$date_time_pst)
-#""2018-01-01 -08" "2023-01-01 -08"
-#formatting looks odd with this output but looks fine when viewing df
+#"2018-01-01 00:00:00 -08" "2022-12-31 23:45:00 -08"
+#looks good
 
 #look at summary of data points by station, parameter
 wq_summary_sp <- wq_final %>% 
