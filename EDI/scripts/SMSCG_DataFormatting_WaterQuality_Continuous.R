@@ -158,27 +158,114 @@ select(cdec_code
   filter(year < 2023) %>% 
   glimpse()
 
+#create dataframe with NAs for value
+wq_final_na <- wq_final %>% 
+  filter(is.na(value))
+#537482 rows with NA for value
+#remove these records
+
+#drop exact duplicates and work on dealing with rows that are identical except for QAQC code
+wq_final_nodup <- wq_final %>% 
+  #remove exact duplicates
+  distinct()  %>% 
+  #remove any value flagged "Q" and any NAs for value
+  filter(qaqc_flag_id!="Q" ) %>%
+  filter(!is.na(value) ) %>%
+  mutate(
+    G = case_when(qaqc_flag_id == "G" ~ 1, TRUE ~ 0)
+    ,U = case_when(qaqc_flag_id == "U" ~ 1, TRUE ~ 0)
+   ) %>% 
+  select(-qaqc_flag_id) %>% 
+  glimpse()
+
+
 #convert long to wide
-wq_final_cleaner <-wq_final %>% 
+wq_final_cleaner <-wq_final_nodup %>% 
   #concatonate analytes and units
   unite(col = analyte_unit, c(analyte_name,unit_name), remove=T) %>% 
   #drop units from pH which is unitless
   mutate(analyte = case_when(analyte_unit =="pH_pH Units"~ "pH"
                              ,TRUE ~ analyte_unit)) %>% 
   #reorder columns and drop old analyte column
-  select(cdec_code,year,date_time_pst,analyte,value,qaqc_flag_id) %>% 
+  select(cdec_code,year,date_time_pst,analyte,value,G,U) %>% 
+  #reorder rows
+  arrange(cdec_code,date_time_pst,analyte) %>% 
   glimpse()
 
-wq_wide <-wq_final_cleaner %>% 
-  #convert wide to long
-  pivot_wider(id_cols = c(cdec_code,year,date_time_pst),names_from = analyte,values_from = c(value,qaqc_flag_id))
+#summarize data by qaqc code
+wq_final_summary <- wq_final_cleaner %>% 
+  group_by(cdec_code,year, date_time_pst,analyte,value) %>% 
+  summarize(G2 = sum(G)
+            ,U2 = sum(U)
+            ,.groups = "drop")
 
-dups <- wq_wide %>%
-  dplyr::group_by(cdec_code, year, date_time_pst) %>%
-  dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
-  dplyr::filter(n > 1L) 
+#look at cases where there are either multiple values per code (shouldn't be any) or codes for both U and G
+wq_final_summary_mult <- wq_final_summary %>% 
+  filter(G2>1 | U2 > 1)
+#none as expected
+
+#look at cases where there are either multiple values per code (shouldn't be any) or codes for both U and G
+wq_final_summary_mult2 <- wq_final_summary %>% 
+  filter(G2 ==1 & U2 == 1)
+#6866 cases
+
+#now deal with the cases with G and U codes for the same record
+wq_final_summary_nodups <- wq_final_summary %>% 
+  #add column with new code
+  mutate(code = case_when(G2 == 1 ~ "G"
+                          ,U2 == 1 ~ "U"))
+
+#again look at cases where there are codes for both U and G
+#code should be G, not U
+wq_final_summary_mult3 <- wq_final_summary_nodups %>% 
+  filter(G2 ==1 & U2 == 1 & code!="G")
+#no cases of code = U as expected
+
+wq_final_summary_nodups_atall <- wq_final_summary_nodups %>% 
+  #drop the unneeded columns
+  select(-c(G2,U2)) %>% 
+  glimpse()
+
+
+#look for duplicates 
+dups <- wq_final_summary_nodups_atall %>%
+  group_by(cdec_code, year, date_time_pst,analyte) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  filter(n > 1L) %>% 
+  arrange(cdec_code,date_time_pst,analyte)
+#lots of duplicates
+
+unique(dups$analyte)
+#"Specific Conductance_uS/cm" "Water Temperature_C"   
+unique(dups$cdec_code)
+#"CSE" "MAL"
+range(dups$date_time_pst)
+
+wq_wide_test <-wq_final_cleaner %>% 
+  #convert long to wide
+  pivot_wider(id_cols = c(cdec_code,year,date_time_pst,analyte)
+              ,names_from = analyte
+              ,values_from = c(value, qaqc_flag_id)
+              ,values_fill = NA
+  ) %>% 
+  glimpse()
+#says there are duplicates
+
+#wq_wide <-wq_final_cleaner %>% 
+ # #convert long to wide
+  #pivot_wider(id_cols = c(cdec_code,year,date_time_pst)
+   #           ,names_from = analyte
+    #          ,values_from = c(value,qaqc_flag_id)
+     #         ,values_fill = NA
+      #        ) %>% 
+  #glimpse()
+#says there are duplicates
 
 unique(wq_final_wide$analyte)
+
+#look at example of duplicates
+dup_ex <- wq_final_cleaner %>% 
+  filter(cdec_code=="" & date_time_pst=="2018-05-17 08:15:00" & analyte == "Water Temperature_C")
   
 #confirm time zone
 tz(wq_final$date_time_pst)
