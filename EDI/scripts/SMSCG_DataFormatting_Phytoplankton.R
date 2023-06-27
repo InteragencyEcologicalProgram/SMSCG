@@ -84,7 +84,7 @@ phytoplankton_dfw <- phyto_files_dfw %>%
 #read in taxonomy data
 #this probably needs to be updated with each new batch of data
 #update this file with the updates/corrections I got from AlgaeBase 2/24/2022
-taxonomy <- read_excel(path = "EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-02-09.xlsx")
+taxonomy <- read_csv("./EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-02-09.csv")
 
 #read in station name info
 #includes region categories, station names, and names that identify comparable stations through time
