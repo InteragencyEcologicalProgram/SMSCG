@@ -2,6 +2,10 @@
 #Continuous water quality data
 #Final QAQC and formatting for EDI
 
+#To do-----
+
+#compare range of dates for each parameter within each station to CDEC metadata
+
 #required packages
 library(tidyverse) #suite of data science tools
 library(lubridate) #working with dates
@@ -37,12 +41,17 @@ parameter <- unique(wq$analyte_name)
 #check that the full range of dates are in file
 range(wq$time)
 #"2018-01-01 UTC" "2023-01-01 UTC"
-#range looks good; might need to work on time zone though
+#range looks good; need to work on time zone though
 
 #look at unit names
 unique(wq$unit_name)
 #"\xb0C"        "\xb5S/cm"     "mg/L"         "\xb5g/L"      "NTU"          "pH Units"     "% saturation" "RFU"          "FNU"     
 #a few of these need work; degree and micro symbols didn't translate
+
+#look at qaqc codes
+qa_flags <- wq %>% 
+  group_by(qaqc_flag_id) %>% 
+  
 
 #look at all combos of parameter and units
 par_unit <- wq %>% 
@@ -51,7 +60,8 @@ par_unit <- wq %>%
 #chlorophyll: two types of units (RFU, ug/L)
 #turbidity: two types of units (NTU, FNU); I think they're considered pretty interchangeable
 #DO: two types of units (mg/L, % saturation)
-#for these, do we have two sets of values for each date, a change through time in units, or a mix of the two?
+#for these, do we have two sets of values for each date, a change through time in units, 
+#or a mix of the two?
 
 #look at all combos of station, parameter, and units
 par_unit_stn <- wq %>% 
@@ -87,8 +97,13 @@ turb_odd <- wq %>%
     analyte_name=="Turbidity") %>% 
   group_by(cdec_code,unit_name) %>% 
   summarise(min = min(time)
-            ,max = max(time)) %>% 
-  arrange(cdec_code,unit_name)
+            ,max = max(time)
+            ,.groups = 'drop') %>% 
+  arrange(
+    cdec_code
+    ,unit_name
+    #min
+    )
 #so looks like probably NTU was old unit
 #then some stations switched to FNU with a period of overlap for unit comparison
 #some stations have stayed on NTU so only one unit type
@@ -111,7 +126,6 @@ chlor_odd_summary <- chlor_odd %>%
 #overall, just keep ug/L for all stations and drop RFU
 
 #now look at DO for GZL too
-#now look closer at GZL chlorophyll
 do_odd <- wq %>% 
   filter(cdec_code == "GZL" & analyte_name == "Dissolved Oxygen")
 
@@ -120,7 +134,7 @@ do_odd_summary <- do_odd %>%
   summarise(min = min(time)
             ,max = max(time)) 
 
-#quick plot of GZL Chlorophyll by unit
+#quick plot of GZL DO by unit
 (p_gzl_do <- ggplot(do_odd, aes(x = time,y=value,color=unit_name)) + 
     geom_line()
 )
@@ -158,11 +172,71 @@ select(cdec_code
   filter(year < 2023) %>% 
   glimpse()
 
+glimpse(wq_final)
+
 #create dataframe with NAs for value
 wq_final_na <- wq_final %>% 
   filter(is.na(value))
 #537482 rows with NA for value
 #remove these records
+
+#create dataframe with NAs for value for original data set
+#could be more NAs because this is before I did some filtering out of rows
+wq_final_na_orig <- wq %>% 
+  filter(is.na(value))
+#540214 rows with NA for value
+#so more as expected
+
+#what are codes for those NAs?
+wq_final_na_orig_sum <- wq_final_na_orig %>% 
+  group_by(qaqc_flag_id) %>% 
+  count()
+#mostly U (makes sense) but also some G (which is odd)
+
+#summarize NAs by station, analyte, and flag
+wq_final_na_stn_sum <- wq_final_na_orig %>% 
+  group_by(cdec_code,analyte_name,qaqc_flag_id) %>% 
+  count()
+#write_csv(wq_final_na_stn_sum,"./EDI/data_input/wq/smscg_wq_na.csv")
+
+#look at cases of exact duplicates
+wq_final_dup_sub <- wq_final %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup() %>% 
+  arrange(cdec_code, analyte_name,date_time_pst,value)
+
+#count duplicates
+wq_final_dup <- wq_final_dup_sub %>%
+  add_count(cdec_code,analyte_name,unit_name,date_time_pst, year,value,qaqc_flag_id) %>%
+  filter(n>1) %>%
+  distinct() %>% 
+  arrange(cdec_code,analyte_name,date_time_pst) %>% 
+  mutate(n = as.numeric(n)) %>% 
+  glimpse()
+#33,523 exact duplicates
+
+#are there always two duplicates?
+wq_final_dup_count <- wq_final_dup %>% 
+  filter(n!=2)
+#yes, always two
+
+#summarize duplicates by station, analyte, flag
+wq_final_dup_stn_sum <- wq_final_dup %>% 
+  group_by(cdec_code,analyte_name,qaqc_flag_id) %>% 
+  count()
+#write_csv(wq_final_dup_stn_sum,"./EDI/data_input/wq/smscg_wq_dup.csv")
+
+#count duplicates in original file
+wq_final_dup_orig <- wq %>%
+  add_count(cdec_code,analyte_name,unit_name,time,value,qaqc_flag_id) %>%
+  filter(n>1) %>%
+  distinct() %>% 
+  arrange(cdec_code,analyte_name,time) %>% 
+  mutate(n = as.numeric(n)) %>% 
+  glimpse()
+#33,523 which is same as more formatted version of file, 
+#so these duplicates aren't due to something I messed up
 
 #drop exact duplicates and work on dealing with rows that are identical except for QAQC code
 wq_final_nodup <- wq_final %>% 
@@ -170,6 +244,7 @@ wq_final_nodup <- wq_final %>%
   distinct()  %>% 
   #remove any value flagged "Q" and any NAs for value
   filter(qaqc_flag_id!="Q" ) %>%
+  #drop rows with values of NA
   filter(!is.na(value) ) %>%
   mutate(
     G = case_when(qaqc_flag_id == "G" ~ 1, TRUE ~ 0)
@@ -179,7 +254,7 @@ wq_final_nodup <- wq_final %>%
   glimpse()
 
 
-#convert long to wide
+#convert long to wide (so far, just combined analyte and unit)
 wq_final_cleaner <-wq_final_nodup %>% 
   #concatonate analytes and units
   unite(col = analyte_unit, c(analyte_name,unit_name), remove=T) %>% 
@@ -209,11 +284,18 @@ wq_final_summary_mult2 <- wq_final_summary %>%
   filter(G2 ==1 & U2 == 1)
 #6866 cases
 
+#summarize flag duplicates by station, analyte
+wq_final_dup_flag_stn_sum <- wq_final_summary_mult2 %>% 
+  group_by(cdec_code,analyte) %>% 
+  count()
+#write_csv(wq_final_dup_flag_stn_sum,"./EDI/data_input/wq/smscg_wq_dup_flag.csv")
+
 #now deal with the cases with G and U codes for the same record
 wq_final_summary_nodups <- wq_final_summary %>% 
   #add column with new code
   mutate(code = case_when(G2 == 1 ~ "G"
                           ,U2 == 1 ~ "U"))
+#should assign any record with a G as G (even if also U)
 
 #again look at cases where there are codes for both U and G
 #code should be G, not U
@@ -226,20 +308,32 @@ wq_final_summary_nodups_atall <- wq_final_summary_nodups %>%
   select(-c(G2,U2)) %>% 
   glimpse()
 
-
 #look for duplicates 
 dups <- wq_final_summary_nodups_atall %>%
   group_by(cdec_code, year, date_time_pst,analyte) %>%
   summarise(n = n(), .groups = "drop") %>%
   filter(n > 1L) %>% 
   arrange(cdec_code,date_time_pst,analyte)
-#lots of duplicates
+#329,852 duplicates
+
+#summarize these weird dups by station and analyte
+dups_te <- dups %>% 
+  group_by(cdec_code,analyte) %>% 
+  count()
+#write_csv(dups_te,"./EDI/data_input/wq/smscg_wq_dup_temp_ec.csv")
 
 unique(dups$analyte)
 #"Specific Conductance_uS/cm" "Water Temperature_C"   
 unique(dups$cdec_code)
 #"CSE" "MAL"
 range(dups$date_time_pst)
+
+#look at example of duplicates
+#use semi_join
+dups_ec_temp <- semi_join(wq_final_summary_nodups_atall,dups)
+
+dup_ex <- wq_final_summary_nodups_atall %>% 
+  filter(cdec_code=="MAL" & date_time_pst=="2020-08-21 10:15:00")
 
 wq_wide_test <-wq_final_cleaner %>% 
   #convert long to wide
@@ -265,7 +359,7 @@ unique(wq_final_wide$analyte)
 
 #look at example of duplicates
 dup_ex <- wq_final_cleaner %>% 
-  filter(cdec_code=="" & date_time_pst=="2018-05-17 08:15:00" & analyte == "Water Temperature_C")
+  filter(cdec_code=="CSE" & date_time_pst=="2018-05-17 08:15:00" & analyte == "Water Temperature_C")
   
 #confirm time zone
 tz(wq_final$date_time_pst)

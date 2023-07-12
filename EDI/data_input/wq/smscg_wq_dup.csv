@@ -1,0 +1,26 @@
+cdec_code,analyte_name,qaqc_flag_id,n
+BDL,Specific Conductance,G,1407
+BDL,Specific Conductance,U,3068
+BDL,Water Temperature,G,2109
+BDL,Water Temperature,U,3069
+CSE,Specific Conductance,U,326
+CSE,Water Temperature,U,326
+GOD,Specific Conductance,U,1939
+GOD,Water Temperature,U,1939
+HUN,Specific Conductance,G,406
+HUN,Water Temperature,G,406
+MAL,Specific Conductance,G,466
+MAL,Specific Conductance,U,463
+MAL,Water Temperature,G,16893
+MAL,Water Temperature,U,463
+MSL,Specific Conductance,U,42
+MSL,Water Temperature,U,42
+NSL,Specific Conductance,U,6
+NSL,Water Temperature,U,6
+TRB,Dissolved Oxygen,G,2
+TRB,Specific Conductance,G,2
+TRB,Turbidity,G,2
+TRB,Water Temperature,G,2
+TRB,pH,G,1
+VOL,Specific Conductance,G,55
+VOL,Water Temperature,G,83

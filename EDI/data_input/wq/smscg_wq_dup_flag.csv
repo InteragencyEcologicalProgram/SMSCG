@@ -1,0 +1,7 @@
+cdec_code,analyte,n
+BDL,Dissolved Oxygen_mg/L,2106
+CSE,Specific Conductance_uS/cm,2361
+CSE,Water Temperature_C,2361
+MAL,Specific Conductance_uS/cm,6
+MAL,Water Temperature_C,4
+VOL,Specific Conductance_uS/cm,28
