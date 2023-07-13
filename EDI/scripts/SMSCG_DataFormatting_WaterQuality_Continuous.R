@@ -5,6 +5,7 @@
 #To do-----
 
 #compare range of dates for each parameter within each station to CDEC metadata
+#add the "Q" data back in to data set
 
 #required packages
 library(tidyverse) #suite of data science tools
@@ -283,6 +284,14 @@ wq_final_summary_mult <- wq_final_summary %>%
 wq_final_summary_mult2 <- wq_final_summary %>% 
   filter(G2 ==1 & U2 == 1)
 #6866 cases
+
+#write file with all cases of duplicates with G and U flags
+#need to make date-time a character type first so it exports correctly
+wq_final_summary_mult2a <-wq_final_summary_mult2 %>% 
+  mutate(date_time_pst = as.character(date_time_pst)) %>% 
+  glimpse()
+#write_csv(wq_final_summary_mult2a,"./EDI/data_input/wq/smscg_wq_dup_flag_detailed.csv")
+
 
 #summarize flag duplicates by station, analyte
 wq_final_dup_flag_stn_sum <- wq_final_summary_mult2 %>% 
