@@ -9,6 +9,7 @@
 
 #required packages
 library(tidyverse) #suite of data science tools
+library(janitor) #tools for data cleaning
 library(lubridate) #working with dates
 
 #read in the data
@@ -434,7 +435,7 @@ wq_summary_spy <- wq_final %>%
   facet_wrap(~cdec_code)
 )
 
-#remove bad data for CSE and MAL
+#remove bad data for CSE and MAL------------------
 #EC and temp
 #will be replaced with data from new files
 
@@ -458,8 +459,40 @@ wq_cse_filt <- wq_mal_filt %>%
   filter(!(cdec_code=="CSE" & (analyte=="Water Temperature_C" |analyte=="Specific Conductance_uS/cm")
           #& (date_time_pst>="2018-05-15 10:45:00 -08" & date_time_pst<="2018-06-12 23:45:00 -08"))) %>% 
           & (date_time_pst>="2018-05-15 11:45:00 -08" & date_time_pst<="2018-06-13 00:45:00 -08"))) %>% 
-  arrange(date_time_pst)
+  arrange(date_time_pst) %>% 
+  glimpse()
 
+#format new data for MAL and CSE
+
+data_new <- bind_rows(cse_ec,cse_temp,mal_sc,mal_temp) %>% 
+  clean_names() %>% 
+  #add some columns
+  mutate(cdec_code = case_when(station_id == 22~ "CSE",station_id==60~"MAL")
+         ,analyte = case_when(grepl("Conductance | SpC", constituent) ~ "Specific Conductance_uS/cm"
+                              ,grepl("Temperature", constituent) ~ "Water Temperature_C")
+         #format date-time
+         ,date_time = mdy_hm(datetime)
+         ,date_time_pst = force_tz(date_time,tzone="Etc/GMT+8")
+         ,year = year(date_time_pst)
+         ) %>% 
+  #rename and reorder some columns
+  select(
+    cdec_code
+    ,year
+    ,date_time_pst
+    ,analyte
+    ,value
+    ,code = qaqc_flag
+  ) %>% 
+  glimpse()
+
+#check resulting data frame
+new_data_summary <- data_new %>% 
+  group_by(cdec_code, year,analyte) %>% 
+  count()
+
+
+#add new data back to the main data set------------
 
 #write final file for publishing on EDI
 #write_csv(wq_final,file = paste0(sharepoint_path,"./smscg_data_water_quality.csv"))
