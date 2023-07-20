@@ -21,10 +21,23 @@ sharepoint_path <- normalizePath(
   )
 ) 
 
-wq<-read_csv(file = paste0(sharepoint_path,"./SMSG Data 2018-2022 (Flagged Bad Removed).csv"))
-
-glimpse(wq)
+#full data set
+wq<-read_csv(file = paste0(sharepoint_path,"./SMSG Data 2018-2022 (Flagged Bad Removed).csv")) %>% 
+  glimpse()
 #everything looks good
+
+#new data to replace some of CSE data
+#in full data set 
+cse_ec<-read_csv(file = paste0(sharepoint_path,"./CSE_SpC_05_15_2018-06_12_2018.csv"))%>% 
+  glimpse()
+cse_temp<-read_csv(file = paste0(sharepoint_path,"./CSE_Temp_05_15_2018-06_12_2018.csv"))%>% 
+  glimpse()
+
+#new data to replace some of MAL data
+mal_sc<-read_csv(file = paste0(sharepoint_path,"./MAL_SC.csv"))%>% 
+  glimpse()
+mal_temp<-read_csv(file = paste0(sharepoint_path,"./MAL_Temp.csv"))%>% 
+  glimpse()
 
 #integrated discrete WQ data set
 #iwq <-read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.731.7&entityid=6c5f35b1d316e39c8de0bfadfb3c9692")
@@ -49,10 +62,6 @@ unique(wq$unit_name)
 #"\xb0C"        "\xb5S/cm"     "mg/L"         "\xb5g/L"      "NTU"          "pH Units"     "% saturation" "RFU"          "FNU"     
 #a few of these need work; degree and micro symbols didn't translate
 
-#look at qaqc codes
-qa_flags <- wq %>% 
-  group_by(qaqc_flag_id) %>% 
-  
 
 #look at all combos of parameter and units
 par_unit <- wq %>% 
@@ -255,7 +264,7 @@ wq_final_nodup <- wq_final %>%
   glimpse()
 
 
-#convert long to wide (so far, just combined analyte and unit)
+#combine analyte and unit
 wq_final_cleaner <-wq_final_nodup %>% 
   #concatonate analytes and units
   unite(col = analyte_unit, c(analyte_name,unit_name), remove=T) %>% 
@@ -424,6 +433,33 @@ wq_summary_spy <- wq_final %>%
   geom_point()+
   facet_wrap(~cdec_code)
 )
+
+#remove bad data for CSE and MAL
+#EC and temp
+#will be replaced with data from new files
+
+#filter out old MAL data
+wq_mal_filt <- wq_final_summary_nodups_atall %>% 
+  #drop the old MAL data
+  filter(!(cdec_code=="MAL" & (analyte=="Water Temperature_C" |analyte=="Specific Conductance_uS/cm")))
+
+#look at date range for each station
+date_range <- wq_mal_filt %>% 
+  group_by(cdec_code) %>% 
+  summarise(date_min = min(date_time_pst)
+            ,date_max = max(date_time_pst)
+            ,.groups='drop')
+#CSE covers full date range from beginning 2018 to end 2022
+
+#filter out old CSE data
+wq_cse_filt <- wq_mal_filt %>% 
+  #drop the old CSE data
+  #this filtering mostly worked but the results were shifted an hour early so adjust filtering accordingly
+  filter(!(cdec_code=="CSE" & (analyte=="Water Temperature_C" |analyte=="Specific Conductance_uS/cm")
+          #& (date_time_pst>="2018-05-15 10:45:00 -08" & date_time_pst<="2018-06-12 23:45:00 -08"))) %>% 
+          & (date_time_pst>="2018-05-15 11:45:00 -08" & date_time_pst<="2018-06-13 00:45:00 -08"))) %>% 
+  arrange(date_time_pst)
+
 
 #write final file for publishing on EDI
 #write_csv(wq_final,file = paste0(sharepoint_path,"./smscg_data_water_quality.csv"))
