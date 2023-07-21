@@ -6,6 +6,9 @@
 
 #compare range of dates for each parameter within each station to CDEC metadata
 #add the "Q" data back in to data set
+#track down data for tule red station (TRB) prior to 2021-08-24 15:42:00)
+
+#maybe use PSU instead of EC
 
 #required packages
 library(tidyverse) #suite of data science tools
@@ -364,18 +367,6 @@ wq_wide_test <-wq_final_cleaner %>%
   glimpse()
 #says there are duplicates
 
-#wq_wide <-wq_final_cleaner %>% 
- # #convert long to wide
-  #pivot_wider(id_cols = c(cdec_code,year,date_time_pst)
-   #           ,names_from = analyte
-    #          ,values_from = c(value,qaqc_flag_id)
-     #         ,values_fill = NA
-      #        ) %>% 
-  #glimpse()
-#says there are duplicates
-
-unique(wq_final_wide$analyte)
-
 #look at example of duplicates
 dup_ex <- wq_final_cleaner %>% 
   filter(cdec_code=="CSE" & date_time_pst=="2018-05-17 08:15:00" & analyte == "Water Temperature_C")
@@ -462,7 +453,7 @@ wq_cse_filt <- wq_mal_filt %>%
   arrange(date_time_pst) %>% 
   glimpse()
 
-#format new data for MAL and CSE
+#format new data for MAL and CSE-------------
 
 data_new <- bind_rows(cse_ec,cse_temp,mal_sc,mal_temp) %>% 
   clean_names() %>% 
@@ -484,15 +475,41 @@ data_new <- bind_rows(cse_ec,cse_temp,mal_sc,mal_temp) %>%
     ,value
     ,code = qaqc_flag
   ) %>% 
+  #looks like data with all possible QAQC codes are still included so filter these
+  filter(code =="G" | code=="U") %>% 
   glimpse()
 
 #check resulting data frame
 new_data_summary <- data_new %>% 
-  group_by(cdec_code, year,analyte) %>% 
+  group_by(cdec_code, year,analyte,code) %>% 
   count()
 
 
 #add new data back to the main data set------------
+#also converting long to wide
+
+#should just need to bind the rows of old and new data
+data_updated <- bind_rows(wq_cse_filt,data_new)
+glimpse(data_updated)
+
+wq_wide <-data_updated %>% 
+#convert long to wide
+pivot_wider(id_cols = c(cdec_code,year,date_time_pst)
+           ,names_from = analyte
+          ,values_from = c(value,code)
+         ,values_fill = NA
+         ,names_sort = T
+        ) %>% 
+  arrange(date_time_pst) %>% 
+glimpse()
+
+#look at date range for each station
+date_range_w <- wq_wide %>% 
+  group_by(cdec_code) %>% 
+  summarise(date_min = min(date_time_pst)
+            ,date_max = max(date_time_pst)
+            ,.groups='drop')
+
 
 #write final file for publishing on EDI
 #write_csv(wq_final,file = paste0(sharepoint_path,"./smscg_data_water_quality.csv"))
