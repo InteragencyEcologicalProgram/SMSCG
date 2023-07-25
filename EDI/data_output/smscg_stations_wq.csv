@@ -1,0 +1,16 @@
+program,station_wq,longitude,latitude,location,smscg_distance_m,region,active,date_start,date_end,temperature,ec,do,turbidity,ph,fluorescence,station_zoop,station_phyto,station_clam,metadata_cdec
+DWR,GZM,-122.0489879,38.1301321,Western mouth of Montezuma Slough,24366,Bay,1,12/2/2020,NA,1,1,1,1,1,1,NA,NA,NA,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=GZM
+DWR,GZL,-122.038117,38.12425,Grizzly Bay piling,23278,Bay,1,6/19/2015,NA,1,1,1,1,1,1,NA,NA,SM16,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=GZL
+DWR,GZB,-122.0154125,38.1125669,Grizzly Bay buoy,21258,Bay,1,7/5/2018,NA,1,1,1,1,1,1,NA,NA,NA,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=GZB
+DWR,RYC,-121.995878,38.083971,Ryer Island,17276,Bay,1,6/19/2015,NA,1,1,1,1,1,1,NA,NA,NA,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=RYC
+DWR,TRB,-121.992809,38.1349216,Tule Red Restoration Site near breach,23923,Bay,1,8/24/2021,NA,1,1,1,1,1,0,NA,NA,NA,NA
+DWR,HON,-121.9392,38.0724,Honker Bay,12216,Bay,1,6/19/2015,NA,1,1,1,1,1,1,NA,NA,NA,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=HON
+DWR,GOD,-122.0812,38.1238,Suisun Slough at Godfather,26123,Marsh,1,2/19/2009,NA,1,1,1,1,1,1,NA,NA,SM10,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=GOD
+DWR,HUN,-122.0527,38.156,Montezuma Slough at Hunter Cut,24924,Marsh,1,2/19/2009,NA,1,1,1,1,1,1,NA,NA,SM18,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=HUN
+DWR,VOL,-122.046,38.181,Suisun Slough at Volanti Slough,23961,Marsh,1,10/27/1997,NA,1,1,1,1,1,1,EMP_NZS42,EMP_NZS42,SM09,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=VOL
+DWR,BDL,-121.9708,38.1869,Montezuma Slough at Belden’s Landing,16710,Marsh,1,9/29/1988,NA,1,1,1,1,1,1,NA,NA,SM12,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=BDL
+DWR,NSL,-121.8881,38.1221,Montezuma Slough at National Steel,3676,Marsh,1,4/21/2005,NA,1,1,1,1,1,1,NA,NA,SM13,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=NSL
+DWR,MSL,-121.8872,38.0934,Montezuma Slough near SMSCG Facility,0,Marsh,1,2/19/2009,NA,1,1,1,1,1,1,NA,NA,SM14,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=MSL
+DWR,MAL,-121.92009,38.042805,Sacramento River at Mallard Island,9763,River,1,1/1/1984,NA,1,1,1,1,1,1,NA,NA,NA,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=MAL
+DWR,CSE,-121.850123,38.073981,Sacramento River at Collinsville,5199,River,1,2/19/2009,NA,1,1,1,1,1,1,NA,NA,SM15,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=CSE
+DWR,SSI,-121.761736,38.074097,Sacramento River near Sherman Island,13367,River,1,6/19/2015,NA,1,1,1,1,1,1,NA,NA,NA,https://cdec.water.ca.gov/dynamicapp/staMeta?station_id=SSI

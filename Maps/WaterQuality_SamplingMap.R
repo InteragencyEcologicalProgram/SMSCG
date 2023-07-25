@@ -13,7 +13,10 @@ library(ggrepel) #nonoverlapping point labels
 #stations_all <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.876.3&entityid=877edca4c29ec491722e9d20a049a31c")
 
 #use my updated version instead
-stations_all <-read_csv("./Data/wq_stations_2023-03-03.csv")
+#stations_all <-read_csv("./Data/wq_stations_2023-03-03.csv")
+
+#more updated version with USBR stations replaced with CEMP stations
+stations_all <-read_csv("./Data/wq_stations_2023-05-02.csv")
 
 #look at WW_Delta base map CRS
 st_crs(WW_Delta)
@@ -132,7 +135,7 @@ ggplot()+
   annotate("text", x = c(-121.78,-121.75,-121.98), y=c(38.19,38.13,38.025), label = c("Suisun Marsh","River","Suisun Bay"), size=8)+
   theme_bw()+
   labs(x="Longitude",y="Latitude")
-#ggsave(file = "./Maps/SMSCG_WQ_Map_Plan_2023.png",type ="cairo-png", scale=2.5, dpi=300)
+#ggsave(file = "./Maps/SMSCG_WQ_Map_Plan_2023.png",type ="cairo-png", scale=1.5, dpi=300)
 
 
 

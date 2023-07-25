@@ -375,6 +375,13 @@ n_marsh_all_ys <- zoop_bpue_all %>%
   summarize(n = n(),.groups = "drop" ) %>% 
   arrange(year,source)
 
+#all years: how many samples per year and survey have been collected (excluding DOP and June)
+n_marsh_all_ys_sub <- zoop_bpue_all %>% 
+  filter(region=="Suisun Marsh" & source!="DOP" & month!="6")  %>% 
+  group_by(year) %>% 
+  summarize(n = n(),.groups = "drop" ) %>% 
+  arrange(year)
+
 #all years: how many samples per year (exclude June)
 n_marsh_all_y <- zoop_bpue_all %>% 
   filter(region=="Suisun Marsh"& month!="6")  %>% 
@@ -385,7 +392,7 @@ n_marsh_all_y <- zoop_bpue_all %>%
 #140-147 exluding June
 
 #plot n by year
-(p_marsh_ym_n <- ggplot(n_marsh_all,aes(year,n))+
+(p_marsh_ym_n <- ggplot(n_marsh_all_y,aes(year,n))+
     geom_bar(stat = "identity") +
     labs(x="Year", y="zooplankton samples")+
     ggtitle("Suisun Marsh")

@@ -1,0 +1,128 @@
+cdec_code,analyte_name,qaqc_flag_id,n
+BDL,Chlorophyll,G,7578
+BDL,Dissolved Oxygen,G,7578
+BDL,Dissolved Oxygen,U,71586
+BDL,Specific Conductance,G,4366
+BDL,Specific Conductance,U,74859
+BDL,Turbidity,G,7313
+BDL,Turbidity,U,264
+BDL,Water Temperature,G,4498
+BDL,Water Temperature,U,74667
+BDL,pH,G,7479
+BDL,pH,U,98
+CSE,Chlorophyll,G,823
+CSE,Chlorophyll,U,5
+CSE,Dissolved Oxygen,G,828
+CSE,Specific Conductance,G,7
+CSE,Specific Conductance,U,61
+CSE,Turbidity,G,792
+CSE,Turbidity,U,35
+CSE,Water Temperature,G,822
+CSE,Water Temperature,U,60
+CSE,pH,G,792
+CSE,pH,U,31
+GOD,Chlorophyll,G,152
+GOD,Chlorophyll,U,6
+GOD,Dissolved Oxygen,G,152
+GOD,Dissolved Oxygen,U,6
+GOD,Specific Conductance,G,97
+GOD,Specific Conductance,U,153
+GOD,Turbidity,G,152
+GOD,Turbidity,U,6
+GOD,Water Temperature,G,152
+GOD,Water Temperature,U,160
+GOD,pH,G,152
+GOD,pH,U,6
+GZB,Chlorophyll,G,2681
+GZB,Chlorophyll,U,37587
+GZB,Dissolved Oxygen,G,4032
+GZB,Dissolved Oxygen,U,36243
+GZB,Specific Conductance,G,38
+GZB,Specific Conductance,U,38828
+GZB,Turbidity,G,2534
+GZB,Turbidity,U,37734
+GZB,Water Temperature,G,2665
+GZB,Water Temperature,U,37603
+GZB,pH,G,5235
+GZB,pH,U,34995
+GZL,Chlorophyll,U,1448
+GZL,Dissolved Oxygen,U,1448
+GZL,Specific Conductance,U,82
+GZL,Turbidity,U,118
+GZL,Water Temperature,U,82
+GZL,pH,U,594
+GZM,Chlorophyll,G,277
+GZM,Dissolved Oxygen,G,275
+GZM,Specific Conductance,G,276
+GZM,Turbidity,G,277
+GZM,Water Temperature,G,277
+GZM,pH,G,277
+HON,Chlorophyll,U,326
+HON,Dissolved Oxygen,U,326
+HON,Specific Conductance,U,300
+HON,Turbidity,U,478
+HON,Water Temperature,U,327
+HON,pH,U,326
+HUN,Chlorophyll,G,54
+HUN,Chlorophyll,U,3
+HUN,Dissolved Oxygen,G,54
+HUN,Dissolved Oxygen,U,3
+HUN,Specific Conductance,G,2
+HUN,Specific Conductance,U,137
+HUN,Turbidity,G,54
+HUN,Turbidity,U,3
+HUN,Water Temperature,G,3
+HUN,Water Temperature,U,188
+HUN,pH,G,53
+HUN,pH,U,3
+MAL,Chlorophyll,U,989
+MAL,Dissolved Oxygen,U,990
+MAL,Specific Conductance,U,1224
+MAL,Turbidity,U,1147
+MAL,Water Temperature,U,2606
+MAL,pH,U,990
+MSL,Chlorophyll,G,525
+MSL,Chlorophyll,U,95
+MSL,Dissolved Oxygen,G,525
+MSL,Dissolved Oxygen,U,95
+MSL,Specific Conductance,G,4
+MSL,Specific Conductance,U,200
+MSL,Turbidity,G,525
+MSL,Turbidity,U,95
+MSL,Water Temperature,G,4
+MSL,Water Temperature,U,612
+MSL,pH,G,525
+MSL,pH,U,95
+NSL,Chlorophyll,G,127
+NSL,Chlorophyll,U,736
+NSL,Dissolved Oxygen,G,127
+NSL,Dissolved Oxygen,U,736
+NSL,Specific Conductance,G,1
+NSL,Specific Conductance,U,200
+NSL,Turbidity,G,124
+NSL,Turbidity,U,155
+NSL,Water Temperature,G,67
+NSL,Water Temperature,U,261
+NSL,pH,G,127
+NSL,pH,U,736
+RYC,Chlorophyll,U,471
+RYC,Dissolved Oxygen,U,471
+RYC,Specific Conductance,G,6
+RYC,Specific Conductance,U,465
+RYC,Turbidity,U,631
+RYC,Water Temperature,U,767
+RYC,pH,U,471
+SSI,Chlorophyll,U,1089
+SSI,Dissolved Oxygen,U,1089
+SSI,Specific Conductance,U,1036
+SSI,Turbidity,U,1241
+SSI,Water Temperature,U,1091
+SSI,pH,U,1089
+VOL,Chlorophyll,G,6
+VOL,Dissolved Oxygen,G,6
+VOL,Specific Conductance,G,272
+VOL,Specific Conductance,U,550
+VOL,Turbidity,G,6
+VOL,Water Temperature,G,824
+VOL,Water Temperature,U,2
+VOL,pH,G,6
