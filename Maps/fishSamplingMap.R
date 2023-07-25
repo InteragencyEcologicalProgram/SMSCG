@@ -27,6 +27,14 @@ susuinfish = filter(surv, Source %in% c("Bay Study", "STN", "FMWT", "Suisun")) %
 #sf object of fish stations
 fishsf = st_as_sf(susuinfish, coords = c("Longitude", "Latitude"),remove = F, crs = 4326)
 
+#get GPS coordinates for SMSCG
+stations_all <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.876.3&entityid=877edca4c29ec491722e9d20a049a31c")
+smscg <- stations_all %>% 
+  filter(StationCode=="SM14") %>% 
+  #change Station name for gates
+  mutate(Station = if_else(StationCode=="SM14","SMSCG",StationCode),.after = Project,.keep = "unused") %>% 
+  #specify CRS WGS84 (EPSG = 4326)
+  st_as_sf(coords = c(x='Longitude',y='Latitude'), remove=F,crs = 4326) 
 
 
 #change CRS of both to match station data sets EPSG = 4326
@@ -89,17 +97,17 @@ ggplot()+
   ) +
   #zoom in on region where stations are located using bounding box
   coord_sf( 
-  xlim =c(-122.1, -121.6),
-  ylim = c(38, 38.3)
+  xlim =c(-122.1, -121.65),
+  ylim = c(38, 38.25)
    )+
   #north(data = stations, symbol = 12) + #Add north arrow
   #theme(legend.position =c(-121.80, y = 38.20))+ #this isn't working
   theme(plot.margin=grid::unit(c(0,0,0,0), "in"))+
   #annotate("text", label = "2023 SMSCG Plankton Stations", x = -121.80, y = 38.20, size = 4)+
-  annotate("text", x = c(-121.78,-121.75,-121.98), y=c(38.19,38.13,38.02), label = c("Suisun Marsh","River","Suisun Bay"), size=8)+
+  annotate("text", x = c(-121.85,-121.75,-121.98), y=c(38.19,38.13,38.02), label = c("Suisun \nMarsh","River","Suisun Bay"), size=7)+
   theme_bw()+
   labs(x="Longitude",y="Latitude")
-ggsave(file = "SMSCG_fish_Map_Plan_2023.png",type ="cairo-png", scale=2.5, dpi=300)
+ggsave(file = "SMSCG_fish_Map_Plan_2023.png",type ="cairo-png", scale=1, dpi=300)
 
 
 

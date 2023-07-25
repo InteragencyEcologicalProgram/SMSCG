@@ -136,5 +136,49 @@ ggplot()+
 
 
 
+#zoomed in map of grizlly bay
+
+
+#plot for study plan-------------------
+#includes shaded regions
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= WW_Delta, fill= "lightblue", color= "black") +
+  #add shaded regions
+  #plot station locations using different shapes and colors for different types of stations
+  geom_sf(data= stations, fill="black",shape = 21, color= "black",  size= 3.5)+
+  #add point for SMSCG 
+  geom_sf(data= smscg, fill = "black", shape = 23, color= "black",  size= 4.5)+
+  #add label for SMSCG
+
+  geom_label(data = stations, aes(x=longitude,y=latitude, label=station) #label the points
+                   ,nudge_x = 0.005, nudge_y = 0.005 #can specify the magnitude of nudges if necessary
+                   , size = 3 #adjust size and position relative to points
+                   ,inherit.aes = F #tells it to look at points not base layer
+  ) + 
+ 
+  coord_sf( 
+  xlim =c(-122.1, -121.95),ylim = c(38.08, 38.2)
+)+
+  #north(data = stations, symbol = 12) + #Add north arrow
+  #theme(legend.position =c(-121.80, y = 38.20))+ #this isn't working
+  theme(plot.margin=grid::unit(c(0,0,0,0), "in"))+
+  labs(x="Longitude",y="Latitude")+
+  theme_bw()
+
+
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= WW_Delta, fill= "lightblue", color= "black") +
+  coord_sf( 
+    xlim =c(-122.15, -121.6),ylim = c(38.0, 38.2)
+  )+
+  #north(data = stations, symbol = 12) + #Add north arrow
+  #theme(legend.position =c(-121.80, y = 38.20))+ #this isn't working
+  theme(plot.margin=grid::unit(c(0,0,0,0), "in"))+
+  labs(x="Longitude",y="Latitude")+
+  theme_bw()
+
+
 
 
