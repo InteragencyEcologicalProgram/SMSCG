@@ -5,7 +5,6 @@
 #To do-----
 
 #compare range of dates for each parameter within each station to CDEC metadata
-#add the "Q" data back in to data set
 #track down data for tule red station (TRB) prior to 2021-08-24 15:42:00)
 
 #maybe use PSU instead of EC
@@ -257,11 +256,12 @@ wq_final_nodup <- wq_final %>%
   #remove exact duplicates
   distinct()  %>% 
   #remove any value flagged "Q" and any NAs for value
-  filter(qaqc_flag_id!="Q" ) %>%
+  #filter(qaqc_flag_id!="Q" ) %>%
   #drop rows with values of NA
   filter(!is.na(value) ) %>%
   mutate(
     G = case_when(qaqc_flag_id == "G" ~ 1, TRUE ~ 0)
+    ,Q = case_when(qaqc_flag_id == "Q" ~ 1, TRUE ~ 0)
     ,U = case_when(qaqc_flag_id == "U" ~ 1, TRUE ~ 0)
    ) %>% 
   select(-qaqc_flag_id) %>% 
@@ -276,7 +276,7 @@ wq_final_cleaner <-wq_final_nodup %>%
   mutate(analyte = case_when(analyte_unit =="pH_pH Units"~ "pH"
                              ,TRUE ~ analyte_unit)) %>% 
   #reorder columns and drop old analyte column
-  select(cdec_code,year,date_time_pst,analyte,value,G,U) %>% 
+  select(cdec_code,year,date_time_pst,analyte,value,G,Q,U) %>% 
   #reorder rows
   arrange(cdec_code,date_time_pst,analyte) %>% 
   glimpse()
@@ -285,18 +285,26 @@ wq_final_cleaner <-wq_final_nodup %>%
 wq_final_summary <- wq_final_cleaner %>% 
   group_by(cdec_code,year, date_time_pst,analyte,value) %>% 
   summarize(G2 = sum(G)
+            ,Q2 = sum(Q)
             ,U2 = sum(U)
             ,.groups = "drop")
 
-#look at cases where there are either multiple values per code (shouldn't be any) or codes for both U and G
+#look at cases where there are either multiple values per code (shouldn't be any)
 wq_final_summary_mult <- wq_final_summary %>% 
-  filter(G2>1 | U2 > 1)
+  filter(G2>1 | U2 > 1 | Q2> 1)
 #none as expected
 
-#look at cases where there are either multiple values per code (shouldn't be any) or codes for both U and G
+#look at cases where there are codes per value
 wq_final_summary_mult2 <- wq_final_summary %>% 
-  filter(G2 ==1 & U2 == 1)
-#6866 cases
+  #filter(G2 ==1 & U2 == 1)
+  filter(
+    (G2 ==1 & U2 == 1)|
+      (Q2 ==1 & U2 == 1)|
+      (G2 ==1 & Q2 == 1)
+    )
+#G & U: 6866 cases
+#G & Q: 0
+#Q and U: 0
 
 #write file with all cases of duplicates with G and U flags
 #need to make date-time a character type first so it exports correctly
@@ -313,11 +321,12 @@ wq_final_dup_flag_stn_sum <- wq_final_summary_mult2 %>%
 #write_csv(wq_final_dup_flag_stn_sum,"./EDI/data_input/wq/smscg_wq_dup_flag.csv")
 
 #now deal with the cases with G and U codes for the same record
+#should assign any record with a G as G (even if also U)
 wq_final_summary_nodups <- wq_final_summary %>% 
   #add column with new code
   mutate(code = case_when(G2 == 1 ~ "G"
-                          ,U2 == 1 ~ "U"))
-#should assign any record with a G as G (even if also U)
+                          ,U2 == 1 ~ "U"
+                          ,Q2 ==1 ~ "Q"))
 
 #again look at cases where there are codes for both U and G
 #code should be G, not U
@@ -327,7 +336,7 @@ wq_final_summary_mult3 <- wq_final_summary_nodups %>%
 
 wq_final_summary_nodups_atall <- wq_final_summary_nodups %>% 
   #drop the unneeded columns
-  select(-c(G2,U2)) %>% 
+  select(-c(G2,U2,Q2)) %>% 
   glimpse()
 
 #look for duplicates 
@@ -357,14 +366,14 @@ dups_ec_temp <- semi_join(wq_final_summary_nodups_atall,dups)
 dup_ex <- wq_final_summary_nodups_atall %>% 
   filter(cdec_code=="MAL" & date_time_pst=="2020-08-21 10:15:00")
 
-wq_wide_test <-wq_final_cleaner %>% 
+#wq_wide_test <-wq_final_cleaner %>% 
   #convert long to wide
-  pivot_wider(id_cols = c(cdec_code,year,date_time_pst,analyte)
-              ,names_from = analyte
-              ,values_from = c(value, qaqc_flag_id)
-              ,values_fill = NA
-  ) %>% 
-  glimpse()
+ # pivot_wider(id_cols = c(cdec_code,year,date_time_pst,analyte)
+  #            ,names_from = analyte
+   #           ,values_from = c(value, qaqc_flag_id)
+    #          ,values_fill = NA
+  #) %>% 
+  #glimpse()
 #says there are duplicates
 
 #look at example of duplicates
@@ -492,16 +501,32 @@ new_data_summary <- data_new %>%
 data_updated <- bind_rows(wq_cse_filt,data_new)
 glimpse(data_updated)
 
-wq_wide <-data_updated %>% 
-#convert long to wide
-pivot_wider(id_cols = c(cdec_code,year,date_time_pst)
-           ,names_from = analyte
-          ,values_from = c(value,code)
-         ,values_fill = NA
-         ,names_sort = T
-        ) %>% 
+#converted long to wide
+#had to tweak the code to get the column order I wanted
+#https://github.com/tidyverse/tidyr/issues/1064
+spec <- build_wider_spec(
+  data_updated, 
+  names_from = analyte, 
+  values_from = c(value,code), 
+  names_glue = "{analyte}_{.value}"
+)
+
+spec <- arrange(spec, analyte, .value)
+
+wq_wide <- pivot_wider_spec(data_updated, spec) %>% 
   arrange(date_time_pst) %>% 
-glimpse()
+  glimpse()
+
+#wq_wide <-data_updated %>% 
+#convert long to wide
+#pivot_wider(id_cols = c(cdec_code,year,date_time_pst)
+ #          ,names_from = analyte
+  #        ,values_from = c(value,code)
+   #      ,values_fill = NA
+    #     ,names_sort = T
+     #   ) %>% 
+  #arrange(date_time_pst) %>% 
+#glimpse()
 
 #look at date range for each station
 date_range_w <- wq_wide %>% 
