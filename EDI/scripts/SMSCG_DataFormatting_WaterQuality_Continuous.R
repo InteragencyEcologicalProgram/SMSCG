@@ -18,7 +18,14 @@ library(lubridate) #working with dates
 #read in the data
 #NOTE: this file was too big for github; it's now on the SMSCG sharepoint site instead
 # Define path on SharePoint site 
-sharepoint_path <- normalizePath(
+sharepoint_path_input <- normalizePath(
+  file.path(
+    Sys.getenv("USERPROFILE"),
+    "California Department of Water Resources/SMSCG - Summer Action - Data Package 2022/wq_data_input"
+  )
+) 
+
+sharepoint_path_output <- normalizePath(
   file.path(
     Sys.getenv("USERPROFILE"),
     "California Department of Water Resources/SMSCG - Summer Action - Data Package 2022"
@@ -26,21 +33,21 @@ sharepoint_path <- normalizePath(
 ) 
 
 #full data set
-wq<-read_csv(file = paste0(sharepoint_path,"./SMSG Data 2018-2022 (Flagged Bad Removed).csv")) %>% 
+wq<-read_csv(file = paste0(sharepoint_path_input,"./SMSG Data 2018-2022 (Flagged Bad Removed).csv")) %>% 
   glimpse()
 #everything looks good
 
 #new data to replace some of CSE data
 #in full data set 
-cse_ec<-read_csv(file = paste0(sharepoint_path,"./CSE_SpC_05_15_2018-06_12_2018.csv"))%>% 
+cse_ec<-read_csv(file = paste0(sharepoint_path_input,"./CSE_SpC_05_15_2018-06_12_2018.csv"))%>% 
   glimpse()
-cse_temp<-read_csv(file = paste0(sharepoint_path,"./CSE_Temp_05_15_2018-06_12_2018.csv"))%>% 
+cse_temp<-read_csv(file = paste0(sharepoint_path_input,"./CSE_Temp_05_15_2018-06_12_2018.csv"))%>% 
   glimpse()
 
 #new data to replace some of MAL data
-mal_sc<-read_csv(file = paste0(sharepoint_path,"./MAL_SC.csv"))%>% 
+mal_sc<-read_csv(file = paste0(sharepoint_path_input,"./MAL_SC.csv"))%>% 
   glimpse()
-mal_temp<-read_csv(file = paste0(sharepoint_path,"./MAL_Temp.csv"))%>% 
+mal_temp<-read_csv(file = paste0(sharepoint_path_input,"./MAL_Temp.csv"))%>% 
   glimpse()
 
 #integrated discrete WQ data set
@@ -547,6 +554,6 @@ wq_wide <- pivot_wider_spec(data_updated, spec) %>%
 wq_wide_ft <-wq_wide%>% 
   mutate(date_time_pst = as.character(date_time_pst)) %>% 
   glimpse()
-#write_csv(wq_wide_ft,file = paste0(sharepoint_path,"./smscg_data_water_quality.csv"))
+#write_csv(wq_wide_ft,file = paste0(sharepoint_path_output,"./smscg_data_water_quality.csv"))
 
 
