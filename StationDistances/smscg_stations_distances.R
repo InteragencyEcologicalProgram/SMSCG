@@ -7,6 +7,9 @@
 #this script doesn't include WQ because the EDI station file was missing a bunch of WQ stations
 #see SMSCG_DataFormatting_Stations_WQ.R
 
+#also decided not to use EDI station file for plankton
+#read in newer file located in this repo
+
 #To do list-----------
 #would be good to spot check the distances 
 
@@ -16,11 +19,15 @@ library(tidyverse)
 library(spacetools)
 library(deltamapr)
 
-#read in data from EDI
+#read in data from EDI; will only use this file for the clam stations
 #https://portal.edirepository.org/nis/mapbrowse?packageid=edi.876.5
 stn_smscg <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.876.5&entityid=877edca4c29ec491722e9d20a049a31c")
 
-#EDI: add geometry column to station dataframe------
+#read in plankton station data from repo
+station_plank <- read_csv("./StationDistances/station_plankton.csv") %>% 
+  glimpse()
+
+#EDI: add geometry column to station dataframes------
 
 #create geometry column in station data frame
 stn_smscg_4326 <- stn_smscg %>%
@@ -36,6 +43,16 @@ stn_smscg_4326 <- stn_smscg %>%
 #add a buffer around points to improve map aesthetic
 #will use this to crop the map to focal area
 bbox_stn <- st_bbox(st_buffer(stn_smscg_4326,2000))
+
+#do the same for plankton station data file
+stn_plank_4326 <- station_plank %>%
+  #drop the two EZ stations which have NA for coordinates
+  filter(!is.na(longitude)) %>% 
+  #specify the crs which is wgs84
+  st_as_sf(coords = c(x='longitude',y='latitude'),
+           crs = 4326 #EPSG code for WGS84
+           ,remove=F #retains original columns
+  )   
 
 #create subsets of stations by type--------
 
@@ -62,11 +79,10 @@ bbox_stn <- st_bbox(st_buffer(stn_smscg_4326,2000))
 #phyto: a subset of zooplankton stations
 #NOTE: need to work on this because neither station names or station codes are unique
 #need to combine project and station code probably
-stn_plank <- stn_smscg_4326 %>% 
+stn_plank <- stn_plank_4326 %>% 
   #first combine program and station code so all station codes are unique
   #default separator is "_" which is fine
-  unite("project_station",Project,StationCode,remove=F) %>% 
-  filter(Zoops=="Y" | StationName=="Salinity Control Gates")
+  unite("project_station",program,station,remove=F) 
 
 #clams
 #most clam stations are only clams
@@ -130,22 +146,24 @@ Delta_4326 <- st_transform(Delta, crs = 4326)
 #NOTE: BDL coordinates were also used for GZL, which needs to be corrected
 #the updated metadata document in progress fixes this
 
+#clam stations and SMSCG
+distance_clam<-Waterdist(Water_map = Delta_4326
+                         , Points = stn_clam
+                         , Latitude_column = Latitude
+                         ,Longitude_column = Longitude
+                         , PointID_column = StationCode)
+
+#should figure out a way to spot check these distances to see if they are accurate
+
 
 #plankton stations and SMSCG
 distance_plank<-Waterdist(Water_map = Delta_4326
                        , Points = stn_plank
-                       , Latitude_column = Latitude
-                       ,Longitude_column = Longitude
+                       , Latitude_column = latitude
+                       ,Longitude_column = longitude
                        , PointID_column = project_station)
 
-#clam stations and SMSCG
-distance_clam<-Waterdist(Water_map = Delta_4326
-                          , Points = stn_clam
-                          , Latitude_column = Latitude
-                          ,Longitude_column = Longitude
-                          , PointID_column = StationCode)
 
-#should figure out a way to spot check these distances to see if they are accurate
 
 
 #save distance matrices as csv files------
