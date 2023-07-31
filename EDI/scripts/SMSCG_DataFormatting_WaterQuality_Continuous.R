@@ -553,6 +553,7 @@ wq_wide <- pivot_wider_spec(data_updated, spec) %>%
 #convert date-time to character
 wq_wide_ft <-wq_wide%>% 
   mutate(date_time_pst = as.character(date_time_pst)) %>% 
+  rename(station = cdec_code) %>% 
   glimpse()
 #write_csv(wq_wide,file = paste0(sharepoint_path_output,"./smscg_data_water_quality.csv"))
 
