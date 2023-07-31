@@ -130,13 +130,15 @@ phyto_emp_stations <- phytoplankton_emp %>%
 #tz(phyto_emp_stations$date_time_PST)
 
 #look at station names again
-#unique(phyto_emp_stations$station)
+unique(phyto_emp_stations$station)
 
 #filter the data set to just the stations needed for SMSCG  
-phyto_emp <- inner_join(phyto_emp_stations, stations)
+phyto_emp <- inner_join(phyto_emp_stations, stations) %>% 
+  glimpse()
 
 #make sure the right stations were retained
 #unique(phyto_emp$station)
+#"EMP_NZ032" "EMP_D4"    "EMP_NZS42" "EMP_EZ2"   "EMP_D7"    "EMP_D22"   "EMP_EZ6" 
 #looks good
 
 
@@ -150,6 +152,8 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
   #a little tricky just because the survey name appears in every row including the othewise empty ones
   #chose the taxon column as the ones to check for missing data
   drop_na(taxon) %>% 
+  #drop the GZB data because only two samples collected there ever
+  filter(station_code!="GZB") %>% 
   mutate(
     #format date
     date = as.Date(as.numeric(sample_date),origin = "1899-12-30")
@@ -164,8 +168,8 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
     #add column that indicates which survey collected samples
     #writes over existing DFW collected_by column
     ,'collected_by' = case_when(
-      station_code == "GZB" ~ "EMP"
-      ,month < 9 ~ "STN"
+      #station_code == "GZB" ~ "EMP"
+      month < 9 ~ "STN"
       ,month > 8 ~ "FMWT")
     #fix some station names
     ,'station' = case_when(
@@ -257,7 +261,8 @@ phyto_cleanest <- phytoplankton %>%
   select(collected_by
          , region
          , station
-         , station_comb
+         , station_dfw
+         , station_group
          , date
          , date_time_PST
          , genus
@@ -290,12 +295,16 @@ phyto_cleanest <- phytoplankton %>%
     #,biovolume_per_ml_old = organisms_per_ml * total_cells * mean_cell_biovolume
     ,biovolume_per_ml = round((total_cells* mean_cell_biovolume*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted),1)
     #,biovolume_per_ml_easy = factor * total_cells * mean_cell_biovolume
+    #reformat station name columns
+    ,station_new = case_when(!is.na(station_dfw)~station_dfw,TRUE~station)
+    ,alias = case_when(!is.na(station_dfw)~station,TRUE~station_dfw)
     ) %>% 
   #subset and reorder columns again to just those needed
   select(collected_by
          ,region
-         ,station
-         ,station_comb
+         ,station=station_new
+         ,alias
+         ,station_group
          ,date
          ,time
          ,genus
@@ -320,9 +329,9 @@ phyto_cleanest <- phytoplankton %>%
 
 #look at number of samples per station
 samp_count<-phyto_cleanest %>% 
-  distinct(region,station, date) %>% 
-  group_by(region,station) %>% 
-  summarize(count = n())
+  distinct(region,station, alias,date) %>% 
+  group_by(region,station,alias) %>% 
+  summarize(count = n(),.groups = 'drop')
 #looks fine
 
 #check for NAs
@@ -402,9 +411,11 @@ phyto_final<-phyto_tax %>%
     ,time_pst = as.character(time)
                  ) %>% 
   #reorder columns data frame export
+  #now that we have a station metadata file, we no longer need some of these columns in the data file
   select(station
-         ,station_comb
-         ,region
+         #,alias
+         #,station_group
+         #,region
          ,collected_by
          ,date
          ,time_pst
@@ -420,6 +431,9 @@ phyto_final<-phyto_tax %>%
          ,biovolume_per_ml
   ) %>%
   glimpse()
+
+#look at list of station names again
+#unique(phyto_final$station)
 
 #check for NAs
 #check_na2 <- phyto_final[rowSums(is.na(phyto_final)) > 0,]
