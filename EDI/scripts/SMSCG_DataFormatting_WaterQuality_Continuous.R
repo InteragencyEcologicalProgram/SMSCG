@@ -542,6 +542,9 @@ wq_wide <- pivot_wider_spec(data_updated, spec) %>%
   #arrange(date_time_pst) %>% 
 #glimpse()
 
+#print names of columns
+names(wq_wide)
+
 #look at date range for each station
 #date_range_w <- wq_wide %>% 
  # group_by(cdec_code) %>% 
@@ -552,9 +555,31 @@ wq_wide <- pivot_wider_spec(data_updated, spec) %>%
 #write final file for publishing on EDI--------------------------
 #convert date-time to character
 wq_wide_ft <-wq_wide%>% 
-  mutate(date_time_pst = as.character(date_time_pst)) %>% 
-  rename(station = cdec_code) %>% 
+  mutate(date_time_pst = as.character(date_time_pst))  %>% 
+  #format column names
+  select(station = cdec_code
+         ,year
+         ,date_time_pst
+         ,'fluorescence_ug/L_code' = 'Chlorophyll_ug/L_code'           
+         ,'fluorescence_ug/L_value' = 'Chlorophyll_ug/L_value'           
+         ,'dissolved_oxygen_mg/L_code' = 'Dissolved Oxygen_mg/L_code'
+         ,'dissolved_oxygen_mg/L_value' = 'Dissolved Oxygen_mg/L_value'
+         ,'specific_conductance_uS/cm_code' = 'Specific Conductance_uS/cm_code'
+         ,'specific_conductance_uS/cm_value' = 'Specific Conductance_uS/cm_value'
+         ,turbidity_FNU_code = Turbidity_FNU_code
+         ,turbidity_FNU_value = Turbidity_FNU_value              
+         ,turbidity_NTU_code = Turbidity_NTU_code
+         ,turbidity_NTU_value = Turbidity_NTU_value
+         ,temperature_C_code = 'Water Temperature_C_code'         
+         ,temperature_C_value = 'Water Temperature_C_value'  
+         ,pH_code                         
+         ,pH_value
+         ) %>% 
   glimpse()
-#write_csv(wq_wide,file = paste0(sharepoint_path_output,"./smscg_data_water_quality.csv"))
+#write_csv(wq_wide_ft,file = paste0(sharepoint_path_output,"./smscg_data_water_quality.csv"))
+
+#wq_wide_ft_head <-head(wq_wide_ft)
+#write_csv(wq_wide_ft_head,file = paste0(sharepoint_path_output,"./smscg_data_water_quality_head.csv"))
+
 
 
