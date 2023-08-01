@@ -438,6 +438,12 @@ phyto_final<-phyto_tax %>%
 #check for NAs
 #check_na2 <- phyto_final[rowSums(is.na(phyto_final)) > 0,]
 
+#look at start date for all stations
+stn_start <- phyto_final %>% 
+  group_by(station) %>% 
+  summarize(date_min = min(date),.groups='drop') %>% 
+  arrange(date_min)
+
 #write the formatted data as csv 
 #write_csv(phyto_final,file = "EDI/data_output/SMSCG_phytoplankton_formatted_2020-2022.csv")
 
