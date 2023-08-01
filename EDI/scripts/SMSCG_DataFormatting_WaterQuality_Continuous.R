@@ -555,7 +555,7 @@ names(wq_wide)
 #write final file for publishing on EDI--------------------------
 #convert date-time to character
 wq_wide_ft <-wq_wide%>% 
-  mutate(date_time_pst = as.character(date_time_pst))  %>% 
+  #mutate(date_time_pst = as.character(date_time_pst))  %>% 
   #format column names
   select(station = cdec_code
          ,year
