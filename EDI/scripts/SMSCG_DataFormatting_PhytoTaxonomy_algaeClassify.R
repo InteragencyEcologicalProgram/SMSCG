@@ -143,15 +143,16 @@ csrAbundance.by.month<-date_mat(lakegeneva,abundance.var='biovol_um3_ml',
 heatmap(csrAbundance.by.month,Rowv=NA,Colv=NA,col=viridis(10))
 
 
-#test package with SMSCG phyto community data------------
+#test package with 2022 phyto taxonomy------------
 
 #to do list
 #should probably add columns to indicate if "cf." was present before genus or before species
 
-#read in the SMSCG taxonomy file
+#read in the 2022 taxonomy file
 taxonomy <- read_csv("./EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-02-09.csv") %>% 
   clean_names() %>% 
   glimpse()
+
 
 #look at taxa with "unknown" for genus
 #need to use an includes unknown type of filter
@@ -205,7 +206,7 @@ tax_var_sp <- tax_var %>%
 #write ouput file
 #write_csv(taxonomy_algaebase,"./EDI/data_input/phytoplankton/phyto_taxonomy_algaebase_2023-06-27.csv")
 
-#look at output file----------------
+#look at output file for 2022 taxonomy----------------
 
 #look at options for taxonomic status
 unique(taxonomy_algaebase$taxonomic.status)
@@ -262,6 +263,11 @@ algaebase_species_search("Fragilaria","capitellata") #no match
 ab_var <- taxonomy_algaebase %>% 
   filter(input.name %in% tax_var_sp)
 
+#test package with 2023 phyto taxonomy------------
 
-
-
+#read in the 2023 taxonomy file
+#currently missing the SMSCG specific taxa that EMP doesn't get
+#easy to get from older version of taxonomy because I made a column indicating which taxa I added
+taxonomy_new <- read_csv("./EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2023-06-29.csv") %>% 
+  clean_names() %>% 
+  glimpse()
