@@ -1,5 +1,5 @@
 #Suisun Marsh Salinity Control Gate
-#Phytoplankton Data 2020-2021
+#Phytoplankton Data 2020-2022
 #Format raw data in preparation for visualization and analysis
 #Biovolume calculations have been corrected
 
@@ -9,42 +9,37 @@ library(janitor) #functions for cleaning up data sets
 library(hms) #working with date/time
 library(lubridate) #working with dates
 library(readxl) #importing data from excel files
-#library(algaeClassify) #grab taxonomy info from AlgaeBase; doesn't work currently
 
 #Notes
 #For all BSA files from 2013 to 2021, the column "Number of cells per unit" really means "Total cells", 
 #which is the total number of cells counted for that taxon in a particular sample
 #calculations in this script were corrected accordingly on 2/10/2022
 
-#create version of data set for phytoplankton synthesis effort
-#just needs to include the samples specific to the SMSCG action
-#hard to split the SMSCG and EMP data sets because NZS42 and NZ032 station names are
-#shared by the two surveys
-#probably should add a column to the imported data sets with the source file
-#that will allow us to keep track of which samples are from which survey
+# Read in the EMP data from EDI------------------
 
-#to do list
-#should check to see if organisms per ml and cells per ml are equal for cases where phyto_form = individual
+phytoplankton_emp <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.5&entityid=67b9d4ee30d5eee6e74b2300426471f9") %>% 
+  clean_names() %>% 
+  glimpse()
 
-# Read in the EMP data----------------------------------------------
+# Read in the EMP data for GitHub----------------------------------------------
 #NOTE: starting in 2021, there is a column called 'Full Code' 
 #which can link phyto samples to rest of WQ for the station-date
 #read in all columns as text; fix column types later
 
 #Create character vectors of EMP phytoplankton files for all years  
-phyto_files_emp <- dir(path = "EDI/data_input/phytoplankton", pattern = "EMP", full.names = T, recursive=T)
+#phyto_files_emp <- dir(path = "EDI/data_input/phytoplankton", pattern = "EMP", full.names = T, recursive=T)
 
-phytoplankton_emp <- phyto_files_emp %>% 
+#phytoplankton_emp <- phyto_files_emp %>% 
   #set_names() grabs the file names
-  set_names() %>%  
+  #set_names() %>%  
   #reads in the files, .id adds the file name column
-  map_dfr(~read_excel(.x, col_types = "text"), .id = "source") %>% 
+  #map_dfr(~read_excel(.x, col_types = "text"), .id = "source") %>% 
   #specify the survey
-  mutate(collected_by = as.factor("EMP")) %>% 
+  #mutate(collected_by = as.factor("EMP")) %>% 
   #code below would pull the survey from the file name; need to update the character range though
   # mutate(collected_by = as.factor(str_sub(source,25,27))) %>% 
-  clean_names() %>% 
-  glimpse()
+  #clean_names() %>% 
+  #glimpse()
 #succeeded in combining all the sample files
 #but date and time are in weird format
 #columns that don't match across files get kicked to back of data set
@@ -90,38 +85,46 @@ taxonomy <- read_csv("./EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-
 #includes region categories, station names, and names that identify comparable stations through time
 stations <- read_csv("EDI/data_input/phytoplankton/stations.csv")
 
+#EDI: format EMP data-------------------------
+#add month column to use to filter data set to just the needed time period
+#filter stations to just the ones I need
+#"EMP_NZ032" "EMP_D4"    "EMP_NZS42" "EMP_EZ2"   "EMP_D7"    "EMP_D22"   "EMP_EZ6" 
 
-#clean up EMP station names and drop unneeded stations-------------
+phyto_emp_stations
+
+
+
+#GitHub: clean up EMP station names and drop unneeded stations-------------
 
 #look at stations in the data set
 #unique(phytoplankton_emp$station_code)
 
-phyto_emp_stations <- phytoplankton_emp %>% 
+#phyto_emp_stations <- phytoplankton_emp %>% 
   #remove empty rows created by linear cell measurement rows (length, width, depth)  
   #a little tricky just because the survey name appears in every row including the otherwise empty ones
   #chose the taxon column as the ones to check for missing data
-  drop_na(taxon) %>%
-  mutate(
+  #drop_na(taxon) %>%
+  #mutate(
     #format date
-    date = as.Date(as.numeric(sample_date),origin = "1899-12-30")
+    #date = as.Date(as.numeric(sample_date),origin = "1899-12-30")
     #format time and specify that time zone is PST
-    ,time = as_hms(as.numeric(sample_time)*60*60*24)
+    #,time = as_hms(as.numeric(sample_time)*60*60*24)
     #create a date time colum
-    ,date_time_PST = ymd_hms(as.character(paste(date, time)),tz="Etc/GMT+8")
+    #,date_time_PST = ymd_hms(as.character(paste(date, time)),tz="Etc/GMT+8")
     #create a month column
-    ,month = as.numeric(month(date))
+    #,month = as.numeric(month(date))
     #correct two typos in station names
-    ,'station_corr' = case_when(grepl("E26", station_code) ~ "EZ6"
-                               ,grepl("NZ542", station_code) ~"NZS42"
-         ,TRUE ~ as.character(station_code)
-                  ))  %>% 
+    #,'station_corr' = case_when(grepl("E26", station_code) ~ "EZ6"
+                               #,grepl("NZ542", station_code) ~"NZS42"
+         #,TRUE ~ as.character(station_code)
+                  #))  %>% 
   #add prefix to station names
-  unite('station', c(collected_by,station_corr),sep="_",remove=F) %>% 
+  #unite('station', c(collected_by,station_corr),sep="_",remove=F) %>% 
   #drop the June samples
-  filter(month!=6) %>% 
+  # filter(month!=6) %>%
   #drop one sample that was submitted to BSA empty
-  filter(!(station=="EMP_EZ6" & date=="2020-09-10")) %>% 
-  glimpse()
+  #filter(!(station=="EMP_EZ6" & date=="2020-09-10")) %>% 
+  #glimpse()
 #NOTE: there are 9 rows that don't format date-time
 #it's for a sample from a station I don't need
 #the time is missing for that sample
@@ -130,11 +133,11 @@ phyto_emp_stations <- phytoplankton_emp %>%
 #tz(phyto_emp_stations$date_time_PST)
 
 #look at station names again
-unique(phyto_emp_stations$station)
-
-#filter the data set to just the stations needed for SMSCG  
-phyto_emp <- inner_join(phyto_emp_stations, stations) %>% 
-  glimpse()
+# unique(phyto_emp_stations$station)
+# 
+# #filter the data set to just the stations needed for SMSCG  
+# phyto_emp <- inner_join(phyto_emp_stations, stations) %>% 
+#   glimpse()
 
 #make sure the right stations were retained
 #unique(phyto_emp$station)
