@@ -90,9 +90,46 @@ stations <- read_csv("EDI/data_input/phytoplankton/stations.csv")
 #filter stations to just the ones I need
 #"EMP_NZ032" "EMP_D4"    "EMP_NZS42" "EMP_EZ2"   "EMP_D7"    "EMP_D22"   "EMP_EZ6" 
 
-phyto_emp_stations
+#filter EMP data set to just the stations and dates needed
+phyto_emp_recent <- phytoplankton_emp %>% 
+  mutate(
+    #add a column to indicate who collected the samples
+    collected_by = "EMP"
+    #create a month column
+    ,month = as.numeric(month(sample_date))
+    #create a year column
+    ,year = as.numeric(year(sample_date))
+    ) %>% 
+  unite('station', c(collected_by,station_code),sep="_",remove=F) %>% 
+  #only keep 2018 and beyond and July-Oct
+  filter(year > 2017 & month > 6 & month < 11)
+  
+#check date range
+range(phyto_emp_stations$sample_date)
+#looks good; "2018-07-09" "2022-10-20"
 
+#look at list of stations
+unique(phyto_emp_stations$station)
+#29 stations
 
+#create list of EMP stations needed from the station metadata file
+stations_emp <- stations %>% 
+  filter(grepl("EMP",station)) %>% 
+  pull(station)
+
+phyto_emp_stations <- phyto_emp_recent %>% 
+  filter(station %in% stations_emp)
+
+#look at list of stations remaining
+unique(phyto_emp_stations$station)
+
+#look at summary of samples for these stations
+phyto_emp_samp_sum <- phyto_emp_stations %>% 
+  distinct(station,sample_date,sample_time) %>% 
+  group_by(station) %>% 
+  count()
+#expecting 20 samples per station (4 months x 5 years)
+#no missing samples
 
 #GitHub: clean up EMP station names and drop unneeded stations-------------
 
