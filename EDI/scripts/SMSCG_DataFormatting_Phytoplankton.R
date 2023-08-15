@@ -83,7 +83,7 @@ taxonomy <- read_csv("./EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-
 
 #read in station name info
 #includes region categories, station names, and names that identify comparable stations through time
-stations <- read_csv("EDI/data_input/phytoplankton/stations.csv")
+stations <- read_csv("EDI/data_input/phytoplankton/smscg_stations_phyto.csv")
 
 #EDI: format EMP data-------------------------
 #add month column to use to filter data set to just the needed time period
@@ -114,18 +114,36 @@ unique(phyto_emp_stations$station)
 
 #create list of EMP stations needed from the station metadata file
 stations_emp <- stations %>% 
-  filter(grepl("EMP",station)) %>% 
-  pull(station)
+  filter(grepl("EMP",alias)) %>% 
+  pull(alias)
 
 phyto_emp_stations <- phyto_emp_recent %>% 
-  filter(station %in% stations_emp)
+  filter(station %in% stations_emp) %>% 
+  #reorder and rename columns as needed
+  select(station
+         ,collected_by
+         ,date = sample_date
+         ,time_pst = sample_time
+         ,lab
+         ,taxon_original = orig_taxon
+         ,taxon
+         ,kingdom:species
+         ,organisms_per_ml = units_per_m_l
+         ,cells_per_ml = cells_per_m_l
+         ,biovolume_cubic_um_per_ml = average_biovolume_per_m_l
+         ,gald_um = gald
+         ,phyto_form
+         ,quality_check
+  ) %>% 
+  glimpse()
 
 #look at list of stations remaining
 unique(phyto_emp_stations$station)
+#"EMP_EZ2"   "EMP_EZ6"   "EMP_NZS42" "EMP_NZ032" "EMP_D7"    "EMP_D22"   "EMP_D4"   
 
 #look at summary of samples for these stations
 phyto_emp_samp_sum <- phyto_emp_stations %>% 
-  distinct(station,sample_date,sample_time) %>% 
+  distinct(station,date,time_pst) %>% 
   group_by(station) %>% 
   count()
 #expecting 20 samples per station (4 months x 5 years)
@@ -189,7 +207,7 @@ phyto_emp_samp_sum <- phyto_emp_stations %>%
 
 phyto_dfw_stations <- phytoplankton_dfw %>% 
   #remove empty rows created by linear cell measurement rows (length, width, depth)  
-  #a little tricky just because the survey name appears in every row including the othewise empty ones
+  #a little tricky just because the survey name appears in every row including the otherwise empty ones
   #chose the taxon column as the ones to check for missing data
   drop_na(taxon) %>% 
   #drop the GZB data because only two samples collected there ever
@@ -204,11 +222,10 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
     #change PDT to PST to match the EMP times
     ,date_time_PST = with_tz(date_time_PDT,tzone="Etc/GMT+8")
     #create a month column
-    , month = as.numeric(month(date))
+    ,month = as.numeric(month(date))
     #add column that indicates which survey collected samples
     #writes over existing DFW collected_by column
     ,'collected_by' = case_when(
-      #station_code == "GZB" ~ "EMP"
       month < 9 ~ "STN"
       ,month > 8 ~ "FMWT")
     #fix some station names
@@ -221,7 +238,7 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
       ,grepl("801", station_code) ~ "STN_801"
       ,grepl("802", station_code) ~ "FMWT_802"
       #East Marsh stations
-      ,grepl("MON", station_code) ~ "MONT"
+      ,grepl("MON|MONT", station_code) ~ "STN_MONT"
       ,grepl("609", station_code) ~ "STN_609"
       ,grepl("610", station_code) ~ "STN_610"
       #West Marsh stations
@@ -237,12 +254,13 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
       ,grepl("602", station_code) & month > 8 ~ "FMWT_602"
       ,TRUE ~ as.character(station_code)            
     )) %>%
+  relocate(station,.after = station_code) %>% 
   glimpse()
 #4 rows for date time didn't parse because no time recorded for sample
 
 #look at stations again
 #unique(phyto_dfw_stations$station)
-#18 stations, which is correct
+#17 stations, which is correct
 
 #make sure conversion of DFW time from PDT to PST worked
 #tz_check <- phyto_dfw_stations %>%
@@ -256,36 +274,35 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
  # select(station_code,date,time,date_time_PDT,date_time_PST) %>% 
   #filter(is.na(date_time_PDT))
 
-#check time zone
-#tz(phyto_dfw_stations$date_time_PST)
-
 #add the region and combo station data 
-phyto_dfw <- left_join(phyto_dfw_stations, stations)
+phyto_dfw <- left_join(phyto_dfw_stations, stations) %>% 
+  glimpse()
 
 #make sure all stations matched
-#unique(phyto_dfw$station)
-#still 18 stations
+phyto_dfw_na <- phyto_dfw %>% 
+  filter(is.na(station_group))
+#no NAs so matched correctly
 
 phyto_dfw_combo <- phyto_dfw %>% 
   distinct(region, station, month, collected_by) %>% 
   arrange(month, station, collected_by)
 
 
-#format the sample data set------------
+#format the DFW sample data set------------
 #NOTE: need to specify column types
 #majority are still character because we read in files with all columns as text
 
 #combine EMP and DFW sample data
-phytoplankton <- bind_rows(phyto_emp,phyto_dfw) %>% 
-  mutate(
-    #combine data from the two total cells columns (just different names for same thing)
-    total_cells = as.numeric(case_when(!is.na(number_of_cells_per_unit)~number_of_cells_per_unit
-                                 ,!is.na(total_number_of_cells)~total_number_of_cells))
-    #combine data from the two unit abundance columns (just different names for same thing)
-    ,unit_abundance2 = as.numeric(case_when(!is.na(unit_abundance)~unit_abundance
-                              ,!is.na(unit_abundance_number_of_natural_units)~unit_abundance_number_of_natural_units))
-  ) %>% 
-  glimpse()
+# phytoplankton <- bind_rows(phyto_emp,phyto_dfw) %>% 
+#   mutate(
+#     #combine data from the two total cells columns (just different names for same thing)
+#     total_cells = as.numeric(case_when(!is.na(number_of_cells_per_unit)~number_of_cells_per_unit
+#                                  ,!is.na(total_number_of_cells)~total_number_of_cells))
+#     #combine data from the two unit abundance columns (just different names for same thing)
+#     ,unit_abundance2 = as.numeric(case_when(!is.na(unit_abundance)~unit_abundance
+#                               ,!is.na(unit_abundance_number_of_natural_units)~unit_abundance_number_of_natural_units))
+#   ) %>% 
+#   glimpse()
 
 #did the column merging work
 #phyto_tc <- phytoplankton %>% 
@@ -296,16 +313,25 @@ phytoplankton <- bind_rows(phyto_emp,phyto_dfw) %>%
 #  filter(is.na(unit_abundance2))
 #no NAs as expected
 
-phyto_cleanest <- phytoplankton %>% 
+#format DFW data set
+phyto_dfw_cleaner <- phyto_dfw %>% 
+  mutate(
+         #combine data from the two total cells columns (just different names for same thing)
+         total_cells = as.numeric(case_when(!is.na(number_of_cells_per_unit)~number_of_cells_per_unit
+                                      ,!is.na(total_number_of_cells)~total_number_of_cells))
+         #combine data from the two unit abundance columns (just different names for same thing)
+         ,unit_abundance2 = as.numeric(case_when(!is.na(unit_abundance)~unit_abundance
+                                   ,!is.na(unit_abundance_number_of_natural_units)~unit_abundance_number_of_natural_units))
+       ) %>% 
+  #drop old unit abundance column
+  select(-unit_abundance) %>% 
   #subset to just the needed columns
-  select(collected_by
-         , region
-         , station
+  select(station
          , station_dfw
-         , station_group
-         , date
+         , collected_by
          , date_time_PST
          , genus
+         , species
          , taxon
          , phyto_form = colony_filament_individual_group_code
          , unit_abundance = unit_abundance2
@@ -314,13 +340,15 @@ phyto_cleanest <- phytoplankton %>%
          , field_of_view_mm2
          , number_of_fields_counted
          , factor
+         , gald_um = gald_1
          , total_cells
-         , biovolume_1:biovolume_10) %>% 
+         , biovolume_1:biovolume_10
+         ,comments) %>% 
   mutate(across(c(slide_chamber_area_mm2:biovolume_10),as.numeric)) %>% 
   rowwise() %>% 
   mutate(  
     #use the date-time column with standardized time zone to extract time
-    time = as_hms(date_time_PST)
+    time_pst = as_hms(date_time_PST)
     #create new column that calculates mean biovolume per cell
     ,mean_cell_biovolume = mean(c_across(biovolume_1:biovolume_10),na.rm=T)
     #create new column that calculates organisms per mL; round number to nearest tenth
@@ -333,20 +361,19 @@ phyto_cleanest <- phytoplankton %>%
     #create a column that calculates biovolume per mL
     #units for biovolume are cubic microns; old version is incorrect calculations; round number to nearest tenth
     #,biovolume_per_ml_old = organisms_per_ml * total_cells * mean_cell_biovolume
-    ,biovolume_per_ml = round((total_cells* mean_cell_biovolume*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted),1)
+    ,biovolume_cubic_um_per_ml = round((total_cells* mean_cell_biovolume*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted),1)
     #,biovolume_per_ml_easy = factor * total_cells * mean_cell_biovolume
     #reformat station name columns
     ,station_new = case_when(!is.na(station_dfw)~station_dfw,TRUE~station)
     ,alias = case_when(!is.na(station_dfw)~station,TRUE~station_dfw)
     ) %>% 
+  glimpse()
   #subset and reorder columns again to just those needed
-  select(collected_by
-         ,region
-         ,station=station_new
+  select(station=station_new
          ,alias
-         ,station_group
+         ,collected_by
          ,date
-         ,time
+         ,time_pst
          ,genus
          ,taxon                              
          ,phyto_form           
@@ -357,7 +384,8 @@ phyto_cleanest <- phytoplankton %>%
          #,biovolume_per_ml_old
          ,biovolume_per_ml
          #,biovolume_per_ml_easy
-           ) %>% 
+          ,gald_um
+         ) %>% 
   glimpse()
 #I prefer to use the formulas based on the more raw version of the data 
 #rather than the ones based on the factor column
