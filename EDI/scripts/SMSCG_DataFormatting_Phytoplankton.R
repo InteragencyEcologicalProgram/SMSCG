@@ -423,22 +423,24 @@ phyto_dfw_comments <- phyto_dfw_cleaner %>%
 phyto_dfw_cleanest <- phyto_dfw_cleaner %>% 
   mutate(
     #add column for quality based on comments
-    #quality_check = case_when(
-    #   grepl("degraded", comments, ignore.case=T) ~ "degraded"
-    #   ,grepl("fragment", comments,ignore.case=T) ~"fragmented"
-    #   ,TRUE ~ "good"
-    # )
+    quality_check = case_when(
+       grepl("degraded", comments, ignore.case=T) ~ "Degraded"
+       ,grepl("fragment", comments,ignore.case=T) ~"Fragment"
+       ,grepl("50 fields",comments,ignore.case=T)~"BadData"
+       ,grepl("fungus",comments,ignore.case=T)~"PoorlyPreserved"
+       ,TRUE ~ "Good"
+     )
     #add column indicating amount of sediment and detritus
     #comments often note differing levels of sediment vs detritus
     #for simplicity combine them and use the highest level indicated
     #eg, low detritus and high sediment simply becomes high
-    debris = case_when(
-      grepl("high sediment",comments, ignore.case=T)~"high"
-      ,grepl("high det",comments, ignore.case=T)~"high" #shortened because of typo "detitus"
-      ,grepl("moderate sediment",comments, ignore.case=T)~"moderate"
-      ,grepl("moderate detritus",comments, ignore.case=T)~"moderate"
-      ,grepl("low sediment",comments, ignore.case=T)~"low"
-      ,grepl("low detritus",comments, ignore.case=T)~"low"
+    ,debris = case_when(
+      grepl("high sediment",comments, ignore.case=T)~"High"
+      ,grepl("high det",comments, ignore.case=T)~"High" #shortened because of typo "detitus"
+      ,grepl("moderate sediment",comments, ignore.case=T)~"Moderate"
+      ,grepl("moderate detritus",comments, ignore.case=T)~"Moderate"
+      ,grepl("low sediment",comments, ignore.case=T)~"Low"
+      ,grepl("low detritus",comments, ignore.case=T)~"Low"
       ,TRUE~NA
     )
   ) %>% 
@@ -447,8 +449,9 @@ phyto_dfw_cleanest <- phyto_dfw_cleaner %>%
 #look closer at how comments were translated to categories for debris and quality_check
 phyto_comment_check <- phyto_dfw_cleanest %>% 
   filter(!is.na(comments)) %>% 
-  select(comments,debris) %>% 
-  distinct(comments,debris)
+  select(comments,quality_check,debris) %>% 
+  distinct(comments,quality_check,debris) %>% 
+  arrange(quality_check,debris)
 
 
 #check for NAs
