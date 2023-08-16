@@ -84,6 +84,7 @@ taxonomy <- read_csv("./EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-
 #read in station name info
 #includes region categories, station names, and names that identify comparable stations through time
 stations <- read_csv("EDI/data_input/phytoplankton/smscg_stations_phyto.csv")
+#NOTE: once we have updated this on EDI, we can just pull it from there instead of GitHub repo
 
 #EDI: format EMP data-------------------------
 #add month column to use to filter data set to just the needed time period
@@ -165,7 +166,7 @@ phyto_emp_samp_sum <- phyto_emp_stations %>%
     #format time and specify that time zone is PST
     #,time = as_hms(as.numeric(sample_time)*60*60*24)
     #create a date time colum
-    #,date_time_PST = ymd_hms(as.character(paste(date, time)),tz="Etc/GMT+8")
+    #,date_time_pst = ymd_hms(as.character(paste(date, time)),tz="Etc/GMT+8")
     #create a month column
     #,month = as.numeric(month(date))
     #correct two typos in station names
@@ -185,7 +186,7 @@ phyto_emp_samp_sum <- phyto_emp_stations %>%
 #the time is missing for that sample
 
 #check time zone
-#tz(phyto_emp_stations$date_time_PST)
+#tz(phyto_emp_stations$date_time_pst)
 
 #look at station names again
 # unique(phyto_emp_stations$station)
@@ -218,9 +219,9 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
     #format time
     ,time = as_hms(as.numeric(sample_time)*60*60*24)
     #create a date time column; DFW records time in PDT
-    ,date_time_PDT = ymd_hms(as.character(paste(date, time)),tz="America/Los_Angeles")
+    ,date_time_pdt = ymd_hms(as.character(paste(date, time)),tz="America/Los_Angeles")
     #change PDT to PST to match the EMP times
-    ,date_time_PST = with_tz(date_time_PDT,tzone="Etc/GMT+8")
+    ,date_time_pst = with_tz(date_time_pdt,tzone="Etc/GMT+8")
     #create a month column
     ,month = as.numeric(month(date))
     #add column that indicates which survey collected samples
@@ -264,15 +265,15 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
 
 #make sure conversion of DFW time from PDT to PST worked
 #tz_check <- phyto_dfw_stations %>%
-#  select(date_time_PDT,date_time_PST) %>% 
-#  mutate(time_dif = ymd_hms(date_time_PDT) - ymd_hms(date_time_PST)) %>% 
+#  select(date_time_pdt,date_time_pst) %>% 
+#  mutate(time_dif = ymd_hms(date_time_pdt) - ymd_hms(date_time_pst)) %>% 
 #  glimpse()
 #looks good
 
 #look at NAs for date time
 #time_nas <- phyto_dfw_stations %>% 
- # select(station_code,date,time,date_time_PDT,date_time_PST) %>% 
-  #filter(is.na(date_time_PDT))
+ # select(station_code,date,time,date_time_pdt,date_time_pst) %>% 
+  #filter(is.na(date_time_pdt))
 
 #add the region and combo station data 
 phyto_dfw <- left_join(phyto_dfw_stations, stations) %>% 
@@ -327,9 +328,10 @@ phyto_dfw_cleaner <- phyto_dfw %>%
   select(-unit_abundance) %>% 
   #subset to just the needed columns
   select(station
-         , station_dfw
          , collected_by
-         , date_time_PST
+         , latitude
+         , longitude
+         , date_time_pst
          , genus
          , species
          , taxon
@@ -340,7 +342,7 @@ phyto_dfw_cleaner <- phyto_dfw %>%
          , field_of_view_mm2
          , number_of_fields_counted
          , factor
-         , gald_um = gald_1
+         , gald_1
          , total_cells
          , biovolume_1:biovolume_10
          ,comments) %>% 
@@ -348,7 +350,9 @@ phyto_dfw_cleaner <- phyto_dfw %>%
   rowwise() %>% 
   mutate(  
     #use the date-time column with standardized time zone to extract time
-    time_pst = as_hms(date_time_PST)
+    time_pst = as_hms(date_time_pst)
+    #use date-time column to extract date
+    ,date = date(date_time_pst)
     #create new column that calculates mean biovolume per cell
     ,mean_cell_biovolume = mean(c_across(biovolume_1:biovolume_10),na.rm=T)
     #create new column that calculates organisms per mL; round number to nearest tenth
@@ -363,47 +367,92 @@ phyto_dfw_cleaner <- phyto_dfw %>%
     #,biovolume_per_ml_old = organisms_per_ml * total_cells * mean_cell_biovolume
     ,biovolume_cubic_um_per_ml = round((total_cells* mean_cell_biovolume*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted),1)
     #,biovolume_per_ml_easy = factor * total_cells * mean_cell_biovolume
-    #reformat station name columns
-    ,station_new = case_when(!is.na(station_dfw)~station_dfw,TRUE~station)
-    ,alias = case_when(!is.na(station_dfw)~station,TRUE~station_dfw)
     ) %>% 
-  glimpse()
   #subset and reorder columns again to just those needed
-  select(station=station_new
-         ,alias
+  select(station
          ,collected_by
+         ,latitude
+         ,longitude
          ,date
          ,time_pst
+         ,taxon_original = taxon                            
          ,genus
-         ,taxon                              
-         ,phyto_form           
+         ,species
          ,organisms_per_ml
          #,organisms_per_ml_easy
          ,cells_per_ml
          #,cells_per_ml_easy
          #,biovolume_per_ml_old
-         ,biovolume_per_ml
+         ,biovolume_cubic_um_per_ml
          #,biovolume_per_ml_easy
-          ,gald_um
+          ,gald_um = gald_1
+         ,phyto_form 
+         ,comments
          ) %>% 
   glimpse()
 #I prefer to use the formulas based on the more raw version of the data 
 #rather than the ones based on the factor column
 #which is a derived column and therefore more prone to errors
-#warnings indicate some missing times; I know some times weren't recorded
 
 #look at station names
-#unique(phyto_cleanest$station)
+unique(phyto_dfw_cleaner$station)
 
 #look at number of samples per station
-samp_count<-phyto_cleanest %>% 
-  distinct(region,station, alias,date) %>% 
-  group_by(region,station,alias) %>% 
-  summarize(count = n(),.groups = 'drop')
-#looks fine
+phyto_dfw_samp_sum<-phyto_dfw_cleaner %>% 
+  distinct(station,date) %>% 
+  group_by(station) %>% 
+  summarize(count = n(),.groups = 'drop') %>% 
+  arrange(count)
+#max count is 8 surveys x 3 years = 24
+#some stations are only collected during half the season so 12
+#some stations haven't been sampled whole three years
+#also EMP samples some of these stations too so DFW would have skipped them
+#also I know some samples have been missed
+
+#look at taxonomist comments
+phyto_dfw_comments <- phyto_dfw_cleaner %>% 
+  distinct(comments) %>% 
+  arrange(comments)
+#30 unique comments
+#some about not meeting tally in 50 fields
+#some comments about presence of fungus in samples
+#some about high sediment/detritus
+#some about many broken diatoms
+
+#create new columns summarizing comments
+phyto_dfw_cleanest <- phyto_dfw_cleaner %>% 
+  mutate(
+    #add column for quality based on comments
+    #quality_check = case_when(
+    #   grepl("degraded", comments, ignore.case=T) ~ "degraded"
+    #   ,grepl("fragment", comments,ignore.case=T) ~"fragmented"
+    #   ,TRUE ~ "good"
+    # )
+    #add column indicating amount of sediment and detritus
+    #comments often note differing levels of sediment vs detritus
+    #for simplicity combine them and use the highest level indicated
+    #eg, low detritus and high sediment simply becomes high
+    debris = case_when(
+      grepl("high sediment",comments, ignore.case=T)~"high"
+      ,grepl("high det",comments, ignore.case=T)~"high" #shortened because of typo "detitus"
+      ,grepl("moderate sediment",comments, ignore.case=T)~"moderate"
+      ,grepl("moderate detritus",comments, ignore.case=T)~"moderate"
+      ,grepl("low sediment",comments, ignore.case=T)~"low"
+      ,grepl("low detritus",comments, ignore.case=T)~"low"
+      ,TRUE~NA
+    )
+  ) %>% 
+  glimpse()
+
+#look closer at how comments were translated to categories for debris and quality_check
+phyto_comment_check <- phyto_dfw_cleanest %>% 
+  filter(!is.na(comments)) %>% 
+  select(comments,debris) %>% 
+  distinct(comments,debris)
+
 
 #check for NAs
-#check_na <- phyto_cleanest[rowSums(is.na(phyto_cleanest)) > 0,]
+#check_na <- phyto_dfw_cleaner[rowSums(is.na(phyto_dfw_cleaner)) > 0,]
 #most are just missing time, which is fine because time not always recorded
 #could look up fish survey data to get times for some of these
 
@@ -463,9 +512,9 @@ tax_gen_sum_sub<-filter(tax_gen_sum, Freq >1)
 #remove the combos that are duplicates from the main data set
 
 #combine sample data and high level taxonomy by genus----------
-names(phyto_cleanest)
+names(phyto_dfw_cleaner)
 names(taxon_high)
-phyto_tax<-left_join(phyto_cleanest,taxon_high) %>% 
+phyto_tax<-left_join(phyto_dfw_cleaner,taxon_high) %>% 
   glimpse()
 
 #final edits to complete final data version of data set
