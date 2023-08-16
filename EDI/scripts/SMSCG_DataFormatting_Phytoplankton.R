@@ -21,32 +21,6 @@ phytoplankton_emp <- read_csv("https://portal.edirepository.org/nis/dataviewer?p
   clean_names() %>% 
   glimpse()
 
-# Read in the EMP data for GitHub----------------------------------------------
-#NOTE: starting in 2021, there is a column called 'Full Code' 
-#which can link phyto samples to rest of WQ for the station-date
-#read in all columns as text; fix column types later
-
-#Create character vectors of EMP phytoplankton files for all years  
-#phyto_files_emp <- dir(path = "EDI/data_input/phytoplankton", pattern = "EMP", full.names = T, recursive=T)
-
-#phytoplankton_emp <- phyto_files_emp %>% 
-  #set_names() grabs the file names
-  #set_names() %>%  
-  #reads in the files, .id adds the file name column
-  #map_dfr(~read_excel(.x, col_types = "text"), .id = "source") %>% 
-  #specify the survey
-  #mutate(collected_by = as.factor("EMP")) %>% 
-  #code below would pull the survey from the file name; need to update the character range though
-  # mutate(collected_by = as.factor(str_sub(source,25,27))) %>% 
-  #clean_names() %>% 
-  #glimpse()
-#succeeded in combining all the sample files
-#but date and time are in weird format
-#columns that don't match across files get kicked to back of data set
-#sampling depth column has three variations: "Depth (m)", "Depth (ft.)", "Depth (ft)"
-#after 2020: 'Full Code' is added as column
-#after 2021: Unit Abundance becomes Unit Abundance (# of Natural Units); Number of cells per unit becomes Total Number of Cells
-
 # Read in and combine the DFW data----------------------------------------------
 
 #Create character vectors of DFW phytoplankton files for all years  
@@ -80,6 +54,10 @@ phytoplankton_dfw <- phyto_files_dfw %>%
 #this probably needs to be updated with each new batch of data
 #update this file with the updates/corrections I got from AlgaeBase 2/24/2022
 taxonomy <- read_csv("./EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-02-09.csv")
+
+#read in EMP taxonomy data from PESP GitHub repo
+taxonomy_emp <- read_csv("https://raw.githubusercontent.com/InteragencyEcologicalProgram/PESP/main/admin/global_data/phyto_classification.csv") %>% 
+  clean_names()
 
 #read in station name info
 #includes region categories, station names, and names that identify comparable stations through time
@@ -149,57 +127,6 @@ phyto_emp_samp_sum <- phyto_emp_stations %>%
   count()
 #expecting 20 samples per station (4 months x 5 years)
 #no missing samples
-
-#GitHub: clean up EMP station names and drop unneeded stations-------------
-
-#look at stations in the data set
-#unique(phytoplankton_emp$station_code)
-
-#phyto_emp_stations <- phytoplankton_emp %>% 
-  #remove empty rows created by linear cell measurement rows (length, width, depth)  
-  #a little tricky just because the survey name appears in every row including the otherwise empty ones
-  #chose the taxon column as the ones to check for missing data
-  #drop_na(taxon) %>%
-  #mutate(
-    #format date
-    #date = as.Date(as.numeric(sample_date),origin = "1899-12-30")
-    #format time and specify that time zone is PST
-    #,time = as_hms(as.numeric(sample_time)*60*60*24)
-    #create a date time colum
-    #,date_time_pst = ymd_hms(as.character(paste(date, time)),tz="Etc/GMT+8")
-    #create a month column
-    #,month = as.numeric(month(date))
-    #correct two typos in station names
-    #,'station_corr' = case_when(grepl("E26", station_code) ~ "EZ6"
-                               #,grepl("NZ542", station_code) ~"NZS42"
-         #,TRUE ~ as.character(station_code)
-                  #))  %>% 
-  #add prefix to station names
-  #unite('station', c(collected_by,station_corr),sep="_",remove=F) %>% 
-  #drop the June samples
-  # filter(month!=6) %>%
-  #drop one sample that was submitted to BSA empty
-  #filter(!(station=="EMP_EZ6" & date=="2020-09-10")) %>% 
-  #glimpse()
-#NOTE: there are 9 rows that don't format date-time
-#it's for a sample from a station I don't need
-#the time is missing for that sample
-
-#check time zone
-#tz(phyto_emp_stations$date_time_pst)
-
-#look at station names again
-# unique(phyto_emp_stations$station)
-# 
-# #filter the data set to just the stations needed for SMSCG  
-# phyto_emp <- inner_join(phyto_emp_stations, stations) %>% 
-#   glimpse()
-
-#make sure the right stations were retained
-#unique(phyto_emp$station)
-#"EMP_NZ032" "EMP_D4"    "EMP_NZS42" "EMP_EZ2"   "EMP_D7"    "EMP_D22"   "EMP_EZ6" 
-#looks good
-
 
 #clean up DFW station names-------------
 
@@ -454,22 +381,6 @@ phyto_comment_check <- phyto_dfw_cleanest %>%
   arrange(quality_check,debris)
 
 
-#check for NAs
-#check_na <- phyto_dfw_cleaner[rowSums(is.na(phyto_dfw_cleaner)) > 0,]
-#most are just missing time, which is fine because time not always recorded
-#could look up fish survey data to get times for some of these
-
-#Add higher level taxonomic information using the algaeClassify package--------
-#as of 3/4/2022 this package wasn't working
-
-#started by trying out examples from documentation. they didn't work
-#algae_search(genus='Anabaena',species='flos-aquae',long=FALSE)
-
-#data(lakegeneva)
-#lakegeneva=lakegeneva[1,] ##use 1 row for testing
-#lakegeneva.algaebase<-
-#  spp_list_algaebase(lakegeneva,phyto.name='phyto_name',long=FALSE,write=FALSE)
-
 #Add higher level taxonomic information manually-------------
 
 #names(taxonomy)
@@ -564,63 +475,7 @@ stn_start <- phyto_final %>%
   summarize(date_min = min(date),.groups='drop') %>% 
   arrange(date_min)
 
-#write the formatted data as csv 
-#write_csv(phyto_final,file = "EDI/data_output/SMSCG_phytoplankton_formatted_2020-2022.csv")
 
-#summary stats----------------
-
-range(phyto_final$date)
-
-
-
-
-#write version of data set that includes only the samples collected by DFW--------
-#this is for the phytoplankton synthesis effort
-
-#look at number of rows associated with DFW vs EMP
-phyto_surv_sum <- phyto_tax %>% 
-  group_by(collected_by) %>% 
-  summarize(n = n())
-#used to be group by "survey" but there is no longer a column called that
-#also there is a category of collected by that is "kto" which doesn't look right
-
-#look at number of samples associated with DFW vs EMP
-phyto_surv_sum2 <- phyto_tax %>%
-  distinct(survey,station,date) %>% 
-  group_by(survey) %>% 
-  summarize(n = n())
-
-phyto_dfw<-phyto_tax %>% 
-  filter(survey=="DFW") %>% 
-  select(-station) %>% 
-  rename(station=station_clean) %>% 
-  select(station
-         ,date
-         ,time
-         ,kingdom
-         ,phylum
-         ,class
-         ,phyto_form
-         ,genus
-         ,taxon
-         ,organisms_per_ml
-         ,cells_per_ml
-         #,biovolume_per_ml_old
-         ,biovolume_per_ml
-  ) %>%
-  glimpse()
-#write_csv(phyto_dfw,file = "EDI/data_output/SMSCG_phytoplankton_formatted_DFW_only_2020-2021.csv")
-
-#look at list of station names in DFW samples data set
-unique(phyto_dfw$station)
-
-#look for NAs
-check_na <- as.data.frame(colSums(is.na(phyto_dfw))) 
-#only time column has NAs
-check_time <- phyto_dfw %>% 
-  distinct(station,date,time) %>% 
-  filter(is.na(time))
-#three samples are missing times which makes sense
 
 
 #exploring taxonomy data set--------------------
@@ -672,6 +527,10 @@ lept<-taxonomy %>%
 #this way, any out of date names in the sample data can be matched by genus
 
 
+#Combine EMP and DFW datasets into one data frame----------------
+
+#write the formatted data as csv 
+#write_csv(phyto_final,file = "EDI/data_output/SMSCG_phytoplankton_formatted_2020-2022.csv")
 
             
   
