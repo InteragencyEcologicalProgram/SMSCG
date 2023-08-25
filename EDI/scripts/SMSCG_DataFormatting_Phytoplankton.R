@@ -43,6 +43,7 @@ phytoplankton_dfw <- phyto_files_dfw %>%
 #sampling depth column has three variations: "Depth (m)", "Depth (ft.)", "Depth (ft)"
 #after 2020: 'Full Code' is added as column
 #after 2021: Unit Abundance becomes Unit Abundance (# of Natural Units); Number of cells per unit becomes Total Number of Cells
+#below, we combine each of these two sets of columns with different names through time
 
 #unique(phytoplankton_dfw$station_code)
 #why is there an NA for station code? Because cell width and depth are on separate lines
@@ -61,7 +62,7 @@ taxonomy_emp <- read_csv("https://raw.githubusercontent.com/InteragencyEcologica
 
 #read in station name info
 #includes region categories, station names, and names that identify comparable stations through time
-stations <- read_csv("EDI/data_input/phytoplankton/smscg_stations_phyto.csv")
+stations <- read_csv("./EDI/data_input/phytoplankton/smscg_stations_phyto.csv")
 #NOTE: once we have updated this on EDI, we can just pull it from there instead of GitHub repo
 
 #EDI: format EMP data-------------------------
@@ -84,17 +85,18 @@ phyto_emp_recent <- phytoplankton_emp %>%
   filter(year > 2017 & month > 6 & month < 11)
   
 #check date range
-range(phyto_emp_stations$sample_date)
+range(phyto_emp_recent$sample_date)
 #looks good; "2018-07-09" "2022-10-20"
 
 #look at list of stations
-unique(phyto_emp_stations$station)
+unique(phyto_emp_recent$station)
 #29 stations
 
 #create list of EMP stations needed from the station metadata file
 stations_emp <- stations %>% 
   filter(grepl("EMP",alias)) %>% 
   pull(alias)
+#n=7 stations
 
 phyto_emp_stations <- phyto_emp_recent %>% 
   filter(station %in% stations_emp) %>% 
@@ -184,7 +186,6 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
     )) %>%
   relocate(station,.after = station_code) %>% 
   glimpse()
-#4 rows for date time didn't parse because no time recorded for sample
 
 #look at stations again
 #unique(phyto_dfw_stations$station)
@@ -211,6 +212,7 @@ phyto_dfw_na <- phyto_dfw %>%
   filter(is.na(station_group))
 #no NAs so matched correctly
 
+#summary of station info
 phyto_dfw_combo <- phyto_dfw %>% 
   distinct(region, station, month, collected_by) %>% 
   arrange(month, station, collected_by)
@@ -312,7 +314,7 @@ phyto_dfw_cleaner <- phyto_dfw %>%
          #,biovolume_per_ml_old
          ,biovolume_cubic_um_per_ml
          #,biovolume_per_ml_easy
-          ,gald_um = gald_1
+         ,gald_um = gald_1
          ,phyto_form 
          ,comments
          ) %>% 
@@ -347,14 +349,19 @@ phyto_dfw_comments <- phyto_dfw_cleaner %>%
 #some about many broken diatoms
 
 #create new columns summarizing comments
+#ideally would make a separate column for each issue type and then combine into one later
+#but few enough comments per comment field to just start with one quality check column instead
 phyto_dfw_cleanest <- phyto_dfw_cleaner %>% 
   mutate(
     #add column for quality based on comments
+    #order of these is by importance because earlier ones get "set" first 
+    #eg, BadData is first because that is most important type of note
     quality_check = case_when(
-       grepl("degraded", comments, ignore.case=T) ~ "Degraded"
+      grepl("50 fields",comments,ignore.case=T)~"BadData"
+      ,grepl("degraded", comments, ignore.case=T) ~ "Degraded"
        ,grepl("fragment", comments,ignore.case=T) ~"Fragment"
-       ,grepl("50 fields",comments,ignore.case=T)~"BadData"
        ,grepl("fungus",comments,ignore.case=T)~"PoorlyPreserved"
+       ,grepl("broken",comments,ignore.case=T)~"BrokenDiatoms"
        ,TRUE ~ "Good"
      )
     #add column indicating amount of sediment and detritus
@@ -379,7 +386,7 @@ phyto_comment_check <- phyto_dfw_cleanest %>%
   select(comments,quality_check,debris) %>% 
   distinct(comments,quality_check,debris) %>% 
   arrange(quality_check,debris)
-
+#write_csv(phyto_comment_check,"./EDI/data_input/phytoplankton/SMSCG_phytoplankton_taxonomist_comments.csv")
 
 #Add higher level taxonomic information manually-------------
 
