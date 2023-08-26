@@ -1,0 +1,34 @@
+kingdom,phylum,class,algal_group,current_name,taxon_original,genus,species,notes
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Bacillaria cf. paxillifera,Bacillaria,paxillifera,"For this and many other taxa, EMP has outdated Phylum Ochrophyta"
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,cf. Cymbella sp.,Cymbella,sp.,
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,Humidophila contenta,cf. Diadesmis sp.,Diadesmis,contenta,Not sure what taxon this should be
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,cf. Diploneis sp.,Diploneis,sp.,
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Encyonema cf. lange-bertalotii,Encyonema,lange-bertalotii,
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Gomphonema affinopsis,Gomphonema,affinopsis,
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Navicula goersii,Navicula,goersii,
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Navicula cf. oppugnata,Navicula,oppugnata,
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Navicula subrostellata,Navicula,subrostellata,
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,cf. Neidium sp.,Neidium,sp.,
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Nitzschia alpina,Nitzschia,alpina,
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Nitzschia cf. soratensis,Nitzschia,soratensis,
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,Pinnularia moelderi ,Pinnularia cf. hustedtii,Pinnularia,hustedtii,should it be Pinnularia cf. moelderi?
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Planothidium incuriatum,Planothidium,incuriatum,
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,cf. Stauroneis sp.,Stauroneis,sp.,
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Tryblionella cf. compressa,Tryblionella,compressa,
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Tryblionella cf. victoriae,Tryblionella,victoriae,
+Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,None,Chaetoceros muelleri,Chaetoceros,muelleri,
+Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,Cyclotella,Cyclotella cf. atomus,Cyclotella,atomus,
+Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,Lindavia bodanica,Cyclotella cf. bodanica,Cyclotella,bodanica,should this be cf. Lindavia bodanica?
+Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,None,cf. Lindavia sp.,Lindavia,sp.,
+Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,None,Lindavia sp.,Lindavia,sp.,
+Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,None,Skeletonema ardens,Skeletonema,ardens,
+Chromista,Cryptista,Cryptophyceae,Cryptophytes,None,Teleaulax amphioxeia,Teleaulax,amphioxeia,
+Eubacteria,Cyanobacteria,Cyanophyceae,Cyanobacteria,None,Komvophoron sp.,Komvophoron,sp.,"EMP has Kingdom as ""Bacteria"""
+Plantae,Chlorophyta,Chlorophyceae,Green Algae,None,cf. Chlorella sp.,Chlorella,sp.,also in AWCA supplemental taxa data set
+Plantae,Chlorophyta,Chlorophyceae,Green Algae,None,Dictyochloris fragrans,Dictyochloris,fragrans,
+Plantae,Chlorophyta,Chlorophyceae,Green Algae,None,cf. Raphidocelis sp.,Raphidocelis,sp.,
+Plantae,Chlorophyta,Chlorophyceae,Green Algae,None,cf. Vitreochalmys sp.,Vitreochlamys,sp.,this was not in algaebase
+Plantae,Chlorophyta,Nephroselmidophyceae,Green Algae,None,cf. Nephroselmis sp.,Nephroselmis,sp.,"EMP has class as ""Chlorophyceae"""
+Plantae,Chlorophyta,Trebouxiophyceae,Green Algae,None,cf. Nannochloris sp.,Nannochloris,sp.,
+Plantae,Chlorophyta,Ulvophyceae,Green Algae,None,cf. Ulothrix sp.,Ulothrix,sp.,
+Protozoa,Euglenozoa,Euglenophyceae,Euglenoids,Lepocinclis acus ,Euglena acus,Euglena,acus,

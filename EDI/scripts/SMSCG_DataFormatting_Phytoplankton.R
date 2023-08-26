@@ -54,11 +54,18 @@ phytoplankton_dfw <- phyto_files_dfw %>%
 #read in taxonomy data
 #this probably needs to be updated with each new batch of data
 #update this file with the updates/corrections I got from AlgaeBase 2/24/2022
-taxonomy <- read_csv("./EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-02-09.csv")
+taxonomy <- read_csv("./EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-02-09.csv") %>% 
+  clean_names() %>% 
+  #rename taxonomic name column to taxon_original
+  rename(taxon_original = taxon) %>% 
+  glimpse()
 
 #read in EMP taxonomy data from PESP GitHub repo
 taxonomy_emp <- read_csv("https://raw.githubusercontent.com/InteragencyEcologicalProgram/PESP/main/admin/global_data/phyto_classification.csv") %>% 
-  clean_names()
+  clean_names() %>% 
+  #rename taxonomic name column to taxon_original
+  rename(taxon_original = name) %>% 
+  glimpse()
 
 #read in station name info
 #includes region categories, station names, and names that identify comparable stations through time
@@ -387,6 +394,51 @@ phyto_comment_check <- phyto_dfw_cleanest %>%
   distinct(comments,quality_check,debris) %>% 
   arrange(quality_check,debris)
 #write_csv(phyto_comment_check,"./EDI/data_input/phytoplankton/SMSCG_phytoplankton_taxonomist_comments.csv")
+
+#make dataframe with all taxa from SMSCG---------------
+
+#create df with unique taxa
+tax_scg <- phyto_dfw_cleaner %>% 
+  distinct(taxon_original,genus,species) 
+#156 taxa
+
+#compare taxa between SMSCG and EMP-----------------
+
+#look at non-matches
+tax_mism <- anti_join(tax_scg,taxonomy_emp)
+#33 mismatches between SMSCG data set and EMP taxonomy
+
+#try matching the taxa without exact matches in the EMP taxonomy with just the genus in the EMP taxonomy
+#could be funky because likely multiple taxa per genus in the EMP taxonomy
+
+#start by dropping taxon_original from EMP taxonomy
+taxonomy_emp_gn <- taxonomy_emp %>% 
+  select(-taxon_original)
+
+#now try matching between genus level version of EMP taxonomy and mismatched taxa
+tax_mism_gn <- left_join(tax_mism,taxonomy_emp_gn)
+#did get multiple hits from the EMP taxonomy for some taxa
+
+#also look at the taxa that I added to my version of the taxonomy file
+tax_nick <- taxonomy %>% 
+  filter(nick_addition=="x")
+#17 taxa
+
+#how many of the non-matches from EMP are in my version
+tax_mism_nick <- left_join(tax_mism,tax_nick)
+
+tax_mism_names <- tax_mism %>% 
+  pull(name)
+
+tax_mism_genera <- tax_mism %>% 
+  pull(genus)
+
+
+
+
+
+
+
 
 #Add higher level taxonomic information manually-------------
 
