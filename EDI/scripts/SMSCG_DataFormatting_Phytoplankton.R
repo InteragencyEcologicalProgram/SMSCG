@@ -156,15 +156,15 @@ phyto_emp_stations <- phyto_emp_recent %>%
   glimpse()
 
 #look at list of stations remaining
-unique(phyto_emp_stations$station)
+#unique(phyto_emp_stations$station)
 #"EMP_D10"   "EMP_D8"    "EMP_NZS42" "EMP_NZ032" "EMP_D7"    "EMP_D22"   "EMP_NZ068" "EMP_D4"    "EMP_D12"  
 #looks good
 
 #look at summary of samples for these stations
-phyto_emp_samp_sum <- phyto_emp_stations %>% 
-  distinct(station,date,time_pst) %>% 
-  group_by(station) %>% 
-  count()
+# #phyto_emp_samp_sum <- phyto_emp_stations %>% 
+#   distinct(station,date,time_pst) %>% 
+#   group_by(station) %>% 
+#   count()
 #expecting 20 samples per station (4 months x 5 years)
 #no missing samples
 
@@ -246,40 +246,19 @@ phyto_dfw <- left_join(phyto_dfw_stations, stations) %>%
   glimpse()
 
 #make sure all stations matched
-phyto_dfw_na <- phyto_dfw %>% 
-  filter(is.na(station_group))
+# phyto_dfw_na <- phyto_dfw %>% 
+#   filter(is.na(station_group))
 #no NAs so matched correctly
 
 #summary of station info
-phyto_dfw_combo <- phyto_dfw %>% 
-  distinct(region, station, month, collected_by) %>% 
-  arrange(month, station, collected_by)
+# phyto_dfw_combo <- phyto_dfw %>% 
+#   distinct(region, station, month, collected_by) %>% 
+#   arrange(month, station, collected_by)
 
 
 #format the DFW sample data set------------
 #NOTE: need to specify column types
 #majority are still character because we read in files with all columns as text
-
-#combine EMP and DFW sample data
-# phytoplankton <- bind_rows(phyto_emp,phyto_dfw) %>% 
-#   mutate(
-#     #combine data from the two total cells columns (just different names for same thing)
-#     total_cells = as.numeric(case_when(!is.na(number_of_cells_per_unit)~number_of_cells_per_unit
-#                                  ,!is.na(total_number_of_cells)~total_number_of_cells))
-#     #combine data from the two unit abundance columns (just different names for same thing)
-#     ,unit_abundance2 = as.numeric(case_when(!is.na(unit_abundance)~unit_abundance
-#                               ,!is.na(unit_abundance_number_of_natural_units)~unit_abundance_number_of_natural_units))
-#   ) %>% 
-#   glimpse()
-
-#did the column merging work
-#phyto_tc <- phytoplankton %>% 
-#  filter(is.na(total_cells))
-#no NAs as expected
-
-#phyto_ua <- phytoplankton %>% 
-#  filter(is.na(unit_abundance2))
-#no NAs as expected
 
 #format DFW data set
 phyto_dfw_cleaner <- phyto_dfw %>% 
@@ -362,24 +341,24 @@ phyto_dfw_cleaner <- phyto_dfw %>%
 #which is a derived column and therefore more prone to errors
 
 #look at station names
-unique(phyto_dfw_cleaner$station)
+#unique(phyto_dfw_cleaner$station)
 
 #look at number of samples per station
-phyto_dfw_samp_sum<-phyto_dfw_cleaner %>% 
-  distinct(station,date) %>% 
-  group_by(station) %>% 
-  summarize(count = n(),.groups = 'drop') %>% 
-  arrange(count)
-#max count is 8 surveys x 3 years = 24
-#some stations are only collected during half the season so 12
-#some stations haven't been sampled whole three years
-#also EMP samples some of these stations too so DFW would have skipped them
-#also I know some samples have been missed
-
-#look at taxonomist comments
-phyto_dfw_comments <- phyto_dfw_cleaner %>% 
-  distinct(comments) %>% 
-  arrange(comments)
+# phyto_dfw_samp_sum<-phyto_dfw_cleaner %>% 
+#   distinct(station,date) %>% 
+#   group_by(station) %>% 
+#   summarize(count = n(),.groups = 'drop') %>% 
+#   arrange(count)
+# #max count is 8 surveys x 3 years = 24
+# #some stations are only collected during half the season so 12
+# #some stations haven't been sampled whole three years
+# #also EMP samples some of these stations too so DFW would have skipped them
+# #also I know some samples have been missed
+# 
+# #look at taxonomist comments
+# phyto_dfw_comments <- phyto_dfw_cleaner %>% 
+#   distinct(comments) %>% 
+#   arrange(comments)
 #30 unique comments
 #some about not meeting tally in 50 fields
 #some comments about presence of fungus in samples
@@ -419,25 +398,25 @@ phyto_dfw_cleanest <- phyto_dfw_cleaner %>%
   glimpse()
 
 #look closer at how comments were translated to categories for debris and quality_check
-phyto_comment_check <- phyto_dfw_cleanest %>% 
-  filter(!is.na(comments)) %>% 
-  select(comments,quality_check,debris) %>% 
-  distinct(comments,quality_check,debris) %>% 
-  arrange(quality_check,debris)
+# phyto_comment_check <- phyto_dfw_cleanest %>% 
+#   filter(!is.na(comments)) %>% 
+#   select(comments,quality_check,debris) %>% 
+#   distinct(comments,quality_check,debris) %>% 
+#   arrange(quality_check,debris)
 #write_csv(phyto_comment_check,"./EDI/data_input/phytoplankton/SMSCG_phytoplankton_taxonomist_comments.csv")
 
 #Add taxonomy info to DFW dataset---------------
 
 #create df with unique taxa
-tax_scg <- phyto_dfw_cleanest %>% 
-  distinct(taxon_original,genus,species) 
-#156 taxa
-
-#compare taxa between SMSCG and EMP
-
-#look at non-matches
-tax_mism <- anti_join(tax_scg,taxonomy_emp)
-#33 mismatches between SMSCG data set and EMP taxonomy
+# tax_scg <- phyto_dfw_cleanest %>% 
+#   distinct(taxon_original,genus,species) 
+# #156 taxa
+# 
+# #compare taxa between SMSCG and EMP
+# 
+# #look at non-matches
+# tax_mism <- anti_join(tax_scg,taxonomy_emp)
+# #33 mismatches between SMSCG data set and EMP taxonomy
 
 #try matching the taxa without exact matches in the EMP taxonomy with just the genus in the EMP taxonomy
 #tried this and didn't work well because of multiple genus matches per taxon
@@ -525,6 +504,9 @@ phyto_pesp <- phyto_all %>%
     ) %>% 
   glimpse()
 
+#write the output data file for PESP
+#write_csv(phyto_pesp, "./EDI/data_output/SMSCG_phytoplankton_formatted_2020-2022_PESP.csv")
+
 #make sure station names are all formatted the same
 #possible for differences between EMP and SMSCG data sets
 #unique(phyto_all$station)
@@ -573,163 +555,154 @@ phyto_smscg <- left_join(phyto_pesp,stations_emp_names)  %>%
 #write_csv(phyto_smscg, "./EDI/data_output/SMSCG_phytoplankton_reformatted_2020-2022.csv")
 
 
-#Add higher level taxonomic information manually-------------
-
-#names(taxonomy)
-
-#subset to just the needed columns
-#will match genus name between the two data frames
-taxon_high<-taxonomy %>% 
-  clean_names() %>% 
-  select(kingdom
-  ,phylum
-  ,class
-  ,genus
-  ,algal_type) %>%  #confirmed that there is just one type per genus
-#this approach is very simple because it removes the need for exact matches in the taxon names
-#part of the difficulty in matching taxon names is presence of "cf." for many taxa
-#unfortunately by just matching by genus and not taxon, we lose the habitat type, and salinity range info
-#also with species level data, there's a chance the taxonomy dataset doesn't include every species in the samples
-  #remove some (likely incorrect) combinations that are creating duplicates for genus
-  #check AlgaeBase to see which taxonomic info is correct
-  filter(!(genus == "Achnanthidium" & class =="Fragilariophyceae") & 
-           !(genus == "Elakatothrix" & class =="Chlorophyceae") &
-           !(genus == "Leptocylindrus" & algal_type =="Centric diatom"))%>% 
-  #condense taxonomy data set to just the unique combinations
-  distinct(kingdom,phylum,class,genus)  
-#initially some genera appeared more than once in this taxonomy data set
-#but this has been corrected
-
-#investigating duplicates for genus---------------
-
-#count number of times each genus appears
-#ideally this would be once
-tax_gen_sum<-data.frame(table(taxon_high$genus)) 
-
-#look at repeat genera
-tax_gen_sum_sub<-filter(tax_gen_sum, Freq >1)
-#first time doing this there were three genera plus "unknown"
-#Achnanthidium    n=2, Elakatothrix    n=2, Leptocylindrus   n=2
-#fixed this so that only "unknown" has duplicates
-
-#now go back to taxonomy data set and look at these three genera
-#gen_dup<-taxon_high_rn %>% 
-#  filter(genus == "Achnanthidium" | genus =="Elakatothrix" | genus=="Leptocylindrus" )
-#remove the combos that are duplicates from the main data set
-
-#combine sample data and high level taxonomy by genus----------
-names(phyto_dfw_cleaner)
-names(taxon_high)
-phyto_tax<-left_join(phyto_dfw_cleaner,taxon_high) %>% 
-  glimpse()
-
-#final edits to complete final data version of data set
-phyto_final<-phyto_tax %>% 
-  #order by date and time
-  arrange(date, time) %>%
-  mutate(
-    #fix one case of phyto_form from "f." to "f"
-    phyto_form = case_when(phyto_form =="f." ~ "f",TRUE ~ phyto_form)
-    #make time a character column for export; otherwise will automatically convert to UTC
-    ,time_pst = as.character(time)
-                 ) %>% 
-  #reorder columns data frame export
-  #now that we have a station metadata file, we no longer need some of these columns in the data file
-  select(station
-         #,alias
-         #,station_group
-         #,region
-         ,collected_by
-         ,date
-         ,time_pst
-         ,kingdom
-         ,phylum
-         ,class
-         ,genus
-         ,taxon
-         ,phyto_form
-         ,organisms_per_ml
-         ,cells_per_ml
-         #,biovolume_per_ml_old
-         ,biovolume_per_ml
-  ) %>%
-  glimpse()
-
-#look at list of station names again
-#unique(phyto_final$station)
-
-#check for NAs
-#check_na2 <- phyto_final[rowSums(is.na(phyto_final)) > 0,]
-
-#look at start date for all stations
-stn_start <- phyto_final %>% 
-  group_by(station) %>% 
-  summarize(date_min = min(date),.groups='drop') %>% 
-  arrange(date_min)
-
-
-
-
-#exploring taxonomy data set--------------------
-
-#how many genera in samples not in taxonomy data?
-#look for NA in Class column
-sum(is.na(phyto_tax$class))
-#31 cases in which a genus in a sample didn't match the taxonomy data
-
-#look at set of samples without matching taxonomy
-misfits <- phyto_tax %>% 
-  filter(is.na(class)) %>% 
-  distinct(genus)
-#12 new genera plus NA
-
-#how often do genera have multiple algae types? if always just one, then can just add the algae type column
-#if more than one, then we have to match up taxa to use the algae type
-tax_at<-unique(taxonomy[,c('Genus','Algal Type')])
-
-#also just how many algal types in total
-unique(taxonomy$'Algal Type')
-#n = 32 but some of these are just duplicates created by formatting differences and also unknown categories
-#but I bet many of these are uncommon and can be lumped into an "Other" category
-
-#look at algal types and Class together to see if that helps
-tax_atc<-unique(taxonomy[,c('Phylum','Class','Algal Type')])
-sorted<-tax_atc[order(tax_atc$Phylum, tax_atc$Class),]
-  
-#count number of unique algal types within Genus
-#ideally this is one for every genus
-tax_at_sum<-data.frame(table(tax_at$Genus)) 
-#looks like there are some genera with multiple algal types
-
-#look at genera with multiple algal types
-tax_at_sum_sub<-filter(tax_at_sum, Freq >1)
-#most of these are associated with "Unknown" genus
-#there are two associated with genus Leptocylindrus
-
-#look at Leptocylindrus in main taxonomy data set
-lept<-taxonomy %>% 
-  filter(Genus =="Leptocylindrus")
-#the two algal types are simply different forms of the same name "Centric diatom" and "Centric Diatom"
-
-#create a secondary data set that has the same information but 
-#but based on synonyms of the current names
-#subset this data set to exclude rows with "Synonym(s)" = "None" or "Unknown"
-
-#create columns that separates the genus and species of the synonyms
-#this way, any out of date names in the sample data can be matched by genus
-
-
-#Combine EMP and DFW datasets into one data frame----------------
-
-#write the formatted data as csv 
-#write_csv(phyto_final,file = "EDI/data_output/SMSCG_phytoplankton_formatted_2020-2022.csv")
-
-            
-  
-  
-  
-  
-  
-  
-  
-  
+# #Add higher level taxonomic information manually-------------
+# 
+# #names(taxonomy)
+# 
+# #subset to just the needed columns
+# #will match genus name between the two data frames
+# taxon_high<-taxonomy %>% 
+#   clean_names() %>% 
+#   select(kingdom
+#   ,phylum
+#   ,class
+#   ,genus
+#   ,algal_type) %>%  #confirmed that there is just one type per genus
+# #this approach is very simple because it removes the need for exact matches in the taxon names
+# #part of the difficulty in matching taxon names is presence of "cf." for many taxa
+# #unfortunately by just matching by genus and not taxon, we lose the habitat type, and salinity range info
+# #also with species level data, there's a chance the taxonomy dataset doesn't include every species in the samples
+#   #remove some (likely incorrect) combinations that are creating duplicates for genus
+#   #check AlgaeBase to see which taxonomic info is correct
+#   filter(!(genus == "Achnanthidium" & class =="Fragilariophyceae") & 
+#            !(genus == "Elakatothrix" & class =="Chlorophyceae") &
+#            !(genus == "Leptocylindrus" & algal_type =="Centric diatom"))%>% 
+#   #condense taxonomy data set to just the unique combinations
+#   distinct(kingdom,phylum,class,genus)  
+# #initially some genera appeared more than once in this taxonomy data set
+# #but this has been corrected
+# 
+# #investigating duplicates for genus---------------
+# 
+# #count number of times each genus appears
+# #ideally this would be once
+# tax_gen_sum<-data.frame(table(taxon_high$genus)) 
+# 
+# #look at repeat genera
+# tax_gen_sum_sub<-filter(tax_gen_sum, Freq >1)
+# #first time doing this there were three genera plus "unknown"
+# #Achnanthidium    n=2, Elakatothrix    n=2, Leptocylindrus   n=2
+# #fixed this so that only "unknown" has duplicates
+# 
+# #now go back to taxonomy data set and look at these three genera
+# #gen_dup<-taxon_high_rn %>% 
+# #  filter(genus == "Achnanthidium" | genus =="Elakatothrix" | genus=="Leptocylindrus" )
+# #remove the combos that are duplicates from the main data set
+# 
+# #combine sample data and high level taxonomy by genus----------
+# names(phyto_dfw_cleaner)
+# names(taxon_high)
+# phyto_tax<-left_join(phyto_dfw_cleaner,taxon_high) %>% 
+#   glimpse()
+# 
+# #final edits to complete final data version of data set
+# phyto_final<-phyto_tax %>% 
+#   #order by date and time
+#   arrange(date, time) %>%
+#   mutate(
+#     #fix one case of phyto_form from "f." to "f"
+#     phyto_form = case_when(phyto_form =="f." ~ "f",TRUE ~ phyto_form)
+#     #make time a character column for export; otherwise will automatically convert to UTC
+#     ,time_pst = as.character(time)
+#                  ) %>% 
+#   #reorder columns data frame export
+#   #now that we have a station metadata file, we no longer need some of these columns in the data file
+#   select(station
+#          #,alias
+#          #,station_group
+#          #,region
+#          ,collected_by
+#          ,date
+#          ,time_pst
+#          ,kingdom
+#          ,phylum
+#          ,class
+#          ,genus
+#          ,taxon
+#          ,phyto_form
+#          ,organisms_per_ml
+#          ,cells_per_ml
+#          #,biovolume_per_ml_old
+#          ,biovolume_per_ml
+#   ) %>%
+#   glimpse()
+# 
+# #look at list of station names again
+# #unique(phyto_final$station)
+# 
+# #check for NAs
+# #check_na2 <- phyto_final[rowSums(is.na(phyto_final)) > 0,]
+# 
+# #look at start date for all stations
+# stn_start <- phyto_final %>% 
+#   group_by(station) %>% 
+#   summarize(date_min = min(date),.groups='drop') %>% 
+#   arrange(date_min)
+# 
+# #exploring taxonomy data set--------------------
+# 
+# #how many genera in samples not in taxonomy data?
+# #look for NA in Class column
+# sum(is.na(phyto_tax$class))
+# #31 cases in which a genus in a sample didn't match the taxonomy data
+# 
+# #look at set of samples without matching taxonomy
+# misfits <- phyto_tax %>% 
+#   filter(is.na(class)) %>% 
+#   distinct(genus)
+# #12 new genera plus NA
+# 
+# #how often do genera have multiple algae types? if always just one, then can just add the algae type column
+# #if more than one, then we have to match up taxa to use the algae type
+# tax_at<-unique(taxonomy[,c('Genus','Algal Type')])
+# 
+# #also just how many algal types in total
+# unique(taxonomy$'Algal Type')
+# #n = 32 but some of these are just duplicates created by formatting differences and also unknown categories
+# #but I bet many of these are uncommon and can be lumped into an "Other" category
+# 
+# #look at algal types and Class together to see if that helps
+# tax_atc<-unique(taxonomy[,c('Phylum','Class','Algal Type')])
+# sorted<-tax_atc[order(tax_atc$Phylum, tax_atc$Class),]
+#   
+# #count number of unique algal types within Genus
+# #ideally this is one for every genus
+# tax_at_sum<-data.frame(table(tax_at$Genus)) 
+# #looks like there are some genera with multiple algal types
+# 
+# #look at genera with multiple algal types
+# tax_at_sum_sub<-filter(tax_at_sum, Freq >1)
+# #most of these are associated with "Unknown" genus
+# #there are two associated with genus Leptocylindrus
+# 
+# #look at Leptocylindrus in main taxonomy data set
+# lept<-taxonomy %>% 
+#   filter(Genus =="Leptocylindrus")
+# #the two algal types are simply different forms of the same name "Centric diatom" and "Centric Diatom"
+# 
+# #create a secondary data set that has the same information but 
+# #but based on synonyms of the current names
+# #subset this data set to exclude rows with "Synonym(s)" = "None" or "Unknown"
+# 
+# #create columns that separates the genus and species of the synonyms
+# #this way, any out of date names in the sample data can be matched by genus
+# 
+#             
+#   
+#   
+#   
+#   
+#   
+#   
+#   
+#   
