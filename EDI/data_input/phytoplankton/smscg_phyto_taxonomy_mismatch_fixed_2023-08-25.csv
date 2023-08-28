@@ -1,7 +1,7 @@
 kingdom,phylum,class,algal_group,current_name,taxon_original,genus,species,notes
 Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Bacillaria cf. paxillifera,Bacillaria,paxillifera,"For this and many other taxa, EMP has outdated Phylum Ochrophyta"
 Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,cf. Cymbella sp.,Cymbella,sp.,
-Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,Humidophila contenta,cf. Diadesmis sp.,Diadesmis,contenta,Not sure what taxon this should be
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,cf. Humidophila contenta,cf. Diadesmis sp.,Diadesmis,contenta,
 Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,cf. Diploneis sp.,Diploneis,sp.,
 Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Encyonema cf. lange-bertalotii,Encyonema,lange-bertalotii,
 Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Gomphonema affinopsis,Gomphonema,affinopsis,
@@ -11,14 +11,14 @@ Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Navicula subros
 Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,cf. Neidium sp.,Neidium,sp.,
 Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Nitzschia alpina,Nitzschia,alpina,
 Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Nitzschia cf. soratensis,Nitzschia,soratensis,
-Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,Pinnularia moelderi ,Pinnularia cf. hustedtii,Pinnularia,hustedtii,should it be Pinnularia cf. moelderi?
+Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,Pinnularia cf. moelderi ,Pinnularia cf. hustedtii,Pinnularia,hustedtii,
 Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Planothidium incuriatum,Planothidium,incuriatum,
 Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,cf. Stauroneis sp.,Stauroneis,sp.,
 Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Tryblionella cf. compressa,Tryblionella,compressa,
 Chromista,Bacillariophyta,Bacillariophyceae,Pennate Diatoms,None,Tryblionella cf. victoriae,Tryblionella,victoriae,
 Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,None,Chaetoceros muelleri,Chaetoceros,muelleri,
-Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,Cyclotella,Cyclotella cf. atomus,Cyclotella,atomus,
-Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,Lindavia bodanica,Cyclotella cf. bodanica,Cyclotella,bodanica,should this be cf. Lindavia bodanica?
+Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,None,Cyclotella cf. atomus,Cyclotella,atomus,
+Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,Lindavia cf. bodanica,Cyclotella cf. bodanica,Cyclotella,bodanica,
 Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,None,cf. Lindavia sp.,Lindavia,sp.,
 Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,None,Lindavia sp.,Lindavia,sp.,
 Chromista,Bacillariophyta,Mediophyceae,Centric Diatoms,None,Skeletonema ardens,Skeletonema,ardens,
