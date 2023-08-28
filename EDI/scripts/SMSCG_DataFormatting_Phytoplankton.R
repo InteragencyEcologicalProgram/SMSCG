@@ -15,13 +15,14 @@ library(readxl) #importing data from excel files
 #which is the total number of cells counted for that taxon in a particular sample
 #calculations in this script were corrected accordingly on 2/10/2022
 
-# Read in the EMP data from EDI------------------
+#Read in data------------------
 
+# Read in the EMP data from EDI
 phytoplankton_emp <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.5&entityid=67b9d4ee30d5eee6e74b2300426471f9") %>% 
   clean_names() %>% 
   glimpse()
 
-# Read in and combine the DFW data----------------------------------------------
+# Read in and combine the DFW data
 
 #Create character vectors of DFW phytoplankton files for all years  
 phyto_files_dfw <- dir(path = "EDI/data_input/phytoplankton", pattern = "DFW", full.names = T, recursive=T)
@@ -49,7 +50,7 @@ phytoplankton_dfw <- phyto_files_dfw %>%
 #why is there an NA for station code? Because cell width and depth are on separate lines
 #it's fine for now
 
-# Read in the other files----------------
+# Read in the other files
 
 #read in taxonomy data
 #this probably needs to be updated with each new batch of data
@@ -67,6 +68,14 @@ taxonomy_emp <- read_csv("https://raw.githubusercontent.com/InteragencyEcologica
   rename(taxon_original = name) %>% 
   glimpse()
 
+#read in file with taxa from AWCA that didn't match EMP taxonomy
+taxonomy_awca_mism <- read_csv("https://raw.githubusercontent.com/EMRR-DISE/DSRS_AWCA/main/phyto/data_input/other/phyto_taxonomy_mismatch_fixed_2023-08-11.csv") %>% 
+  rename(taxon_original = name) %>% 
+  select(-species)
+
+#read in supplementary taxonomy info that fills gaps in PESP list
+taxonomy_fix <- read_csv("./EDI/data_input/phytoplankton/smscg_phyto_taxonomy_mismatch_fixed_2023-08-25.csv")
+
 #read in station name info
 #includes region categories, station names, and names that identify comparable stations through time
 stations <- read_csv("./EDI/data_input/phytoplankton/smscg_stations_phyto.csv")
@@ -74,8 +83,23 @@ stations <- read_csv("./EDI/data_input/phytoplankton/smscg_stations_phyto.csv")
 
 #EDI: format EMP data-------------------------
 #add month column to use to filter data set to just the needed time period
-#filter stations to just the ones I need
-#"EMP_NZ032" "EMP_D4"    "EMP_NZS42" "EMP_EZ2"   "EMP_D7"    "EMP_D22"   "EMP_EZ6" 
+#filter stations to just the ones I need (N=9)
+#dropped the EZ stations for now because EMP didn't include the lat/long in their EDI publication
+
+#look at list of stations
+#unique(phytoplankton_emp$station_code)
+#31 stations
+
+#is there any data in published EMP phyto data set for D24?
+#d24 <- phytoplankton_emp %>% 
+#  filter(station_code == "D24")
+#yes but only during 2016 and 2017
+#maybe they call it NZ068 after 2017
+
+#nz068 <- phytoplankton_emp %>% 
+#  filter(station_code =="NZ068")
+#range(nz068$sample_date) #"2017-05-19" "2022-12-15"
+#so yeah, D24 was phased out and replaced with NZ068
 
 #filter EMP data set to just the stations and dates needed
 phyto_emp_recent <- phytoplankton_emp %>% 
@@ -92,21 +116,26 @@ phyto_emp_recent <- phytoplankton_emp %>%
   filter(year > 2017 & month > 6 & month < 11)
   
 #check date range
-range(phyto_emp_recent$sample_date)
+#range(phyto_emp_recent$sample_date)
 #looks good; "2018-07-09" "2022-10-20"
 
 #look at list of stations
-unique(phyto_emp_recent$station)
+#unique(phyto_emp_recent$station)
 #29 stations
 
 #create list of EMP stations needed from the station metadata file
 stations_emp <- stations %>% 
   filter(grepl("EMP",alias)) %>% 
   pull(alias)
-#n=7 stations
+#n=9 stations
 
 phyto_emp_stations <- phyto_emp_recent %>% 
   filter(station %in% stations_emp) %>% 
+  #for now, drop the EZ stations
+  filter(station!="EMP_EZ2" & station!="EMP_EZ6") %>% 
+  #for now, add debris column with "Unknown" for all
+  #hopefully, EMP will add this to their published dataset at some point
+  add_column(debris = "Unknown") %>% 
   #reorder and rename columns as needed
   select(station
          ,collected_by
@@ -122,12 +151,14 @@ phyto_emp_stations <- phyto_emp_recent %>%
          ,gald_um = gald
          ,phyto_form
          ,quality_check
+         ,debris
   ) %>% 
   glimpse()
 
 #look at list of stations remaining
 unique(phyto_emp_stations$station)
-#"EMP_EZ2"   "EMP_EZ6"   "EMP_NZS42" "EMP_NZ032" "EMP_D7"    "EMP_D22"   "EMP_D4"   
+#"EMP_D10"   "EMP_D8"    "EMP_NZS42" "EMP_NZ032" "EMP_D7"    "EMP_D22"   "EMP_NZ068" "EMP_D4"    "EMP_D12"  
+#looks good
 
 #look at summary of samples for these stations
 phyto_emp_samp_sum <- phyto_emp_stations %>% 
@@ -395,49 +426,151 @@ phyto_comment_check <- phyto_dfw_cleanest %>%
   arrange(quality_check,debris)
 #write_csv(phyto_comment_check,"./EDI/data_input/phytoplankton/SMSCG_phytoplankton_taxonomist_comments.csv")
 
-#make dataframe with all taxa from SMSCG---------------
+#Add taxonomy info to DFW dataset---------------
 
 #create df with unique taxa
-tax_scg <- phyto_dfw_cleaner %>% 
+tax_scg <- phyto_dfw_cleanest %>% 
   distinct(taxon_original,genus,species) 
 #156 taxa
 
-#compare taxa between SMSCG and EMP-----------------
+#compare taxa between SMSCG and EMP
 
 #look at non-matches
 tax_mism <- anti_join(tax_scg,taxonomy_emp)
 #33 mismatches between SMSCG data set and EMP taxonomy
 
 #try matching the taxa without exact matches in the EMP taxonomy with just the genus in the EMP taxonomy
-#could be funky because likely multiple taxa per genus in the EMP taxonomy
+#tried this and didn't work well because of multiple genus matches per taxon
 
 #start by dropping taxon_original from EMP taxonomy
-taxonomy_emp_gn <- taxonomy_emp %>% 
-  select(-taxon_original)
-
-#now try matching between genus level version of EMP taxonomy and mismatched taxa
-tax_mism_gn <- left_join(tax_mism,taxonomy_emp_gn)
-#did get multiple hits from the EMP taxonomy for some taxa
+# taxonomy_emp_gn <- taxonomy_emp %>% 
+#   select(-taxon_original)
+# 
+# #now try matching between genus level version of EMP taxonomy and mismatched taxa
+# tax_mism_gn <- left_join(tax_mism,taxonomy_emp_gn)
+# #did get multiple hits from the EMP taxonomy for some taxa
 
 #also look at the taxa that I added to my version of the taxonomy file
-tax_nick <- taxonomy %>% 
-  filter(nick_addition=="x")
-#17 taxa
+#tax_nick <- taxonomy %>% 
+#   filter(nick_addition=="x")
+# #17 taxa
+# 
+# #how many of the non-matches from EMP are in my version
+# tax_mism_nick <- left_join(tax_mism,tax_nick)
+# #only filled in two more taxa
+# 
+# #how many of the non-matches from EMP are in my AWCA supplemental taxonomy file?
+# tax_mism_awca <- left_join(tax_mism,taxonomy_awca_mism)
+#only one match
 
-#how many of the non-matches from EMP are in my version
-tax_mism_nick <- left_join(tax_mism,tax_nick)
+#export mismatch taxa to fill in results
+#write_csv(tax_mism,"./EDI/data_input/phytoplankton/smscg_phyto_taxonomy_mismatch_2023-08-25.csv")
 
-tax_mism_names <- tax_mism %>% 
-  pull(name)
+#add the missing taxa to the PESP/EMP taxonomy dataset and then add to SMSCG dataset
+#some differences in columns between datasets but bind_rows will figure it out
+#nonmatching columns won't be in final version anyway
+#glimpse(taxonomy_fix) 
+#glimpse(taxonomy_emp)
+taxonomy_emp_amend <- bind_rows(taxonomy_fix,taxonomy_emp) %>% 
+  select(kingdom:genus) %>% 
+  glimpse()
 
-tax_mism_genera <- tax_mism %>% 
-  pull(genus)
+#look at non-matches again, shouldn't be any now
+#tax_mism2 <- anti_join(tax_scg,taxonomy_emp_amend)
+#zero as expected
 
+#now add taxonomic info to SMSCG abundance dataset
+#join by taxon_original, genus
+# glimpse(taxonomy_emp_amend) #drop lab
+# glimpse(phyto_dfw_cleanest) #drop comments (converted to quality_check and debris columns)
+phyto_dfw_tax <- left_join(phyto_dfw_cleanest,taxonomy_emp_amend) %>% 
+  #change current_name to taxon to match EMP phyto abundance data set
+  rename(taxon = current_name) %>% 
+  glimpse()
 
+#combine EMP and SMSCG data sets
+#glimpse(phyto_emp_stations)
+#glimpse(phyto_dfw_tax)
+phyto_all <- bind_rows(phyto_emp_stations,phyto_dfw_tax) %>% 
+  arrange(date,time_pst,station) %>% 
+  glimpse()
 
+#look for taxon that are NA; shouldn't be any
+#phyto_all_taxon_na <- phyto_all %>% 
+#  filter(is.na(taxon))
+#none as expected
 
+#create version for PESP
+#will later drop the EMP stations back out because EMP will provide all their data for PESP separately
+phyto_pesp <- phyto_all %>% 
+  select(
+    station
+    ,collected_by 
+    ,latitude #only in SMSCG data set which is fine because we will drop EMP data anyway
+    ,longitude #only in SMSCG data set which is fine because we will drop EMP data anyway
+    ,date
+    ,time_pst
+    ,taxon_original
+    ,taxon 
+    ,kingdom:algal_group
+    ,genus
+    ,species
+    ,units_per_ml = organisms_per_ml
+    ,cells_per_ml
+    ,biovolume_cubic_um_per_ml
+    ,gald_um
+    ,phyto_form
+    ,quality_check
+    ,debris #only in SMSCG data set which is fine because we will drop EMP data anyway
+    ) %>% 
+  glimpse()
 
+#make sure station names are all formatted the same
+#possible for differences between EMP and SMSCG data sets
+#unique(phyto_all$station)
+#for SMSCG publication, should use the DFW station names instead of EMP station names
 
+#create subset of station metadata file with just the two sets of EMP station names
+stations_emp_names <- stations %>% 
+  select(station,alias) %>% 
+  filter(!is.na(alias)) %>% 
+  rename(station_dfw = station
+         ,station = alias)
+
+#create version for SMSCG EDI publication
+#first add a column with the DFW names for EMP stations
+phyto_smscg <- left_join(phyto_pesp,stations_emp_names)  %>% 
+  #create new column that uses DFW station names in place of EMP station names
+  mutate(station2 = case_when(!is.na(station_dfw)~station_dfw,TRUE~station)) %>% 
+  #drop the old station name columns
+  select(-c(station,station_dfw)) %>% 
+  #format columns for final version of dataset for publication
+  select(
+    station = station2
+    ,collected_by 
+    #,latitude #for now don't need this because we have station metadata file and are currently leaving out EZ stations
+    #,longitude #for now don't need this because we have station metadata file and are currently leaving out EZ stations
+    ,date
+    ,time_pst
+    ,taxon_original
+    ,taxon 
+    ,kingdom:algal_group
+    ,genus
+    ,species
+    ,units_per_ml 
+    ,cells_per_ml
+    ,biovolume_cubic_um_per_ml
+    ,gald_um
+    ,phyto_form
+    ,quality_check
+    ,debris #Categories for DFW data are accurate; for now added this column for EMP data with "Unknown" for all
+  ) %>% 
+  arrange(date,time_pst,station) %>% 
+  glimpse()
+#do I need to make time a character for exporting?
+
+#write the output data file for EDI
+#write_csv(phyto_smscg, "./EDI/data_output/SMSCG_phytoplankton_reformatted_2020-2022.csv")
 
 
 #Add higher level taxonomic information manually-------------
