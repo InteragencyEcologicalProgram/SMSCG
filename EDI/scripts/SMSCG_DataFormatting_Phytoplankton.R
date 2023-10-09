@@ -113,7 +113,8 @@ phyto_emp_recent <- phytoplankton_emp %>%
     ) %>% 
   unite('station', c(collected_by,station_code),sep="_",remove=F) %>% 
   #only keep 2018 and beyond and July-Oct
-  filter(year > 2017 & month > 6 & month < 11)
+  filter(year > 2017 & month > 6 & month < 11) %>% 
+  glimpse()
   
 #check date range
 #range(phyto_emp_recent$sample_date)
@@ -160,6 +161,12 @@ phyto_emp_stations <- phyto_emp_recent %>%
 #"EMP_D10"   "EMP_D8"    "EMP_NZS42" "EMP_NZ032" "EMP_D7"    "EMP_D22"   "EMP_NZ068" "EMP_D4"    "EMP_D12"  
 #looks good
 
+#look at data start date by station
+# emp_start_date <- phyto_emp_stations %>% 
+#   group_by(station) %>% 
+#   summarize(date_min = min(date))
+#all start in 2018 as expected
+
 #look at summary of samples for these stations
 # #phyto_emp_samp_sum <- phyto_emp_stations %>% 
 #   distinct(station,date,time_pst) %>% 
@@ -188,6 +195,7 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
     #create a date time column; DFW records time in PDT
     ,date_time_pdt = ymd_hms(as.character(paste(date, time)),tz="America/Los_Angeles")
     #change PDT to PST to match the EMP times
+    #all PDT time should be an hour ahead of PST during July to Oct
     ,date_time_pst = with_tz(date_time_pdt,tzone="Etc/GMT+8")
     #create a month column
     ,month = as.numeric(month(date))
@@ -522,8 +530,12 @@ stations_emp_names <- stations %>%
 #create version for SMSCG EDI publication
 #first add a column with the DFW names for EMP stations
 phyto_smscg <- left_join(phyto_pesp,stations_emp_names)  %>% 
-  #create new column that uses DFW station names in place of EMP station names
-  mutate(station2 = case_when(!is.na(station_dfw)~station_dfw,TRUE~station)) %>% 
+  mutate(
+    #create new column that uses DFW station names in place of EMP station names
+    station2 = case_when(!is.na(station_dfw)~station_dfw,TRUE~station)
+    #to be safe, change time to character for exporting data
+    ,time_pst = as.character(time_pst)
+    ) %>% 
   #drop the old station name columns
   select(-c(station,station_dfw)) %>% 
   #format columns for final version of dataset for publication
@@ -549,7 +561,6 @@ phyto_smscg <- left_join(phyto_pesp,stations_emp_names)  %>%
   ) %>% 
   arrange(date,time_pst,station) %>% 
   glimpse()
-#do I need to make time a character for exporting?
 
 #write the output data file for EDI
 #write_csv(phyto_smscg, "./EDI/data_output/SMSCG_phytoplankton_reformatted_2020-2022.csv")
