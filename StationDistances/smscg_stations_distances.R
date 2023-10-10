@@ -29,7 +29,7 @@ station_zoop <- read_csv("./StationDistances/station_plankton.csv") %>%
   glimpse()
 
 #read in phytoplankton station data from repo
-station_phyto <- read_csv("./EDI/data_input/phytoplankton/smscg_stations_phyto.csv")
+station_phyto <- read_csv("./EDI/data_output/smscg_stations_phyto.csv")
 
 #EDI: add geometry column to station dataframes------
 
