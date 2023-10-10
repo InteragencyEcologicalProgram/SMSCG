@@ -1,7 +1,7 @@
 #Suisun Marsh Salinity Control Gate Action
 #calculate distances along waterways among monitoring stations, including salinity control gates
 
-#Nick Rasmussen 4/20/2023
+#Nick Rasmussen 10/09/2023
 
 #Notes-----------
 #this script doesn't include WQ because the EDI station file was missing a bunch of WQ stations
@@ -24,8 +24,12 @@ library(deltamapr)
 stn_smscg <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.876.5&entityid=877edca4c29ec491722e9d20a049a31c")
 
 #read in plankton station data from repo
-station_plank <- read_csv("./StationDistances/station_plankton.csv") %>% 
+#just use this for zoop for now; eventually replace with zoop specific station metadata file
+station_zoop <- read_csv("./StationDistances/station_plankton.csv") %>% 
   glimpse()
+
+#read in phytoplankton station data from repo
+station_phyto <- read_csv("./EDI/data_input/phytoplankton/smscg_stations_phyto.csv")
 
 #EDI: add geometry column to station dataframes------
 
@@ -39,15 +43,34 @@ stn_smscg_4326 <- stn_smscg %>%
            ,remove=F #retains original columns
   )   
 
+#create data frame with just the SMSCG location, which we will add to other data sets
+gates <- stn_smscg_4326 %>% 
+  filter(StationCode=="SMSCG") %>% 
+  select(
+    station = StationCode
+    ,longitude = Longitude
+    ,latitude = Latitude
+    ,geometry
+  ) %>% 
+  glimpse()
+
 #create object from bounding box for the stations
 #add a buffer around points to improve map aesthetic
 #will use this to crop the map to focal area
 bbox_stn <- st_bbox(st_buffer(stn_smscg_4326,2000))
 
 #do the same for plankton station data file
-stn_plank_4326 <- station_plank %>%
+stn_zoop_4326 <- station_plank %>%
   #drop the two EZ stations which have NA for coordinates
   filter(!is.na(longitude)) %>% 
+  #specify the crs which is wgs84
+  st_as_sf(coords = c(x='longitude',y='latitude'),
+           crs = 4326 #EPSG code for WGS84
+           ,remove=F #retains original columns
+  )   
+
+#phyto: create geometry column and add location of gates
+stn_phyto_4326 <- bind_rows(station_phyto,gates) %>% 
   #specify the crs which is wgs84
   st_as_sf(coords = c(x='longitude',y='latitude'),
            crs = 4326 #EPSG code for WGS84
@@ -79,7 +102,7 @@ stn_plank_4326 <- station_plank %>%
 #phyto: a subset of zooplankton stations
 #NOTE: need to work on this because neither station names or station codes are unique
 #need to combine project and station code probably
-stn_plank <- stn_plank_4326 %>% 
+stn_zoop <- stn_zoop_4326 %>% 
   #first combine program and station code so all station codes are unique
   #default separator is "_" which is fine
   unite("project_station",program,station,remove=F) 
@@ -156,12 +179,19 @@ distance_clam<-Waterdist(Water_map = Delta_4326
 #should figure out a way to spot check these distances to see if they are accurate
 
 
-#plankton stations and SMSCG
-distance_plank<-Waterdist(Water_map = Delta_4326
-                       , Points = stn_plank
+#zoop stations and SMSCG
+distance_zoop<-Waterdist(Water_map = Delta_4326
+                       , Points = stn_zoop
                        , Latitude_column = latitude
                        ,Longitude_column = longitude
                        , PointID_column = project_station)
+
+#phyto stations and SMSCG
+distance_phyto<-Waterdist(Water_map = Delta_4326
+                         , Points = stn_phyto_4326
+                         , Latitude_column = latitude
+                         , Longitude_column = longitude
+                         , PointID_column = station)
 
 
 
@@ -184,11 +214,17 @@ distance_plank<-Waterdist(Water_map = Delta_4326
 
 #write_csv(distance_wq_df,"./StationDistances/station_distances_m_wq.csv")
 
-#plankton
-distance_plank_df <- as.data.frame(distance_plank) %>% 
+#phyto
+distance_phyto_df <- as.data.frame(distance_phyto) %>% 
   rownames_to_column("station")
 
-#write_csv(distance_plank_df,"./StationDistances/station_distances_m_plank.csv")
+#write_csv(distance_phyto_df,"./StationDistances/station_distances_m_phyto.csv")
+
+#plankton
+distance_zoop_df <- as.data.frame(distance_zoop) %>% 
+  rownames_to_column("station")
+
+#write_csv(distance_zoop_df,"./StationDistances/station_distances_m_zoop.csv")
 
 
 #clams
