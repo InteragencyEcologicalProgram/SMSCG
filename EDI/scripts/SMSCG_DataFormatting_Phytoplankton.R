@@ -295,7 +295,7 @@ phyto_emp_format <- phyto_emp_spatial_filter %>%
 #expecting 20 samples per station (4 months x 5 years)
 #no missing samples
 
-#clean up DFW station names-------------
+#format DFW data-------------
 
 #look at stations in the data set
 #unique(phytoplankton_dfw$station_code)
@@ -382,10 +382,6 @@ phyto_dfw <- left_join(phyto_dfw_stations, stations) %>%
 #   distinct(region, station, month, collected_by) %>% 
 #   arrange(month, station, collected_by)
 
-
-#format the DFW sample data set------------
-#NOTE: need to specify column types
-#majority are still character because we read in files with all columns as text
 
 #format DFW data set
 phyto_dfw_cleaner <- phyto_dfw %>% 
@@ -637,7 +633,7 @@ phyto_dfw_tax <- left_join(phyto_dfw_cleanest,taxonomy_emp_amend) %>%
   glimpse()
 
 
-#combine EMP and SMSCG data sets
+#combine EMP and SMSCG data sets---------------
 # glimpse(phyto_emp_format) 
 # glimpse(phyto_dfw_tax)
 phyto_all <- bind_rows(phyto_emp_format,phyto_dfw_tax) %>% 
@@ -666,6 +662,7 @@ phyto_all <- bind_rows(phyto_emp_format,phyto_dfw_tax) %>%
 
 #make some adjustments to taxonomy based on review of algaebase higher taxonomy (2023/10/12)
 #https://www.algaebase.org/browse/taxonomy/
+#refer to phyto_high_tax_old_corrected.csv
 phyto_all_tax <- phyto_all %>% 
   mutate(
     #algal_group
