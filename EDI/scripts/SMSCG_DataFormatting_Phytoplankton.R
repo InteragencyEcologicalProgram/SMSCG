@@ -1,6 +1,6 @@
 #Suisun Marsh Salinity Control Gate
 #Phytoplankton Data 2020-2022
-#Format raw data in preparation for visualization and analysis
+#Format raw data in preparation for publishing on EDI
 #Biovolume calculations have been corrected
 
 #required packages
@@ -9,6 +9,8 @@ library(janitor) #functions for cleaning up data sets
 library(hms) #working with date/time
 library(lubridate) #working with dates
 library(readxl) #importing data from excel files
+library(deltamapr) #Delta shape files
+library(sf) #spatial tools
 
 #Notes
 #For all BSA files from 2013 to 2021, the column "Number of cells per unit" really means "Total cells", 
@@ -18,7 +20,7 @@ library(readxl) #importing data from excel files
 #Read in data------------------
 
 # Read in the EMP data from EDI
-phytoplankton_emp <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.5&entityid=67b9d4ee30d5eee6e74b2300426471f9") %>% 
+phytoplankton_emp <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.6&entityid=67b9d4ee30d5eee6e74b2300426471f9") %>% 
   clean_names() %>% 
   glimpse()
 
@@ -62,7 +64,11 @@ taxonomy <- read_csv("./EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-
   glimpse()
 
 #read in EMP taxonomy data from PESP GitHub repo
-taxonomy_emp <- read_csv("https://raw.githubusercontent.com/InteragencyEcologicalProgram/PESP/main/admin/global_data/phyto_classification.csv") %>% 
+taxonomy_emp <- read_csv("./EDI/data_input/phytoplankton/phyto_classification_PESP_2023_10_10.csv") %>% 
+  #for some reason, a few names in the current_name column of the file from PESP Github repo taxonomy file could not be edited with code
+  #Actinocyclus cuneiformis, Gomphonema lingulatum var. constrictum
+  #had to create new file, which I put in the SMSCG repo, delete these two cells and retype them; then things worked like normal
+  #read_csv("https://raw.githubusercontent.com/InteragencyEcologicalProgram/PESP/main/admin/global_data/phyto_classification.csv") %>% 
   clean_names() %>% 
   #rename taxonomic name column to taxon_original
   rename(taxon_original = name) %>% 
@@ -76,18 +82,27 @@ taxonomy_awca_mism <- read_csv("https://raw.githubusercontent.com/EMRR-DISE/DSRS
 #read in supplementary taxonomy info that fills gaps in PESP list
 taxonomy_fix <- read_csv("./EDI/data_input/phytoplankton/smscg_phyto_taxonomy_mismatch_fixed_2023-08-25.csv")
 
-#read in station name info
+#read in SMSCG station name info
 #includes region categories, station names, and names that identify comparable stations through time
-stations <- read_csv("./EDI/data_input/phytoplankton/smscg_stations_phyto.csv")
+stations <- read_csv("./EDI/data_output/smscg_stations_phyto.csv")
 #NOTE: once we have updated this on EDI, we can just pull it from there instead of GitHub repo
 
-#EDI: format EMP data-------------------------
-#add month column to use to filter data set to just the needed time period
-#filter stations to just the ones I need (N=9)
-#dropped the EZ stations for now because EMP didn't include the lat/long in their EDI publication
+#Read in EMP station info
+stn_emp <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.6&entityid=857fb9a315cd6bc47f2090f74fd1c938") %>% 
+  clean_names() %>% 
+  #rename lat/long columns in prep for adding to EMP phyto dataset which already has a lat/long column (but just for EZ stations)
+  rename(station = station_code
+         ,latitude2 = latitude
+         ,longitude2 = longitude) %>% 
+  #drop locality description
+  select(-location) %>% 
+  glimpse()
 
-#look at list of stations
-#unique(phytoplankton_emp$station_code)
+
+#EDI: format EMP data-------------------------
+
+#look at list of stations in phyto dataset
+#unique(phytoplankton_emp$station)
 #31 stations
 
 #is there any data in published EMP phyto data set for D24?
@@ -98,26 +113,26 @@ stations <- read_csv("./EDI/data_input/phytoplankton/smscg_stations_phyto.csv")
 
 #nz068 <- phytoplankton_emp %>% 
 #  filter(station_code =="NZ068")
-#range(nz068$sample_date) #"2017-05-19" "2022-12-15"
+#range(nz068$date) #"2017-05-19" "2022-12-15"
 #so yeah, D24 was phased out and replaced with NZ068
 
-#filter EMP data set to just the stations and dates needed
+#filter EMP data set to just the dates needed
 phyto_emp_recent <- phytoplankton_emp %>% 
   mutate(
     #add a column to indicate who collected the samples
     collected_by = "EMP"
     #create a month column
-    ,month = as.numeric(month(sample_date))
+    ,month = as.numeric(month(date))
     #create a year column
-    ,year = as.numeric(year(sample_date))
+    ,year = as.numeric(year(date))
     ) %>% 
-  unite('station', c(collected_by,station_code),sep="_",remove=F) %>% 
+  unite('program_station', c(collected_by,station),sep="_",remove=F) %>% 
   #only keep 2018 and beyond and July-Oct
   filter(year > 2017 & month > 6 & month < 11) %>% 
   glimpse()
   
 #check date range
-#range(phyto_emp_recent$sample_date)
+#range(phyto_emp_recent$date)
 #looks good; "2018-07-09" "2022-10-20"
 
 #look at list of stations
@@ -125,30 +140,135 @@ phyto_emp_recent <- phytoplankton_emp %>%
 #29 stations
 
 #create list of EMP stations needed from the station metadata file
-stations_emp <- stations %>% 
-  filter(grepl("EMP",alias)) %>% 
-  pull(alias)
-#n=9 stations
+# stations_emp <- stations %>% 
+#   filter(grepl("EMP",alias)) %>% 
+#   pull(alias)
 
-phyto_emp_stations <- phyto_emp_recent %>% 
-  filter(station %in% stations_emp) %>% 
-  #for now, drop the EZ stations
-  filter(station!="EMP_EZ2" & station!="EMP_EZ6") %>% 
+#add station lat/long to phyto data file; should join by station
+phyto_emp_coords <- left_join(phyto_emp_recent, stn_emp) %>% 
+  #create lat/long columns that combine the two sets of lat/long
+  mutate(latitude3 = case_when(!is.na(latitude)~latitude,
+                               TRUE~latitude2)
+         ,longitude3 = case_when(!is.na(longitude)~longitude,
+                                TRUE~longitude2)) %>% 
+  #drop the old lat/long columns
+  select(-c(latitude,longitude,latitude2,longitude2)
+         ,latitude = latitude3
+         ,longitude = longitude3
+  ) %>% 
+  #there are a few samples still missing lat/long so drop them for now
+  filter(!is.na(latitude) & !is.na(longitude)) %>% 
+  #add geometry column
+  #specify the crs which is wgs84
+  st_as_sf(coords = c(x='longitude',y='latitude')
+           ,crs = 4326 #EPSG code for WGS84
+           ,remove = F
+  )   %>%
+  glimpse()
+  
+#are there any rows without lat/long?
+#there shouldn't be
+# phyto_emp_coords_na <- phyto_emp_coords %>% 
+#   filter(is.na(latitude) | is.na(longitude)) %>% 
+#   distinct(station,date,time)
+#yes there are; mostly EZ samples that didn't have coordinates added by EMP
+#exception is one sample from EMP_NZ328; probably a typo for NZ325 (Grizzly Bay station)
+
+#write file to share with EMP
+#write_csv(phyto_emp_coords_na,"./EDI/data_input/phytoplankton/phyto_emp_miss_coords.csv")
+
+#Prepare shapefile for filtering data spatially
+
+#look at coordinate reference system (CRS) of regions and basemap
+#EDSM 2019 Phase 3 Subregions
+# st_crs(R_EDSM_Subregions_19P3) #NAD83 / UTM zone 10N which is EPSG = 26910
+# st_crs(WW_Delta) #NAD83 which is EPSG = 4269
+
+#change CRS of both to match zoop data sets EPSG = 4326
+ww_delta_4326 <- st_transform(WW_Delta, crs = 4326)
+subregions_4326 <- st_transform(R_EDSM_Subregions_19P3, crs = 4326)
+
+#make map
+# (map_region_all<-ggplot()+
+#     #CDFW Delta waterways
+#     geom_sf(data = ww_delta_4326, fill= "lightblue", color= "black")+
+#     #EDSM 2017-18 Phase 1 Strata
+#     geom_sf(data = subregions_4326, aes(fill=SubRegion), alpha=0.8)+
+#     #add title
+#     ggtitle("R_EDSM_Subregions_19P3")+
+#     theme_bw()
+# )
+
+#only keep the needed subregions
+
+#create vector of subregions to keep
+subregions_focal <- c("Suisun Marsh","Grizzly Bay","Mid Suisun Bay","Honker Bay","Confluence","Lower Sacramento River","Sacramento River near Rio Vista")
+
+#categorize subregions into regions useful for SMSCG
+regions_new <- as.data.frame(
+  cbind(
+    "Region_smscg" = c("Suisun Marsh",rep("Suisun Bay",3),rep("River",3))
+    ,"SubRegion" = c("Suisun Marsh","Grizzly Bay","Mid Suisun Bay","Honker Bay","Confluence","Lower Sacramento River","Sacramento River near Rio Vista")
+  )
+)
+
+region_focal <- subregions_4326 %>% 
+  #just keep the needed subregions
+  filter(SubRegion %in% subregions_focal) %>% 
+  #add SMSCG regions which groups the subregions appropriately
+  left_join(regions_new) %>% 
+  group_by(Region_smscg) %>% 
+  summarise(SQM = sum(SQM), do_union = TRUE)
+
+#remake map with SMSCG regions  
+# (map_region_focal<-ggplot()+
+#     #CDFW Delta waterways
+#     geom_sf(data= ww_delta_4326, fill= "lightblue", color= "black")+
+#     #reduced region
+#     geom_sf(data =region_focal, aes(fill=Region_smscg), alpha=0.8)+
+#     #add title
+#     ggtitle("Focal Region")+
+#     theme_bw()
+# )
+
+#filter phyto data by region
+phyto_emp_spatial_filter <- phyto_emp_coords %>% 
+  #assign samples to regions
+  st_join(region_focal,join = st_within) %>% 
+  #drop any samples outside of focal region
+  st_filter(region_focal) %>% 
+  glimpse()
+
+#look at program_stations
+#unique(phyto_emp_spatial_filter$program_station)
+#"EMP_D10"   "EMP_EZ2"   "EMP_EZ6"   "EMP_D8"    "EMP_NZS42" "EMP_NZ032" "EMP_D7"    "EMP_D22"   "EMP_NZ068" "EMP_D4"   
+
+#let's look at which stations are retained, what region they were assigned, and and how many samples
+# phyto_emp_freq <- table(phyto_emp_spatial_filter$Region_smscg,phyto_emp_spatial_filter$station)
+#looks good
+
+#format EMP data to then combine with DFW data
+phyto_emp_format <- phyto_emp_spatial_filter %>% 
+  #switched to spatial filter above so don't need to filter by station name
+  #filter(station %in% stations_emp) %>% 
   #for now, add debris column with "Unknown" for all
   #hopefully, EMP will add this to their published dataset at some point
   add_column(debris = "Unknown") %>% 
+  #drop geometry column
+  st_set_geometry(NULL) %>% 
   #reorder and rename columns as needed
-  select(station
+  select(station = program_station
          ,collected_by
-         ,date = sample_date
-         ,time_pst = sample_time
-         ,lab
+         ,date 
+         ,time_pst =time
+         ,latitude
+         ,longitude
          ,taxon_original = orig_taxon
          ,taxon
          ,kingdom:species
-         ,organisms_per_ml = units_per_m_l
+         ,units_per_ml = units_per_m_l
          ,cells_per_ml = cells_per_m_l
-         ,biovolume_cubic_um_per_ml = average_biovolume_per_m_l
+         ,biovolume_per_ml = average_biovolume_per_m_l
          ,gald_um = gald
          ,phyto_form
          ,quality_check
@@ -157,18 +277,18 @@ phyto_emp_stations <- phyto_emp_recent %>%
   glimpse()
 
 #look at list of stations remaining
-#unique(phyto_emp_stations$station)
+#unique(phyto_emp_format$station)
 #"EMP_D10"   "EMP_D8"    "EMP_NZS42" "EMP_NZ032" "EMP_D7"    "EMP_D22"   "EMP_NZ068" "EMP_D4"    "EMP_D12"  
-#looks good
+#looks good 
 
 #look at data start date by station
-# emp_start_date <- phyto_emp_stations %>% 
+# emp_start_date <- phyto_emp_format %>% 
 #   group_by(station) %>% 
 #   summarize(date_min = min(date))
 #all start in 2018 as expected
 
 #look at summary of samples for these stations
-# #phyto_emp_samp_sum <- phyto_emp_stations %>% 
+# #phyto_emp_samp_sum <- phyto_emp_format %>% 
 #   distinct(station,date,time_pst) %>% 
 #   group_by(station) %>% 
 #   count()
@@ -223,7 +343,6 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
       ,grepl("606", station_code) & month > 8 ~ "FMWT_606"
       ,grepl("NZS42", station_code) ~ "EMP_NZS42"
       #Bay stations
-      #note that GZB was only during 2021 and 519 station data starts in 2022
       ,grepl("519", station_code) & month < 9 ~ "STN_519"
       ,grepl("519", station_code) & month > 8 ~ "FMWT_519"
       ,grepl("602", station_code) & month < 9 ~ "STN_602"
@@ -311,15 +430,15 @@ phyto_dfw_cleaner <- phyto_dfw %>%
     ,mean_cell_biovolume = mean(c_across(biovolume_1:biovolume_10),na.rm=T)
     #create new column that calculates organisms per mL; round number to nearest tenth
     #different from cells per mL because some organisms are multicellular
-    ,organisms_per_ml = round((unit_abundance*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted),1)
-    #,organisms_per_ml_easy = (unit_abundance*factor)
+    ,units_per_ml = round((unit_abundance*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted),1)
+    #,units_per_ml_easy = (unit_abundance*factor)
     #create new column that calculates cells per mL; round number to nearest tenth
     ,cells_per_ml = round((total_cells*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted),1)
     #,cells_per_ml_easy = (total_cells*factor)
     #create a column that calculates biovolume per mL
     #units for biovolume are cubic microns; old version is incorrect calculations; round number to nearest tenth
-    #,biovolume_per_ml_old = organisms_per_ml * total_cells * mean_cell_biovolume
-    ,biovolume_cubic_um_per_ml = round((total_cells* mean_cell_biovolume*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted),1)
+    #,biovolume_per_ml_old = units_per_ml * total_cells * mean_cell_biovolume
+    ,biovolume_per_ml = round((total_cells* mean_cell_biovolume*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted),1)
     #,biovolume_per_ml_easy = factor * total_cells * mean_cell_biovolume
     ) %>% 
   #subset and reorder columns again to just those needed
@@ -332,12 +451,12 @@ phyto_dfw_cleaner <- phyto_dfw %>%
          ,taxon_original = taxon                            
          ,genus
          ,species
-         ,organisms_per_ml
-         #,organisms_per_ml_easy
+         ,units_per_ml
+         #,units_per_ml_easy
          ,cells_per_ml
          #,cells_per_ml_easy
          #,biovolume_per_ml_old
-         ,biovolume_cubic_um_per_ml
+         ,biovolume_per_ml
          #,biovolume_per_ml_easy
          ,gald_um = gald_1
          ,phyto_form 
@@ -364,8 +483,8 @@ phyto_dfw_cleaner <- phyto_dfw %>%
 # #also I know some samples have been missed
 # 
 # #look at taxonomist comments
-# phyto_dfw_comments <- phyto_dfw_cleaner %>% 
-#   distinct(comments) %>% 
+# phyto_dfw_comments <- phyto_dfw_cleaner %>%
+#   distinct(comments) %>%
 #   arrange(comments)
 #30 unique comments
 #some about not meeting tally in 50 fields
@@ -384,7 +503,7 @@ phyto_dfw_cleanest <- phyto_dfw_cleaner %>%
     quality_check = case_when(
       grepl("50 fields",comments,ignore.case=T)~"BadData"
       ,grepl("degraded", comments, ignore.case=T) ~ "Degraded"
-       ,grepl("fragment", comments,ignore.case=T) ~"Fragment"
+       ,grepl("fragment", comments,ignore.case=T) ~"Fragmented"
        ,grepl("fungus",comments,ignore.case=T)~"PoorlyPreserved"
        ,grepl("broken",comments,ignore.case=T)~"BrokenDiatoms"
        ,TRUE ~ "Good"
@@ -416,14 +535,14 @@ phyto_dfw_cleanest <- phyto_dfw_cleaner %>%
 #Add taxonomy info to DFW dataset---------------
 
 #create df with unique taxa
-# tax_scg <- phyto_dfw_cleanest %>% 
-#   distinct(taxon_original,genus,species) 
+ # tax_scg <- phyto_dfw_cleanest %>% 
+ #   distinct(taxon_original,genus,species) 
 # #156 taxa
 # 
 # #compare taxa between SMSCG and EMP
 # 
 # #look at non-matches
-# tax_mism <- anti_join(tax_scg,taxonomy_emp)
+ # tax_mism <- anti_join(tax_scg,taxonomy_emp)
 # #33 mismatches between SMSCG data set and EMP taxonomy
 
 #try matching the taxa without exact matches in the EMP taxonomy with just the genus in the EMP taxonomy
@@ -458,53 +577,180 @@ phyto_dfw_cleanest <- phyto_dfw_cleaner %>%
 #nonmatching columns won't be in final version anyway
 #glimpse(taxonomy_fix) 
 #glimpse(taxonomy_emp)
-taxonomy_emp_amend <- bind_rows(taxonomy_fix,taxonomy_emp) %>% 
+taxonomy_emp_amend <- bind_rows(taxonomy_fix,taxonomy_emp)  %>% 
   select(kingdom:genus) %>% 
   glimpse()
+
+#look at cf. Chlorella sp.
+# chlor <- taxonomy_emp_amend %>% 
+#   filter(taxon_original == "cf. Chlorella sp.")
+#there are two different rows for this taxon; one is an error
+#for now, just make sure to match taxonomy and data by both taxon_original and genus to avoid issue
 
 #look at non-matches again, shouldn't be any now
 #tax_mism2 <- anti_join(tax_scg,taxonomy_emp_amend)
 #zero as expected
 
 #now add taxonomic info to SMSCG abundance dataset
-#join by taxon_original, genus
-# glimpse(taxonomy_emp_amend) #drop lab
-# glimpse(phyto_dfw_cleanest) #drop comments (converted to quality_check and debris columns)
-phyto_dfw_tax <- left_join(phyto_dfw_cleanest,taxonomy_emp_amend) %>% 
-  #change current_name to taxon to match EMP phyto abundance data set
-  rename(taxon = current_name) %>% 
+#join by taxon_original and genus
+#also, need to tweak the taxon, taxon_original, and genus columns
+# glimpse(taxonomy_emp_amend) 
+# glimpse(phyto_dfw_cleanest) #need to drop comments (converted to quality_check and debris columns)
+phyto_dfw_tax <- left_join(phyto_dfw_cleanest,taxonomy_emp_amend) %>%   
+  mutate(
+    #create taxon column that is taxon_original with old names replaced with current names
+    #ie, shouldn't have any missing names in the new taxon column
+    taxon = case_when((current_name!="None" & current_name!="Unknown")~current_name
+                      ,TRUE~taxon_original)
+    #create new taxon_original column that only includes a name if there is a new one to replace it
+    ,taxon_original2 = case_when((current_name!="None" & current_name!="Unknown")~taxon_original
+                                 ,TRUE ~ NA)
+    #looks like genus is wrong in cases where the new name is a different genus
+    #so need to make new genus column
+    #start by copying taxon column and dropping all the qualifiers
+    ,taxon2 =str_replace_all(taxon, pattern = c('cf[.] ' = '',' cf[.]'="",' var[.]' = "", ' fo[.]' = ""," sp[.]"="","2"="","  "=" "))
+    #now make new genus column
+    ,genus2 = word(taxon2, 1, sep=" ")
+    # #for some reason, a few taxa didn't work with word(); ie still full name, not genus
+    #Actinocyclus cuneiformis, Gomphonema lingulatum var. constrictum
+    #nothing could edit these names from the PESP Github repo taxonomy file
+    #had to create new file, which I put in the SMSCG repo, delete these two cells and retype them
+    #then the functions worked as expected
+    #next, make a couple of corrections for phylum and class
+    ,phylum2 = case_when(phylum == "Cryptophycophyta incertae sedis"~"Cryptista",TRUE ~ phylum)
+    ,class2 = case_when(class == "Cryptophycophyta incertae sedis"~"Katablepharidophyceae",TRUE ~ class )
+    ,.after=taxon_original
+  ) %>% 
+  select(
+    station:time_pst
+    ,taxon_original = taxon_original2
+    ,taxon
+    ,kingdom
+    ,phylum = phylum2
+    ,class = class2
+    ,algal_group
+    ,genus = genus2
+    ,species:phyto_form
+    ,quality_check
+    ,debris
+  ) %>%
   glimpse()
+
 
 #combine EMP and SMSCG data sets
-#glimpse(phyto_emp_stations)
-#glimpse(phyto_dfw_tax)
-phyto_all <- bind_rows(phyto_emp_stations,phyto_dfw_tax) %>% 
+# glimpse(phyto_emp_format) 
+# glimpse(phyto_dfw_tax)
+phyto_all <- bind_rows(phyto_emp_format,phyto_dfw_tax) %>% 
   arrange(date,time_pst,station) %>% 
+  mutate(
+    #to be safe, change time to character for exporting data
+    time_pst = as.character(time_pst)
+    #also need to change some EMP quality check from Fragmented to Fragment
+    ,quality_check2 = case_when(quality_check=="Fragmented"~"Fragment",TRUE~quality_check)
+    ) %>% 
+  select(-quality_check) %>% 
+  rename(quality_check = quality_check2) %>% 
   glimpse()
 
+#Look at how well algal_group, kingdom, phylum, and class match
+# tax_consist <- phyto_all %>% 
+#   distinct(algal_group,kingdom,phylum,class,genus) %>% 
+#   arrange(algal_group,kingdom,phylum,class,genus)
+#write file
+#write_csv(tax_consist,"./EDI/data_input/phytoplankton/phyto_high_tax_old.csv")
+
+#look at genus Mallomonas
+# mall <- phyto_all %>%
+#   filter(genus=="Mallomonas")
+#just one observation of Mallomonas sp., so rare enough doesn't matter what we do with this
+
+#make some adjustments to taxonomy based on review of algaebase higher taxonomy (2023/10/12)
+#https://www.algaebase.org/browse/taxonomy/
+phyto_all_tax <- phyto_all %>% 
+  mutate(
+    #algal_group
+    #replace Synurophytes with Chrysophytes
+    #there was just one case from this group Mallomonas sp.
+    algal_group2 = case_when(algal_group =="Synurophytes"~"Chrysophytes",TRUE~algal_group)
+    #kingdom
+    #change kingdom for dinoflagellates
+    #change kingdom for cyanobacteria
+    ,kingdom2 = case_when((kingdom=="Protozoa" & phylum=="Dinozoa")~"Chromista"
+                          ,kingdom=="Bacteria"~"Eubacteria"
+                          ,TRUE~kingdom)
+    #phylum
+    #Bacillariophyta and Ochrophyta have been replaced with Heterokontophyta
+    #Dinozoa replaced with Miozoa
+    #Euglenozoa replaced with Euglenophyta
+    #replace Cryptophyta with Cryptista
+    ,phylum2 = case_when((phylum =="Bacillariophyta" | phylum=="Ochrophyta")~"Heterokontophyta"
+                        ,phylum=="Dinozoa"~"Miozoa"
+                        ,phylum=="Euglenozoa"~"Euglenophyta"
+                        ,phylum=="Cryptophyta"~"Cryptista"
+                        ,TRUE~phylum
+                        )
+    #class
+    #replace Prymnesiophyceae with Coccolithophyceae
+    #replace Fragilariophyceae with Bacillariophyceae
+    #replace Synurophyceae with 
+    ,class2 = case_when(class =="Prymnesiophyceae"~"Coccolithophyceae"
+                        ,class=="Fragilariophyceae"~"Bacillariophyceae"
+                        ,class=="Synurophyceae"~"Chrysophyceae"
+                        ,TRUE~class
+    ),.after=algal_group
+  ) %>% 
+  select(-c(kingdom:algal_group)) %>% 
+  rename(
+    kingdom = kingdom2
+    ,phylum = phylum2
+    ,class = class2
+    ,algal_group = algal_group2
+  ) %>% 
+  glimpse()
+
+#Look again at how well algal_group, kingdom, phylum, and class match
+# tax_consist2 <- phyto_all_tax %>% 
+#   distinct(algal_group,kingdom,phylum,class) %>% 
+#   arrange(algal_group,kingdom,phylum,class)
+#looks like all my changes worked
+
 #look for taxon that are NA; shouldn't be any
-#phyto_all_taxon_na <- phyto_all %>% 
+# phyto_all_taxon_na <- phyto_all_tax %>%
 #  filter(is.na(taxon))
 #none as expected
 
-#create version for PESP
+#look for "None" or "Unknown" in taxon_original
+# phyto_all_tax_check <- phyto_all_tax %>% 
+#   filter(taxon == "None" | taxon == "Unknown")
+#none which is good because we want taxon to always be filled
+
+#look at unique stations
+#unique(phyto_all_tax$station) #looks good; 26 stations
+
+#look for NAs in data set
+# phyto_all_tax_na <- phyto_all_tax %>% 
+#   summarise(across(everything(), ~ sum(is.na(.))))
+#only taxon_original and debris columns have NAs which is fine
+
+#create version for SMSCG EDI package
 #will later drop the EMP stations back out because EMP will provide all their data for PESP separately
-phyto_pesp <- phyto_all %>% 
+phyto_smscg <- phyto_all_tax %>% 
   select(
     station
     ,collected_by 
-    ,latitude #only in SMSCG data set which is fine because we will drop EMP data anyway
-    ,longitude #only in SMSCG data set which is fine because we will drop EMP data anyway
+    ,latitude 
+    ,longitude 
     ,date
     ,time_pst
     ,taxon_original
     ,taxon 
-    ,kingdom:algal_group
+    ,algal_group
+    ,kingdom:class
     ,genus
     ,species
-    ,units_per_ml = organisms_per_ml
+    ,units_per_ml
     ,cells_per_ml
-    ,biovolume_cubic_um_per_ml
+    ,biovolume_per_ml
     ,gald_um
     ,phyto_form
     ,quality_check
@@ -512,58 +758,8 @@ phyto_pesp <- phyto_all %>%
     ) %>% 
   glimpse()
 
-#write the output data file for PESP
-#write_csv(phyto_pesp, "./EDI/data_output/SMSCG_phytoplankton_formatted_2020-2022_PESP.csv")
-
-#make sure station names are all formatted the same
-#possible for differences between EMP and SMSCG data sets
-#unique(phyto_all$station)
-#for SMSCG publication, should use the DFW station names instead of EMP station names
-
-#create subset of station metadata file with just the two sets of EMP station names
-stations_emp_names <- stations %>% 
-  select(station,alias) %>% 
-  filter(!is.na(alias)) %>% 
-  rename(station_dfw = station
-         ,station = alias)
-
-#create version for SMSCG EDI publication
-#first add a column with the DFW names for EMP stations
-phyto_smscg <- left_join(phyto_pesp,stations_emp_names)  %>% 
-  mutate(
-    #create new column that uses DFW station names in place of EMP station names
-    station2 = case_when(!is.na(station_dfw)~station_dfw,TRUE~station)
-    #to be safe, change time to character for exporting data
-    ,time_pst = as.character(time_pst)
-    ) %>% 
-  #drop the old station name columns
-  select(-c(station,station_dfw)) %>% 
-  #format columns for final version of dataset for publication
-  select(
-    station = station2
-    ,collected_by 
-    #,latitude #for now don't need this because we have station metadata file and are currently leaving out EZ stations
-    #,longitude #for now don't need this because we have station metadata file and are currently leaving out EZ stations
-    ,date
-    ,time_pst
-    ,taxon_original
-    ,taxon 
-    ,kingdom:algal_group
-    ,genus
-    ,species
-    ,units_per_ml 
-    ,cells_per_ml
-    ,biovolume_cubic_um_per_ml
-    ,gald_um
-    ,phyto_form
-    ,quality_check
-    ,debris #Categories for DFW data are accurate; for now added this column for EMP data with "Unknown" for all
-  ) %>% 
-  arrange(date,time_pst,station) %>% 
-  glimpse()
-
-#write the output data file for EDI
-#write_csv(phyto_smscg, "./EDI/data_output/SMSCG_phytoplankton_reformatted_2020-2022.csv")
+#write the output data file for SMSCG EDI
+#write_csv(phyto_smscg, "./EDI/data_output/smscg_phytoplankton_samples.csv")
 
 
 # #Add higher level taxonomic information manually-------------
@@ -641,7 +837,7 @@ phyto_smscg <- left_join(phyto_pesp,stations_emp_names)  %>%
 #          ,genus
 #          ,taxon
 #          ,phyto_form
-#          ,organisms_per_ml
+#          ,units_per_ml
 #          ,cells_per_ml
 #          #,biovolume_per_ml_old
 #          ,biovolume_per_ml
