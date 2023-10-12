@@ -3,7 +3,8 @@
 #Final QAQC and formatting for EDI
 
 #To do-----
-
+#make sure to make time character before exporting data
+#add RVB station data
 #this data set still needs some QAQC to deal with outliers for at least some stations for 
 #most analytes
 #compare range of dates for each parameter within each station to CDEC metadata
@@ -50,10 +51,18 @@ mal_sc<-read_csv(file = paste0(sharepoint_path_input,"./MAL_SC.csv"))%>%
 mal_temp<-read_csv(file = paste0(sharepoint_path_input,"./MAL_Temp.csv"))%>% 
   glimpse()
 
+#add RVB data
+#eventually just get this from EDI
+rvb<-read_csv(file = paste0(sharepoint_path_input,"./RVB_data_final.csv"))%>% 
+  glimpse()
+
+#read in the previous version of SMSCG WQ data from EDI
+#wq_smscg <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.876.6&entityid=aae1f07aefeb88eef5eea4c6f3dc1bf0")
+
 #integrated discrete WQ data set
 #iwq <-read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.731.7&entityid=6c5f35b1d316e39c8de0bfadfb3c9692")
 
-#make sure all the stations are in the file
+#make sure all the stations are in the main file
 #stn_names <- unique(wq$cdec_code)
 #"CSE" "NSL" "MSL" "HUN" "GOD" "BDL" "VOL" "GZB" "GZM" "TRB" "MAL" "GZL" "HON" "RYC" "SSI"
 #looks good
@@ -178,22 +187,27 @@ wq_final <- wq %>%
                             ,analyte_name=="Specific Conductance" ~ "uS/cm"
                             ,TRUE ~ unit_name
     )
+    #specify time zone
     ,date_time_pst = force_tz(time,tzone="Etc/GMT+8")
+    #create year column from date-time column
     ,year = year(date_time_pst)
-       )  %>% 
+           )  %>% 
 select(cdec_code    
        ,analyte_name 
        ,unit_name = unit_name2 
-       #,time 
-       ,date_time_pst
+       ,date_time_pst 
        ,year
        ,value       
-       ,qaqc_flag_id) %>% 
+       ,qaqc_flag_id) %>%
   #drop a few stray 2023 values
   filter(year < 2023) %>% 
   glimpse()
 
-#glimpse(wq_final)
+#check times
+# tz(wq$time)
+# range(wq$time)
+# tz(wq_final$date_time_pst)
+# range(wq_final$date_time_pst)
 
 #create dataframe with NAs for value
 #wq_final_na <- wq_final %>% 
@@ -385,10 +399,6 @@ wq_final_summary_nodups_atall <- wq_final_summary_nodups %>%
 #dup_ex <- wq_final_cleaner %>% 
  # filter(cdec_code=="CSE" & date_time_pst=="2018-05-17 08:15:00" & analyte == "Water Temperature_C")
   
-#confirm time zone
-#tz(wq_final$date_time_pst)
-#works fine
-
 #look at all combos of parameter and units again
 #par_unit2 <- wq_final %>% 
  #   distinct(analyte_name,unit_name) %>% 
@@ -460,12 +470,20 @@ wq_mal_filt <- wq_final_summary_nodups_atall %>%
 #filter out old CSE data
 wq_cse_filt <- wq_mal_filt %>% 
   #drop the old CSE data
-  #this filtering mostly worked but the results were shifted an hour early so adjust filtering accordingly
   filter(!(cdec_code=="CSE" & (analyte=="Water Temperature_C" |analyte=="Specific Conductance_uS/cm")
-          #& (date_time_pst>="2018-05-15 10:45:00 -08" & date_time_pst<="2018-06-12 23:45:00 -08"))) %>% 
-          & (date_time_pst>="2018-05-15 11:45:00 -08" & date_time_pst<="2018-06-13 00:45:00 -08"))) %>% 
+          #& (date_time_pst>="2018-05-15 10:45:00" & date_time_pst<="2018-06-12 23:45:00"))) %>% 
+          #needed to shift time range an hour later to get correct date-time range; not sure why though
+          & (date_time_pst>="2018-05-15 11:45:00" & date_time_pst<="2018-06-13 00:45:00"))) %>% 
   arrange(date_time_pst) %>% 
   glimpse()
+
+#look at date range for each station
+#date_range <- wq_mal_filt %>% 
+# group_by(cdec_code) %>% 
+#summarise(date_min = min(date_time_pst)
+#         ,date_max = max(date_time_pst)
+#        ,.groups='drop')
+#CSE covers full date range from beginning 2018 to end 2022
 
 #format new data for MAL and CSE-------------
 
@@ -478,7 +496,7 @@ data_new <- bind_rows(cse_ec,cse_temp,mal_sc,mal_temp) %>%
          #format date-time
          ,date_time = mdy_hm(datetime)
          ,date_time_pst = force_tz(date_time,tzone="Etc/GMT+8")
-         ,year = year(date_time_pst)
+         ,year = year(date_time)
          ) %>% 
   #rename and reorder some columns
   select(
@@ -491,20 +509,22 @@ data_new <- bind_rows(cse_ec,cse_temp,mal_sc,mal_temp) %>%
   ) %>% 
   #looks like data with all possible QAQC codes are still included so filter these
   filter(code =="G" | code=="U") %>% 
+  arrange(date_time_pst,cdec_code) %>% 
   glimpse()
+
+# tz(data_new$date_time_pst)
 
 #check resulting data frame
 #new_data_summary <- data_new %>% 
  # group_by(cdec_code, year,analyte,code) %>% 
   #count()
 
-
 #add new data back to the main data set------------
 #also converting long to wide
 
 #should just need to bind the rows of old and new data
-data_updated <- bind_rows(wq_cse_filt,data_new)
-#glimpse(data_updated)
+data_updated <- bind_rows(wq_cse_filt,data_new) %>% 
+  glimpse()
 
 #make quick panel of plots for data to see if it generally looks OK
 #note this takes a very long time to run
@@ -519,31 +539,31 @@ data_updated <- bind_rows(wq_cse_filt,data_new)
 #had to tweak the code to get the column order I wanted
 #https://github.com/tidyverse/tidyr/issues/1064
 spec <- build_wider_spec(
-  data_updated, 
-  names_from = analyte, 
-  values_from = c(value,code), 
+  data_updated,
+  names_from = analyte,
+  values_from = c(value,code),
   names_glue = "{analyte}_{.value}"
 )
 
 spec <- arrange(spec, analyte, .value)
 
-wq_wide <- pivot_wider_spec(data_updated, spec) %>% 
-  arrange(date_time_pst) %>% 
+wq_wide <- pivot_wider_spec(data_updated, spec) %>%
+  arrange(date_time_pst) %>%
   glimpse()
 
-#wq_wide <-data_updated %>% 
-#convert long to wide
-#pivot_wider(id_cols = c(cdec_code,year,date_time_pst)
- #          ,names_from = analyte
-  #        ,values_from = c(value,code)
-   #      ,values_fill = NA
-    #     ,names_sort = T
-     #   ) %>% 
-  #arrange(date_time_pst) %>% 
-#glimpse()
+# wq_wide <-data_updated %>%
+# #convert long to wide
+# pivot_wider(id_cols = c(cdec_code,year,date_time_pst)
+#          ,names_from = analyte
+#        ,values_from = c(value,code)
+#      ,values_fill = NA
+#     ,names_sort = T
+#   ) %>%
+# arrange(date_time_pst) %>%
+# glimpse()
 
 #print names of columns
-names(wq_wide)
+#names(wq_wide)
 
 #look at date range for each station
 #date_range_w <- wq_wide %>% 
@@ -552,10 +572,36 @@ names(wq_wide)
    #         ,date_max = max(date_time_pst)
     #        ,.groups='drop')
 
+#add RVB data to main data set-----------------
+
+rvb_format <- rvb %>% 
+  #create date-time column
+  mutate(date_time = ymd_hms(paste(date, time))
+         ,date_time_pst = force_tz(date_time,tzone="Etc/GMT+8")
+         ,year = year(date_time_pst)
+         ) %>% 
+  #filter to just the needed time period
+  filter(date_time_pst>="2018-01-01 00:00:00")  %>% 
+  #filter to the date range I want
+  select(station 
+         ,year
+         ,date_time_pst
+         ,'fluorescence_ug/L_value' = fluorescence          
+         ,'dissolved_oxygen_mg/L_value' = dissolvedoxygen
+         ,'specific_conductance_uS/cm_value' = spc
+         ,turbidity_FNU_value = turbidity          
+         ,temperature_C_value = watertemperature  
+         ,pH_value = ph
+  ) %>% 
+  glimpse()
+
+# range(rvb_format$date_time)
+# range(rvb_format$date_time_pst)
+
+
 #write final file for publishing on EDI--------------------------
 #convert date-time to character
 wq_wide_ft <-wq_wide%>% 
-  #mutate(date_time_pst = as.character(date_time_pst))  %>% 
   #format column names
   select(station = cdec_code
          ,year
@@ -576,10 +622,33 @@ wq_wide_ft <-wq_wide%>%
          ,pH_value
          ) %>% 
   glimpse()
-#write_csv(wq_wide_ft,file = paste0(sharepoint_path_output,"./smscg_data_water_quality.csv"))
 
-#wq_wide_ft_head <-head(wq_wide_ft)
-#write_csv(wq_wide_ft_head,file = paste0(sharepoint_path_output,"./smscg_data_water_quality_head.csv"))
+#combine RVB with rest of data
+wq_wide_all <- bind_rows(wq_wide_ft,rvb_format) %>% 
+  #write_csv() will convert date-time back to UTC, which is 8 h off, so need to make date-time character for export
+  #but all the 00:00:00 times get dropped from dates when converting to character
+  #mutate(date_time_pst = as.character(date_time_pst))  %>% 
+  #need to use format() to prevent 00:00:00 time loss; format will convert date-time to character
+  mutate(date_time_pst = format(date_time_pst, "%Y-%m-%d %H:%M:%S")) %>% 
+  arrange(date_time_pst,station) %>% 
+  glimpse()
+
+#range(wq_wide_all$date_time_pst) # "2018-01-01 00:00:00" "2022-12-31 23:45:00"
+
+#create tiny subset of the final data set to make sure everything is exporting correctly, especially date-time
+#use write_excel_csv() because write_csv() will mess up date-time by converting to UTC 
+wq_wide_all_head <-head(wq_wide_all)
+wq_wide_all_tail <-tail(wq_wide_all)
+wq_wide_all_ht <- bind_rows(wq_wide_all_head,wq_wide_all_tail)
+#write_excel_csv(wq_wide_all_ht,file = paste0(sharepoint_path_output,"./smscg_data_water_quality_toy.csv"))
+
+#export whole final data set
+#write_excel_csv(wq_wide_all,file = paste0(sharepoint_path_output,"./smscg_data_water_quality_revised.csv"))
+
+#just to be safe, now read data back in and see if it still looks OK
+#test <- read_csv(paste0(sharepoint_path_output,"./smscg_data_water_quality_tz.csv")) %>% 
+#  glimpse()
+#range(test$date_time_pst) #looks fine
 
 
 
