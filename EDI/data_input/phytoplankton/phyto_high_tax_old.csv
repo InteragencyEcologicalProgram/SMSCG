@@ -1,0 +1,19 @@
+algal_group,kingdom,phylum,class
+Centric Diatoms,Chromista,Bacillariophyta,Mediophyceae
+Centric Diatoms,Chromista,Ochrophyta,Coscinodiscophyceae
+Chrysophytes,Chromista,Ochrophyta,Chrysophyceae
+Cryptophytes,Chromista,Cryptista,Cryptophyceae
+Cryptophytes,Chromista,Cryptophyta,Cryptophyceae
+Cyanobacteria,Bacteria,Cyanobacteria,Cyanophyceae
+Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
+Dinoflagellates,Protozoa,Dinozoa,Dinophyceae
+Euglenoids,Protozoa,Euglenozoa,Euglenophyceae
+Green Algae,Plantae,Chlorophyta,Chlorophyceae
+Green Algae,Plantae,Chlorophyta,Nephroselmidophyceae
+Green Algae,Plantae,Chlorophyta,Trebouxiophyceae
+Green Algae,Plantae,Chlorophyta,Ulvophyceae
+Haptophytes,Chromista,Haptophyta,Prymnesiophyceae
+Pennate Diatoms,Chromista,Bacillariophyta,Bacillariophyceae
+Pennate Diatoms,Chromista,Ochrophyta,Bacillariophyceae
+Pennate Diatoms,Chromista,Ochrophyta,Fragilariophyceae
+Synurophytes,Chromista,Ochrophyta,Synurophyceae
