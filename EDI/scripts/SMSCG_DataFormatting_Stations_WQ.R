@@ -62,7 +62,7 @@ distance_wq<-Waterdist(Water_map = ww_delta_4326
                        , Points = station_wq
                        , Latitude_column = latitude
                        ,Longitude_column = longitude
-                       , PointID_column = station_wq)
+                       , PointID_column = station)
 
 #transposes the upper triangle of table into three columns 
 #library(reshape)  
@@ -81,7 +81,7 @@ wq_dist_trunc <- distance_wq_df %>%
   ) %>% 
   #round distances to nearst m
   mutate(smscg_distance_m = round(smscg_distance,0)) %>% 
-  select(station_wq = station
+  select(station = station
          ,smscg_distance_m
   ) %>% 
   glimpse()
@@ -92,10 +92,11 @@ wq_format <- wq_meta %>%
   left_join(wq_dist_trunc) %>% 
   relocate(smscg_distance_m,.after = location) %>% 
   arrange(region,longitude) %>% 
+  select(-c(program,station_zoop:station_clam)) %>% 
   glimpse()
 
 #write the output file------
-#write_csv(wq_format,"./EDI/data_output/smscg_stations_wq.csv")
+#write_csv(wq_format,"./EDI/data_output/smscg_stations_wq_updated.csv")
 
 
 
