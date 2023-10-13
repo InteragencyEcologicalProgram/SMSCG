@@ -729,6 +729,24 @@ phyto_all_tax <- phyto_all %>%
 #   summarise(across(everything(), ~ sum(is.na(.))))
 #only taxon_original and debris columns have NAs which is fine
 
+#create taxonomy file for SMSCG EDI package
+phyto_tax_final <- phyto_all_tax %>% 
+  distinct(
+    taxon
+    ,taxon_original
+    ,genus
+    ,species
+    ,algal_group
+    ,kingdom
+    ,phylum
+    ,class
+  ) %>% 
+  arrange(kingdom,phylum,class,genus,species,taxon) %>% 
+  glimpse()
+
+#write the output data file for SMSCG EDI
+#write_csv(phyto_tax_final, "./EDI/data_output/smscg_phytoplankton_taxonomy.csv")
+
 #create version for SMSCG EDI package
 #will later drop the EMP stations back out because EMP will provide all their data for PESP separately
 phyto_smscg <- phyto_all_tax %>% 
@@ -739,12 +757,12 @@ phyto_smscg <- phyto_all_tax %>%
     ,longitude 
     ,date
     ,time_pst
-    ,taxon_original
+    #,taxon_original
     ,taxon 
-    ,algal_group
-    ,kingdom:class
-    ,genus
-    ,species
+    # ,algal_group
+    # ,kingdom:class
+    # ,genus
+    # ,species
     ,units_per_ml
     ,cells_per_ml
     ,biovolume_per_ml
@@ -756,7 +774,7 @@ phyto_smscg <- phyto_all_tax %>%
   glimpse()
 
 #write the output data file for SMSCG EDI
-#write_csv(phyto_smscg, "./EDI/data_output/smscg_phytoplankton_samples.csv")
+#write_csv(phyto_smscg, "./EDI/data_output/smscg_phytoplankton_samples_2020-2022.csv")
 
 
 # #Add higher level taxonomic information manually-------------
