@@ -41,6 +41,14 @@ gate_op_freq <-table(gates_recent$operating)
 #202 days of operations
 #33 days closed
 
+#look at cases of open with one or more gates closed
+gate_op_part_cl <- gates_recent %>% 
+  filter(operating == "Open with one or more gates closed")
+
+#look at cases of operating with one or more gates closed
+gate_op_part_op <- gates_recent %>% 
+  filter(operating == "Operating with one or more gates closed")
+
 #look at dates closed; are they sporatic or continuous?
 gates_closed <-gates_recent %>% 
   filter(operating == "Closed with flashboards in")
