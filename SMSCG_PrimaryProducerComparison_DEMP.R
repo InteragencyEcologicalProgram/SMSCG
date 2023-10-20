@@ -22,6 +22,8 @@ library(tidyverse)
 library(lubridate)
 library(janitor)
 library(ggpubr) #qqplots
+library(DEGreport) #adds corr and p to plots
+
 
 #read in data------------
 
@@ -164,7 +166,9 @@ ggqqplot(log(wp_all$total_biovolume),ylab = "biovolume") #doesn't look too bad
 
 #plot relationship between chlor-a and phyto biovolume with log transformations
 (plot_cb_all_log <- ggplot(wp_all, aes(x = log(chla), y = log(total_biovolume)))+
-    geom_point()
+    geom_point()+
+    geom_smooth(method = "lm")  +
+    geom_cor(method = "spearman") 
 )
 
 #look at pearson correlation after log transformation
@@ -206,7 +210,7 @@ stn_emp_vec <-stn_emp$station
 #smscg: format wq data------------
 
 wq_recent <- wq_format %>% 
-  #filter to just the years and months of interest
+  #filter to just the years and months and stations of interest
   filter(date >= "2017-06-01" & month >5 & month < 11 & station %in% stn_emp_vec) %>% 
   glimpse()
 
@@ -229,18 +233,19 @@ wq_recent <- wq_format %>%
 
 #filter data set to just the target stations and dates
 phyto_recent <- phyto_sum %>% 
-  #filter to just the years and months of interest
+  #filter to just the years and months and stations of interest
   filter(date >= "2017-06-01" & month >5 & month < 11 & station %in% stn_emp_vec) %>% 
   glimpse()
 
 
 #smscg: combine WQ and phyto--------------
 #NOTE: tried looking at cell counts vs chlor-a and relationship was worse
-#should just match by station and date
-#both df have 298 rows which is good sign
+
+#wq and phyto should just match by station and date
+#then station metadata should match by station (adds region and distance from gates)
 
 wp_recent <- full_join(wq_recent,phyto_recent)
-#not a perfect match because 314 rows instead of 298
+#not a perfect match between wq and phyto because 314 rows instead of 298
 #could try matching by month and year instead if it is just a mismatch of dates due to typos
 # a few of these are because of bad chlor-a or phyto data I dropped
 
@@ -260,15 +265,33 @@ wp_mis_recent <-anti_join(wq_recent,phyto_sum) %>%
 #smscg: look at relationship between chlor-a and phyto biovolume-------------
 
 (plot_cb_recent <- ggplot(wp_recent, aes(x = log(chla), y = log(total_biovolume)))+
-    geom_point()
+    geom_point()+
+   geom_smooth(method = "lm")  +
+   geom_cor(method = "spearman") 
 )
 
+#pearson correlation
+#probably not appropriate because probably doesn't meet normality assumption
 cor.test(log(wp_recent$chla),log(wp_recent$total_biovolume))
 #cor = 0.25 which is pretty low
 
+#spearman correlation
+cor.test(log(wp_recent$chla),log(wp_recent$total_biovolume),method = "spearman")
+#rho = 0.1305046 
 
+#smscg: look at chlor-a vs phyto biovolume by region---------------
 
+#first add region categories
+wp_region <- left_join(wp_recent,stn_emp)
 
+#plot data
+(plot_cb_region <- ggplot(wp_region, aes(x = log(chla), y = log(total_biovolume)))+
+    geom_point()+
+    geom_smooth(method = "lm")  +
+    geom_cor(method = "spearman") +
+    facet_wrap(~region)
+)
+#only floating stations are significant and probably driven by just two points
 
   
   
