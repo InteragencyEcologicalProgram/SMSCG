@@ -272,7 +272,7 @@ wp_mis_recent <-anti_join(wq_recent,phyto_sum) %>%
 
 #pearson correlation
 #probably not appropriate because probably doesn't meet normality assumption
-cor.test(log(wp_recent$chla),log(wp_recent$total_biovolume))
+#cor.test(log(wp_recent$chla),log(wp_recent$total_biovolume))
 #cor = 0.25 which is pretty low
 
 #spearman correlation
