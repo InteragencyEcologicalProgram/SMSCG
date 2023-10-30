@@ -187,7 +187,7 @@ wq_final <- wq %>%
                             ,analyte_name=="Specific Conductance" ~ "uS/cm"
                             ,TRUE ~ unit_name
     )
-    #specify time zone
+    #specify time zone 
     ,date_time_pst = force_tz(time,tzone="Etc/GMT+8")
     #create year column from date-time column
     ,year = year(date_time_pst)
