@@ -58,6 +58,65 @@ atr <- left_join(at,region_format) %>%
   ) %>% 
   glimpse()
 
+#summarize biovolume by genus and filter rare taxa-----------------
+#quick summary for rare taxa removal
+#if we keep only those present in at least 1% of samples, there are 55 taxa remaining of 105 total taxa
+#if we keep only those that comprise at least 1% of total biovolume, there are 16 taxa remaining
+#if we group the biovolume by algal group, only 5 of 9 groups comprise at least 1% of total biovolume
+
+#first see how many unique genera are in the data set
+genera <- unique(atr$genus) #105, probably too many to use in an NMDS analysis
+
+#summarize biovolume by genus
+genus_bv <- atr %>% 
+  group_by(station,region,date,month,year,algal_group,genus) %>% 
+  summarise(biovolume_gn = sum(biovolume_per_ml),.groups = 'drop')
+
+#count the total number of samples
+samples <- genus_bv %>% 
+  distinct(station,date) %>% 
+  count()
+tot_samp <- as.numeric(samples[1,1])
+
+#sum all the biovolume
+tot_biovolume <-sum(genus_bv$biovolume_gn)
+
+#count how many samples each genus occurs in
+samples_genus <- genus_bv %>% 
+  count(genus) %>% 
+  mutate(sample_perc = (n/tot_samp)*100) %>% 
+  arrange(-n)
+#if we keep only those present in at least 1% of samples, there are 55 taxa
+
+#sum biovolume by genus and look at what percent of biovolume each comprises
+genus_rank <- genus_bv %>% 
+  group_by(algal_group,genus) %>% 
+  summarize(biovolume_gn_tot = sum(biovolume_gn)) %>% 
+  arrange(-biovolume_gn_tot) %>% 
+  mutate(biovolume_perc = (biovolume_gn_tot/tot_biovolume)*100)
+#if we keep only those that comprise at least 1% of total biovolume, there are 16 taxa
+
+#filter out genera that comprise less than 1% of total biovolume
+genus_rare_bv1 <- genus_rank %>% 
+  filter(biovolume_perc >= 1)
+
+#filter out genera present in less than 1% of samples
+genus_rare_ct1 <- samples_genus %>% 
+  filter(sample_perc >= 1)
+
+#look at total biovolume by algal group
+group_rank <- genus_bv %>% 
+  group_by(algal_group) %>% 
+  summarize(biovolume_grp_tot = sum(biovolume_gn)) %>% 
+  mutate(biovolume_grp_perc = (biovolume_grp_tot/tot_biovolume)*100) %>% 
+  arrange(-biovolume_grp_tot)
+#only 5 of 9 groups comprise at least 1% of total biovolume
+#most of biovolume is diatoms
+
+#then try removing rare taxa (eg, present in fewer than 1% of samples)
+#need total number of samples and number of samples each genus is present in
+#could also do this by biovolume (ie, drop taxa that comprise less than 5% of total biovolume)
+
 #summarize biovolume by algal group---------------
 
 alg_grp_biov <- atr %>% 
@@ -68,26 +127,35 @@ alg_grp_biov <- atr %>%
 
 #stacked barplots of biovolume by station and date-------------
 
+#stacked bar plot
 (plot_alg_grp_rm <- ggplot(alg_grp_biov, aes(x = month, y = total_biovolume, fill = algal_group))+
    geom_bar(position = "stack", stat = "identity") + 
    facet_wrap(year~region,ncol = 4)
    )
 #needs work
 #should use a survey number instead of date 
-#add a year column
 #should start by plotting just the stations in a given region
 #then maybe group bars by year
 
-#log transformed
+#stacked bar plot: log transformed
 (plot_alg_grp_rm <- ggplot(alg_grp_biov, aes(x = month, y = log(total_biovolume), fill = algal_group))+
     geom_bar(position = "stack", stat = "identity") + 
     facet_wrap(year~region,ncol = 4)
 )
   
+#percent stacked bar plot
+(plot_alg_grp_rm_perc <- ggplot(alg_grp_biov, aes(x = month, y = total_biovolume, fill = algal_group))+
+    geom_bar(position = "fill", stat = "identity") + 
+    facet_wrap(year~region,ncol = 4)
+)
+
   
-  
-  
-  
+#NMDS plots
+
+#start with genus level data with taxa removed that are in fewer than 1% of samples
+#this was the approach that retained the most taxa (n=55)
+#genus_rare_ct1
+
   
   
   
