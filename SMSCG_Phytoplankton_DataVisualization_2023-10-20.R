@@ -17,6 +17,9 @@
 library(tidyverse)
 library(lubridate)
 library(janitor)
+library(ggvegan)
+library(vegan)
+library(ggpubr)
 
 #read in data------------
 
@@ -58,6 +61,38 @@ atr <- left_join(at,region_format) %>%
   ) %>% 
   glimpse()
 
+#summarize biovolume by algal group---------------
+
+alg_grp_biov <- atr %>% 
+  group_by(region,year,month,algal_group) %>% 
+  summarise(total_biovolume = sum(biovolume_per_ml)) %>% 
+  arrange(year,month,region) %>% 
+  glimpse()
+
+#stacked barplots of biovolume by station and date-------------
+
+#stacked bar plot
+(plot_alg_grp_rm <- ggplot(alg_grp_biov, aes(x = month, y = total_biovolume, fill = algal_group))+
+   geom_bar(position = "stack", stat = "identity") + 
+   facet_wrap(year~region,ncol = 4)
+   )
+#needs work
+#should use a survey number instead of date 
+#should start by plotting just the stations in a given region
+#then maybe group bars by year
+
+#stacked bar plot: log transformed
+(plot_alg_grp_rm <- ggplot(alg_grp_biov, aes(x = month, y = log(total_biovolume), fill = algal_group))+
+    geom_bar(position = "stack", stat = "identity") + 
+    facet_wrap(year~region,ncol = 4)
+)
+  
+#percent stacked bar plot
+(plot_alg_grp_rm_perc <- ggplot(alg_grp_biov, aes(x = month, y = total_biovolume, fill = algal_group))+
+    geom_bar(position = "fill", stat = "identity") + 
+    facet_wrap(year~region,ncol = 4)
+)
+
 #summarize biovolume by genus and filter rare taxa-----------------
 #quick summary for rare taxa removal
 #if we keep only those present in at least 1% of samples, there are 55 taxa remaining of 105 total taxa
@@ -96,13 +131,21 @@ genus_rank <- genus_bv %>%
   mutate(biovolume_perc = (biovolume_gn_tot/tot_biovolume)*100)
 #if we keep only those that comprise at least 1% of total biovolume, there are 16 taxa
 
-#filter out genera that comprise less than 1% of total biovolume
+#keep only genera that comprise at least 1% of total biovolume
 genus_rare_bv1 <- genus_rank %>% 
   filter(biovolume_perc >= 1)
 
-#filter out genera present in less than 1% of samples
+#keep only genera present in at least 1% of samples
 genus_rare_ct1 <- samples_genus %>% 
   filter(sample_perc >= 1)
+
+#now create list of remaining genera to use for filtering main dataset
+genus_rare_ct1_list <- genus_rare_ct1 %>% 
+  pull(genus)
+
+#now use this list of taxa to filter main data set
+genus_bv_ct1 <- genus_bv %>% 
+  filter(genus %in% genus_rare_ct1_list)
 
 #look at total biovolume by algal group
 group_rank <- genus_bv %>% 
@@ -116,52 +159,63 @@ group_rank <- genus_bv %>%
 #then try removing rare taxa (eg, present in fewer than 1% of samples)
 #need total number of samples and number of samples each genus is present in
 #could also do this by biovolume (ie, drop taxa that comprise less than 5% of total biovolume)
-
-#summarize biovolume by algal group---------------
-
-alg_grp_biov <- atr %>% 
-  group_by(region,year,month,algal_group) %>% 
-  summarise(total_biovolume = sum(biovolume_per_ml)) %>% 
-  arrange(year,month,region) %>% 
-  glimpse()
-
-#stacked barplots of biovolume by station and date-------------
-
-#stacked bar plot
-(plot_alg_grp_rm <- ggplot(alg_grp_biov, aes(x = month, y = total_biovolume, fill = algal_group))+
-   geom_bar(position = "stack", stat = "identity") + 
-   facet_wrap(year~region,ncol = 4)
-   )
-#needs work
-#should use a survey number instead of date 
-#should start by plotting just the stations in a given region
-#then maybe group bars by year
-
-#stacked bar plot: log transformed
-(plot_alg_grp_rm <- ggplot(alg_grp_biov, aes(x = month, y = log(total_biovolume), fill = algal_group))+
-    geom_bar(position = "stack", stat = "identity") + 
-    facet_wrap(year~region,ncol = 4)
-)
   
-#percent stacked bar plot
-(plot_alg_grp_rm_perc <- ggplot(alg_grp_biov, aes(x = month, y = total_biovolume, fill = algal_group))+
-    geom_bar(position = "fill", stat = "identity") + 
-    facet_wrap(year~region,ncol = 4)
-)
-
-  
-#NMDS plots
+#NMDS plots: dropped genera in fewer than 1% of samples-----------------
 
 #start with genus level data with taxa removed that are in fewer than 1% of samples
 #this was the approach that retained the most taxa (n=55)
-#genus_rare_ct1
 
-  
-  
-  
-  
-  
+#first create properly formatted abundance data and predictors data frames
+genus_ct1 <- genus_bv_ct1 %>% 
+  #drop unneeded column 
+  select(-algal_group) %>% 
+  #convert long to wide; fill missing data with zeros
+  pivot_wider(id_cols = c(station:year), names_from = genus, values_from = biovolume_gn,values_fill = 0)
 
+#abundances
+genus_ct1_abund <- genus_ct1 %>% 
+  select(-(c(station:year)))
+
+#predictors
+genus_ct1_pred <- genus_ct1 %>% 
+  select(c(station:year))
+  
+#transform community data with hellinger transformation; give more thought to best way of transforming data
+genus_ct1_abund_hel <- decostand(genus_ct1_abund,method="hellinger")
+
+#run the nmds
+genus_ct1_nmds <- metaMDS(genus_ct1_abund_hel,autotransform = F)
+#stress = 0.2704573 
+
+#basic plot
+ordiplot(genus_ct1_nmds)
+ordiplot(genus_ct1_nmds,type="t") #adds labels for samples and genera
+
+#this won't run
+autoplot(genus_ct1_nmds)
+
+#this won't run either
+#full control with fortified ordination output
+fort <- fortify(genus_ct1_nmds)
+ggplot() +
+  geom_point(data=subset(fort, Score == "sites"),
+             mapping = aes(x=NMDS1, y=NMDS2),
+             colour="black",
+             alpha=0.5)+
+  geom_segment(data=subset(fort,Score == "species"),
+               mapping = aes(x=0, y=0, xend=NMDS1, yend=NMDS2),
+               arrow=arrow(length=unit(0.015, "npc"),
+                           type="closed"),
+               colour="darkgrey",
+               size=0.8)+
+  geom_text(data=subset(fort,Score == "species"),
+            mapping=aes(label=Label, x=NMDS1*1.1, y=NMDS2*1.1))+
+  geom_abline(intercept=0, slope=0, linetype="dashed", size=0.8,colour="gray")+
+  geom_vline(aes(xintercept=0), linetype="dashed", size=0.8, colour="gray")+
+  theme(panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.background=element_blank(),
+        axis.line=element_line(colour="black"))
 
 
 
