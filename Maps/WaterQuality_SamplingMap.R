@@ -184,4 +184,36 @@ ggplot()+
 
 
 
+#map for presentation to landowners
 
+
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= WW_Delta, fill= "lightblue", color= "black") +
+   geom_sf(data= filter(stations, station %in% c("BDL", "GZB", "GZL", "GZM", "RVB", "NSL", "CSE")), 
+           fill="red",shape = 21, color= "black",  size= 3.5)+
+  #add point for SMSCG 
+  geom_sf(data= smscg, fill = "blue", shape = 23, color= "black",  size= 4.5)+
+  #add label for SMSCG
+  geom_label_repel(data = smscg, aes(x=longitude,y=latitude, label=station) #label the points
+                   ,nudge_x = -0.04, nudge_y = -0.008 #can specify the magnitude of nudges if necessary
+                   , size = 5 #adjust size and position relative to points
+                   ,inherit.aes = F #tells it to look at points not base layer
+  ) + 
+  geom_label_repel(data = filter(stations, station %in% c("BDL", "GZB", "GZL", "CSE", "GZM", "RVB", "NSL")), 
+                   aes(x=longitude,y=latitude, label=station), #label the points
+                   fill = "lemonchiffon",
+                   #,nudge_x = 0.02, nudge_y = 0.02 #can specify the magnitude of nudges if necessary
+                    size = 3 #adjust size and position relative to points
+                   ,inherit.aes = F #tells it to look at points not base layer
+  ) + 
+  #zoom in on region where stations are located using bounding box
+  coord_sf( 
+    xlim =c(bbox_p$xmin,bbox_p$xmax)
+    ,ylim = c(bbox_p$ymin,bbox_p$ymax)
+  )+
+  #north(data = stations, symbol = 12) + #Add north arrow
+  #theme(legend.position =c(-121.80, y = 38.20))+ #this isn't working
+  theme(plot.margin=grid::unit(c(0,0,0,0), "in"))+
+   theme_bw()+
+  labs(x="Longitude",y="Latitude")

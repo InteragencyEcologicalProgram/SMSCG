@@ -404,5 +404,34 @@ ggplot()+
 
 
 
+#map for landowner workshop presentaiton
+
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= WW_Delta, fill= "lightblue", color= "black") +
+
+  #plot station locations using different shapes and colors for different types of stations
+  geom_sf(data= smscg, fill = "black", shape = 23, color= "black",  size= 4.5)+
+  geom_sf(data= stations_plan_cat, aes(fill=Project, color=Project), size= 3)+
+  scale_color_manual(
+    labels=c('EMP','FMWT','STN'),
+    values=c("#CD6600","#7A378B", "blue")
+  )+
+  geom_label_repel(data = smscg, aes(x=Longitude,y=Latitude, label=Station) #label the points
+                   ,nudge_x = 0.04, nudge_y = 0.008 #can specify the magnitude of nudges if necessary
+                   , size = 5 #adjust size and position relative to points
+                   ,inherit.aes = F #tells it to look at points not base layer
+  ) + 
+  #zoom in on region where stations are located using bounding box
+  coord_sf( 
+    xlim =c(bbox_p$xmin,bbox_p$xmax)
+    ,ylim = c(bbox_p$ymin,bbox_p$ymax)
+  )+
+  #north(data = stations, symbol = 12) + #Add north arrow
+  #theme(legend.position =c(-121.80, y = 38.20))+ #this isn't working
+  theme(plot.margin=grid::unit(c(0,0,0,0), "in"))+
+  theme_bw()+
+  labs(x="Longitude",y="Latitude")
+#ggsave(file = "./Maps/SMSCG_Plankton_Map_Plan_2023.png",type ="cairo-png", scale=1, dpi=300)
 
 
