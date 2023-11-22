@@ -69,9 +69,19 @@ alg_grp_biov <- atr %>%
   arrange(year,month,region) %>% 
   glimpse()
 
-#stacked barplots of biovolume by station and date-------------
+#stacked barplots of biovolume by algal group, region and month-------------
 
-#stacked bar plot
+#ten is too many groups to show in stacked bar plot, lump some into "other"
+#sum biovolume by algal group and order from high to low
+biov_rank <- alg_grp_biov %>% 
+  group_by(algal_group) %>% 
+  summarise(grand_biovol = sum(total_biovolume)) %>% 
+  arrange(-grand_biovol)
+#can lump Chrysophytes and Haptophytes into other
+#all other groups have at least one case in which they were good chunk of biovolume in a given month/region
+#so reduces from 10 to 8 groups
+
+#stacked bar plot of raw biovolume
 (plot_alg_grp_rm <- ggplot(alg_grp_biov, aes(x = month, y = total_biovolume, fill = algal_group))+
    geom_bar(position = "stack", stat = "identity") + 
    facet_wrap(year~region,ncol = 4)
@@ -81,17 +91,37 @@ alg_grp_biov <- atr %>%
 #should start by plotting just the stations in a given region
 #then maybe group bars by year
 
-#stacked bar plot: log transformed
+#stacked bar plot: log transformed biovolume, all regions and years
 (plot_alg_grp_rm <- ggplot(alg_grp_biov, aes(x = month, y = log(total_biovolume), fill = algal_group))+
     geom_bar(position = "stack", stat = "identity") + 
     facet_wrap(year~region,ncol = 4)
 )
+
+#stacked bar plot: log transformed biovolume, 2020-2022, no FLO
+(plot_alg_grp_rm_recent <- alg_grp_biov %>% 
+    filter(year>2019 & region!="FLO") %>% 
+    ggplot(aes(x = month, y = log(total_biovolume), fill = algal_group))+
+    geom_bar(position = "stack", stat = "identity") + 
+    facet_wrap(year~region,ncol = 3)
+)
+#ggsave(plot=plot_alg_grp_rm_recent,"Plots/Phytoplankton/smscg_phyto_stacked_bar_tot.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
   
-#percent stacked bar plot
+#percent stacked bar plot: all regions and years
 (plot_alg_grp_rm_perc <- ggplot(alg_grp_biov, aes(x = month, y = total_biovolume, fill = algal_group))+
     geom_bar(position = "fill", stat = "identity") + 
     facet_wrap(year~region,ncol = 4)
 )
+
+#stacked bar plot: log transformed biovolume, 2020-2022, no FLO
+(plot_alg_grp_rm_perc_recent <- alg_grp_biov %>% 
+    filter(year>2019 & region!="FLO") %>% 
+    ggplot(aes(x = month, y = total_biovolume, fill = algal_group))+
+    geom_bar(position = "fill", stat = "identity") + 
+    facet_wrap(year~region,ncol = 3)
+)
+#ggsave(plot=plot_alg_grp_rm_perc_recent,"Plots/Phytoplankton/smscg_phyto_stacked_bar_perc.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
 
 #summarize biovolume by genus and filter rare taxa-----------------
 #quick summary for rare taxa removal
