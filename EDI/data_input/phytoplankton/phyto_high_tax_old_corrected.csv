@@ -1,0 +1,19 @@
+algal_group,algal_group_new,kingdom,kingdom_new,phylum,phylum_new,class,class_new,change_summary
+Centric Diatoms,,Chromista,,Bacillariophyta,Heterokontophyta,Mediophyceae,,updated phylum
+Centric Diatoms,,Chromista,,Ochrophyta,Heterokontophyta,Coscinodiscophyceae,,updated phylum
+Chrysophytes,,Chromista,,Ochrophyta,Heterokontophyta,Chrysophyceae,,updated phylum
+Cryptophytes,,Chromista,,Cryptista,,Cryptophyceae,,no change
+Cryptophytes,,Chromista,,Cryptophyta,,Cryptophyceae,,outdated phylum
+Cyanobacteria,,Bacteria,,Cyanobacteria,,Cyanophyceae,,outdated kindom
+Cyanobacteria,,Eubacteria,,Cyanobacteria,,Cyanophyceae,,no change
+Dinoflagellates,,Protozoa,Chromista,Dinozoa,Miozoa,Dinophyceae,,updated kingdom and phylum
+Euglenoids,,Protozoa,,Euglenozoa, Euglenophyta,Euglenophyceae,,updated phylum
+Green Algae,,Plantae,,Chlorophyta,,Chlorophyceae,,no change
+Green Algae,,Plantae,,Chlorophyta,,Nephroselmidophyceae,,no change
+Green Algae,,Plantae,,Chlorophyta,,Trebouxiophyceae,,no change
+Green Algae,,Plantae,,Chlorophyta,,Ulvophyceae,,no change
+Haptophytes,,Chromista,,Haptophyta,,Prymnesiophyceae,Coccolithophyceae,updated class
+Pennate Diatoms,,Chromista,,Bacillariophyta,Heterokontophyta,Bacillariophyceae,,updated phylum
+Pennate Diatoms,,Chromista,,Ochrophyta,,Bacillariophyceae,,outdated phylum
+Pennate Diatoms,,Chromista,,Ochrophyta,Heterokontophyta,Fragilariophyceae,Bacillariophyceae,updated phylum and class
+Synurophytes,Chrysophytes,Chromista,,Ochrophyta,Heterokontophyta,Synurophyceae,Chrysophyceae,"updated algal group, phylum, and class"

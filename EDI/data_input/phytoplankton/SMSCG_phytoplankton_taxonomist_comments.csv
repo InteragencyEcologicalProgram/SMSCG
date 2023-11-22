@@ -1,0 +1,30 @@
+comments,quality_check,debris
+High sediment and detritus. Many broken diatoms. Cannot meet tally in 50 fields.,BadData,High
+Cannot meet tally in 50 fields. High sediment and detritus. Many broken diatoms.,BadData,High
+Cannot meet tally in 50 fields.,BadData,NA
+High sediment and moderate detritus. Many broken diatoms.,BrokenDiatoms,High
+High sediment and detritus. Many broken diatoms.,BrokenDiatoms,High
+Moderate sediment and high detitus. Many broken diatoms.,BrokenDiatoms,High
+Moderate sediment and high detritus. Many broken diatoms.,BrokenDiatoms,High
+Low sediment. Many broken diatoms.,BrokenDiatoms,Low
+Low sediment and detritus. Many broken diatoms.,BrokenDiatoms,Low
+Moderate sediment and detritus. Many broken diatoms.,BrokenDiatoms,Moderate
+Low sediment and moderate detritus. Many broken diatoms.,BrokenDiatoms,Moderate
+Many broken diatoms.,BrokenDiatoms,NA
+Many broken diatoms. Girdle view.,BrokenDiatoms,NA
+Moderate detritus. Fragment.,Fragment,Moderate
+High sediment.,Good,High
+Low sediment and high detritus.,Good,High
+High sediment and low detritus.,Good,High
+High sediment and moderate detritus.,Good,High
+Low sediment and low detritus.,Good,Low
+Low sediment and detritus.,Good,Low
+Low detritus.,Good,Low
+Low sediment.,Good,Low
+Moderate sediment and detritus.,Good,Moderate
+Moderate sediment and low detritus.,Good,Moderate
+Low sediment and moderate detritus.,Good,Moderate
+Moderate detritus.,Good,Moderate
+Girdle view.,Good,NA
+High fungus abundance.,PoorlyPreserved,NA
+High levels of fungus.,PoorlyPreserved,NA

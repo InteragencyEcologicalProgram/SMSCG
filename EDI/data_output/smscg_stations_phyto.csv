@@ -1,0 +1,27 @@
+program,station,longitude,latitude,location,alias,station_group,distance_smscg_m,region,active,date_start,date_end
+EMP,EMP_D7,-122.047222,38.117222,Grizzly Bay SE of Dolphin near Suisun Slough,EMP_NZ028,602,23213.15675,BAY,1,2018,NA
+EMP,EMP_D8,-121.9958333,38.06,"Suisun Bay channel, off Middle Point (upstrm of light 19)",EMP_NZ048,NZ048,16456.16071,BAY,1,2018,NA
+FMWT,FMWT_519,-121.94725,38.07378,Honker Bay - 2200 yards N. of Simmons Point,FMWT_519,519,12926.81653,BAY,1,2022,NA
+FMWT,FMWT_602,-122.04183,38.11783,Grizzly Bay - 2500 yds NE. at 20 from Garnet Point,FMWT_602,602,22952.74655,BAY,1,2021,NA
+STN,STN_519,-121.9596944,38.07230556,"Honker Bay, W end at Dolphin",STN_519,519,13976.58055,BAY,1,2022,NA
+STN,STN_602,-122.0461944,38.114,Grizzly Bay NE of Suisun Slough at Dolphin,STN_602,602,22929.38299,BAY,1,2021,NA
+EMP,EMP_EZ2,NA,NA,"Floating entrapment zone station, taken where bottom EC is approximately 2000 uS/cm",EMP_NZEZ2,NZEZ2,NA,FLO,1,2020,NA
+EMP,EMP_EZ6,NA,NA,"Floating entrapment zone station, taken where bottom EC is approximately 6000 uS/cm",EMP_NZEZ6,NZEZ6,NA,FLO,1,2020,NA
+EMP,EMP_NZ032,-122.020833,38.170278,Montezuma Slough 2nd bend from mouth,EMP_NZ032,606,21440.9359,MAR,1,2018,NA
+EMP,EMP_NZS42,-122.0472222,38.18055556,Suisun Slough at mouth of Volanti Slough,EMP_NZS42,NZS42,23982.41212,MAR,1,2018,NA
+FMWT,FMWT_605,-122.05738,38.14853,West end of Montezuma Slough near Joice Island,FMWT_605,605,25824.46745,MAR,1,2020,NA
+FMWT,FMWT_606,-122.02177,38.1698,West end of Montezuma Slough - at overhead power cables,FMWT_606,606,21547.00192,MAR,1,2020,NA
+STN,STN_606,-122.0220091,38.16775731,Montezuma Slough off Joice Island at PG&E cable cr,STN_606,606,21653.06794,MAR,1,2020,NA
+STN,STN_609,-121.938,38.16719444,Montezuma Slough at Nurse Slough,STN_609,609,12560.43272,MAR,1,2020,NA
+STN,STN_610,-121.8891944,38.11880556,Montezuma Slough at road from Bird's Landing,STN_610,610,3283.609954,MAR,1,2020,NA
+STN,STN_MONT,-121.90889,38.14387,"Montezuma Slough, midway between STN 609 and STN 610",STN_MONT,MONT,8981.895878,MAR,1,2020,NA
+EMP,EMP_D10,-121.906389,38.045833,"Sacramento River at mouth of Mallard Slough, near Chipps Island",EMP_NZ054,508,8528.373797,RIV,1,2018,NA
+EMP,EMP_D4,-121.828889,38.064444,Sacramento River abover Point Sacramento (bet. Lights 5 and 9),EMP_NZ060,801,7180.252445,RIV,1,2018,NA
+EMP,EMP_D22,-121.738056,38.084722,Sacramento River at Emmaton (upstrm of lights 13 and 14),EMP_NZ064,706,15749.93089,RIV,1,2018,NA
+EMP,EMP_NZ068,-121.6895,38.14272,Sacramento River below Rio Vista Bridge near United States Coast Guard station,EMP_NZ068,NZ068,23269.79413,RIV,1,2018,NA
+FMWT,FMWT_704,-121.77892,38.07087,Sacramento River - 1300 yards upstream of Lights 11 and 12,FMWT_704,704,11778.12382,RIV,1,2020,NA
+FMWT,FMWT_706,-121.74,38.0903,Sacramento River - upstream of Lights 15 and 16,FMWT_706,706,15875.18086,RIV,1,2020,NA
+FMWT,FMWT_802,-121.83875,38.03528,San Joaquin River - 500 yards N. of Point Beenar,FMWT_802,801,8392.227669,RIV,1,2020,NA
+STN,STN_704,-121.7750077,38.06776131,Sacramento River N side across from Sherman Lake,STN_704,704,12082.30343,RIV,1,2020,NA
+STN,STN_706,-121.7390041,38.09005982,Sacramento River below S tip of Decker Island,STN_706,706,15936.81994,RIV,1,2020,NA
+STN,STN_801,-121.847,38.05561111,San Joaquin River -1km upstream of the mouth,STN_801,801,6147.064037,RIV,1,2020,NA

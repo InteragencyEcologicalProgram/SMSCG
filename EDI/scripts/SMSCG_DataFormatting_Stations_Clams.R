@@ -82,9 +82,8 @@ clam_cleaner <- clam_trunc %>%
     program = "DWR"
     #indicate that no stations were active in 2022
     ,active = 0
-    #convert date time to date
-    ,date_start2 = ymd(date_start)
-    ,date_end2 = ymd(date_end)
+    ,date_start2 = year(date_start)
+    ,date_end2 = year(date_end)
     #column that indicates how many missing years of data
     ,missing_years = 2022-year(date_end)
     #create region column from habitat_type
