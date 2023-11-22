@@ -170,6 +170,8 @@ ggqqplot(log(wp_all$total_biovolume),ylab = "biovolume") #doesn't look too bad
     geom_smooth(method = "lm")  +
     geom_cor(method = "spearman") 
 )
+#ggsave(plot=plot_cb_all_log,"Plots/Phytoplankton/smscg_phyto_biovol_chlora.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
 
 #look at pearson correlation after log transformation
 #probably not appropriate because didn't meet normality assumption
