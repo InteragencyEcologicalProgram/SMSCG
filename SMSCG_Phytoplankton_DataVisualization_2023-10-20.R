@@ -20,6 +20,8 @@ library(janitor)
 library(ggvegan)
 library(vegan)
 library(ggpubr)
+library(scales) #log scale on plots
+library(car) #anova tables for GLM
 
 #read in data------------
 
@@ -121,6 +123,107 @@ biov_rank <- alg_grp_biov %>%
     facet_wrap(year~region,ncol = 3)
 )
 #ggsave(plot=plot_alg_grp_rm_perc_recent,"Plots/Phytoplankton/smscg_phyto_stacked_bar_perc.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
+#plot composition by region and year (not month)
+alg_grp_biov_ry <- alg_grp_biov %>% 
+  group_by(year,region,algal_group) %>% 
+  summarize(tot_bvol = sum(total_biovolume),.groups = 'drop') %>% 
+  filter(region!="FLO" & year>2019)
+
+#percent stacked bar plot: all regions and years
+(plot_alg_grp_ry_perc <- ggplot(alg_grp_biov_ry, aes(x = year, y = tot_bvol, fill = algal_group))+
+    geom_bar(position = "fill", stat = "identity") + 
+    facet_wrap(region~.)
+)
+
+
+#Boxplots of total phyto biovolume by year, month, region--------------
+
+tot_biov <- atr %>% 
+  group_by(region,station,year,month,date) %>% 
+  #convert from cubic microns per mL to cubic mm per mL
+  summarise(total_biovolume = sum(biovolume_per_ml)/1000000000) %>% 
+  arrange(year,month,region) %>% 
+  #lets drop some regions (FLO) and years (2018,2019)
+  filter(region!="FLO" & year > 2019) %>%
+  mutate(month = as.factor(month)
+         ,year = as.factor(year)
+         ,region = as.factor(region)
+         ,station = as.factor(station)
+         ) %>% 
+  glimpse()
+
+#box plots
+plot_total_bvol_recent <- ggplot(data=tot_biov, aes(x = month, y = total_biovolume)) + 
+  geom_boxplot(fill="darkolivegreen")+
+  facet_grid(year~region)+
+  labs(x = "Month"
+       , y = bquote("Biovolume"~(mm^3~mL^-1) ) #convert to these different units above
+  )+
+  scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                labels = trans_format("log10", math_format(10^.x))) + 
+  annotation_logticks(sides="l")+
+  theme(legend.position="none"
+        #, axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+#ggsave(plot=plot_total_bvol_recent,"Plots/Phytoplankton/smscg_phyto_boxplot_total_biovolume.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
+#GLM of total biovolume----------------
+
+#drop BAY from data set because mostly undersampled compared to other regions
+tot_biov_nobay <- tot_biov %>% 
+  filter(region!="BAY") %>% 
+  glimpse()
+
+#analysis with log transformed response
+mod_tbiov_log_full <- glm(log(total_biovolume) ~ region * month* year, data = tot_biov_nobay)
+
+#model checking plots
+plot(mod_tbiov_log_full)
+#plots look pretty good
+
+#look at model results
+summary(mod_tbiov_log_full)
+#Anova(mod_tbiov_log_full) #not working
+#three way interaction not significant so drop it
+
+#model with two way interactions
+mod_tbiov_log_twoway = glm(log(total_biovolume) ~ region + month + year + region:month + region:year, data = tot_biov_nobay)
+summary(mod_tbiov_log_twoway)
+drop1(mod_tbiov_log_twoway, test="Chi")
+#the two way interactions aren't significant
+
+#additive model
+mod_tbiov_log_oneway = glm(log(total_biovolume) ~ region + month + year, data = tot_biov_nobay)
+plot(mod_tbiov_log_oneway)
+summary(mod_tbiov_log_oneway)
+drop1(mod_tbiov_log_oneway, test="Chi")
+#years are different but not month or region
+
+#anova version of analysis
+mod_tbiov_log_oneway_aov = aov(log(total_biovolume) ~ region + month + year, data = tot_biov_nobay)
+Anova(mod_tbiov_log_oneway_aov)
+
+#multiple comparison
+#determine which years differ
+TukeyHSD(mod_tbiov_log_oneway_aov)
+#2020 vs 2021: p = 0.0001693
+#2020 vs 2022: p = 0.0000009
+#2021 vs 2022: p = 0.4269629
+
+#generate effect sizes for total phyto by year
+effsz<-tot_biov_nobay %>% 
+  group_by(year) %>% 
+  summarize(
+    bvol_mean = mean(total_biovolume)
+    ,bvol_sd = sd(total_biovolume)
+    , .groups = 'drop')
+
+#total phyto: compare 2020 vs 2021
+effsz$bvol_mean[1]/effsz$bvol_mean[2] #2.043231
+
+#total phyto: compare 2020 vs 2022
+effsz$bvol_mean[1]/effsz$bvol_mean[3] #2.142461
 
 
 #summarize biovolume by genus and filter rare taxa-----------------
