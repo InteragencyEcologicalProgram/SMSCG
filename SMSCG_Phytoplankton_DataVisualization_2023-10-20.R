@@ -34,6 +34,12 @@ taxon <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi
 #read in phyto station metadata from SMSCG data package on EDI
 region <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.876.7&entityid=08de2a97cf2a3743af06e3ff6e0e9b39")
 
+#read in LCEFA data
+#Pulled from Galloway and Winder 2015
+#Table 2: LCEFA mean as % cell dry mass
+lcefa <- read_csv("./EDI/data_output/smscg_phytoplankton_lcefa.csv") %>% 
+  select(-lcefa_group)
+
 #format the station metadata file----------------
 
 #drop lat/long because those are already in abundance data set
@@ -48,6 +54,21 @@ taxon_format <- taxon %>%
   filter(!(taxon == "Teleaulax amphioxeia" & species=="prolonga")
          & !(taxon == "Teleaulax amphioxeia" & is.na(taxon_original))
          )
+
+#look at unique algal_group
+taxon_high_combos <- taxon_format %>% 
+  distinct(algal_group,phylum)
+
+#look at genera in Haptophytes, Euglenoids and Chrysophytes
+#don't have good data on carbon mass (Menden-Deuer and Lessard 2000) 
+#and/or LCEFA for these taxa (Galloway and Winder 2015; not even in Table S2)
+taxon_no_lcefa <- taxon_format %>% 
+  filter(algal_group=="Euglenoids" | algal_group=="Chrysophytes" | algal_group=="Haptophytes")
+#we will just need to drop these taxa from analysis for LCEFA
+#Euglenoids are rank 5 of 9 on total biovolume, so sucks to drop them
+#Chrysophytes are rank 8 of 9 so not such a big deal
+#Haptophytes are rank 9 of 9 so again not much of a loss
+
 
 #add the taxonomy and station metadata to abundance data----------
 
@@ -65,9 +86,57 @@ atr <- left_join(at,region_format) %>%
 
 #summarize biovolume by algal group---------------
 
-alg_grp_biov <- atr %>% 
+# Convert biovolume to biomass using relationships from Menden-Deuer and Lussard
+# (2000) doi: 10.4319/lo.2000.45.3.0569
+# Only relevant to group-level data
+# note this study didn't include Euglenoids
+# also very limited data for Chrysophytes and Chlorophytes and slope for Cryptophytes not different from zero
+# Units of BV.Density are um^3 per L
+
+#estimate biomass of carbon based on estimated biovolume
+atr_mass <- atr %>% 
+  mutate(
+    #add mean cell biovolume (um^3/cell) column (biovolume_per_ml/cells_per_ml)
+    mean_cell_biovolume = biovolume_per_ml/cells_per_ml,.before = gald_um
+    #Calculate Biomass (pg-C per cell) from Biovolume (um^3 per cell)
+    #Use one equation for diatoms and another equation for everything else based on Menden-Deuer & Lussard 2000
+    ,biomass_pg_c = case_when((algal_group == "Centric Diatoms" | algal_group=="Pennate Diatoms") ~ 0.288 * (mean_cell_biovolume^0.811)
+                                  ,!(algal_group == "Centric Diatoms" | algal_group=="Pennate Diatoms") ~ 0.216 * (mean_cell_biovolume^0.939))
+    #now convert Convert pg to ug (ug-C per L)
+    ,biomass_ug_c = biomass_pg_c / 10^6
+    #Calculate Biomass Density (ug-C per mL)
+    ,biomass_ug_c_ml = biomass_ug_c * cells_per_ml
+    #convert from ug/ml to ug/l because final units for biomass and LCEFA will be per liter
+    #,biomass_ug_c_l = biomass_ug_c_ml*1000
+         ) %>% 
+  #drop some unneeded columns
+  select(-c(mean_cell_biovolume:biomass_ug_c_ml)) %>% 
+  glimpse()
+
+## Calculate LCEFA composition based on method in Galloway & Winder (2015) 
+## doi: 10.1371/journal.pone.0130053
+## values are LCEFA as % of algal dry weight 
+
+#summarize sample data by algal group and add estimated LCEFA content
+#note that we don't have values for chrysophytes or euglenoids; will need to drop those for LCEFA plots
+alg_grp_biov_samp <- atr_mass %>% 
+  group_by(region,station,year,month,date,algal_group) %>% 
+  summarize(across(units_per_ml:biomass_ug_c_l, ~sum(.x, na.rm = TRUE)),.groups='drop') %>% 
+  #add the LCEFA content info
+  left_join(lcefa) %>% 
+  mutate(
+    #use the biomass estimates to estimate LCEFA content
+    #not sure it was necessary to convert from ug/ml to ug/l
+    lcefa_per_l = biomass_ug_c_l * lcefa_value / 100
+  ) %>% 
+  glimpse()
+  
+
+#summarize biovolume, biomass, and LCEFA by region and month
+#note that chrysophytes and euglenoids are excluded from LCEFA data
+alg_grp_biov <- alg_grp_biov_samp %>% 
   group_by(region,year,month,algal_group) %>% 
-  summarise(total_biovolume = sum(biovolume_per_ml)) %>% 
+  summarise(across(c(biovolume_per_ml,biomass_ug_c_l,lcefa_per_l), ~sum(.x, na.rm = TRUE)),.groups='drop') %>% 
   arrange(year,month,region) %>% 
   glimpse()
 
@@ -179,7 +248,7 @@ tot_biov_nobay <- tot_biov %>%
 mod_tbiov_log_full <- glm(log(total_biovolume) ~ region * month* year, data = tot_biov_nobay)
 
 #model checking plots
-plot(mod_tbiov_log_full)
+#plot(mod_tbiov_log_full)
 #plots look pretty good
 
 #look at model results
@@ -195,7 +264,7 @@ drop1(mod_tbiov_log_twoway, test="Chi")
 
 #additive model
 mod_tbiov_log_oneway = glm(log(total_biovolume) ~ region + month + year, data = tot_biov_nobay)
-plot(mod_tbiov_log_oneway)
+#plot(mod_tbiov_log_oneway)
 summary(mod_tbiov_log_oneway)
 drop1(mod_tbiov_log_oneway, test="Chi")
 #years are different but not month or region
@@ -329,26 +398,26 @@ autoplot(genus_ct1_nmds)
 
 #this won't run either
 #full control with fortified ordination output
-fort <- fortify(genus_ct1_nmds)
-ggplot() +
-  geom_point(data=subset(fort, Score == "sites"),
-             mapping = aes(x=NMDS1, y=NMDS2),
-             colour="black",
-             alpha=0.5)+
-  geom_segment(data=subset(fort,Score == "species"),
-               mapping = aes(x=0, y=0, xend=NMDS1, yend=NMDS2),
-               arrow=arrow(length=unit(0.015, "npc"),
-                           type="closed"),
-               colour="darkgrey",
-               size=0.8)+
-  geom_text(data=subset(fort,Score == "species"),
-            mapping=aes(label=Label, x=NMDS1*1.1, y=NMDS2*1.1))+
-  geom_abline(intercept=0, slope=0, linetype="dashed", size=0.8,colour="gray")+
-  geom_vline(aes(xintercept=0), linetype="dashed", size=0.8, colour="gray")+
-  theme(panel.grid.major=element_blank(),
-        panel.grid.minor=element_blank(),
-        panel.background=element_blank(),
-        axis.line=element_line(colour="black"))
+# fort <- fortify(genus_ct1_nmds)
+# ggplot() +
+#   geom_point(data=subset(fort, Score == "sites"),
+#              mapping = aes(x=NMDS1, y=NMDS2),
+#              colour="black",
+#              alpha=0.5)+
+#   geom_segment(data=subset(fort,Score == "species"),
+#                mapping = aes(x=0, y=0, xend=NMDS1, yend=NMDS2),
+#                arrow=arrow(length=unit(0.015, "npc"),
+#                            type="closed"),
+#                colour="darkgrey",
+#                size=0.8)+
+#   geom_text(data=subset(fort,Score == "species"),
+#             mapping=aes(label=Label, x=NMDS1*1.1, y=NMDS2*1.1))+
+#   geom_abline(intercept=0, slope=0, linetype="dashed", size=0.8,colour="gray")+
+#   geom_vline(aes(xintercept=0), linetype="dashed", size=0.8, colour="gray")+
+#   theme(panel.grid.major=element_blank(),
+#         panel.grid.minor=element_blank(),
+#         panel.background=element_blank(),
+#         axis.line=element_line(colour="black"))
 
 
 
