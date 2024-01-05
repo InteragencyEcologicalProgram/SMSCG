@@ -293,6 +293,8 @@ wp_region <- left_join(wp_recent,stn_emp)
     geom_cor(method = "spearman") +
     facet_wrap(~region)
 )
+#ggsave(plot=plot_cb_region,"Plots/Phytoplankton/smscg_phyto_biovol_chlora_regions.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
 #only floating stations are significant and probably driven by just two points
 
   
