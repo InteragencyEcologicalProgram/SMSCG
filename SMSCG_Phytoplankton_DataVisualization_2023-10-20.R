@@ -22,6 +22,7 @@ library(vegan)
 library(ggpubr)
 library(scales) #log scale on plots
 library(car) #anova tables for GLM
+library(ggforce) #making matrix of correlation plots
 
 #read in data------------
 
@@ -125,20 +126,68 @@ alg_grp_biov_samp <- atr_mass %>%
   #add the LCEFA content info
   left_join(lcefa) %>% 
   mutate(
-    #use the biomass estimates to estimate LCEFA content
+    #use the biomass estimates to estimate LCEFA content; divide by 100 because LCEFA values are percentages
     #not sure it was necessary to convert from ug/ml to ug/l
     lcefa_per_l = biomass_ug_c_l * lcefa_value / 100
   ) %>% 
   glimpse()
+
+#summarize biovolume, biomass, and LCEFA by sample (across algal groups) 
+#note that chrysophytes and euglenoids are excluded from LCEFA data so values for all of them are zero
+alg_grp_biov_summary <- alg_grp_biov_samp %>% 
+  group_by(region,station,year,month,date) %>% 
+  summarise(across(c(biovolume_per_ml,biomass_ug_c_l,lcefa_per_l), ~sum(.x, na.rm = TRUE)),.groups='drop') %>% 
+  arrange(year,month,region,station) %>% 
+  glimpse()
   
 
-#summarize biovolume, biomass, and LCEFA by region and month
-#note that chrysophytes and euglenoids are excluded from LCEFA data
+#summarize biovolume, biomass, and LCEFA by region and month and algal group
+#note that chrysophytes and euglenoids are excluded from LCEFA data so values for all of them are zero
 alg_grp_biov <- alg_grp_biov_samp %>% 
   group_by(region,year,month,algal_group) %>% 
   summarise(across(c(biovolume_per_ml,biomass_ug_c_l,lcefa_per_l), ~sum(.x, na.rm = TRUE)),.groups='drop') %>% 
+  rename(total_biovolume = biovolume_per_ml
+         ,total_biomass = biomass_ug_c_l
+         ,total_lcefa = lcefa_per_l
+         ) %>% 
   arrange(year,month,region) %>% 
   glimpse()
+
+#look at cases of negative values when biomass is log transformed
+alg_grp_biov_log <- alg_grp_biov %>% 
+  mutate(total_biomass_log =log(total_biomass),.after = total_biomass) %>% 
+  arrange(total_biomass_log)
+#some values for biomass are > 1 so log is negative
+#could change units so that doesn't happen
+#eg, pg/l instead of ug/l
+
+#plot correlations among biovolume, biomass,LCEFA
+alg_grp_biov_summary %>% 
+  select(biovolume_per_ml,biomass_ug_c_l,lcefa_per_l) %>% 
+  ggplot(aes(x = .panel_x, y = .panel_y)) +
+  geom_point(size = 1) +
+  facet_matrix(
+    vars(everything()), 
+    layer.diag = FALSE
+  ) +
+  theme(axis.text.x = element_text(angle = 90))
+#pretty strongly correlated overall; one outlier
+
+#look at outlier 
+phyto_outlier <- alg_grp_biov_summary %>% 
+  filter(lcefa_per_l > 30)
+#STN 602 July 2022
+
+#look closer at composition of outlier
+#high levels of Thalassiosira sp. during both surveys at this station in July 2022
+#STN 602, FMWT 602, D7
+#don't have June data included in this data set but could get it from EMP
+phyto_outlier_comp <- atr_mass %>% 
+  filter((station =="STN_602" | station=="FMWT_602" | station=="EMP_D7") 
+         & year==2022 
+         & genus=="Thalassiosira"
+         )
+#no evidence of this taxon in any other samples at that station in 2022
 
 #stacked barplots of biovolume by algal group, region and month-------------
 
@@ -199,20 +248,150 @@ alg_grp_biov_ry <- alg_grp_biov %>%
   summarize(tot_bvol = sum(total_biovolume),.groups = 'drop') %>% 
   filter(region!="FLO" & year>2019)
 
+#percent stacked bar plot: all regions and years, grouped by region
+(plot_alg_grp_ry_perc_r <- ggplot(alg_grp_biov_ry, aes(x = year, y = tot_bvol, fill = algal_group))+
+    geom_bar(position = "fill", stat = "identity") + 
+    facet_wrap(region~.)
+)
+
+#percent stacked bar plot: all regions and years, grouped by year
+(plot_alg_grp_ry_perc_y <- ggplot(alg_grp_biov_ry, aes(x = region, y = tot_bvol, fill = algal_group))+
+    geom_bar(position = "fill", stat = "identity") + 
+    labs(x = "Region", y = "Proportion of biovolume")+
+    facet_wrap(year~.)
+)
+#ggsave(plot=plot_alg_grp_ry_perc_y,"Plots/Phytoplankton/smscg_phyto_stacked_bar_perc_bvol.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
+
+#total stacked bar plot: all regions and years
+(plot_alg_grp_ry_tot_biov <- ggplot(alg_grp_biov_ry, aes(x = year, y = tot_bvol, fill = algal_group))+
+    geom_bar(position = "stack", stat = "identity") + 
+    facet_wrap(region~.)
+)
+
+#stacked barplots of biomass by algal group, region and month-------------
+#fairly similar looking to biovolume overall
+#diatoms have less carbon per unit volume so biomass is less dominated by diatoms so other taxa can be seen
+#but biomass is an even rougher estimation than biovolume
+
+#ten is too many groups to show in stacked bar plot, lump some into "other"
+#sum biomass by algal group and order from high to low
+biom_rank <- alg_grp_biov %>% 
+  group_by(algal_group) %>% 
+  summarise(grand_biomass = sum(total_biomass)) %>% 
+  arrange(-grand_biomass)
+#can lump Chrysophytes and Haptophytes into other
+
+#stacked bar plot of raw biomass
+(plot_alg_grp_rm_bm <- ggplot(alg_grp_biov, aes(x = month, y = total_biomass, fill = algal_group))+
+    geom_bar(position = "stack", stat = "identity") + 
+    facet_wrap(year~region,ncol = 4)
+)
+
+#stacked bar plot: log transformed biomass, all regions and years
+(plot_alg_grp_rm_bm_log <- ggplot(alg_grp_biov, aes(x = month, y = log(total_biomass), fill = algal_group))+
+    geom_bar(position = "stack", stat = "identity") + 
+    facet_wrap(year~region,ncol = 4)
+)
+#some values are negative when log transformed because they are > 1
+
+#stacked bar plot: log transformed biomass, 2020-2022, no FLO
+(plot_alg_grp_rm_recent_bm_log <- alg_grp_biov %>% 
+    filter(year>2019 & region!="FLO") %>% 
+    ggplot(aes(x = month, y = log(total_biomass), fill = algal_group))+
+    geom_bar(position = "stack", stat = "identity") + 
+    facet_wrap(year~region,ncol = 3)
+)
+#ggsave(plot=plot_alg_grp_rm_recent,"Plots/Phytoplankton/smscg_phyto_stacked_bar_tot_biomass.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
+
 #percent stacked bar plot: all regions and years
-(plot_alg_grp_ry_perc <- ggplot(alg_grp_biov_ry, aes(x = year, y = tot_bvol, fill = algal_group))+
+(plot_alg_grp_rm_perc_bm <- ggplot(alg_grp_biov, aes(x = month, y = total_biomass, fill = algal_group))+
+    geom_bar(position = "fill", stat = "identity") + 
+    facet_wrap(year~region,ncol = 4)
+)
+
+#stacked bar plot: biomass, 2020-2022, no FLO
+(plot_alg_grp_rm_perc_recent <- alg_grp_biov %>% 
+    filter(year>2019 & region!="FLO") %>% 
+    ggplot(aes(x = month, y = total_biomass, fill = algal_group))+
+    geom_bar(position = "fill", stat = "identity") + 
+    facet_wrap(year~region,ncol = 3)
+)
+#ggsave(plot=plot_alg_grp_rm_perc_recent,"Plots/Phytoplankton/smscg_phyto_stacked_bar_perc_biomass.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
+#plot composition by region and year (not month)
+alg_grp_biov_ry_bm <- alg_grp_biov %>% 
+  group_by(year,region,algal_group) %>% 
+  summarize(tot_bmass = sum(total_biomass),.groups = 'drop') %>% 
+  filter(region!="FLO" & year>2019)
+
+#percent stacked bar plot: all regions and years
+(plot_alg_grp_ry_perc_bm <- ggplot(alg_grp_biov_ry_bm, aes(x = year, y = tot_bmass, fill = algal_group))+
     geom_bar(position = "fill", stat = "identity") + 
     facet_wrap(region~.)
 )
 
 
-#Boxplots of total phyto biovolume by year, month, region--------------
+#stacked barplots of LCEFA by algal group, region and month-------------
+#note that chrysophytes and euglenoids are excluded from LCEFA data so values for all of them are zero
 
+#ten is too many groups to show in stacked bar plot, lump some into "other"
+#sum LCEFA by algal group and order from high to low
+biolcefa_rank <- alg_grp_biov %>% 
+  group_by(algal_group) %>% 
+  summarise(grand_lcefa = sum(total_lcefa)) %>% 
+  arrange(-grand_lcefa)
+
+#stacked bar plot of raw biomass
+(plot_alg_grp_rm_fa <- ggplot(alg_grp_biov, aes(x = month, y = total_lcefa, fill = algal_group))+
+    geom_bar(position = "stack", stat = "identity") + 
+    facet_wrap(year~region,ncol = 4)
+)
+
+#percent stacked bar plot: all regions and years
+(plot_alg_grp_rm_perc_fa <- ggplot(alg_grp_biov, aes(x = month, y = total_lcefa, fill = algal_group))+
+    geom_bar(position = "fill", stat = "identity") + 
+    facet_wrap(year~region,ncol = 4)
+)
+
+#stacked bar plot: biomass, 2020-2022, no FLO
+(plot_alg_grp_rm_perc_recent_fa <- alg_grp_biov %>% 
+    filter(year>2019 & region!="FLO") %>% 
+    ggplot(aes(x = month, y = total_lcefa, fill = algal_group))+
+    geom_bar(position = "fill", stat = "identity") + 
+    facet_wrap(year~region,ncol = 3)
+)
+#fairly similar plot to the one for biovolume
+#obviously this one is missing the Euglenoids which are sometimes significant parts of biovolume
+#main real difference is that cyanobacteria drops in importance in this plot because of low levels of LCEFA (eg, RIV 2021, Bay July 2020)
+
+#plot composition by region and year (not month)
+alg_grp_biov_ry_fa <- alg_grp_biov %>% 
+  group_by(year,region,algal_group) %>% 
+  summarize(tot_fa = sum(total_lcefa),.groups = 'drop') %>% 
+  filter(region!="FLO" & year>2019)
+
+#percent stacked bar plot: all regions and years
+(plot_alg_grp_ry_perc_fa <- ggplot(alg_grp_biov_ry_fa, aes(x = year, y = tot_fa, fill = algal_group))+
+    geom_bar(position = "fill", stat = "identity") + 
+    facet_wrap(region~.)
+)
+
+#total stacked bar plot: all regions and years
+(plot_alg_grp_ry_tot_fa <- ggplot(alg_grp_biov_ry_fa, aes(x = year, y = tot_fa, fill = algal_group))+
+    geom_bar(position = "stack", stat = "identity") + 
+    facet_wrap(region~.)
+)
+
+#Boxplots of total phyto biovolume--------------
+
+#sum biovolume across all taxa within sample
 tot_biov <- atr %>% 
   group_by(region,station,year,month,date) %>% 
   #convert from cubic microns per mL to cubic mm per mL
   summarise(total_biovolume = sum(biovolume_per_ml)/1000000000) %>% 
-  arrange(year,month,region) %>% 
+  arrange(year,region,month) %>% 
   #lets drop some regions (FLO) and years (2018,2019)
   filter(region!="FLO" & year > 2019) %>%
   mutate(month = as.factor(month)
@@ -222,7 +401,13 @@ tot_biov <- atr %>%
          ) %>% 
   glimpse()
 
-#box plots
+#count sample sizes by year and region
+sample_totals_ry <- tot_biov %>% 
+  group_by(year,region) %>% 
+  count()
+#most samples in marsh, a bit less in river, much less in bay (especially in 2020)
+
+#box plots by month, year, region
 plot_total_bvol_recent <- ggplot(data=tot_biov, aes(x = month, y = total_biovolume)) + 
   geom_boxplot(fill="darkolivegreen")+
   facet_grid(year~region)+
@@ -236,6 +421,105 @@ plot_total_bvol_recent <- ggplot(data=tot_biov, aes(x = month, y = total_biovolu
         #, axis.text.x = element_text(angle = 90, hjust = 1)
   )
 #ggsave(plot=plot_total_bvol_recent,"Plots/Phytoplankton/smscg_phyto_boxplot_total_biovolume.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
+#log biovolume: box plots by year, region
+#need log transformation because of high outlier in Bay in July 2022
+(plot_total_bvol_recent_ry <- ggplot(data=tot_biov, aes(x = year, y = total_biovolume,fill=region)) + 
+  geom_boxplot()+
+  labs(x = "Year"
+       , y = bquote("Biovolume"~(mm^3~mL^-1) ) #convert to these different units above
+  )+
+  scale_fill_manual(values = c("#CCBFFF", "#B2FF8C", "#FFFF99"))+
+  scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                labels = trans_format("log10", math_format(10^.x))) + 
+  annotation_logticks(sides="l")
+  # theme(legend.position="none"
+  #       #, axis.text.x = element_text(angle = 90, hjust = 1)
+  # )
+)
+#ggsave(plot=plot_total_bvol_recent_ry,"Plots/Phytoplankton/smscg_phyto_boxplot_total_biovolume_year_region_allregions.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
+#untransformed data: box plots by year, region (Marsh and River only)
+(plot_total_bvol_recent_ry_mr <- tot_biov %>% 
+    filter(region!="BAY") %>% 
+    ggplot(aes(x = year, y = total_biovolume,fill=region)) + 
+    geom_boxplot()+
+    scale_fill_manual(values = c("#B2FF8C", "#FFFF99"))+
+    labs(x = "Year"
+         , y = bquote("Biovolume"~(mm^3~mL^-1) ) #convert to these different units above
+    )
+    )
+#ggsave(plot=plot_total_bvol_recent_ry_mr,"Plots/Phytoplankton/smscg_phyto_boxplot_total_biovolume_year_region_mar_riv.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
+
+
+
+
+#Boxplots of LCEFA--------------
+
+#sum LCEFA across all taxa within sample
+#note this doesn't include Euglenoids or Chrysophytes
+tot_fa <- alg_grp_biov_samp %>% 
+  group_by(region,station,year,month,date) %>% 
+  summarise(total_lcefa = sum(lcefa_per_l,na.rm = T)) %>% 
+  arrange(year,region,month) %>% 
+  #lets drop some regions (FLO) and years (2018,2019)
+  filter(region!="FLO" & year > 2019) %>%
+  mutate(month = as.factor(month)
+         ,year = as.factor(year)
+         ,region = as.factor(region)
+         ,station = as.factor(station)
+  ) %>% 
+  glimpse()
+
+
+#box plots by month, year, region
+(plot_total_fa_recent <- ggplot(data=tot_fa, aes(x = month, y = total_lcefa)) + 
+  geom_boxplot(fill="darkolivegreen")+
+  facet_grid(year~region)+
+  labs(x = "Month"
+       , y = bquote("LCEFA"~(ug~L^-1) )
+  )+
+  scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                labels = trans_format("log10", math_format(10^.x))) +
+  annotation_logticks(sides="l")+
+  theme(legend.position="none"
+        #, axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+)
+#ggsave(plot=plot_total_fa_recent,"Plots/Phytoplankton/smscg_phyto_boxplot_total_lcefa.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+#NOTE: quite similar to total biovolume
+
+#log biovolume: box plots by year, region
+#need log transformation because of high outlier in Bay in July 2022
+(plot_total_fa_recent_ry <- ggplot(data=tot_fa, aes(x = year, y = total_lcefa,fill=region)) + 
+    geom_boxplot()+
+    labs(x = "Year"
+         , y = bquote("LCEFA"~(ug~L^-1)  ) #convert to these different units above
+    )+
+    scale_fill_manual(values = c("#CCBFFF", "#B2FF8C", "#FFFF99"))+
+    scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                  labels = trans_format("log10", math_format(10^.x))) + 
+    annotation_logticks(sides="l")
+  # theme(legend.position="none"
+  #       #, axis.text.x = element_text(angle = 90, hjust = 1)
+  # )
+)
+#ggsave(plot=plot_total_fa_recent_ry,"Plots/Phytoplankton/smscg_phyto_boxplot_total_lcefa_year_region_allregions.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
+#untransformed data: box plots by year, region (Marsh and River only)
+(plot_total_fa_recent_ry_mr <- tot_fa %>% 
+    filter(region!="BAY") %>% 
+    ggplot(aes(x = year, y = total_lcefa,fill=region)) + 
+    geom_boxplot()+
+    scale_fill_manual(values = c("#B2FF8C", "#FFFF99"))+
+    labs(x = "Year"
+         , y = bquote("LCEFA"~(ug~L^-1) ) #convert to these different units above
+    )
+)
+#ggsave(plot=plot_total_fa_recent_ry_mr,"Plots/Phytoplankton/smscg_phyto_boxplot_total_lcefa_year_region_mar_riv.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
+
 
 #GLM of total biovolume----------------
 
