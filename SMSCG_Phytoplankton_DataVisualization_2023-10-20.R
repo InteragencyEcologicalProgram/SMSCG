@@ -108,7 +108,7 @@ atr_mass <- atr %>%
     #Calculate Biomass Density (ug-C per mL)
     ,biomass_ug_c_ml = biomass_ug_c * cells_per_ml
     #convert from ug/ml to ug/l because final units for biomass and LCEFA will be per liter
-    #,biomass_ug_c_l = biomass_ug_c_ml*1000
+    ,biomass_ug_c_l = biomass_ug_c_ml*1000
          ) %>% 
   #drop some unneeded columns
   select(-c(mean_cell_biovolume:biomass_ug_c_ml)) %>% 
@@ -616,6 +616,12 @@ genus_rank <- genus_bv %>%
   arrange(-biovolume_gn_tot) %>% 
   mutate(biovolume_perc = (biovolume_gn_tot/tot_biovolume)*100)
 #if we keep only those that comprise at least 1% of total biovolume, there are 16 taxa
+
+#create df with both count and biovolume rank info
+all_rank <- left_join(genus_rank,samples_genus) %>% 
+  select(-c(biovolume_gn_tot,n)) %>% 
+  arrange(-biovolume_perc)
+write_csv(all_rank,"./Data/smscg_phyto_genera_rank.csv")
 
 #keep only genera that comprise at least 1% of total biovolume
 genus_rare_bv1 <- genus_rank %>% 
