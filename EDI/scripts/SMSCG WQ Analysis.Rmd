@@ -1,0 +1,1038 @@
+---
+title: "SMSCG Water Quality Analysis"
+author: "Morgan Battey"
+date: "2023-09-01"
+output: html_document
+---
+-Make sure to open the "SMSCG_MB" project 
+
+## 1 - Load Packages
+
+-Load the necessary packages that will be used for this analysis
+
+```{r}
+library(tidyverse)
+library("ggpubr")
+library(lubridate)
+library(wql)
+library(RColorBrewer)
+```
+
+## 2 - Add SMSCG Data from EDI 
+
+-Load in the SMSCG 2018-2022 water quality data from EDI
+
+```{r}
+df_SMSCG <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.876.7&entityid=aae1f07aefeb88eef5eea4c6f3dc1bf0")
+
+unique(df_SMSCG$year) #confirm that the data includes years 2018-2022
+
+```
+
+-Rename the column headers in df_SMSCG to get rid of the "/" because r can't recognize them
+```{r}
+colnames_new <- gsub('/','',colnames(df_SMSCG))
+colnames(df_SMSCG) <- colnames_new
+```
+
+
+-Remove all WQA data from this file (not QC'd and doesn't include 2023 - will add this data later from different source)
+```{r}
+df_SMSCG <- subset(df_SMSCG, station == "GZL" | station == "MAL" | station == "RYC" | station == "TRB" | station == "HON" | station == "SSI" | station == "RVB") #only keeping the CEMP and FRP stations 
+unique(df_SMSCG$station)
+```
+
+
+## 3 - Add CEMP Data
+-Read in the 2017 CEMP data from EDI for the 6 stations of interest for this study
+```{r}
+df_GZL <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1177.5&entityid=bb661e9298f4c3c1aa3a875338c7c6a1")
+df_HON <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1177.5&entityid=b586a6a4876a934eca5d322e18a9cb87")
+df_MAL <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1177.5&entityid=aac477583e3dabc030891d2562352dac")
+df_RYC <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1177.5&entityid=97a2f884280cd5667c8e8f30b33d5bd8")
+df_RVB <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1177.5&entityid=9b6fbe82c12410604ec310048223ccbb")
+df_SSI <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1177.5&entityid=24d51605899fc94c021ddc25d19a2982")
+```
+
+-Since they all have the same order of column headers, we can combine them into one data frame 
+```{r}
+df_CEMP_2017 <- bind_rows(df_GZL,df_HON,df_MAL,df_RYC,df_RVB,df_SSI) #adds all rows from the six data frames together into a single data frame
+unique(df_CEMP_2017$station) #ensure there are no other stations besides the six we want
+```
+-Since we only want the 2017 data, we can remove all other data from df_CEMP_2017, but first we need to combine the date/time
+```{r}
+df_CEMP_2017 <- df_CEMP_2017 %>% 
+  mutate(date_time = paste(date, time)) %>% #combine the date and time columns
+  mutate(year = year(date_time)) %>% #add a year column
+  filter(year == 2017) #remove everything that wasn't collected in 2017
+
+unique(df_CEMP_2017$year) #confirm there are no other years except 2017
+```
+
+-Add 2023 CEMP data and GZB data from when CEMP managed the station in 2018 and 2019
+```{r}
+df_GZL_2023 <- read_csv("Data/GZL_2023_data.csv")
+df_HON_2023 <- read_csv("Data/HON_2023_data.csv")
+df_MAL_2023 <- read_csv("Data/MAL_2023_data.csv")
+df_RVB_2023 <- read_csv("Data/RVB_2023_data.csv")
+df_RYC_2023 <- read_csv("Data/RYC_2023_data.csv")
+df_SSI_2023 <- read_csv("Data/SSI_2023_data.csv")
+
+df_GZB_CEMP <- read_csv("Data/GZB_CEMP_data.csv") #add older GZB data
+
+df_GZB_CEMP <- df_GZB_CEMP %>% 
+  mutate(date = mdy(date)) #format date
+         
+names(df_GZB_CEMP) %in% names(df_GZL_2023) #confirm they have the same column headers
+
+df_CEMP_2023 <- bind_rows(df_GZL_2023,df_HON_2023,df_MAL_2023,df_RYC_2023,df_RVB_2023,df_SSI_2023, df_GZB_CEMP) #combine all 2023 data and GZB CEMP data in one data frame
+
+df_CEMP_2023 <- df_CEMP_2023 %>% 
+  mutate(date_time = paste(date, time)) %>% #combine the date and time columns
+  mutate(year = year(date_time)) #add a year column
+ 
+unique(df_CEMP_2023$year) #confirm that we only have years 2018, 2019, and 2023 
+```
+
+-Combine all the CEMP data into one data frame
+```{r}
+df_CEMP_comb <- bind_rows(df_CEMP_2017, df_CEMP_2023) #combine data frames together
+```
+
+
+-Format df_CEMP_comb to match df_SMSCG and then combine them
+```{r}
+df_CEMP_comb$date_time_pst <- as.POSIXct(df_CEMP_comb$date_time, format="%Y-%m-%d %H:%M:%S") #formats the date time column (can not bind rows without this step)
+
+df_CEMP_comb <- subset(df_CEMP_comb, select = -c(date, time, date_time)) #gets rid of the old date and time columns, since they're not in df_SMSCG
+
+#rename the necessary column headers to match df_SMSCG
+df_CEMP_comb <- df_CEMP_comb %>%
+  rename("specific_conductance_uScm_value" = "spc", "turbidity_FNU_value" = "turbidity", "temperature_C_value" = "watertemperature", "fluorescence_ugL_value" = "fluorescence", "dissolved_oxygen_mgL_value" = "dissolvedoxygen", "pH_value" = "ph" )
+
+df_rawwq <- bind_rows(df_SMSCG,df_CEMP_comb) #combines the two data frames together
+rm(df_GZL, df_HON, df_MAL, df_RVB, df_RYC, df_SSI, df_GZL_2023, df_HON_2023, df_MAL_2023, df_RVB_2023, df_RYC_2023, df_SSI_2023, df_GZB_CEMP, df_CEMP_2017, df_CEMP_2023) #remove intermediate dfs
+```
+
+##4 - Add WQA Data 
+
+-Add 2017 WQA data (no turbidity data, was not collected during this year)
+```{r}
+df_WQA <- read_csv("Data/Suisun Marsh Data_2017.csv")
+
+unique(df_WQA$cdec_code)
+unique(df_WQA$unit_name) #units show up weird, but we won't need these to have their own column in the end so let's remove it
+df_WQA <- subset(df_WQA, select = -c(unit_name)) #removed the units column, since we'll convert to wide format
+colnames(df_WQA)[colnames(df_WQA) == "qaqc_flag_id"] ="code" #renamed the qaqc_flag_id column to code
+
+tz(df_WQA$time) #tells us this is in UTC, which is the default in R
+df_WQA <- df_WQA %>% 
+  mutate(time2 = mdy_hm(time) #creates a new time column
+         ,date_time_pst = force_tz(time2,tzone="Etc/GMT+8")) #forces the new time column into PST and puts it in new column  
+tz(df_WQA$date_time_pst) #confirmed it is now in PST, so we can get rid of the other two date/time columns
+
+df_WQA <- subset(df_WQA, select = -c(time,time2)) #removes old time columns
+```
+
+-Convert from long to wide format
+```{r}
+spec <- build_wider_spec( #have to create a spec because we want both the values and the codes for each analyte to carry over to wide format
+  df_WQA, 
+  names_from = analyte_name, 
+  values_from = c(value,code), 
+  names_glue = "{analyte_name}_{.value}"
+)
+
+spec <- arrange(spec, analyte_name, .value)
+
+df_WQAwide <- pivot_wider_spec(df_WQA, spec) %>% 
+  arrange(date_time_pst) %>% 
+  glimpse()
+```
+-note: can use "distinct" to find dups
+-Format data to match df_rawwq
+```{r}
+#rename column headers to match df_rawwq
+df_WQAwide <- df_WQAwide %>%
+  rename("station" = "cdec_code", "specific_conductance_uScm_value" = "Specific Conductance_value", "specific_conductance_uScm_code" = "Specific Conductance_code", "temperature_C_value" = "Water Temperature_value", "temperature_C_code" = "Water Temperature_code", "dissolved_oxygen_mgL_value" = "Dissolved Oxygen_value", "dissolved_oxygen_mgL_code" = "Dissolved Oxygen_code")
+  
+
+
+df_WQAwide$year <- year(df_WQAwide$date_time_pst) #create a year column
+unique(df_WQAwide$year)#checked to make sure only 2017 data is in here, but 2018 also shows up
+df_WQAwide <- subset(df_WQAwide, year == 2017) #got rid of all data not collected in 2017
+```
+-Add the 2018-2023 WQA data that's been QA/QC'd
+```{r}
+df_BDL <- read_csv("Data/BDL_final.csv")
+df_BDL <- df_BDL %>%
+  add_column(station = "BDL")
+
+df_CSE <- read_csv("Data/CSE_final.csv")
+df_CSE <- df_CSE %>%
+  add_column(station = "CSE")
+
+df_GOD <- read_csv("Data/GOD_final.csv")
+df_GOD <- df_GOD %>%
+  add_column(station = "GOD")
+
+df_GZB <- read_csv("Data/GZB_final.csv")
+df_GZB <- df_GZB %>%
+  add_column(station = "GZB")
+
+df_GZM <- read_csv("Data/GZM_All.csv")
+df_GZM <- df_GZM %>%
+  add_column(station = "GZM")
+
+df_HUN <- read_csv("Data/HUN_All.csv")
+df_HUN <- df_HUN %>%
+  add_column(station = "HUN")
+
+df_NSL <- read_csv("Data/NSL_final.csv")
+df_NSL <- df_NSL %>%
+  add_column(station = "NSL")
+
+df_VOL <- read_csv("Data/VOL_final.csv")
+df_VOL <- df_VOL %>%
+  add_column(station = "VOL")
+
+df_MSL <- read_csv("Data/MSL_All.csv")
+df_MSL <- df_MSL %>%
+  add_column(station = "MSL")
+
+names(df_BDL) %in% names(df_CSE) #column names are different
+
+names(df_GZM) %in% names(df_GZB)
+```
+
+-Remove unwanted column names and rename columns that don't match (CSE and VOL column names are slightly different than the others)
+```{r}
+df_BDL <- subset(df_BDL, select = c("DATETIME", "DO (mg/L)", "DO - QAQC Flag", "SpCond (µS/cm)", "SpCond - QAQC Flag", "pH", "pH - QAQC Flag", "Temp (°C)", "Temp - QAQC Flag", "Turbidity (NTU)", "Turbidity - QAQC Flag", "Chl a (µg/L)", "Chl - QAQC Flag", "station")) 
+
+df_CSE <- subset(df_CSE, select = c("DATETIME", "DO (mg/L)", "DO - QAQC Flag", "SpCond (uS/cm)", "SpCond - QAQC Flag", "pH", "pH - QAQC Flag", "Temp (C)", "Temp - WQP QAQC Flag", "Turbidity (NTU)", "Turbidity - QAQC Flag", "Chl a (ug/L)", "Chl - QAQC Flag", "station"))
+
+df_GOD <- subset(df_GOD, select = c("DATETIME", "DO (mg/L)", "DO - QAQC Flag", "SpCond (µS/cm)", "SpCond - QAQC Flag", "pH", "pH - QAQC Flag", "Temp (°C)", "Temp - QAQC Flag", "Turbidity (NTU)", "Turbidity - QAQC Flag", "Chl a (µg/L)", "Chl - QAQC Flag", "station")) 
+
+df_GZB <- subset(df_GZB, select = c("DATETIME", "DO (mg/L)", "DO - QAQC Flag", "SpCond (µS/cm)", "SpCond - QAQC Flag", "pH", "pH - QAQC Flag", "Temp (°C)", "Temp - QAQC Flag", "Turbidity (NTU)", "Turbidity - QAQC Flag", "Chl a (µg/L)", "Chl - QAQC Flag", "station")) 
+
+df_GZM <- subset(df_GZM, select = c("DATETIME", "DO (mg/L)", "DO - QAQC Flag", "SpCond (µS/cm)", "SpCond - QAQC Flag", "pH", "pH - QAQC Flag", "Temp (°C)", "Temp - QAQC Flag", "Turbidity (NTU)", "Turbidity - QAQC Flag", "Chl a (µg/L)", "Chl - QAQC Flag", "station")) 
+
+df_HUN <- subset(df_HUN, select = c("DATETIME", "DO (mg/L)", "DO - QAQC Flag", "SpCond (µS/cm)", "SpCond - QAQC Flag", "pH", "pH - QAQC Flag", "Temp (°C)", "Temp - QAQC Flag", "Turbidity (NTU)", "Turbidity - QAQC Flag", "Chl a (µg/L)", "Chl - QAQC Flag", "station"))
+
+df_NSL <- subset(df_NSL, select = c("DATETIME", "DO (mg/L)", "DO - QAQC Flag", "SpCond (µS/cm)", "SpCond - QAQC Flag", "pH", "pH - QAQC Flag", "Temp (°C)", "Temp - QAQC Flag", "Turbidity (NTU)", "Turbidity - QAQC Flag", "Chl a (µg/L)", "Chl - QAQC Flag", "station")) 
+
+df_VOL <- subset(df_VOL, select = c("DATETIME", "DO (mg/L)", "DO - QAQC Flag", "SpCond (uS/cm)", "SpCond - QAQC Flag", "pH", "pH - QAQC Flag", "Temp (C)", "Temp - WQP QAQC Flag", "Turbidity (NTU)", "Turbidity - QAQC Flag", "Chl a (ug/L)", "Chl - QAQC Flag", "station")) 
+
+df_MSL <- subset(df_MSL, select = c("DATETIME", "DO (mg/L)", "DO - QAQC Flag", "SpCond (µS/cm)", "SpCond - QAQC Flag", "pH", "pH - QAQC Flag", "Temp (°C)", "Temp - QAQC Flag", "Turbidity (NTU)", "Turbidity - QAQC Flag", "Chl a (µg/L)", "Chl - QAQC Flag", "station")) 
+
+#rename the ones that have different column names
+df_CSE <- df_CSE %>%
+  rename("SpCond (µS/cm)" = "SpCond (uS/cm)", "Temp (°C)" = "Temp (C)", "Temp - QAQC Flag" = "Temp - WQP QAQC Flag", "Chl a (µg/L)" = "Chl a (ug/L)")
+
+df_VOL <- df_VOL %>%
+  rename("SpCond (µS/cm)" = "SpCond (uS/cm)", "Temp (°C)" = "Temp (C)", "Temp - QAQC Flag" = "Temp - WQP QAQC Flag", "Chl a (µg/L)" = "Chl a (ug/L)")
+```
+
+-Combine the data frames together and rename/format to match df_WQAwide
+```{r}
+df_WQA_2023 <- bind_rows(df_BDL,df_CSE,df_GOD,df_GZB,df_GZM,df_HUN,df_NSL,df_VOL,df_MSL)
+
+df_WQA_2023 <- df_WQA_2023 %>%
+  rename("specific_conductance_uScm_value" = "SpCond (µS/cm)", "specific_conductance_uScm_code" = "SpCond - QAQC Flag", "temperature_C_value" = "Temp (°C)", "temperature_C_code" = "Temp - QAQC Flag", "dissolved_oxygen_mgL_value" = "DO (mg/L)", "dissolved_oxygen_mgL_code" = "DO - QAQC Flag", "fluorescence_ugL_value" = "Chl a (µg/L)", "fluorescence_ugL_code" = "Chl - QAQC Flag", "turbidity_NTU_value" = "Turbidity (NTU)", "turbidity_NTU_code" = "Turbidity - QAQC Flag", "pH_value" = "pH", "pH_code" = "pH - QAQC Flag")
+
+df_WQA_2023 <- df_WQA_2023 %>%
+  mutate(date_time_pst = mdy_hm(DATETIME)) %>% #formats the date time column (can not bind rows without this step)
+  mutate(year = year(date_time_pst))
+
+df_WQA_2023 <- subset(df_WQA_2023, select = -c(DATETIME))
+
+rm(df_BDL, df_CSE, df_GOD, df_GZB, df_GZM, df_HUN, df_NSL, df_VOL, df_MSL)
+```
+
+-Combine both WQA data frames
+```{r}
+df_WQA_all <- bind_rows(df_WQA_2023,df_WQAwide)
+```
+
+
+-Plot the WQA data to make sure everything looks okay
+```{r}
+#quick_turb_plot <- ggplot(df_WQA_all, aes(x = date_time_pst, y = turbidity_NTU_value)) +
+  #geom_point() + 
+  #theme_bw() +
+  #facet_grid(.~station)
+#plot(quick_turb_plot)
+
+#quick_WT_plot <- ggplot(df_WQA_all, aes(x = date_time_pst, y = temperature_C_value)) +
+  #geom_point() + 
+  #theme_bw() +
+  #facet_grid(.~station, labeller = label_both)
+#plot(quick_WT_plot)
+
+#quick_SC_plot <- ggplot(df_WQA_all, aes(x = date_time_pst, y = specific_conductance_uScm_value)) +
+  #geom_point() + 
+  #theme_bw() +
+  #facet_grid(.~station, labeller = label_both)
+#plot(quick_SC_plot)
+```
+
+-Combine df_WQA_all with df_rawwq
+```{r}
+df_rawwq <- bind_rows(df_rawwq,df_WQA_all)
+unique(df_rawwq$year) #confirm that years 2017-2023 are included in this
+
+rm(df_WQA, spec) #remove intermediate dfs
+```
+
+##5 - Add TRB data
+
+-Determine what TRB data is still missing from df_SMSCG
+```{r}
+TRB <- df_rawwq %>%
+           filter(station == "TRB")
+range(TRB$date_time_pst) #date range for TRB in Nick's EDI data is from 8/24/21-12/31/22, so need to add everything before 8/24/21
+
+TRB_temp_plot <- ggplot(TRB, aes(x = date_time_pst, y = temperature_C_value)) +
+  geom_point() + 
+  theme_bw()
+plot(TRB_temp_plot)
+
+TRB_spc_plot <- ggplot(TRB, aes(x = date_time_pst, y = specific_conductance_uScm_value)) +
+  geom_point() + 
+  theme_bw()
+plot(TRB_spc_plot)
+
+
+TRB_turb_plot <- ggplot(TRB, aes(x = date_time_pst, y = turbidity_NTU_value)) +
+  geom_point() + 
+  theme_bw()
+plot(TRB_turb_plot)
+#found lots of missing data from 2021-2022
+```
+
+-Add missing TRB data
+```{r}
+df_TRB <- read_csv("Data/TRB_data_ESA.csv", locale=locale(encoding="latin1"))  #read in data, wouldn't work without the locale part probably becuase of the extra columns
+
+df_TRB <- df_TRB %>%
+  rename("specific_conductance_uScm_value" = "Specific Conductivity (µS/cm)", "temperature_C_value" = "Temperature (C)","dissolved_oxygen_mgL_value" = "DO (mg/L)", "turbidity_NTU_value" = "Turbidity (NTU)", "fluorescence_ugL_value" = "Chlorophyll-a Concentration (µg/L)") %>%
+  mutate(date_time_pst = mdy_hm(date_time)) %>% #format date
+  mutate(year = year(date_time_pst)) %>% #create a year column
+  subset(select = -c(`Salinity (psu)`, date_time)) %>% #remove unwanted columns
+  add_column(station = "TRB") #add a station column
+```
+-Combine df_TRB with df_rawwq
+```{r}
+df_rawwq <- bind_rows(df_rawwq,df_TRB)
+```
+
+
+##6 - Add Regions, Group, and Water Year Columns
+
+-Read in the file that has the station name, the region it's in, and the group who manages it
+```{r}
+df_regions <- read.csv("Data/station_data.csv",header=TRUE) #will use this to add a "region" column to the data set
+
+unique(df_rawwq$station) %in% unique(df_regions$station) #confirm that df_regions has the same list of stations as df_rawwq
+```
+
+-Use the left join function to add the regions and group who manages each station as their own columns in df_comb, based on station
+
+```{r}
+df_comb <- left_join(df_rawwq, df_regions, by = "station")
+
+```
+
+-Add a new column in df_comb that has the water year by using mutate and case_when to tell it that the months Oct-Dec should be the next year and the other months should stay the same
+-may not need this since we want Oct data to be lumped in with Jun-Sep of the same year (this is only because we care about the Jun-Oct data for each year for this project)
+```{r}
+#df_comb <- df_comb %>%
+  #mutate(water_year = case_when(
+    #month(date_time_pst) %in% c(10, 11, 12) ~ year(date_time_pst) + 1,
+    #TRUE ~ year(date_time_pst)
+  #)) 
+
+```
+
+-Create a new data frame with water year and water year type for years 2017-2023
+
+```{r}
+df_wateryear <- data.frame(year = c(2017,2018, 2019, 2020, 2021, 2022, 2023),
+                         water_year_type = c("wet","below normal", "wet", "dry", "critically dry", "critically dry", "wet")
+                         )
+```
+
+-Use left join to add the water year type column into df_comb
+
+```{r}
+df_comb <- left_join(df_comb, df_wateryear, by = "year")
+
+rm(df_wateryear) 
+```
+
+
+## 7 - Combine FNU/NTU turbitidy columns
+
+-Create a new column called turb_comb_value that combines the FNU and NTU turbidity columns, since the units have a 1:1 relationship 
+-Create a new column called turb_comb_code to combine the two turbidity code columns
+
+```{r}
+df_comb$turb_comb_value <- coalesce(df_comb$turbidity_FNU_value, df_comb$turbidity_NTU_value)
+
+df_comb$turb_comb_code <- coalesce(df_comb$turbidity_FNU_code, df_comb$turbidity_NTU_code)
+
+#remove the FNU and NTU column
+```
+
+
+## 8 - Plot Raw WQ Data and Detect Outliers
+
+-Create initial plots of the data and color code by station, group that manages the station, and code
+
+```{r}
+#turbidity plots
+turb_plot_bystation <- ggplot(df_comb, aes(x = date_time_pst, y = turb_comb_value, color=station)) +
+  geom_point() + 
+  theme_bw()
+plot(turb_plot_bystation)
+#ggsave(turb_plot_bystation,"turb_plot_bystation.png")
+
+#turb_plot_bygroup <- ggplot(df_comb, aes(x = date_time_pst, y = turb_comb_value, color=group)) +
+  #geom_point() + 
+  #theme_bw()
+#plot(turb_plot_bygroup)
+#ggsave("turb_plot_bygroup.png")
+
+turb_plot_bycode <- ggplot(df_comb, aes(x = date_time_pst, y = turb_comb_value, color=turb_comb_code)) +
+  geom_point() + 
+  theme_bw() +
+  facet_grid(.~station)
+plot(turb_plot_bycode)
+#ggsave("turb_plot_bycode.png")
+
+#specific conductance plots
+#spc_plot_bystation <- ggplot(df_comb, aes(x = date_time_pst, y = specific_conductance_uScm_value, color=station)) +
+  #geom_point() + 
+  #theme_bw()
+#plot(spc_plot_bystation)
+#ggsave("spc_plot_bystation.png")
+
+#spc_plot_bygroup <- ggplot(df_wqcomb, aes(x = date_time_pst, y = specific_conductance_uScm_value, color=managed_by)) +
+  #geom_point() + 
+  #theme_bw()
+#plot(spc_plot_bygroup)
+#ggsave("spc_plot_bygroup.png")
+
+#spc_plot_bycode <- ggplot(df_wqcomb, aes(x = date_time_pst, y = specific_conductance_uScm_value, color=specific_conductance_uScm_code)) +
+  #geom_point() + 
+  #theme_bw()
+#plot(spc_plot_bycode)
+#ggsave("spc_plot_bycode.png")
+
+#chlorophyll fluorescence plots
+#chl_plot_bystation <- ggplot(chl, aes(x = year, y = chl, color=station)) +
+  #geom_point() + 
+  #theme_bw()
+#plot(chl_plot_bystation)
+#ggsave("chla_plot_bystation.png")
+
+#chla_plot_bygroup <- ggplot(df_wqcomb, aes(x = date_time_pst, y = fluorescence_ugL_value, color=managed_by)) +
+  #geom_point() + 
+  #theme_bw()
+#plot(chla_plot_bygroup)
+#ggsave("chla_plot_bygroup.png")
+
+#chla_plot_bycode <- ggplot(df_wqcomb, aes(x = date_time_pst, y = fluorescence_ugL_value, color=fluorescence_ugL_code)) +
+  #geom_point() + 
+  #theme_bw()
+#plot(chla_plot_bycode)
+#ggsave("chla_plot_bycode.png")
+
+#water temperature plots
+#wt_plot_bystation <- ggplot(df_comb, aes(x = date_time_pst, y = temperature_C_value, color=station)) +
+  #geom_point() + 
+  #theme_bw()
+#plot(wt_plot_bystation)
+#ggsave("wt_plot_bystation.png")
+```
+
+-Look at the range of values for turbidity, spc, chla fluorescence, and water temp
+
+```{r}
+range(df_comb$turb_comb_value, na.rm = TRUE)
+range(df_comb$specific_conductance_uScm_value, na.rm = TRUE)
+range(df_comb$fluorescence_ugL_value, na.rm = TRUE)
+range(df_comb$temperature_C_value, na.rm = TRUE)
+
+#add DO and pH
+```
+
+-Found negative values and extreme outliers 
+
+## 9 - Clean up data and set cutoff values
+
+-Replace all values that have Bad ("B" and "X") codes with NAs
+```{r}
+#fluorescence
+unique(df_comb$fluorescence_ugL_code) #has both X and B codes, which indicates bad data
+df_comb$fluorescence_ugL_value <- replace(df_comb$fluorescence_ugL_value, df_comb$fluorescence_ugL_code=="B", NA)
+df_comb$fluorescence_ugL_value <- replace(df_comb$fluorescence_ugL_value, df_comb$fluorescence_ugL_code=="X", NA)
+
+#turbidity
+unique(df_comb$turb_comb_code) #has both X and B codes, which indicates bad data
+df_comb$turb_comb_value <- replace(df_comb$turb_comb_value, df_comb$turb_comb_code=="B", NA)
+df_comb$turb_comb_value <- replace(df_comb$turb_comb_value, df_comb$turb_comb_code=="X", NA)
+
+#specific conductance
+unique(df_comb$specific_conductance_uScm_code) #has both X and B codes, which indicates bad data
+df_comb$specific_conductance_uScm_value <- replace(df_comb$specific_conductance_uScm_value, df_comb$specific_conductance_uScm_code=="B", NA)
+df_comb$specific_conductance_uScm_value <- replace(df_comb$specific_conductance_uScm_value, df_comb$specific_conductance_uScm_code=="X", NA)
+
+#water temperature
+unique(df_comb$temperature_C_code) #has X codes, which indicates bad data
+df_comb$temperature_C_value <- replace(df_comb$temperature_C_value, df_comb$temperature_C_code=="X", NA)
+
+#add DO and pH
+
+```
+
+
+-Replace fluorescence values above 500 and below 0 with N/A
+
+```{r}
+df_comb$fluorescence_ugL_value <- replace(df_comb$fluorescence_ugL_value, df_comb$fluorescence_ugL_value>500, NA)
+df_comb$fluorescence_ugL_value <- replace(df_comb$fluorescence_ugL_value, df_comb$fluorescence_ugL_value<0, NA)
+
+```
+
+-Replace turbidity values above 300 and below 0 with N/A (ideally there should not need to do this with the cleaned turb data)
+
+```{r}
+df_comb$turb_comb_value <- replace(df_comb$turb_comb_value, df_comb$turb_comb_value>300, NA)
+df_comb$turb_comb_value <- replace(df_comb$turb_comb_value, df_comb$turb_comb_value<0, NA)
+```
+
+
+-Replace water temperature values above 100 with N/A
+```{r}
+df_comb$temperature_C_value <- replace(df_comb$temperature_C_value, df_comb$temperature_C_value>100, NA)
+```
+
+
+-Previous plots shows that station GOD has the highest spc values that likely aren't real
+
+-Determine the max spc value at the most western stations (RYC and GZL) to help identify what the max spc should be for the data set
+
+```{r}
+
+RYC_max <- df_comb %>%
+           filter(station == "RYC") %>%
+           filter(specific_conductance_uScm_value == max(specific_conductance_uScm_value, na.rm = TRUE))
+
+GZL_max <- df_comb %>%
+           filter(station == "GZL") %>%
+           filter(specific_conductance_uScm_value == max(specific_conductance_uScm_value, na.rm = TRUE))
+```
+
+-Max spc at RYC is 27,640 uS/cm and at GZL is 28,423 uS/cm
+
+-Replace specific conductance values above 30,000 and below 0 with N/A 
+
+```{r}
+df_comb$specific_conductance_uScm_value <- replace(df_comb$specific_conductance_uScm_value, df_comb$specific_conductance_uScm_value>30000, NA)
+df_comb$specific_conductance_uScm_value <- replace(df_comb$specific_conductance_uScm_value, df_comb$specific_conductance_uScm_value<0, NA)
+
+```
+
+-remove intermediate data frames
+```{r}
+rm(GZL_max, RYC_max)
+```
+
+-Rename df and Remove columns for EDI
+```{r}
+
+```
+
+
+-Export data for EDI
+```{r}
+#use write_csv function to export the cleaned up WQ data
+
+write_csv(df_comb, "C:/R_coding/SMSCG_MB/Data/SMSCG_wq_data_2017-2023_clean.csv")
+```
+
+
+## 10 - Plot Cleaned WQ Data 
+
+```{r}
+turb_facet_plot <- ggplot(df_comb, aes(x = date_time_pst, y = turb_comb_value, color=station)) +
+  geom_point() + 
+  theme_bw() +
+  facet_grid(.~region, labeller = label_both)
+plot(turb_facet_plot)
+#ggsave("turb_facet_plot.png")
+
+chla_facet_plot <- ggplot(df_comb, aes(x = date_time_pst, y = fluorescence_ugL_value, color=station)) +
+  geom_point() + 
+  theme_bw() +
+  facet_grid(.~region, labeller = label_both)
+plot(chla_facet_plot)
+#ggsave(chla_facet_plot)
+
+spc_facet_plot <- ggplot(df_comb, aes(x = date_time_pst, y = specific_conductance_uScm_value, color=station)) +
+  geom_point() + 
+  theme_bw() +
+  facet_grid(.~region, labeller = label_both)
+plot(spc_facet_plot)
+ggsave(spc_facet_plot)
+
+wt_facet_plot <- ggplot(df_comb, aes(x = date_time_pst, y = temperature_C_value, color=station)) +
+  geom_point() + 
+  theme_bw() +
+  facet_grid(.~region, labeller = label_both)
+plot(wt_facet_plot)
+#ggsave(wt_facet_plot)
+
+```
+
+## 11 - Take daily averages
+```{r}
+df_averages <- df_comb %>% 
+  mutate(date = date(date_time_pst)) %>% #create a date (DOY) column
+  group_by(year, station, date, water_year_type, region) %>% #Group by all the things we want to keep
+  summarize(chl = mean(fluorescence_ugL_value, na.rm =T), turb = mean(turb_comb_value, na.rm =T), wt = mean(temperature_C_value, na.rm =T), spc = mean(specific_conductance_uScm_value, na.rm =T))
+
+df_averages$spc_milli <- df_averages$spc/1000 #create a new column that converts specific conductance values from micro to millisiemens/cm
+
+df_averages$salinity <- ec2pss(df_averages$spc_milli, t=25) #add a column that converts spc_milli to salinity
+
+#convert NaNs to NAs (for some reason, still adding lines for missing data in plots below - need to fix)
+df_averages$chl[is.nan(df_averages$chl)]<-NA 
+df_averages$turb[is.nan(df_averages$turb)]<-NA
+df_averages$wt[is.nan(df_averages$wt)]<-NA
+df_averages$salinity[is.nan(df_averages$salinity)]<-NA
+
+```
+
+-Plot the daily averages
+```{r}
+wt_facet_plot <- ggplot(df_averages, aes(x = date, y = wt, color=station)) +
+  geom_line() + 
+  theme_bw() +
+  facet_wrap(.~region, ncol = 1) +
+  geom_hline(yintercept = 22, linetype = 2) + 
+  labs(color = "Station") +
+  labs(x = "Date") +
+  labs(y = "Water Temperature (°C)")
+plot(wt_facet_plot)
+
+#spc_facet_plot <- ggplot(df_averages, aes(x = date, y = spc, color=station)) +
+  #geom_point() + 
+  #theme_bw() +
+  #facet_wrap(.~region, labeller = label_both) +
+  #labs(color = "Station") +
+  #labs(x = "Date") +
+  #labs(y = "Specific Conductance")
+#plot(spc_facet_plot)
+
+sal_facet_plot <- ggplot(df_averages, aes(x = date, y = salinity, color=station)) +
+  geom_line() + 
+  theme_bw() +
+  facet_wrap(.~region, ncol = 1) +
+  geom_hline(yintercept = 6, linetype = 2) +
+  labs(color = "Station") +
+  labs(x = "Date") +
+  labs(y = "Salinity (PSU)")
+plot(sal_facet_plot)
+
+turb_facet_plot <- ggplot(df_averages, aes(x = date, y = turb, color=station)) +
+  geom_line() + 
+  theme_bw() +
+  facet_wrap(.~region, ncol = 1) +
+  geom_hline(yintercept = 12, linetype = 2) +
+  labs(color = "Station") +
+  labs(x = "Date") +
+  labs(y = "Turbidity (FNU)")
+plot(turb_facet_plot)
+
+```
+
+-Take daily averages by region 
+```{r}
+
+df_comb$spc_milli <- df_comb$specific_conductance_uScm_value/1000 #create a new column that converts specific conductance values from micro to millisiemens/cm
+
+df_comb$salinity <- ec2pss(df_comb$spc_milli, t=25) #add a column that converts spc_milli to salinity using the ec2pss function in the wql library
+
+df_averages_region <- df_comb %>% 
+  mutate(date = date(date_time_pst)) %>% #create a DOY column
+  group_by(year, date, water_year_type, region) %>% #Group by all the things we want to keep
+  summarize(turb_min = min(turb_comb_value, na.rm =T), turb_max = max(turb_comb_value, na.rm =T), turb_mean = mean(turb_comb_value, na.rm =T), sal_min = min(salinity, na.rm =T), sal_max = max(salinity, na.rm =T), sal_mean = mean(salinity, na.rm =T), wt_min = min(temperature_C_value, na.rm =T), wt_max = max(temperature_C_value, na.rm =T), wt_mean = mean(temperature_C_value, na.rm =T))
+
+#gives Inf when it encounters NaNs, so probably need to convert the Infs to NAs 
+df_averages_region[sapply(df_averages_region, is.infinite)] <- NA #converts all Infs in the data frame to NA
+
+#df_averages_region$turb_min[is.nan(df_averages_region$turb_min)]<-NA 
+#df_averages_region$turb_max[is.nan(df_averages_region$turb_max)]<-NA
+df_averages_region$turb_mean[is.nan(df_averages_region$turb_mean)]<-NA
+
+#create the boundaries for the graph shading, we want to highlight everything from Jun-Oct each year
+rectangle <- data.frame(xmin = (as.Date(c("2017-06-01", "2018-06-01", "2019-06-01", "2020-06-01", "2021-06-01", "2022-06-01", "2023-06-01"))),
+                              xmax = (as.Date(c("2017-10-31", "2018-10-31", "2019-10-31", "2020-10-31", "2021-10-31", "2022-10-31", "2023-10-31"))),
+                              ymin = -Inf,
+                              ymax = Inf)
+
+```
+
+-Plot the daily averages by region (these will go into the report) 
+```{r}
+#if we use this one, will need to remove everything before June and after October
+#wt_region_plot <- ggplot(df_averages_region, aes(x = date, y = wt_mean)) +
+  #geom_line() + 
+  #theme_bw() +
+  #facet_grid(region~year, scales="free_x") +
+  #geom_ribbon(aes(ymin=wt_min, ymax=wt_max) , fill="blue", alpha=0.2) +
+  #geom_hline(yintercept = 22, linetype = 2) + 
+  #labs(x = "Date") +
+  #labs(y = "Water Temperature (°C)")
+#plot(wt_region_plot)
+
+wt_region_plot <- ggplot(df_averages_region, aes(x = date, y = wt_mean)) +
+  geom_rect(data=rectangle, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            fill = "grey", alpha = 0.5, inherit.aes = FALSE) +
+  geom_line() + 
+  theme_bw() +
+  facet_wrap(.~region, ncol = 1) +
+  geom_ribbon(aes(ymin=wt_min, ymax=wt_max) , fill="blue", alpha=0.2) +
+  geom_hline(yintercept = 22, linetype = 2) + 
+  labs(x = "Date") +
+  labs(y = "Water Temperature (°C)")
+plot(wt_region_plot)
+
+sal_region_plot <- ggplot(data = df_averages_region, aes(x = date, y = sal_mean)) +
+  geom_rect(data=rectangle, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            fill = "grey", alpha = 0.5, inherit.aes = FALSE) +
+  geom_line() +
+  theme_bw() +
+  facet_wrap(.~region, ncol = 1) +
+  geom_ribbon(data = df_averages_region, aes(ymin=sal_min, ymax=sal_max) , fill="blue", alpha=0.2) +
+  geom_hline(yintercept = 6, linetype = 2) +
+  labs(x = "Date") +
+  labs(y = "Salinity (PSU)")
+plot(sal_region_plot)
+
+turb_region_plot <- ggplot(df_averages_region, aes(x = date, y = turb_mean)) +
+  geom_rect(data=rectangle, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            fill = "grey", alpha = 0.5, inherit.aes = FALSE) +
+  geom_line() + 
+  theme_bw() +
+  facet_wrap(.~region, ncol = 1) +
+  geom_ribbon(aes(ymin=turb_min, ymax=turb_max) , fill="blue", alpha=0.2) +
+  geom_hline(yintercept = 12, linetype = 2) +
+  labs(x = "Date") +
+  labs(y = "Turbidity (FNU)")
+plot(turb_region_plot)
+```
+
+##12 -  Determine Days of Suitable Smelt Habitat
+-Remove all months except June-October, since that's the time frame we're looking at for the Summer-Fall Habitat Report
+```{r}
+df_summer_fall <- df_averages %>%
+  mutate(month = month(date)) %>% #create a month column
+  filter(!(month <6 | month>10)) #remove anything before June and anything after October
+```
+
+
+-Determine the number of days from Jun-Oct for each year that each station had temperatures below 22 deg C, turbidity above 12 NTU/FNU, and salinity below 6, (“good delta smelt habitat”)
+```{r}
+df_summer_fall = mutate(df_summer_fall, turbcut = case_when(turb >= 12 ~1, TRUE~0), salcut = case_when(salinity<=6 ~1, TRUE~0), tempcut = case_when(wt<=22 ~1, TRUE~0)) #adds new columns for water temp, turbidity, and salinity to yield a "1" if they are good delta smelt conditions
+
+
+df_smelt = mutate(df_summer_fall, good4smelt = case_when((turbcut==1) & (salcut==1) & (tempcut==1) ~1, TRUE~0)) #create a new column that will have a 1 when all three cutoff columns are also 1
+
+#use group_by year and summarize with the sum of all the 1s in the good4smelt column to determine number of days that those three conditions are met (this combines all stations for each day of the year, so even if multiple stations have good smelt habitat on a given day, it will only count as 1 day) 
+df_habitat_year <- df_smelt %>%
+  group_by(date, year, water_year_type) %>%
+  summarize(good_smelt_habitat= max(good4smelt)) #first need to find the max per day so that it doesn't count multiple stations per day
+
+df_habitat_year <- df_habitat_year %>%
+  group_by(year, water_year_type) %>%
+  summarize(good_smelt_habitat_days= sum(good_smelt_habitat)) #now we can add them all up for the entire year
+
+#determine number of days each STATION had suitable smelt habitat
+df_habitat_station <- df_smelt %>%
+  group_by(station, year, region) %>%
+  summarize(good_smelt_habitat_days= sum(good4smelt)) 
+
+#determine number of days each REGION had suitable smelt habitat (will only count for 1 day even if more than one station in a region has good smelt habitat)
+df_habitat_region <- df_smelt %>%
+  group_by(date, year, region, water_year_type) %>%
+  summarize(good_smelt_habitat= max(good4smelt)) #first need to find the max so that it doesn't count multiple stations per day
+
+df_habitat_region <- df_habitat_region %>%
+group_by(year, region, water_year_type) %>%
+summarize(good_smelt_habitat_days= sum(good_smelt_habitat)) #now we can add them all up for the entire year
+
+#do the same thing for each station, but see which of the three parameters is the limiting factor
+df_limitor_station <- df_smelt %>%
+group_by(year, station, region) %>%
+summarize(good_smelt_habitat_days= sum(good4smelt),
+           turbdays = sum(turbcut), tempdays = sum(tempcut), saldays = sum(salcut))
+
+df_limitor_slong = pivot_longer(df_limitor_station, cols = c(good_smelt_habitat_days, turbdays, tempdays, saldays),
+                                 names_to = "Metric", values_to = "Days")
+
+#do the same thing but by region with the three parameters 
+df_limitor_region <- df_smelt %>%
+  group_by(date, year, region) %>%
+  summarize(good_smelt_habitat= max(good4smelt), turbmax = max(turbcut), tempmax = max(tempcut), salmax = max(salcut))
+
+df_limitor_region <- df_limitor_region %>%
+group_by(year, region) %>%
+summarize(good_smelt_habitat_days= sum(good_smelt_habitat),
+           turbdays = sum(turbmax), tempdays = sum(tempmax), saldays = sum(salmax))
+
+df_limitor_rlong = pivot_longer(df_limitor_region, cols = c(good_smelt_habitat_days, turbdays, tempdays, saldays),
+                                 names_to = "Metric", values_to = "Days")
+```
+
+-Plot number of days with good smelt habitat by year, station, and region 
+```{r}
+habitat_year_plot <- ggplot(df_habitat_year, aes(x = year, y = good_smelt_habitat_days, fill= water_year_type)) +
+  geom_col(stat = "identity") +
+   labs(fill = "Water Year Type") +
+  labs(x = "Year") +
+  labs(y = "Days with Suitable Smelt Habitat")
+plot(habitat_year_plot)
+
+habitat_station_plot <- ggplot(df_habitat_station, aes(x = year, y = good_smelt_habitat_days, fill=region)) +
+  geom_col() +
+  theme_bw() +
+  facet_wrap(.~station, labeller = label_both, ncol = 4) +
+    labs(fill = "Region") +
+  labs(x = "Year") +
+  labs(y = "Days with Suitable Smelt Habitat")
+plot(habitat_station_plot)
+
+
+habitat_region_plot <- ggplot(df_habitat_region, aes(x = year, y = good_smelt_habitat_days, fill= water_year_type)) +
+  geom_col() +
+  theme_bw() +
+  facet_wrap(.~region, labeller = label_both) +
+   labs(fill = "Water Year Type") +
+  labs(x = "Year") +
+  labs(y = "Days with Suitable Smelt Habitat")
+plot(habitat_region_plot)
+
+#plot number of days with good smelt habitat for each station and include the liming factors of temp, turb, and salinity
+limitor_station_plot <- ggplot(df_limitor_slong, aes(x = year, y = Days, fill = Metric))+
+  facet_wrap(~station)+
+  geom_col(position = "dodge")
+plot(limitor_station_plot)
+
+#plot number of days with good smelt habitat for each region and include the liming factors of temp, turb, and salinity
+limitor_region_plot <- ggplot(df_limitor_rlong, aes(x = year, y = Days, fill = Metric))+
+  facet_grid(Metric~region)+
+  geom_col(position = "dodge")
+plot(limitor_region_plot)
+
+#THIS is the graph that will go into the report
+limitor_region_plot <- ggplot(df_limitor_rlong, aes(x = year, y = Days, fill = Metric))+
+  scale_x_continuous(breaks = c(2017, 2018, 2019, 2020, 2021, 2022, 2023), labels = c("2017\n(W)", "2018\n(BN)", "2019\n(W)", "2020\n(D)", "2021\n(CD)", "2022\n(CD)", "2023\n(W)")) +
+  facet_wrap(~region, nrow = 3)+
+  geom_col(position = "dodge") +
+  scale_fill_brewer(palette = "Set2", name=NULL, labels = c("Combined", "Salinity","Temperature", "Turbidity")) +
+  labs(x = "Year") +
+  labs(y = "Number of Suitable Habitat Days")
+plot(limitor_region_plot)
+```
+-For the report, put note on plot that the turb data wasn't available for 2017 in the marsh
+-Create boxes around the action years
+-SMSCG action years = 2023 and 2018
+-X2 action years= 2017, 2019, and 2023 
+
+
+##11 - Chorophyll Analysis
+
+-add in and format DEMP chlorophyll grab data
+```{r}
+df_DEMP <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.458.9&entityid=cf231071093ac2861893793517db26f3")
+
+df_DEMP <- subset(df_DEMP, Station == "D10" | Station == "D4" | Station == "D22" | Station == "D7" | Station == "D8" | Station == "NZ032" | Station == "NZ068" | Station == "NZS42" | Station == "D24") #can also use %in% to create a list of desired stations and then assign it, may need to use the filter function instead of subset 
+unique(df_DEMP$Station)
+
+df_DEMP$year <- year(df_DEMP$Date) #creates a year column
+df_DEMP <- subset(df_DEMP, year>2016) #removes anything before 2017
+#df_DEMP$date_time <- paste(df_DEMP$Date, df_DEMP$Time) #combines the date and time columns
+
+df_DEMP_chla <- df_DEMP %>% 
+  select(Station, Date, Chla) %>% #creates a new data frame that keeps only the station, date, time, and chlorphyll value columns
+  rename(station = Station) %>% #rename station to be lowercase
+  add_column(method = "lab") #created a new method column
+
+#did not end up needing these steps because I didn't end up combining the date and time columns
+#tz(df_DEMP_chla$date_time) #tells us this is in UTC, which is the default in R
+#df_DEMP_chla <- df_DEMP_chla %>% 
+  #mutate(date_time2 = ymd_hms(date_time) #creates a new time column
+         #,date_time_pst = force_tz(date_time2,tzone="Etc/GMT+8")) #forces the new time column into PST and puts it in new column  
+#tz(df_DEMP_chla$date_time_pst) #confirm we are now in PST
+
+#df_DEMP_chla <- subset(df_DEMP_chla, select = -c(date_time,date_time2)) #remove unwanted date and time columns
+
+#chla_facet_plot <- ggplot(df_chla, aes(x = Date, y = Chla)) +
+  #geom_point() + 
+  #theme_bw() +
+  #facet_wrap(.~Station, labeller = label_both) #creates a facet of all the chlorophyll data with each station having its own graph
+#plot(chla_facet_plot)
+```
+
+-Add in df with DEMP stations assigned to regions and join in 
+```{r}
+df_DEMPstation <- read.csv("Data/DEMP_stations_regions.csv",header=TRUE)
+
+unique(df_DEMPstation$station) %in% unique(df_DEMP_chla$station)
+
+df_DEMP_chla <- left_join(df_DEMP_chla, df_DEMPstation, by = "station")
+```
+-Add in CEMP chla grab data from MAL and RVB
+```{r}
+df_CEMP_chla <- read_csv("Data/CEMP_lab_chla.csv")
+
+unique(df_CEMP_chla$ShortStationName)
+
+
+df_CEMP_chla <- df_CEMP_chla %>%
+  subset(Analyte == "Chlorophyll a") %>% #subset just for chlorophyll
+  rename(station = ShortStationName) %>% #rename to station
+  mutate(date_time = mdy_hms(CollectionDate)) %>% #format date and time column
+  mutate(Date = date(date_time)) %>% #create a date column
+  select(station, Date, Result) %>% #select the columns we want to keep
+  add_column(method = "lab") %>% #create new method column 
+  add_column(region = "River") #create region column, all will be river since both stations fall into that region
+
+df_CEMP_chla$Chla <- as.numeric(df_CEMP_chla$Result) #turns the result column into numeric and renames to Chla (could not bind_rows without this step)
+df_CEMP_chla <- subset(df_CEMP_chla, select = -c(Result)) #removes the Result column
+```
+
+-Add in the WQA chla grab data
+```{r}
+df_WQA_chla <- read_csv("Data/WQA_chla_data.csv")
+
+df_WQA_chla <- df_WQA_chla %>%
+  mutate(date_time2 = mdy_hms(date_time)) %>% #formats date
+  mutate(Date = date(date_time2)) %>% #creates a date column
+  add_column(method = "lab") 
+  
+df_WQA_chla$Chla <- as.numeric(df_WQA_chla$result)
+
+df_WQA_chla <- left_join(df_WQA_chla, df_regions, by = "station") #add in a region column
+df_WQA_chla <- subset(df_WQA_chla, select = -c(group, result, date_time, date_time2)) #get rid of the columns we don't need
+
+```
+
+
+-Create a subset of df_comb (continuous sonde data) to only have daily averages of chl fluorescence data
+```{r}
+df_sonde_chl <- df_comb %>% 
+  select(station, date_time_pst, fluorescence_ugL_value, region) %>% #only keeps the station, year, date_time_pst, fluorescence, and region columns
+  #subset(station == "MAL" | station == "RVB" | station == "CSE" | station == "SSI" | station == "GZL" | station == "HUN" | station == "VOL") %>%
+  mutate(Date = date(date_time_pst)) %>% #create a date (DOY) column
+  group_by(Date, station, region) %>% #Group by all the things we want to keep
+  summarize(Chla = mean(fluorescence_ugL_value, na.rm =T)) %>% #take daily average 
+  add_column(method = "sonde") #add column called method that just says sonde
+
+```
+
+-Combine the lab and sonde chla data
+```{r}
+df_comb_chla <- bind_rows(df_sonde_chl,df_DEMP_chla, df_CEMP_chla, df_WQA_chla)
+```
+
+-plots by region
+```{r}
+df_river_chl <- subset(df_comb_chla, region == "River")
+
+chla_river_plot <- ggplot(df_river_chl, aes(x = Date, y = Chla, color=method)) +
+  geom_point() + 
+  theme_bw()
+plot(chla_river_plot + ggtitle("Chlorophyll in River"))
+
+df_marsh_chl <- subset(df_comb_chla, region == "Marsh")
+
+chla_marsh_plot <- ggplot(df_marsh_chl, aes(x = Date, y = Chla, color=method)) +
+  geom_point() + 
+  theme_bw()
+plot(chla_marsh_plot + ggtitle("Chlorophyll in Marsh"))
+
+df_bay_chl <- subset(df_comb_chla, region == "Bay")
+
+chla_bay_plot <- ggplot(df_bay_chl, aes(x = Date, y = Chla, color=method)) +
+  geom_point() + 
+  theme_bw()
+plot(chla_bay_plot + ggtitle("Chlorophyll in Bay"))
+```
+-Take average of all sondes for the day for each region and match up to average of the lab results per region per day (region, date, lab, sonde)
+```{r}
+df_discrete_chla <- bind_rows(df_DEMP_chla, df_CEMP_chla, df_WQA_chla) #create a df with just the discrete lab results
+
+df_disc_region <- df_discrete_chla %>%
+  group_by(Date, region) %>% #Group by region and date
+  summarize(lab = mean(Chla, na.rm =T)) #take the daily average of chla lab results per region per day
+
+df_cont_region <- df_sonde_chl %>%
+  group_by(Date, region) %>% #Group by region and date
+  summarize(sonde = mean(Chla, na.rm =T)) #take the daily average of chla sonde results per region per day
+
+df_comb_region <- left_join(df_disc_region, df_cont_region, by = c("Date", "region")) #combine the two dfs by date and region
+
+df_region_long = pivot_longer(df_comb_region, cols = c(lab, sonde),
+                                 names_to = "Method", values_to = "Chla")
+
+chl_plot <- ggplot(df_comb_region, aes(x = lab, y = sonde, color= region)) +
+  geom_point() + 
+  theme_bw() +
+  labs(color = "Region") +
+  labs(x = "Lab Chlorophyll (µg/L)") +
+  labs(y = "Sonde Chlorophyll (µg/L)")
+plot(chl_plot + ggtitle("Lab vs Sonde Chlorophyll"))
+```
+
+-Plot the daily average chlorophyll by region
+```{r}
+df_river_region <- subset(df_region_long, region == "River")
+
+chl_region_rplot <- ggplot(df_river_region, aes(x = Date, y = Chla, color=Method)) +
+  geom_point() + 
+  theme_bw() +
+  labs(color = "Method") +
+  labs(x = "Date") +
+  labs(y = "Chlorophyll (µg/L)")
+plot(chl_region_rplot + ggtitle("Daily Average Chlorophyll in River"))
+
+df_bay_region <- subset(df_region_long, region == "Bay")
+
+chl_region_bplot <- ggplot(df_bay_region, aes(x = Date, y = Chla, color=Method)) +
+  geom_point() + 
+  theme_bw() +
+  labs(color = "Method") +
+  labs(x = "Date") +
+  labs(y = "Chlorophyll (µg/L)")
+plot(chl_region_bplot + ggtitle("Daily Average Chlorophyll in Bay"))
+
+df_marsh_region <- subset(df_region_long, region == "Marsh")
+
+chl_region_mplot <- ggplot(df_marsh_region, aes(x = Date, y = Chla, color=Method)) +
+  geom_point() + 
+  theme_bw() +
+  labs(color = "Method") +
+  labs(x = "Date") +
+  labs(y = "Chlorophyll (µg/L)")
+plot(chl_region_mplot + ggtitle("Daily Average Chlorophyll in Marsh"))
+```
+
+
+To do: 
+-just look at lab and sonde data collected together OR go by region and take average of all sondes for the day and match up to average of the lab results per region per day (region, date, lab, sonde) (DONE)
+-subset the sonde data so it's the same date as the lab data, then plot lab data on the x-axis and sonde data on the y axis (or vice versa) (DONE)
+
