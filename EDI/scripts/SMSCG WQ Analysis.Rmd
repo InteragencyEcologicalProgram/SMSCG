@@ -36,7 +36,7 @@ colnames(df_SMSCG) <- colnames_new
 ```
 
 
--Remove all WQA data from this file (not QC'd and doesn't include 2023 - will add this data later from different source)
+-Remove all WQA data from this data frame (not QC'd and doesn't include 2023 - will add this data separately)
 ```{r}
 df_SMSCG <- subset(df_SMSCG, station == "GZL" | station == "MAL" | station == "RYC" | station == "TRB" | station == "HON" | station == "SSI" | station == "RVB") #only keeping the CEMP and FRP stations 
 unique(df_SMSCG$station)
@@ -149,7 +149,6 @@ df_WQAwide <- pivot_wider_spec(df_WQA, spec) %>%
   arrange(date_time_pst) %>% 
   glimpse()
 ```
--note: can use "distinct" to find dups
 -Format data to match df_rawwq
 ```{r}
 #rename column headers to match df_rawwq
@@ -205,7 +204,7 @@ names(df_BDL) %in% names(df_CSE) #column names are different
 names(df_GZM) %in% names(df_GZB)
 ```
 
--Remove unwanted column names and rename columns that don't match (CSE and VOL column names are slightly different than the others)
+-Remove unwanted columns and rename columns that don't match (CSE and VOL column names are slightly different than the others)
 ```{r}
 df_BDL <- subset(df_BDL, select = c("DATETIME", "DO (mg/L)", "DO - QAQC Flag", "SpCond (µS/cm)", "SpCond - QAQC Flag", "pH", "pH - QAQC Flag", "Temp (°C)", "Temp - QAQC Flag", "Turbidity (NTU)", "Turbidity - QAQC Flag", "Chl a (µg/L)", "Chl - QAQC Flag", "station")) 
 
@@ -381,7 +380,8 @@ df_comb$turb_comb_value <- coalesce(df_comb$turbidity_FNU_value, df_comb$turbidi
 
 df_comb$turb_comb_code <- coalesce(df_comb$turbidity_FNU_code, df_comb$turbidity_NTU_code)
 
-#remove the FNU and NTU column
+#remove the FNU and NTU value and code columns
+df_comb <- subset(df_comb, select = -c(turbidity_FNU_value, turbidity_FNU_code, turbidity_NTU_value, turbidity_NTU_code))
 ```
 
 
@@ -436,13 +436,13 @@ plot(turb_plot_bycode)
 #plot(chl_plot_bystation)
 #ggsave("chla_plot_bystation.png")
 
-#chla_plot_bygroup <- ggplot(df_wqcomb, aes(x = date_time_pst, y = fluorescence_ugL_value, color=managed_by)) +
+#chla_plot_bygroup <- ggplot(df_comb, aes(x = date_time_pst, y = fluorescence_ugL_value, color=managed_by)) +
   #geom_point() + 
   #theme_bw()
 #plot(chla_plot_bygroup)
 #ggsave("chla_plot_bygroup.png")
 
-#chla_plot_bycode <- ggplot(df_wqcomb, aes(x = date_time_pst, y = fluorescence_ugL_value, color=fluorescence_ugL_code)) +
+#chla_plot_bycode <- ggplot(df_comb, aes(x = date_time_pst, y = fluorescence_ugL_value, color=fluorescence_ugL_code)) +
   #geom_point() + 
   #theme_bw()
 #plot(chla_plot_bycode)
@@ -454,6 +454,16 @@ plot(turb_plot_bycode)
   #theme_bw()
 #plot(wt_plot_bystation)
 #ggsave("wt_plot_bystation.png")
+
+do_plot_bystation <- ggplot(df_comb, aes(x = date_time_pst, y = dissolved_oxygen_mgL_value, color=station)) +
+  geom_point() + 
+  theme_bw()
+plot(do_plot_bystation)
+
+pH_plot_bystation <- ggplot(df_comb, aes(x = date_time_pst, y = pH_value, color=station)) +
+  geom_point() + 
+  theme_bw()
+plot(pH_plot_bystation)
 ```
 
 -Look at the range of values for turbidity, spc, chla fluorescence, and water temp
@@ -463,11 +473,12 @@ range(df_comb$turb_comb_value, na.rm = TRUE)
 range(df_comb$specific_conductance_uScm_value, na.rm = TRUE)
 range(df_comb$fluorescence_ugL_value, na.rm = TRUE)
 range(df_comb$temperature_C_value, na.rm = TRUE)
+range(df_comb$dissolved_oxygen_mgL_value, na.rm = TRUE)
+range(df_comb$pH_value, na.rm = TRUE)
 
-#add DO and pH
 ```
 
--Found negative values and extreme outliers 
+-Found negative values and extreme outliers for most parameters 
 
 ## 9 - Clean up data and set cutoff values
 
@@ -492,7 +503,13 @@ df_comb$specific_conductance_uScm_value <- replace(df_comb$specific_conductance_
 unique(df_comb$temperature_C_code) #has X codes, which indicates bad data
 df_comb$temperature_C_value <- replace(df_comb$temperature_C_value, df_comb$temperature_C_code=="X", NA)
 
-#add DO and pH
+#dissolved oxygen 
+unique(df_comb$dissolved_oxygen_mgL_code) #has X codes, which indicates bad data
+df_comb$dissolved_oxygen_mgL_value <- replace(df_comb$dissolved_oxygen_mgL_value, df_comb$dissolved_oxygen_mgL_code=="X", NA)
+
+#pH
+unique(df_comb$pH_code) #has X codes, which indicates bad data
+df_comb$pH_value <- replace(df_comb$pH_value, df_comb$pH_code=="X", NA)
 
 ```
 
@@ -518,6 +535,17 @@ df_comb$turb_comb_value <- replace(df_comb$turb_comb_value, df_comb$turb_comb_va
 df_comb$temperature_C_value <- replace(df_comb$temperature_C_value, df_comb$temperature_C_value>100, NA)
 ```
 
+-Replace DO values below 0 with NA
+```{r}
+df_comb$dissolved_oxygen_mgL_value <- replace(df_comb$dissolved_oxygen_mgL_value, df_comb$dissolved_oxygen_mgL_value<0, NA)
+```
+
+-Replace pH values below 0 and above 14 with NA
+```{r}
+df_comb$pH_value <- replace(df_comb$pH_value, df_comb$pH_value>14, NA)
+df_comb$pH_value <- replace(df_comb$pH_value, df_comb$pH_value<0, NA)
+```
+
 
 -Previous plots shows that station GOD has the highest spc values that likely aren't real
 
@@ -525,13 +553,13 @@ df_comb$temperature_C_value <- replace(df_comb$temperature_C_value, df_comb$temp
 
 ```{r}
 
-RYC_max <- df_comb %>%
-           filter(station == "RYC") %>%
-           filter(specific_conductance_uScm_value == max(specific_conductance_uScm_value, na.rm = TRUE))
+#RYC_max <- df_comb %>%
+           #filter(station == "RYC") %>%
+           #filter(specific_conductance_uScm_value == max(specific_conductance_uScm_value, na.rm = TRUE))
 
-GZL_max <- df_comb %>%
-           filter(station == "GZL") %>%
-           filter(specific_conductance_uScm_value == max(specific_conductance_uScm_value, na.rm = TRUE))
+#GZL_max <- df_comb %>%
+           #filter(station == "GZL") %>%
+           #filter(specific_conductance_uScm_value == max(specific_conductance_uScm_value, na.rm = TRUE))
 ```
 
 -Max spc at RYC is 27,640 uS/cm and at GZL is 28,423 uS/cm
@@ -546,20 +574,23 @@ df_comb$specific_conductance_uScm_value <- replace(df_comb$specific_conductance_
 
 -remove intermediate data frames
 ```{r}
-rm(GZL_max, RYC_max)
+#rm(GZL_max, RYC_max)
 ```
 
 -Rename df and Remove columns for EDI
 ```{r}
+df_WQ_EDI <- subset(df_comb, select = -c(region, group, water_year_type)) #remove columns we don't need in the EDI data set
 
+df_WQ_EDI <- df_WQ_EDI %>%
+  rename("turb_FNU_value" = "turb_comb_value", "turbidity_FNU_code" = "turb_comb_code") #rename turbidity columns to have FNU as the unit
 ```
 
 
 -Export data for EDI
 ```{r}
-#use write_csv function to export the cleaned up WQ data
+#use write_csv function to export the cleaned up 2017-2023 WQ data for EDI
 
-write_csv(df_comb, "C:/R_coding/SMSCG_MB/Data/SMSCG_wq_data_2017-2023_clean.csv")
+write_csv(df_WQ_EDI, "C:/R_coding/SMSCG_MB/Data/SMSCG_wq_data_2017-2023_clean.csv")
 ```
 
 
