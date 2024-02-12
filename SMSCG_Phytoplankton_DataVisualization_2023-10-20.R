@@ -19,6 +19,7 @@ library(lubridate)
 library(janitor)
 library(ggvegan)
 library(vegan)
+library(ggordiplots) #use this to make nmds plots with centroids & ellipses
 library(ggpubr)
 library(scales) #log scale on plots
 library(car) #anova tables for GLM
@@ -580,16 +581,24 @@ effsz$bvol_mean[1]/effsz$bvol_mean[3] #2.142461
 
 
 #summarize biovolume by genus and filter rare taxa-----------------
+#will use this to data set for NMDS plots
+
 #quick summary for rare taxa removal
-#if we keep only those present in at least 1% of samples, there are 55 taxa remaining of 105 total taxa
-#if we keep only those that comprise at least 1% of total biovolume, there are 16 taxa remaining
+#if we keep only those present in at least 1% of samples, there are 51 taxa remaining of 91 total taxa
+#if we keep only those that comprise at least 1% of total biovolume, there are 20 taxa remaining
 #if we group the biovolume by algal group, only 5 of 9 groups comprise at least 1% of total biovolume
 
-#first see how many unique genera are in the data set
-genera <- unique(atr$genus) #105, probably too many to use in an NMDS analysis
+#subset to just keep 2020-2022 and marsh and river regions
+#earlier years and other regions have much less data
+atr_sub <- atr %>% 
+  filter(year > 2019 & (region == "RIV" | region == "MAR")) %>% 
+  glimpse()
+
+#how many unique genera are in the data set
+genera <- unique(atr_sub$genus) #91, probably too many to use in an NMDS analysis
 
 #summarize biovolume by genus
-genus_bv <- atr %>% 
+genus_bv <- atr_sub %>% 
   group_by(station,region,date,month,year,algal_group,genus) %>% 
   summarise(biovolume_gn = sum(biovolume_per_ml),.groups = 'drop')
 
@@ -607,7 +616,7 @@ samples_genus <- genus_bv %>%
   count(genus) %>% 
   mutate(sample_perc = (n/tot_samp)*100) %>% 
   arrange(-n)
-#if we keep only those present in at least 1% of samples, there are 55 taxa
+#if we keep only those present in at least 1% of samples, there are 51 taxa
 
 #sum biovolume by genus and look at what percent of biovolume each comprises
 genus_rank <- genus_bv %>% 
@@ -615,13 +624,13 @@ genus_rank <- genus_bv %>%
   summarize(biovolume_gn_tot = sum(biovolume_gn)) %>% 
   arrange(-biovolume_gn_tot) %>% 
   mutate(biovolume_perc = (biovolume_gn_tot/tot_biovolume)*100)
-#if we keep only those that comprise at least 1% of total biovolume, there are 16 taxa
+#if we keep only those that comprise at least 1% of total biovolume, there are 20 taxa
 
 #create df with both count and biovolume rank info
 all_rank <- left_join(genus_rank,samples_genus) %>% 
   select(-c(biovolume_gn_tot,n)) %>% 
   arrange(-biovolume_perc)
-write_csv(all_rank,"./Data/smscg_phyto_genera_rank.csv")
+#write_csv(all_rank,"./Data/smscg_phyto_genera_rank.csv")
 
 #keep only genera that comprise at least 1% of total biovolume
 genus_rare_bv1 <- genus_rank %>% 
@@ -648,10 +657,6 @@ group_rank <- genus_bv %>%
 #only 5 of 9 groups comprise at least 1% of total biovolume
 #most of biovolume is diatoms
 
-#then try removing rare taxa (eg, present in fewer than 1% of samples)
-#need total number of samples and number of samples each genus is present in
-#could also do this by biovolume (ie, drop taxa that comprise less than 5% of total biovolume)
-  
 #NMDS plots: dropped genera in fewer than 1% of samples-----------------
 
 #start with genus level data with taxa removed that are in fewer than 1% of samples
@@ -670,44 +675,120 @@ genus_ct1_abund <- genus_ct1 %>%
 
 #predictors
 genus_ct1_pred <- genus_ct1 %>% 
-  select(c(station:year))
-  
+  select(c(station:year)) %>% 
+  #add column with combo of year and region
+  unite('year_region',c(year,region),remove = F) %>% 
+  #make columns factors
+  mutate(across(c(year_region:year),as.factor)) %>% 
+  glimpse()
+
 #transform community data with hellinger transformation; give more thought to best way of transforming data
 genus_ct1_abund_hel <- decostand(genus_ct1_abund,method="hellinger")
 
 #run the nmds
 genus_ct1_nmds <- metaMDS(genus_ct1_abund_hel,autotransform = F)
-#stress = 0.2704573 
+#stress = 0.2752382 which is probably high 
+#maybe try transforming the data; didn't make any difference to stress
 
-#basic plot
-ordiplot(genus_ct1_nmds)
-ordiplot(genus_ct1_nmds,type="t") #adds labels for samples and genera
+#ggordiplot: ellipses for regions
+gg_ordiplot(genus_ct1_nmds,groups = genus_ct1_pred$region, pt.size = 3)
 
-#this won't run
-autoplot(genus_ct1_nmds)
+#ggordiplot: ellipses for months
+gg_ordiplot(genus_ct1_nmds,groups = genus_ct1_pred$month, pt.size = 3)
 
-#this won't run either
-#full control with fortified ordination output
-# fort <- fortify(genus_ct1_nmds)
-# ggplot() +
-#   geom_point(data=subset(fort, Score == "sites"),
-#              mapping = aes(x=NMDS1, y=NMDS2),
-#              colour="black",
-#              alpha=0.5)+
-#   geom_segment(data=subset(fort,Score == "species"),
-#                mapping = aes(x=0, y=0, xend=NMDS1, yend=NMDS2),
-#                arrow=arrow(length=unit(0.015, "npc"),
-#                            type="closed"),
-#                colour="darkgrey",
-#                size=0.8)+
-#   geom_text(data=subset(fort,Score == "species"),
-#             mapping=aes(label=Label, x=NMDS1*1.1, y=NMDS2*1.1))+
-#   geom_abline(intercept=0, slope=0, linetype="dashed", size=0.8,colour="gray")+
-#   geom_vline(aes(xintercept=0), linetype="dashed", size=0.8, colour="gray")+
-#   theme(panel.grid.major=element_blank(),
-#         panel.grid.minor=element_blank(),
-#         panel.background=element_blank(),
-#         axis.line=element_line(colour="black"))
+#ggordiplot: ellipses for year
+gg_ordiplot(genus_ct1_nmds,groups = genus_ct1_pred$year, pt.size = 3)
+
+#ggordiplot: ellipses for year x region
+gg_ordiplot(genus_ct1_nmds,groups = genus_ct1_pred$year_region, pt.size = 3)
+
+#basic plot with ggvegan
+#ordiplot(genus_ct1_nmds)
+#ordiplot(genus_ct1_nmds,type="t") #adds labels for samples and genera
+
+#show nmds plot by region
+#fortify() creates a data frame with nmds scores
+fort <- fortify(genus_ct1_nmds)
+ggplot() +
+  geom_point(data=subset(fort, score == "sites"),
+             mapping = aes(x=NMDS1, y=NMDS2, colour=genus_ct1_pred$region),
+             alpha=0.5)+
+  geom_segment(data=subset(fort,score == "species"),
+               mapping = aes(x=0, y=0, xend=NMDS1, yend=NMDS2),
+               arrow=arrow(length=unit(0.015, "npc"),
+                           type="closed"),
+               colour="darkgrey",
+               size=0.8)+
+  geom_text(data=subset(fort,score == "species"),
+            mapping=aes(label=label, x=NMDS1*1.1, y=NMDS2*1.1))+
+  geom_abline(intercept=0, slope=0, linetype="dashed", size=0.8,colour="gray")+
+  geom_vline(aes(xintercept=0), linetype="dashed", size=0.8, colour="gray")+
+  theme(panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.background=element_blank(),
+        axis.line=element_line(colour="black"))
 
 
+#adonis by region
+summary(genus_ct1_pred)
+adonis2(genus_ct1_abund~region,data=genus_ct1_pred)
+#regions did differ (p = 0.002)
+#need to check dispersion which could also explain differences
+#region doesn't explain much variation (R2 = 0.01087 or 1.1%)
+
+#nmds by year
+ggplot() +
+  geom_point(data=subset(fort, score == "sites"),
+             mapping = aes(x=NMDS1, y=NMDS2, colour=genus_ct1_pred$year),
+             alpha=0.5)+
+  geom_segment(data=subset(fort,score == "species"),
+               mapping = aes(x=0, y=0, xend=NMDS1, yend=NMDS2),
+               arrow=arrow(length=unit(0.015, "npc"),
+                           type="closed"),
+               colour="darkgrey",
+               size=0.8)+
+  geom_text(data=subset(fort,score == "species"),
+            mapping=aes(label=label, x=NMDS1*1.1, y=NMDS2*1.1))+
+  geom_abline(intercept=0, slope=0, linetype="dashed", size=0.8,colour="gray")+
+  geom_vline(aes(xintercept=0), linetype="dashed", size=0.8, colour="gray")+
+  theme(panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.background=element_blank(),
+        axis.line=element_line(colour="black"))
+
+#adonis by year
+adonis2(genus_ct1_abund~year,data=genus_ct1_pred)
+#years did differ (p = 0.001)
+#need to check dispersion which could also explain differences
+#year doesn't explain much variation (R2 = 0.0422 or 4.2%)
+
+#adonis by year x region
+adonis2(genus_ct1_abund~year_region,data=genus_ct1_pred)
+#year_region did differ (p = 0.001)
+#doesn't explain much variation but better than any one predictor (R2 = 0.07 or 6.9%)
+
+#nmds by month
+ggplot() +
+  geom_point(data=subset(fort, score == "sites"),
+             mapping = aes(x=NMDS1, y=NMDS2, colour=genus_ct1_pred$month),
+             alpha=0.5)+
+  geom_segment(data=subset(fort,score == "species"),
+               mapping = aes(x=0, y=0, xend=NMDS1, yend=NMDS2),
+               arrow=arrow(length=unit(0.015, "npc"),
+                           type="closed"),
+               colour="darkgrey",
+               size=0.8)+
+  geom_text(data=subset(fort,score == "species"),
+            mapping=aes(label=label, x=NMDS1*1.1, y=NMDS2*1.1))+
+  geom_abline(intercept=0, slope=0, linetype="dashed", size=0.8,colour="gray")+
+  geom_vline(aes(xintercept=0), linetype="dashed", size=0.8, colour="gray")+
+  theme(panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.background=element_blank(),
+        axis.line=element_line(colour="black"))
+
+#adonis by month
+adonis2(genus_ct1_abund~month,data=genus_ct1_pred)
+#months did not differ (p = 0.127)
+#month doesn't explain much variation (R2 = 0.01433 or 1.4%)
 
