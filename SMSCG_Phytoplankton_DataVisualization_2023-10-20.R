@@ -147,12 +147,16 @@ alg_grp_biov_summary <- alg_grp_biov_samp %>%
 alg_grp_biov <- alg_grp_biov_samp %>% 
   group_by(region,year,month,algal_group) %>% 
   summarise(across(c(biovolume_per_ml,biomass_ug_c_l,lcefa_per_l), ~sum(.x, na.rm = TRUE)),.groups='drop') %>% 
+  #add a new column that lumps together less common algal groups into "other" category
+  mutate(algal_group_adj = case_when(algal_group == "Chrysophytes" | algal_group == "Haptophytes" ~ "Other"
+                                     ,TRUE ~ algal_group), .after = algal_group) %>% 
   rename(total_biovolume = biovolume_per_ml
          ,total_biomass = biomass_ug_c_l
          ,total_lcefa = lcefa_per_l
          ) %>% 
   arrange(year,month,region) %>% 
   glimpse()
+unique(alg_grp_biov$algal_group_adj)
 
 #look at cases of negative values when biomass is log transformed
 alg_grp_biov_log <- alg_grp_biov %>% 
@@ -192,15 +196,36 @@ phyto_outlier_comp <- atr_mass %>%
 
 #stacked barplots of biovolume by algal group, region and month-------------
 
-#ten is too many groups to show in stacked bar plot, lump some into "other"
+#nine is too many groups to show in stacked bar plot, lump some into "other"
 #sum biovolume by algal group and order from high to low
 biov_rank <- alg_grp_biov %>% 
   group_by(algal_group) %>% 
   summarise(grand_biovol = sum(total_biovolume)) %>% 
-  arrange(-grand_biovol)
+  arrange(grand_biovol)
 #can lump Chrysophytes and Haptophytes into other
 #all other groups have at least one case in which they were good chunk of biovolume in a given month/region
-#so reduces from 10 to 8 groups
+#so reduces from 9 to 8 groups
+
+#pull algal_group levels in order from biov_rank
+algal_group_rank <- biov_rank %>% 
+  pull(algal_group)
+
+#set order of algal groups based on contribution to biovolume
+alg_grp_biov$algal_group <- factor(alg_grp_biov$algal_group, levels=algal_group_rank)
+
+
+#sum biovolume by adjusted algal group and order from high to low
+biov_rank_adj <- alg_grp_biov %>% 
+  group_by(algal_group_adj) %>% 
+  summarise(grand_biovol = sum(total_biovolume)) %>% 
+  arrange(grand_biovol)
+
+#pull algal_group_adj levels in order from biov_rank
+algal_group_adj_rank <- biov_rank_adj %>% 
+  pull(algal_group_adj)
+
+#set order of adjusted algal groups based on contribution to biovolume
+alg_grp_biov$algal_group_adj <- factor(alg_grp_biov$algal_group_adj, levels=algal_group_adj_rank)
 
 #stacked bar plot of raw biovolume
 (plot_alg_grp_rm <- ggplot(alg_grp_biov, aes(x = month, y = total_biovolume, fill = algal_group))+
@@ -221,7 +246,7 @@ biov_rank <- alg_grp_biov %>%
 #stacked bar plot: log transformed biovolume, 2020-2022, no FLO
 (plot_alg_grp_rm_recent <- alg_grp_biov %>% 
     filter(year>2019 & region!="FLO") %>% 
-    ggplot(aes(x = month, y = log(total_biovolume), fill = algal_group))+
+    ggplot(aes(x = month, y = log(total_biovolume), fill = algal_group_adj))+
     geom_bar(position = "stack", stat = "identity") + 
     facet_wrap(year~region,ncol = 3)
 )
@@ -234,14 +259,24 @@ biov_rank <- alg_grp_biov %>%
     facet_wrap(year~region,ncol = 4)
 )
 
-#stacked bar plot: log transformed biovolume, 2020-2022, no FLO
+#stacked bar plot: all algal groups, biovolume, 2020-2022, no FLO
 (plot_alg_grp_rm_perc_recent <- alg_grp_biov %>% 
     filter(year>2019 & region!="FLO") %>% 
     ggplot(aes(x = month, y = total_biovolume, fill = algal_group))+
-    geom_bar(position = "fill", stat = "identity") + 
+    geom_bar(position = "fill", stat = "identity",color = "black") + 
     facet_wrap(year~region,ncol = 3)
 )
-#ggsave(plot=plot_alg_grp_rm_perc_recent,"Plots/Phytoplankton/smscg_phyto_stacked_bar_perc.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
+#stacked bar plot: rare algal grouped lumped into "other", biovolume, 2020-2022, no FLO
+(plot_alg_grp_rm_perc_recent_adj <- alg_grp_biov %>% 
+    filter(year>2019 & region!="FLO") %>% 
+    ggplot(aes(x = month, y = total_biovolume, fill = algal_group_adj))+
+    geom_bar(position = "fill", stat = "identity",color = "black") + 
+    facet_wrap(year~region,ncol = 3)+
+    labs(x = "Month", y = "Proportion Biovolume")+
+  scale_fill_discrete(name = "Algal Group")
+)
+#ggsave(plot=plot_alg_grp_rm_perc_recent_adj,"Plots/Phytoplankton/smscg_phyto_stacked_bar_perc.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
 
 #plot composition by region and year (not month)
 alg_grp_biov_ry <- alg_grp_biov %>% 
@@ -658,6 +693,10 @@ group_rank <- genus_bv %>%
 #most of biovolume is diatoms
 
 #NMDS plots: dropped genera in fewer than 1% of samples-----------------
+#quick summary of results: region, month, year don't explain much variation; year x region do the best but still only explain 7% variation
+
+#used the ggordiplots package for plots with ellipses for groups
+#https://john-quensen.com/wp-content/uploads/2020/12/Ordiplots_with_ggplot.html
 
 #start with genus level data with taxa removed that are in fewer than 1% of samples
 #this was the approach that retained the most taxa (n=55)
