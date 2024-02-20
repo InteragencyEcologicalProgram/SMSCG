@@ -101,10 +101,10 @@ atr_mass <- atr %>%
     #add mean cell biovolume (um^3/cell) column (biovolume_per_ml/cells_per_ml)
     mean_cell_biovolume = biovolume_per_ml/cells_per_ml,.before = gald_um
     #Calculate Biomass (pg-C per cell) from Biovolume (um^3 per cell)
-    #Use one equation for diatoms and another equation for everything else based on Menden-Deuer & Lussard 2000
+    #Use one equation for diatoms and another equation for everything else based on Menden-Deuer & Lessard 2000
     ,biomass_pg_c = case_when((algal_group == "Centric Diatoms" | algal_group=="Pennate Diatoms") ~ 0.288 * (mean_cell_biovolume^0.811)
                                   ,!(algal_group == "Centric Diatoms" | algal_group=="Pennate Diatoms") ~ 0.216 * (mean_cell_biovolume^0.939))
-    #now convert Convert pg to ug (ug-C per L)
+    #now convert carbon pg to ug (ug-C per L)
     ,biomass_ug_c = biomass_pg_c / 10^6
     #Calculate Biomass Density (ug-C per mL)
     ,biomass_ug_c_ml = biomass_ug_c * cells_per_ml
