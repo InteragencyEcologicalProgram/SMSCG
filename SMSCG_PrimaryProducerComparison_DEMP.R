@@ -5,9 +5,11 @@
 #2023-10-18
 
 #to do list-------
+
+#plot D-EMP extracted chlor-a vs estimated carbon based on phyto biovolume
 #maybe try looking at pheophytin too
 
-#ask sarah perry for the fluorescence data
+#ask perry for the fluorescence data
 
 #look at relationships by region and maybe water year
 
@@ -86,6 +88,21 @@ phyto_format <- phyto %>%
   ) %>% 
   #filter out bad data
   filter(!grepl("Degraded|BadData|PoorlyPreserved",quality_check)) %>% 
+  #estimate carbon from biovolume
+  mutate(
+    #add mean cell biovolume (um^3/cell) column (biovolume_per_ml/cells_per_ml)
+    mean_cell_biovolume = average_biovolume_per_m_l/cells_per_m_l,.before = gald
+    #Calculate Biomass (pg-C per cell) from Biovolume (um^3 per cell)
+    #Use one equation for diatoms and another equation for everything else based on Menden-Deuer & Lessard 2000
+    ,biomass_pg_c = case_when((algal_group == "Centric Diatoms" | algal_group=="Pennate Diatoms") ~ 0.288 * (mean_cell_biovolume^0.811)
+                              ,!(algal_group == "Centric Diatoms" | algal_group=="Pennate Diatoms") ~ 0.216 * (mean_cell_biovolume^0.939))
+    #now convert pg C per cell to ug C per cell
+    ,biomass_ug_c = biomass_pg_c / 10^6
+    #Calculate Biomass Density (ug-C per mL)
+    ,biomass_ug_c_ml = biomass_ug_c * cells_per_m_l
+    #convert from ug/ml to ug/l because final units for biomass and LCEFA will be per liter
+    ,biomass_ug_c_l = biomass_ug_c_ml*1000
+  ) %>% 
   #keep just the needed columns
   select(
     station
@@ -98,6 +115,7 @@ phyto_format <- phyto %>%
     ,units_per_m_l
     ,cells_per_m_l
     ,average_biovolume_per_m_l
+    ,biomass_ug_c_l
     ,gald
     ,phyto_form
     ,quality_check
@@ -110,44 +128,43 @@ phyto_format <- phyto %>%
 #table(phyto_format$quality_check)
 #virtually all good; leave the fragmented ones; went back up and dropped the degraded or poorly preserved ones
 
-#calculate total cells and biovolume by sample
+#calculate total cells, biovolume, and carbon by sample
 #NOTE: biovolume data not available for many of the earlier years
 phyto_sum <- phyto_format %>% 
-  group_by(station,date,month,year) %>% 
+  group_by(station,month,year) %>% 
   summarise(total_cells = sum(cells_per_m_l)
             ,total_biovolume = sum(average_biovolume_per_m_l)
+            ,total_carbon = sum(biomass_ug_c_l)
   ) %>% 
+  #drop samples without biovolume; can't use those anyway
+  filter(!is.na(total_biovolume)) %>% 
   glimpse()
 #biovolume is in cubic microns per mL
 
+
 #all: combine WQ and phyto--------------
 #should just match by station and date
-#NOTE: phyto data set starts 2008, much later than WQ data set which is 1975
+#NOTE: phyto data set starts 2008 (and biovolume even later), much later than WQ data set which is 1975
 
 wp_all <- left_join(phyto_sum, wq_format)
 
 #look for mismatches
 wp_mis <-anti_join(phyto_sum,wq_format)  
-  # select(station
-  #        ,date_wq = date
-  #        ,month
-  #        ,year
-  # )
-#215 phyto samples that didn't have a WQ match
-#after dropping chlor-a samples below detection limit there are now 252 missing matches
-#could try matching by month and year instead of date
+  
+#185 phyto samples that didn't have a WQ match when trying to match by station and date
+#only 41 mismatches when just using station, month, year (not date)
 
 #next filter the phyto data set to these station, month, year combos
 #create a date_phyto column
 #then combine the wq and phyto info to see if there are date mismatches or missing samples
 
-#all: look at relationship between phyto biovolume and chlor-a--------------------
-#NOTE: initially looked at relationships between pairs of raw data but log transformation of both is better
-#NOTE: looked at total cells vs chlor-a and relationship was much worse, as expected
+#all: look at relationship between phyto biovolume, cell count, and carbon vs chlor-a--------------------
+#NOTE: initially looked at relationships between pairs of raw data but log transformation is better
+#NOTE: biovolume and carbon have similar results; total cells was much worse than the others, as expected
 
 #check assumptions
 
-#normal distribution of each of the two datasets
+#normal distribution of each of the datasets
 #in summary, neither are normal even after log transform
 
 #chlor-a
@@ -164,6 +181,14 @@ shapiro.test(wp_all$total_biovolume) #W = 0.29101, p-value < 2.2e-16
 shapiro.test(log(wp_all$total_biovolume)) #W = 0.99472, p-value = 1.839e-07
 ggqqplot(log(wp_all$total_biovolume),ylab = "biovolume") #doesn't look too bad
 
+#carbon
+hist(wp_all$total_carbon) #strongly clustered at low end with a few high values 
+hist(log(wp_all$total_carbon)) #looks much more normal 
+shapiro.test(wp_all$total_carbon) #W = 0.33735, p-value < 2.2e-16
+shapiro.test(log(wp_all$total_carbon)) #W = 0.99387, p-value = 2.321e-08
+ggqqplot(log(wp_all$total_carbon),ylab = "carbon") #doesn't look too bad
+
+
 #plot relationship between chlor-a and phyto biovolume with log transformations
 (plot_cb_all_log <- ggplot(wp_all, aes(x = log(chla), y = log(total_biovolume)))+
     geom_point()+
@@ -171,6 +196,14 @@ ggqqplot(log(wp_all$total_biovolume),ylab = "biovolume") #doesn't look too bad
     geom_cor(method = "spearman") 
 )
 #ggsave(plot=plot_cb_all_log,"Plots/Phytoplankton/smscg_phyto_biovol_chlora.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
+#plot relationship between chlor-a and phyto carbon with log transformations
+(plot_cc_all_log <- ggplot(wp_all, aes(x = log(chla), y = log(total_carbon)))+
+    geom_point()+
+    geom_smooth(method = "lm")  +
+    geom_cor(method = "spearman") 
+)
+ggsave(plot=plot_cc_all_log,"Plots/Phytoplankton/smscg_phyto_carbon_chlora.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
 
 
 #look at pearson correlation after log transformation
@@ -185,15 +218,24 @@ ggqqplot(log(wp_all$total_biovolume),ylab = "biovolume") #doesn't look too bad
 #there are 5 cases
 #x axis can accommodate these high points but there's no biovolume to match them, which is why they aren't on plot
 
-#look at kendall rank correlation after log transformation
+#biovolume: look at kendall rank correlation after log transformation
 cor.test(log(wp_all$chla),log(wp_all$total_biovolume),method="kendall")
 #tau =0.2287946
 #much worse than pearson
 
-#look at spearman correlation after log transformation
+#biovolume: look at spearman correlation after log transformation
 cor.test(log(wp_all$chla),log(wp_all$total_biovolume),method="spearman")
 #rho =0.3345833
 #between pearson and kendall
+
+#carbon: look at kendall rank correlation after log transformation
+cor.test(log(wp_all$chla),log(wp_all$total_carbon),method="kendall")
+#tau =0.2432245  
+
+#carbon: look at spearman correlation after log transformation
+cor.test(log(wp_all$chla),log(wp_all$total_carbon),method="spearman")
+#rho =0.3542864 
+#better than kendall
 
 #make vector of target EMP stations------------
 stn_emp <- stn %>% 
