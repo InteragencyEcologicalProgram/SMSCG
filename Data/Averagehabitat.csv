@@ -1,0 +1,10 @@
+,YT,Year,MarshGates,BayGates,MarshBase,BayBase,perchangemarsh,perchangeBay,changemarsh,changeBay
+1,,,,,,,,,,
+2,,,,,,,,,,
+3,,,,,,,,,,
+,,,,,,,,,,
+,,,,,,,,,,
+year type,Year used for modeling,Habitat Area in Marsh with no action,Habitat Area in Marsh with SMSCG action,Change in habitat in Marsh,% change in habitat in Marsh,Habitat Area in Bay with no action,Habitat Area in Bay with SMSCG action,change in habitat in Bay,% change in habitat in bay,
+wet,2017,3894.298454,3920.776945,26.47849154,0.679929694,14482.53504,14834.34756,351.8125216,2.429219199,
+Above Normal,2010,3423.224627,3671.268773,248.0441454,7.245920804,8994.796448,9449.642976,454.8465273,5.056773991,
+below Normal,2021,1633.980758,2232.488612,598.5078543,36.62881901,6220.837515,6367.134215,146.2966997,2.351720317,

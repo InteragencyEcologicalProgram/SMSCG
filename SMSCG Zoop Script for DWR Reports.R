@@ -90,7 +90,7 @@ bpue1_noN = ggplot(zoopsummary2, aes(x = Month, y = meanB))
 bpue2_noN = bpue1_noN+ geom_bar(stat = "identity", aes(fill = Taxa)) + 
   facet_wrap(Year~Region, ncol = 5)+ (coord_cartesian (ylim = c(1, 15000))) +
   scale_fill_brewer(palette = "Set3", name = NULL) +
-  ylab("Mean BPUE (µgC/m3)") + 
+  ylab("Mean BPUE (?gC/m3)") + 
   theme_few() + theme(text = element_text(family = "sans", size = 9),
                       legend.text = element_text(face = "italic"))
 
@@ -179,7 +179,7 @@ bpue_SB = ggplot(zoopsummary_SB2, aes(x = Month, y = meanB))
 bpue_SB2 = bpue_SB+ geom_bar(stat = "identity", aes(fill = Taxa)) + 
   facet_wrap(Year~Region, ncol = 4)+ (coord_cartesian (ylim = c(1, 15000))) +
   scale_fill_brewer(palette = "Set3", name = NULL) +
-  ylab("Mean BPUE (µgC/m3)") + 
+  ylab("Mean BPUE (?gC/m3)") + 
   theme_few() + theme(text = element_text(family = "sans", size = 9),
                       legend.text = element_text(face = "italic"))
 
@@ -250,30 +250,6 @@ anov_SB_Y = aov(logBPUE~Region + Month + Year, data = zooptots_SB_Y)
 summary(anov_SB_Y)
 
 TukeyHSD(anov_SB_Y)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

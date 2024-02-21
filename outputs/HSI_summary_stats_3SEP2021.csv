@@ -1,0 +1,301 @@
+"","Region","RunName","HSI_0.5","Year","Month","Action","HSI_mean"
+"1","Cache Slough/Liberty Island","smscg_1940.06_hsit.avgmon_rma",13254,"1940","June","GateAction",0.305018752813339
+"2","Cache Slough/Liberty Island","smscg_1940.07_hsit.avgmon_rma",1286,"1940","July","GateAction",0.270893275737762
+"3","Cache Slough/Liberty Island","smscg_1940.08_hsit.avgmon_rma",3846,"1940","August","GateAction",0.283485859632492
+"4","Cache Slough/Liberty Island","smscg_1940.09_hsit.avgmon_rma",14649,"1940","Sep","GateAction",0.310198783874512
+"5","Cache Slough/Liberty Island","smscg_1940.10_hsit.avgmon_rma",10262,"1940","Oct","GateAction",0.304630666971207
+"6","Cache Slough/Liberty Island","smscg_1979.06_hsit.avgmon_rma",33407,"1979","June","GateAction",0.304890483617783
+"7","Cache Slough/Liberty Island","smscg_1979.07_hsit.avgmon_rma",4142,"1979","July","GateAction",0.272006213665009
+"8","Cache Slough/Liberty Island","smscg_1979.08_hsit.avgmon_rma",5680,"1979","August","GateAction",0.286247253417969
+"9","Cache Slough/Liberty Island","smscg_1979.09_hsit.avgmon_rma",8938,"1979","Sep","GateAction",0.294486463069916
+"10","Cache Slough/Liberty Island","smscg_1979.10_hsit.avgmon_rma",9698,"1979","Oct","GateAction",0.301953762769699
+"11","Cache Slough/Liberty Island","smscg_1986.06_hsit.avgmon_rma",1137,"1986","June","GateAction",0.258677303791046
+"12","Cache Slough/Liberty Island","smscg_1986.07_hsit.avgmon_rma",164,"1986","July","GateAction",0.232929602265358
+"13","Cache Slough/Liberty Island","smscg_1986.08_hsit.avgmon_rma",129,"1986","August","GateAction",0.224941745400429
+"14","Cache Slough/Liberty Island","smscg_1986.09_hsit.avgmon_rma",13710,"1986","Sep","GateAction",0.289497971534729
+"15","Cache Slough/Liberty Island","smscg_1986.10_hsit.avgmon_rma",10262,"1986","Oct","GateAction",0.302000820636749
+"16","Cache Slough/Liberty Island","no.action_1940.06_hsit.avgmon_rma",13254,"1940","June","noAction",0.305019795894623
+"17","Cache Slough/Liberty Island","no.action_1940.07_hsit.avgmon_rma",1285,"1940","July","noAction",0.270895034074783
+"18","Cache Slough/Liberty Island","no.action_1940.08_hsit.avgmon_rma",3848,"1940","August","noAction",0.283495634794235
+"19","Cache Slough/Liberty Island","no.action_1940.09_hsit.avgmon_rma",14646,"1940","Sep","noAction",0.310189515352249
+"20","Cache Slough/Liberty Island","no.action_1940.10_hsit.avgmon_rma",10262,"1940","Oct","noAction",0.304632395505905
+"21","Cache Slough/Liberty Island","no.action_1979.06_hsit.avgmon_rma",33407,"1979","June","noAction",0.304890662431717
+"22","Cache Slough/Liberty Island","no.action_1979.07_hsit.avgmon_rma",4142,"1979","July","noAction",0.272006183862686
+"23","Cache Slough/Liberty Island","no.action_1979.08_hsit.avgmon_rma",5674,"1979","August","noAction",0.28626012802124
+"24","Cache Slough/Liberty Island","no.action_1979.09_hsit.avgmon_rma",8939,"1979","Sep","noAction",0.294502288103104
+"25","Cache Slough/Liberty Island","no.action_1979.10_hsit.avgmon_rma",9698,"1979","Oct","noAction",0.301946669816971
+"26","Cache Slough/Liberty Island","no.action_1986.06_hsit.avgmon_rma",1136,"1986","June","noAction",0.258678168058395
+"27","Cache Slough/Liberty Island","no.action_1986.07_hsit.avgmon_rma",163,"1986","July","noAction",0.232773706316948
+"28","Cache Slough/Liberty Island","no.action_1986.08_hsit.avgmon_rma",128,"1986","August","noAction",0.224895626306534
+"29","Cache Slough/Liberty Island","no.action_1986.09_hsit.avgmon_rma",13711,"1986","Sep","noAction",0.289476841688156
+"30","Cache Slough/Liberty Island","no.action_1986.10_hsit.avgmon_rma",10262,"1986","Oct","noAction",0.301999717950821
+"31","Eastern Delta","smscg_1940.06_hsit.avgmon_rma",0,"1940","June","GateAction",0.312423139810562
+"32","Eastern Delta","smscg_1940.07_hsit.avgmon_rma",0,"1940","July","GateAction",0.264666050672531
+"33","Eastern Delta","smscg_1940.08_hsit.avgmon_rma",0,"1940","August","GateAction",0.281974107027054
+"34","Eastern Delta","smscg_1940.09_hsit.avgmon_rma",0,"1940","Sep","GateAction",0.315305799245834
+"35","Eastern Delta","smscg_1940.10_hsit.avgmon_rma",0,"1940","Oct","GateAction",0.317127794027328
+"36","Eastern Delta","smscg_1979.06_hsit.avgmon_rma",0,"1979","June","GateAction",0.294058710336685
+"37","Eastern Delta","smscg_1979.07_hsit.avgmon_rma",0,"1979","July","GateAction",0.272595196962357
+"38","Eastern Delta","smscg_1979.08_hsit.avgmon_rma",0,"1979","August","GateAction",0.28667339682579
+"39","Eastern Delta","smscg_1979.09_hsit.avgmon_rma",0,"1979","Sep","GateAction",0.312925070524216
+"40","Eastern Delta","smscg_1979.10_hsit.avgmon_rma",0,"1979","Oct","GateAction",0.316878288984299
+"41","Eastern Delta","smscg_1986.06_hsit.avgmon_rma",0,"1986","June","GateAction",0.293191611766815
+"42","Eastern Delta","smscg_1986.07_hsit.avgmon_rma",0,"1986","July","GateAction",0.260913491249084
+"43","Eastern Delta","smscg_1986.08_hsit.avgmon_rma",0,"1986","August","GateAction",0.237150833010674
+"44","Eastern Delta","smscg_1986.09_hsit.avgmon_rma",0,"1986","Sep","GateAction",0.30252993106842
+"45","Eastern Delta","smscg_1986.10_hsit.avgmon_rma",0,"1986","Oct","GateAction",0.317649126052856
+"46","Eastern Delta","no.action_1940.06_hsit.avgmon_rma",0,"1940","June","noAction",0.312425345182419
+"47","Eastern Delta","no.action_1940.07_hsit.avgmon_rma",0,"1940","July","noAction",0.264287531375885
+"48","Eastern Delta","no.action_1940.08_hsit.avgmon_rma",0,"1940","August","noAction",0.281824678182602
+"49","Eastern Delta","no.action_1940.09_hsit.avgmon_rma",0,"1940","Sep","noAction",0.315205127000809
+"50","Eastern Delta","no.action_1940.10_hsit.avgmon_rma",0,"1940","Oct","noAction",0.317087918519974
+"51","Eastern Delta","no.action_1979.06_hsit.avgmon_rma",0,"1979","June","noAction",0.294058412313461
+"52","Eastern Delta","no.action_1979.07_hsit.avgmon_rma",0,"1979","July","noAction",0.272593080997467
+"53","Eastern Delta","no.action_1979.08_hsit.avgmon_rma",0,"1979","August","noAction",0.286742985248566
+"54","Eastern Delta","no.action_1979.09_hsit.avgmon_rma",0,"1979","Sep","noAction",0.313104033470154
+"55","Eastern Delta","no.action_1979.10_hsit.avgmon_rma",0,"1979","Oct","noAction",0.317092031240463
+"56","Eastern Delta","no.action_1986.06_hsit.avgmon_rma",0,"1986","June","noAction",0.29319816827774
+"57","Eastern Delta","no.action_1986.07_hsit.avgmon_rma",0,"1986","July","noAction",0.260014474391937
+"58","Eastern Delta","no.action_1986.08_hsit.avgmon_rma",0,"1986","August","noAction",0.236790806055069
+"59","Eastern Delta","no.action_1986.09_hsit.avgmon_rma",0,"1986","Sep","noAction",0.302502542734146
+"60","Eastern Delta","no.action_1986.10_hsit.avgmon_rma",0,"1986","Oct","noAction",0.31763032078743
+"61","Lower Sacramento","smscg_1940.06_hsit.avgmon_rma",0,"1940","June","GateAction",0.346546530723572
+"62","Lower Sacramento","smscg_1940.07_hsit.avgmon_rma",0,"1940","July","GateAction",0.345776051282883
+"63","Lower Sacramento","smscg_1940.08_hsit.avgmon_rma",0,"1940","August","GateAction",0.346484839916229
+"64","Lower Sacramento","smscg_1940.09_hsit.avgmon_rma",0,"1940","Sep","GateAction",0.346557080745697
+"65","Lower Sacramento","smscg_1940.10_hsit.avgmon_rma",0,"1940","Oct","GateAction",0.347880303859711
+"66","Lower Sacramento","smscg_1979.06_hsit.avgmon_rma",22528,"1979","June","GateAction",0.371827125549316
+"67","Lower Sacramento","smscg_1979.07_hsit.avgmon_rma",15726,"1979","July","GateAction",0.364893049001694
+"68","Lower Sacramento","smscg_1979.08_hsit.avgmon_rma",0,"1979","August","GateAction",0.346775949001312
+"69","Lower Sacramento","smscg_1979.09_hsit.avgmon_rma",0,"1979","Sep","GateAction",0.341431766748428
+"70","Lower Sacramento","smscg_1979.10_hsit.avgmon_rma",0,"1979","Oct","GateAction",0.338516145944595
+"71","Lower Sacramento","smscg_1986.06_hsit.avgmon_rma",0,"1986","June","GateAction",0.344720602035522
+"72","Lower Sacramento","smscg_1986.07_hsit.avgmon_rma",0,"1986","July","GateAction",0.347354620695114
+"73","Lower Sacramento","smscg_1986.08_hsit.avgmon_rma",0,"1986","August","GateAction",0.342177629470825
+"74","Lower Sacramento","smscg_1986.09_hsit.avgmon_rma",0,"1986","Sep","GateAction",0.344788700342178
+"75","Lower Sacramento","smscg_1986.10_hsit.avgmon_rma",0,"1986","Oct","GateAction",0.344957411289215
+"76","Lower Sacramento","no.action_1940.06_hsit.avgmon_rma",0,"1940","June","noAction",0.346546828746796
+"77","Lower Sacramento","no.action_1940.07_hsit.avgmon_rma",0,"1940","July","noAction",0.346020132303238
+"78","Lower Sacramento","no.action_1940.08_hsit.avgmon_rma",0,"1940","August","noAction",0.346737384796143
+"79","Lower Sacramento","no.action_1940.09_hsit.avgmon_rma",0,"1940","Sep","noAction",0.346603155136108
+"80","Lower Sacramento","no.action_1940.10_hsit.avgmon_rma",0,"1940","Oct","noAction",0.347875446081161
+"81","Lower Sacramento","no.action_1979.06_hsit.avgmon_rma",22528,"1979","June","noAction",0.371827065944672
+"82","Lower Sacramento","no.action_1979.07_hsit.avgmon_rma",15726,"1979","July","noAction",0.364892810583115
+"83","Lower Sacramento","no.action_1979.08_hsit.avgmon_rma",0,"1979","August","noAction",0.347313225269318
+"84","Lower Sacramento","no.action_1979.09_hsit.avgmon_rma",0,"1979","Sep","noAction",0.345373421907425
+"85","Lower Sacramento","no.action_1979.10_hsit.avgmon_rma",0,"1979","Oct","noAction",0.339146077632904
+"86","Lower Sacramento","no.action_1986.06_hsit.avgmon_rma",0,"1986","June","noAction",0.344720959663391
+"87","Lower Sacramento","no.action_1986.07_hsit.avgmon_rma",0,"1986","July","noAction",0.347299665212631
+"88","Lower Sacramento","no.action_1986.08_hsit.avgmon_rma",0,"1986","August","noAction",0.342258989810944
+"89","Lower Sacramento","no.action_1986.09_hsit.avgmon_rma",0,"1986","Sep","noAction",0.344789654016495
+"90","Lower Sacramento","no.action_1986.10_hsit.avgmon_rma",0,"1986","Oct","noAction",0.34495535492897
+"91","Lower San Joaquin","smscg_1940.06_hsit.avgmon_rma",0,"1940","June","GateAction",0.343244552612305
+"92","Lower San Joaquin","smscg_1940.07_hsit.avgmon_rma",0,"1940","July","GateAction",0.334030210971832
+"93","Lower San Joaquin","smscg_1940.08_hsit.avgmon_rma",0,"1940","August","GateAction",0.341650307178497
+"94","Lower San Joaquin","smscg_1940.09_hsit.avgmon_rma",0,"1940","Sep","GateAction",0.344532936811447
+"95","Lower San Joaquin","smscg_1940.10_hsit.avgmon_rma",0,"1940","Oct","GateAction",0.344998568296432
+"96","Lower San Joaquin","smscg_1979.06_hsit.avgmon_rma",0,"1979","June","GateAction",0.339136362075806
+"97","Lower San Joaquin","smscg_1979.07_hsit.avgmon_rma",0,"1979","July","GateAction",0.341394037008286
+"98","Lower San Joaquin","smscg_1979.08_hsit.avgmon_rma",0,"1979","August","GateAction",0.343477755784988
+"99","Lower San Joaquin","smscg_1979.09_hsit.avgmon_rma",0,"1979","Sep","GateAction",0.344010770320892
+"100","Lower San Joaquin","smscg_1979.10_hsit.avgmon_rma",0,"1979","Oct","GateAction",0.343388319015503
+"101","Lower San Joaquin","smscg_1986.06_hsit.avgmon_rma",0,"1986","June","GateAction",0.338575899600983
+"102","Lower San Joaquin","smscg_1986.07_hsit.avgmon_rma",0,"1986","July","GateAction",0.326606690883636
+"103","Lower San Joaquin","smscg_1986.08_hsit.avgmon_rma",0,"1986","August","GateAction",0.295810252428055
+"104","Lower San Joaquin","smscg_1986.09_hsit.avgmon_rma",0,"1986","Sep","GateAction",0.338153392076492
+"105","Lower San Joaquin","smscg_1986.10_hsit.avgmon_rma",0,"1986","Oct","GateAction",0.342524230480194
+"106","Lower San Joaquin","no.action_1940.06_hsit.avgmon_rma",0,"1940","June","noAction",0.343244582414627
+"107","Lower San Joaquin","no.action_1940.07_hsit.avgmon_rma",0,"1940","July","noAction",0.334271907806396
+"108","Lower San Joaquin","no.action_1940.08_hsit.avgmon_rma",0,"1940","August","noAction",0.341831624507904
+"109","Lower San Joaquin","no.action_1940.09_hsit.avgmon_rma",0,"1940","Sep","noAction",0.344614952802658
+"110","Lower San Joaquin","no.action_1940.10_hsit.avgmon_rma",0,"1940","Oct","noAction",0.344980776309967
+"111","Lower San Joaquin","no.action_1979.06_hsit.avgmon_rma",0,"1979","June","noAction",0.33913654088974
+"112","Lower San Joaquin","no.action_1979.07_hsit.avgmon_rma",0,"1979","July","noAction",0.34139296412468
+"113","Lower San Joaquin","no.action_1979.08_hsit.avgmon_rma",0,"1979","August","noAction",0.343651413917542
+"114","Lower San Joaquin","no.action_1979.09_hsit.avgmon_rma",0,"1979","Sep","noAction",0.344321936368942
+"115","Lower San Joaquin","no.action_1979.10_hsit.avgmon_rma",0,"1979","Oct","noAction",0.343516647815704
+"116","Lower San Joaquin","no.action_1986.06_hsit.avgmon_rma",0,"1986","June","noAction",0.338576972484589
+"117","Lower San Joaquin","no.action_1986.07_hsit.avgmon_rma",0,"1986","July","noAction",0.326536238193512
+"118","Lower San Joaquin","no.action_1986.08_hsit.avgmon_rma",0,"1986","August","noAction",0.295924425125122
+"119","Lower San Joaquin","no.action_1986.09_hsit.avgmon_rma",0,"1986","Sep","noAction",0.338190764188766
+"120","Lower San Joaquin","no.action_1986.10_hsit.avgmon_rma",0,"1986","Oct","noAction",0.342507690191269
+"121","Sac Deep Water Shipping Channel","smscg_1940.06_hsit.avgmon_rma",21712,"1940","June","GateAction",0.421217858791351
+"122","Sac Deep Water Shipping Channel","smscg_1940.07_hsit.avgmon_rma",8567,"1940","July","GateAction",0.287385284900665
+"123","Sac Deep Water Shipping Channel","smscg_1940.08_hsit.avgmon_rma",0,"1940","August","GateAction",0.264799922704697
+"124","Sac Deep Water Shipping Channel","smscg_1940.09_hsit.avgmon_rma",21868,"1940","Sep","GateAction",0.417671263217926
+"125","Sac Deep Water Shipping Channel","smscg_1940.10_hsit.avgmon_rma",16707,"1940","Oct","GateAction",0.406994253396988
+"126","Sac Deep Water Shipping Channel","smscg_1979.06_hsit.avgmon_rma",22423,"1979","June","GateAction",0.419379502534866
+"127","Sac Deep Water Shipping Channel","smscg_1979.07_hsit.avgmon_rma",14881,"1979","July","GateAction",0.31080624461174
+"128","Sac Deep Water Shipping Channel","smscg_1979.08_hsit.avgmon_rma",5676,"1979","August","GateAction",0.285567402839661
+"129","Sac Deep Water Shipping Channel","smscg_1979.09_hsit.avgmon_rma",0,"1979","Sep","GateAction",0.328724294900894
+"130","Sac Deep Water Shipping Channel","smscg_1979.10_hsit.avgmon_rma",13833,"1979","Oct","GateAction",0.394774049520493
+"131","Sac Deep Water Shipping Channel","smscg_1986.06_hsit.avgmon_rma",19065,"1986","June","GateAction",0.353852331638336
+"132","Sac Deep Water Shipping Channel","smscg_1986.07_hsit.avgmon_rma",1069,"1986","July","GateAction",0.243320614099503
+"133","Sac Deep Water Shipping Channel","smscg_1986.08_hsit.avgmon_rma",0,"1986","August","GateAction",0.221107825636864
+"134","Sac Deep Water Shipping Channel","smscg_1986.09_hsit.avgmon_rma",18466,"1986","Sep","GateAction",0.362879306077957
+"135","Sac Deep Water Shipping Channel","smscg_1986.10_hsit.avgmon_rma",16707,"1986","Oct","GateAction",0.403051644563675
+"136","Sac Deep Water Shipping Channel","no.action_1940.06_hsit.avgmon_rma",21712,"1940","June","noAction",0.421218633651733
+"137","Sac Deep Water Shipping Channel","no.action_1940.07_hsit.avgmon_rma",8564,"1940","July","noAction",0.287370204925537
+"138","Sac Deep Water Shipping Channel","no.action_1940.08_hsit.avgmon_rma",0,"1940","August","noAction",0.264825135469437
+"139","Sac Deep Water Shipping Channel","no.action_1940.09_hsit.avgmon_rma",21868,"1940","Sep","noAction",0.417645752429962
+"140","Sac Deep Water Shipping Channel","no.action_1940.10_hsit.avgmon_rma",16707,"1940","Oct","noAction",0.406995862722397
+"141","Sac Deep Water Shipping Channel","no.action_1979.06_hsit.avgmon_rma",22422,"1979","June","noAction",0.419376730918884
+"142","Sac Deep Water Shipping Channel","no.action_1979.07_hsit.avgmon_rma",14881,"1979","July","noAction",0.310806453227997
+"143","Sac Deep Water Shipping Channel","no.action_1979.08_hsit.avgmon_rma",5676,"1979","August","noAction",0.285593122243881
+"144","Sac Deep Water Shipping Channel","no.action_1979.09_hsit.avgmon_rma",0,"1979","Sep","noAction",0.328749239444733
+"145","Sac Deep Water Shipping Channel","no.action_1979.10_hsit.avgmon_rma",13833,"1979","Oct","noAction",0.394783616065979
+"146","Sac Deep Water Shipping Channel","no.action_1986.06_hsit.avgmon_rma",19065,"1986","June","noAction",0.353848934173584
+"147","Sac Deep Water Shipping Channel","no.action_1986.07_hsit.avgmon_rma",1067,"1986","July","noAction",0.24322821199894
+"148","Sac Deep Water Shipping Channel","no.action_1986.08_hsit.avgmon_rma",0,"1986","August","noAction",0.2210483700037
+"149","Sac Deep Water Shipping Channel","no.action_1986.09_hsit.avgmon_rma",18466,"1986","Sep","noAction",0.362850040197372
+"150","Sac Deep Water Shipping Channel","no.action_1986.10_hsit.avgmon_rma",16707,"1986","Oct","noAction",0.403064370155334
+"151","Southern Delta","smscg_1940.06_hsit.avgmon_rma",4167,"1940","June","GateAction",0.31119230389595
+"152","Southern Delta","smscg_1940.07_hsit.avgmon_rma",0,"1940","July","GateAction",0.214988097548485
+"153","Southern Delta","smscg_1940.08_hsit.avgmon_rma",0,"1940","August","GateAction",0.245711967349052
+"154","Southern Delta","smscg_1940.09_hsit.avgmon_rma",9,"1940","Sep","GateAction",0.309661835432053
+"155","Southern Delta","smscg_1940.10_hsit.avgmon_rma",8,"1940","Oct","GateAction",0.31305980682373
+"156","Southern Delta","smscg_1979.06_hsit.avgmon_rma",10287,"1979","June","GateAction",0.28855112195015
+"157","Southern Delta","smscg_1979.07_hsit.avgmon_rma",0,"1979","July","GateAction",0.23170904815197
+"158","Southern Delta","smscg_1979.08_hsit.avgmon_rma",1,"1979","August","GateAction",0.262511968612671
+"159","Southern Delta","smscg_1979.09_hsit.avgmon_rma",9,"1979","Sep","GateAction",0.311619728803635
+"160","Southern Delta","smscg_1979.10_hsit.avgmon_rma",7,"1979","Oct","GateAction",0.313541173934937
+"161","Southern Delta","smscg_1986.06_hsit.avgmon_rma",4166,"1986","June","GateAction",0.281770288944244
+"162","Southern Delta","smscg_1986.07_hsit.avgmon_rma",0,"1986","July","GateAction",0.217514157295227
+"163","Southern Delta","smscg_1986.08_hsit.avgmon_rma",0,"1986","August","GateAction",0.145437747240067
+"164","Southern Delta","smscg_1986.09_hsit.avgmon_rma",0,"1986","Sep","GateAction",0.285521745681763
+"165","Southern Delta","smscg_1986.10_hsit.avgmon_rma",2,"1986","Oct","GateAction",0.31398418545723
+"166","Southern Delta","no.action_1940.06_hsit.avgmon_rma",4167,"1940","June","noAction",0.311192482709885
+"167","Southern Delta","no.action_1940.07_hsit.avgmon_rma",0,"1940","July","noAction",0.21496270596981
+"168","Southern Delta","no.action_1940.08_hsit.avgmon_rma",0,"1940","August","noAction",0.245943635702133
+"169","Southern Delta","no.action_1940.09_hsit.avgmon_rma",9,"1940","Sep","noAction",0.309668511152267
+"170","Southern Delta","no.action_1940.10_hsit.avgmon_rma",8,"1940","Oct","noAction",0.312990486621857
+"171","Southern Delta","no.action_1979.06_hsit.avgmon_rma",10287,"1979","June","noAction",0.288550585508347
+"172","Southern Delta","no.action_1979.07_hsit.avgmon_rma",0,"1979","July","noAction",0.231679394841194
+"173","Southern Delta","no.action_1979.08_hsit.avgmon_rma",2,"1979","August","noAction",0.262672036886215
+"174","Southern Delta","no.action_1979.09_hsit.avgmon_rma",9,"1979","Sep","noAction",0.311759918928146
+"175","Southern Delta","no.action_1979.10_hsit.avgmon_rma",7,"1979","Oct","noAction",0.31381943821907
+"176","Southern Delta","no.action_1986.06_hsit.avgmon_rma",4166,"1986","June","noAction",0.281773775815964
+"177","Southern Delta","no.action_1986.07_hsit.avgmon_rma",0,"1986","July","noAction",0.217020228505135
+"178","Southern Delta","no.action_1986.08_hsit.avgmon_rma",0,"1986","August","noAction",0.145815789699554
+"179","Southern Delta","no.action_1986.09_hsit.avgmon_rma",0,"1986","Sep","noAction",0.285815477371216
+"180","Southern Delta","no.action_1986.10_hsit.avgmon_rma",2,"1986","Oct","noAction",0.313903898000717
+"181","Suisun Bay","smscg_1940.06_hsit.avgmon_rma",263619,"1940","June","GateAction",0.389862567186356
+"182","Suisun Bay","smscg_1940.07_hsit.avgmon_rma",474284,"1940","July","GateAction",0.426266640424728
+"183","Suisun Bay","smscg_1940.08_hsit.avgmon_rma",3347,"1940","August","GateAction",0.264391034841537
+"184","Suisun Bay","smscg_1940.09_hsit.avgmon_rma",468048,"1940","Sep","GateAction",0.420116126537323
+"185","Suisun Bay","smscg_1940.10_hsit.avgmon_rma",291537,"1940","Oct","GateAction",0.373599201440811
+"186","Suisun Bay","smscg_1979.06_hsit.avgmon_rma",1052964,"1979","June","GateAction",0.635598659515381
+"187","Suisun Bay","smscg_1979.07_hsit.avgmon_rma",716554,"1979","July","GateAction",0.504509270191193
+"188","Suisun Bay","smscg_1979.08_hsit.avgmon_rma",25941,"1979","August","GateAction",0.257153034210205
+"189","Suisun Bay","smscg_1979.09_hsit.avgmon_rma",0,"1979","Sep","GateAction",0.171369433403015
+"190","Suisun Bay","smscg_1979.10_hsit.avgmon_rma",0,"1979","Oct","GateAction",0.18220466375351
+"191","Suisun Bay","smscg_1986.06_hsit.avgmon_rma",299983,"1986","June","GateAction",0.400988817214966
+"192","Suisun Bay","smscg_1986.07_hsit.avgmon_rma",425545,"1986","July","GateAction",0.413614511489868
+"193","Suisun Bay","smscg_1986.08_hsit.avgmon_rma",22,"1986","August","GateAction",0.250144124031067
+"194","Suisun Bay","smscg_1986.09_hsit.avgmon_rma",447086,"1986","Sep","GateAction",0.413317680358887
+"195","Suisun Bay","smscg_1986.10_hsit.avgmon_rma",289151,"1986","Oct","GateAction",0.370071440935135
+"196","Suisun Bay","no.action_1940.06_hsit.avgmon_rma",263989,"1940","June","noAction",0.390062659978867
+"197","Suisun Bay","no.action_1940.07_hsit.avgmon_rma",477215,"1940","July","noAction",0.427313566207886
+"198","Suisun Bay","no.action_1940.08_hsit.avgmon_rma",7622,"1940","August","noAction",0.274291396141052
+"199","Suisun Bay","no.action_1940.09_hsit.avgmon_rma",445940,"1940","Sep","noAction",0.415094792842865
+"200","Suisun Bay","no.action_1940.10_hsit.avgmon_rma",290074,"1940","Oct","noAction",0.371907532215118
+"201","Suisun Bay","no.action_1979.06_hsit.avgmon_rma",1052981,"1979","June","noAction",0.635608077049255
+"202","Suisun Bay","no.action_1979.07_hsit.avgmon_rma",716752,"1979","July","noAction",0.504615247249603
+"203","Suisun Bay","no.action_1979.08_hsit.avgmon_rma",45602,"1979","August","noAction",0.280752062797546
+"204","Suisun Bay","no.action_1979.09_hsit.avgmon_rma",0,"1979","Sep","noAction",0.182023629546165
+"205","Suisun Bay","no.action_1979.10_hsit.avgmon_rma",0,"1979","Oct","noAction",0.182975500822067
+"206","Suisun Bay","no.action_1986.06_hsit.avgmon_rma",300539,"1986","June","noAction",0.40125384926796
+"207","Suisun Bay","no.action_1986.07_hsit.avgmon_rma",434417,"1986","July","noAction",0.417220711708069
+"208","Suisun Bay","no.action_1986.08_hsit.avgmon_rma",1208,"1986","August","noAction",0.265257656574249
+"209","Suisun Bay","no.action_1986.09_hsit.avgmon_rma",430451,"1986","Sep","noAction",0.407261461019516
+"210","Suisun Bay","no.action_1986.10_hsit.avgmon_rma",286868,"1986","Oct","noAction",0.367574512958527
+"211","Suisun Marsh","smscg_1940.06_hsit.avgmon_rma",554756,"1940","June","GateAction",0.631401240825653
+"212","Suisun Marsh","smscg_1940.07_hsit.avgmon_rma",434374,"1940","July","GateAction",0.563440978527069
+"213","Suisun Marsh","smscg_1940.08_hsit.avgmon_rma",207878,"1940","August","GateAction",0.375416547060013
+"214","Suisun Marsh","smscg_1940.09_hsit.avgmon_rma",193569,"1940","Sep","GateAction",0.425561845302582
+"215","Suisun Marsh","smscg_1940.10_hsit.avgmon_rma",188673,"1940","Oct","GateAction",0.417931824922562
+"216","Suisun Marsh","smscg_1979.06_hsit.avgmon_rma",676821,"1979","June","GateAction",0.708580493927002
+"217","Suisun Marsh","smscg_1979.07_hsit.avgmon_rma",202414,"1979","July","GateAction",0.393586218357086
+"218","Suisun Marsh","smscg_1979.08_hsit.avgmon_rma",95886,"1979","August","GateAction",0.216526627540588
+"219","Suisun Marsh","smscg_1979.09_hsit.avgmon_rma",69279,"1979","Sep","GateAction",0.184178918600082
+"220","Suisun Marsh","smscg_1979.10_hsit.avgmon_rma",98104,"1979","Oct","GateAction",0.181620329618454
+"221","Suisun Marsh","smscg_1986.06_hsit.avgmon_rma",590601,"1986","June","GateAction",0.610759198665619
+"222","Suisun Marsh","smscg_1986.07_hsit.avgmon_rma",298035,"1986","July","GateAction",0.519581973552704
+"223","Suisun Marsh","smscg_1986.08_hsit.avgmon_rma",192162,"1986","August","GateAction",0.286950200796127
+"224","Suisun Marsh","smscg_1986.09_hsit.avgmon_rma",191186,"1986","Sep","GateAction",0.424294352531433
+"225","Suisun Marsh","smscg_1986.10_hsit.avgmon_rma",195579,"1986","Oct","GateAction",0.431625306606293
+"226","Suisun Marsh","no.action_1940.06_hsit.avgmon_rma",557563,"1940","June","noAction",0.632516622543335
+"227","Suisun Marsh","no.action_1940.07_hsit.avgmon_rma",231855,"1940","July","noAction",0.362078130245209
+"228","Suisun Marsh","no.action_1940.08_hsit.avgmon_rma",76241,"1940","August","noAction",0.179791197180748
+"229","Suisun Marsh","no.action_1940.09_hsit.avgmon_rma",40053,"1940","Sep","noAction",0.263107120990753
+"230","Suisun Marsh","no.action_1940.10_hsit.avgmon_rma",147785,"1940","Oct","noAction",0.364624321460724
+"231","Suisun Marsh","no.action_1979.06_hsit.avgmon_rma",676821,"1979","June","noAction",0.708586394786835
+"232","Suisun Marsh","no.action_1979.07_hsit.avgmon_rma",202514,"1979","July","noAction",0.393737614154816
+"233","Suisun Marsh","no.action_1979.08_hsit.avgmon_rma",205,"1979","August","noAction",0.120975770056248
+"234","Suisun Marsh","no.action_1979.09_hsit.avgmon_rma",0,"1979","Sep","noAction",0.080003559589386
+"235","Suisun Marsh","no.action_1979.10_hsit.avgmon_rma",63589,"1979","Oct","noAction",0.151823937892914
+"236","Suisun Marsh","no.action_1986.06_hsit.avgmon_rma",591443,"1986","June","noAction",0.611333608627319
+"237","Suisun Marsh","no.action_1986.07_hsit.avgmon_rma",227641,"1986","July","noAction",0.418181568384171
+"238","Suisun Marsh","no.action_1986.08_hsit.avgmon_rma",56983,"1986","August","noAction",0.159503489732742
+"239","Suisun Marsh","no.action_1986.09_hsit.avgmon_rma",41737,"1986","Sep","noAction",0.262005567550659
+"240","Suisun Marsh","no.action_1986.10_hsit.avgmon_rma",156119,"1986","Oct","noAction",0.387757629156113
+"241","Upper Sacramento","smscg_1940.06_hsit.avgmon_rma",0,"1940","June","GateAction",0.34761381149292
+"242","Upper Sacramento","smscg_1940.07_hsit.avgmon_rma",3085,"1940","July","GateAction",0.358609050512314
+"243","Upper Sacramento","smscg_1940.08_hsit.avgmon_rma",2478,"1940","August","GateAction",0.351626366376877
+"244","Upper Sacramento","smscg_1940.09_hsit.avgmon_rma",3777,"1940","Sep","GateAction",0.362746387720108
+"245","Upper Sacramento","smscg_1940.10_hsit.avgmon_rma",0,"1940","Oct","GateAction",0.346218973398209
+"246","Upper Sacramento","smscg_1979.06_hsit.avgmon_rma",0,"1979","June","GateAction",0.346746146678925
+"247","Upper Sacramento","smscg_1979.07_hsit.avgmon_rma",0,"1979","July","GateAction",0.346889823675156
+"248","Upper Sacramento","smscg_1979.08_hsit.avgmon_rma",0,"1979","August","GateAction",0.340910375118256
+"249","Upper Sacramento","smscg_1979.09_hsit.avgmon_rma",0,"1979","Sep","GateAction",0.338646531105042
+"250","Upper Sacramento","smscg_1979.10_hsit.avgmon_rma",0,"1979","Oct","GateAction",0.339535623788834
+"251","Upper Sacramento","smscg_1986.06_hsit.avgmon_rma",0,"1986","June","GateAction",0.337971597909927
+"252","Upper Sacramento","smscg_1986.07_hsit.avgmon_rma",3087,"1986","July","GateAction",0.352505922317505
+"253","Upper Sacramento","smscg_1986.08_hsit.avgmon_rma",2482,"1986","August","GateAction",0.341971099376678
+"254","Upper Sacramento","smscg_1986.09_hsit.avgmon_rma",3776,"1986","Sep","GateAction",0.356924265623093
+"255","Upper Sacramento","smscg_1986.10_hsit.avgmon_rma",0,"1986","Oct","GateAction",0.344900995492935
+"256","Upper Sacramento","no.action_1940.06_hsit.avgmon_rma",0,"1940","June","noAction",0.347486019134521
+"257","Upper Sacramento","no.action_1940.07_hsit.avgmon_rma",3085,"1940","July","noAction",0.357787728309631
+"258","Upper Sacramento","no.action_1940.08_hsit.avgmon_rma",2478,"1940","August","noAction",0.351148694753647
+"259","Upper Sacramento","no.action_1940.09_hsit.avgmon_rma",3777,"1940","Sep","noAction",0.36209112405777
+"260","Upper Sacramento","no.action_1940.10_hsit.avgmon_rma",0,"1940","Oct","noAction",0.345961034297943
+"261","Upper Sacramento","no.action_1979.06_hsit.avgmon_rma",0,"1979","June","noAction",0.346745878458023
+"262","Upper Sacramento","no.action_1979.07_hsit.avgmon_rma",0,"1979","July","noAction",0.346887856721878
+"263","Upper Sacramento","no.action_1979.08_hsit.avgmon_rma",0,"1979","August","noAction",0.341007977724075
+"264","Upper Sacramento","no.action_1979.09_hsit.avgmon_rma",0,"1979","Sep","noAction",0.339113473892212
+"265","Upper Sacramento","no.action_1979.10_hsit.avgmon_rma",0,"1979","Oct","noAction",0.340471893548965
+"266","Upper Sacramento","no.action_1986.06_hsit.avgmon_rma",0,"1986","June","noAction",0.337899804115295
+"267","Upper Sacramento","no.action_1986.07_hsit.avgmon_rma",3087,"1986","July","noAction",0.351569026708603
+"268","Upper Sacramento","no.action_1986.08_hsit.avgmon_rma",2482,"1986","August","noAction",0.341584861278534
+"269","Upper Sacramento","no.action_1986.09_hsit.avgmon_rma",3776,"1986","Sep","noAction",0.356680124998093
+"270","Upper Sacramento","no.action_1986.10_hsit.avgmon_rma",0,"1986","Oct","noAction",0.344828307628632
+"271","Western Delta","smscg_1940.06_hsit.avgmon_rma",30091,"1940","June","GateAction",0.143865525722504
+"272","Western Delta","smscg_1940.07_hsit.avgmon_rma",0,"1940","July","GateAction",0.115122385323048
+"273","Western Delta","smscg_1940.08_hsit.avgmon_rma",0,"1940","August","GateAction",0.121474251151085
+"274","Western Delta","smscg_1940.09_hsit.avgmon_rma",0,"1940","Sep","GateAction",0.105377174913883
+"275","Western Delta","smscg_1940.10_hsit.avgmon_rma",0,"1940","Oct","GateAction",0.108380526304245
+"276","Western Delta","smscg_1979.06_hsit.avgmon_rma",3569,"1979","June","GateAction",0.126181036233902
+"277","Western Delta","smscg_1979.07_hsit.avgmon_rma",0,"1979","July","GateAction",0.191452711820602
+"278","Western Delta","smscg_1979.08_hsit.avgmon_rma",0,"1979","August","GateAction",0.119531214237213
+"279","Western Delta","smscg_1979.09_hsit.avgmon_rma",0,"1979","Sep","GateAction",0.105825610458851
+"280","Western Delta","smscg_1979.10_hsit.avgmon_rma",0,"1979","Oct","GateAction",0.100799150764942
+"281","Western Delta","smscg_1986.06_hsit.avgmon_rma",6222,"1986","June","GateAction",0.136352509260178
+"282","Western Delta","smscg_1986.07_hsit.avgmon_rma",51,"1986","July","GateAction",0.119543060660362
+"283","Western Delta","smscg_1986.08_hsit.avgmon_rma",0,"1986","August","GateAction",0.124805860221386
+"284","Western Delta","smscg_1986.09_hsit.avgmon_rma",0,"1986","Sep","GateAction",0.10490558296442
+"285","Western Delta","smscg_1986.10_hsit.avgmon_rma",0,"1986","Oct","GateAction",0.102349855005741
+"286","Western Delta","no.action_1940.06_hsit.avgmon_rma",30091,"1940","June","noAction",0.143869012594223
+"287","Western Delta","no.action_1940.07_hsit.avgmon_rma",0,"1940","July","noAction",0.114944599568844
+"288","Western Delta","no.action_1940.08_hsit.avgmon_rma",0,"1940","August","noAction",0.12135162204504
+"289","Western Delta","no.action_1940.09_hsit.avgmon_rma",0,"1940","Sep","noAction",0.105390168726444
+"290","Western Delta","no.action_1940.10_hsit.avgmon_rma",0,"1940","Oct","noAction",0.108398623764515
+"291","Western Delta","no.action_1979.06_hsit.avgmon_rma",3569,"1979","June","noAction",0.126180946826935
+"292","Western Delta","no.action_1979.07_hsit.avgmon_rma",0,"1979","July","noAction",0.191453129053116
+"293","Western Delta","no.action_1979.08_hsit.avgmon_rma",0,"1979","August","noAction",0.119432993233204
+"294","Western Delta","no.action_1979.09_hsit.avgmon_rma",0,"1979","Sep","noAction",0.105783320963383
+"295","Western Delta","no.action_1979.10_hsit.avgmon_rma",0,"1979","Oct","noAction",0.100801907479763
+"296","Western Delta","no.action_1986.06_hsit.avgmon_rma",6225,"1986","June","noAction",0.136365592479706
+"297","Western Delta","no.action_1986.07_hsit.avgmon_rma",49,"1986","July","noAction",0.119500495493412
+"298","Western Delta","no.action_1986.08_hsit.avgmon_rma",0,"1986","August","noAction",0.12479205429554
+"299","Western Delta","no.action_1986.09_hsit.avgmon_rma",0,"1986","Sep","noAction",0.104886949062347
+"300","Western Delta","no.action_1986.10_hsit.avgmon_rma",0,"1986","Oct","noAction",0.102367520332336

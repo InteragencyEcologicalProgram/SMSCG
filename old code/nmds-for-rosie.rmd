@@ -1,0 +1,148 @@
+---
+title: "Multivariate (NMDS) Analysis"
+output: html_document
+---
+
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(vegan)
+requireNamespace("ggthemes")
+```
+
+```{r}
+load("actiondata.RData")
+```
+
+# Worst-case, Scaled
+
+```{r}
+results.nmds = action.daily %>%
+  filter(!str_detect(Station, "Bel")) %>%
+  mutate(
+    OfInterest = case_when(
+      Analyte == "Fluorescence" ~ log(Mean),
+      Analyte == "Turbidity" ~ log(Mean),
+      Analyte == "Salinity" ~ Mean,
+      Analyte == "Temperature" ~ Mean,
+    ),
+    Analyte = if_else(Analyte == "Fluorescence",
+      "Chlorophyll-a", Analyte),
+    OfInterest = if_else(is.finite(OfInterest), OfInterest, NA_real_),
+    Operation = factor(case_when(
+      Datetime < as_datetime("2018-08-03") ~ "Before",
+      Datetime < as_datetime("2018-09-08") ~ "During",
+      TRUE ~ "After"
+    ), c("Before", "During", "After")),
+    Station = factor(Station, c("(S-54)  Hunter Cut",
+      "(S-64)  National Steel", "(C-2B)  Collinsville B"),
+      c("Hunter Cut", "National Steel", "Collinsville")),
+  ) %>%
+  arrange(Datetime) %>%
+  select(Datetime, Analyte, Station, OfInterest, Operation) %>%
+  spread(Analyte, OfInterest) %>%
+  na.omit() %>%
+  mutate_if(is.numeric, ~as.vector(scale(.x))) %>%
+  nest() %>%
+  mutate(
+    nmds = map(data,
+      ~ .x %>%
+        select(-Datetime, - Station, -Operation) %>%
+        metaMDS(distance = "manhattan", autotransform = FALSE,
+          try = 50, trymax = 100)),
+    scores = map(nmds, scores),
+    envfit = map2(nmds, data, ~ envfit(ord = .x,
+      env = select(.y, - Datetime, - Station, - Operation))),
+    envload = map(envfit, ~.x$vectors$arrows %>% 
+        as_tibble(rownames = "Analyte")),
+    newdata = map2(data, scores,
+      ~ bind_cols(select(.x, Datetime, Station, Operation),
+        as_tibble(.y)) %>% group_by(Operation, Station) %>%
+        mutate(num = 1:n()) %>% ungroup())
+  )
+
+results.hulls = results.nmds %>%
+  select(newdata) %>%
+  unnest() %>%
+  nest(-Station, - Operation) %>%
+  mutate(
+    hull = map(data, ~ chull(select(.x, NMDS1, NMDS2))),
+    poly = map2(data, hull, ~ .x[c(.y, .y[1]),])
+  ) %>%
+  select(Station, Operation, poly) %>%
+  unnest()
+```
+
+## 3 groups
+
+```{r}
+# base plot
+vec.scale = 5
+w = 8
+h = 6
+
+base = ggplot(results.nmds$newdata[[1]]) +
+  ggthemes::theme_few(base_size = 18) +
+  xlab("First ordinate") + ylab("Second ordinate") +
+  coord_fixed() +
+  scale_color_manual(NULL, values = c("Collinsville" = "#377eb8",
+    "National Steel" = "#4daf4a",
+    "Hunter Cut" = "#984ea3"),
+    breaks = c("Collinsville", "National Steel", "Hunter Cut"),
+    labels = c("River", "Marsh (east)", "Marsh (west)")) +
+  scale_fill_manual(NULL, values = c("Collinsville" = "#377eb8",
+    "National Steel" = "#4daf4a",
+    "Hunter Cut" = "#984ea3"), 
+    breaks = c("Collinsville", "National Steel", "Hunter Cut"),
+    labels = c("River", "Marsh (east)", "Marsh (west)")) +
+  scale_shape_manual(NULL, values = c("Before" = 16,
+    "During" = 21, "After" = 2), drop = FALSE) +
+  scale_size_continuous(guide = FALSE, range = c(1, 4)) +
+  guides(
+    color = guide_legend(order = 1),
+    fill = guide_legend(order = 1),
+    Shape = guide_legend(order = 0)
+  ) +
+  geom_polygon(
+    data = results.hulls,
+    aes(x = NMDS1, y = NMDS2,
+    fill = Station, group = Station:Operation),
+    alpha = 0.25) +
+  geom_point(
+    data = results.nmds$newdata[[1]],
+    aes(x = NMDS1, y = NMDS2, color = Station,
+      shape = Operation, size = num)) +
+  geom_point(
+    data = results.nmds$newdata[[1]],
+    aes(x = NMDS1, y = NMDS2, color = Station,
+      shape = Operation, size = num)) +
+  geom_label(x = 4.1, y = 6.1, label = paste("Stress =",
+    round(results.nmds$nmds[[1]]$stress, 2))) +
+  geom_segment(data = results.nmds$envload[[1]],
+    aes(xend = vec.scale * NMDS1, yend = vec.scale * NMDS2, group = Analyte),
+    x = 0, y = 0, arrow = arrow(length = unit(0.1, "inches"),
+    type = "closed"), size = 1, lineend = "round") +
+  geom_text(data = results.nmds$envload[[1]],
+    aes(
+      x = vec.scale * (NMDS1 +
+        str_detect(Analyte, "Ch") * -0.25 +
+        str_detect(Analyte, "Sa") * -0.25 +
+        str_detect(Analyte, "Tu") * -0.25 +
+        str_detect(Analyte, "Te") * -0.4
+      ),
+      y = vec.scale * (NMDS2 +
+        str_detect(Analyte, "Ch") * -0.1 +
+        str_detect(Analyte, "Sa") * 0.0 +
+        str_detect(Analyte, "Tu") * -0.05 +
+        str_detect(Analyte, "Te") * 0
+      ),
+      label = Analyte), size = 6) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title = element_blank()
+  )
+
+base
+```

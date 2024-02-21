@@ -6,6 +6,9 @@ library(zooper)
 library(deltamapr)
 library(sf)
 
+library(lme4)
+library(lmerTest)
+
 # Hypotheses: 
 #   1.	Decreasing X2 will maximize the area of Delta Smelt habitat with appropriate temperatures, turbidity, and salinity, which will result in higher Delta Smelt growth and survival.
 # 2.	Decreasing X2 will increase biomass of calanoid copepods in the low salinity zone through increased transport of freshwater species from upstream, which will result in higher Delta Smelt growth and survival.
@@ -65,13 +68,21 @@ ggplot(filter(SMSCGzoops2, Year != 2022), aes(x = Year, y = CPUE, fill = Taxa))+
   facet_wrap(~Region)+
   theme_bw()
 
-#avergaes
+#Calculate total CPUE# per sample
+
+SMSCGzoopstot = group_by(SMSCGzoops2, SampleID, Month,Region, Year, Station) %>%
+  st_drop_geometry() %>%
+  summarize(CPUE = sum(CPUE, na.rm =T))
+
+#calculate average CPUE per taxa
 
 SMSCGzoopsmean = group_by(SMSCGzoops2, SampleID, Month, Taxa, Region, Year) %>%
+  st_drop_geometry() %>%
   summarize(CPUE = sum(CPUE, na.rm =T)) %>%
   group_by(Taxa, Region, Year) %>%
   summarize(CPUE = mean(CPUE, na.rm =T))
 
+#Plot it a few different ways
 
 ggplot(filter(SMSCGzoopsmean, Year != 2022), aes(x = Year, y = CPUE, fill = Taxa))+
   geom_col()+
@@ -81,19 +92,53 @@ ggplot(filter(SMSCGzoopsmean, Year != 2022), aes(x = Year, y = CPUE, fill = Taxa
   facet_wrap(~Region)+
   theme_bw()
 
-#now some example plots so folks know what I'm talking about
-testdata = read_csv("data/Testdata.csv")
-
-ggplot(testdata, aes(x = Year, y = CPUEm, fill = YearType))+
+ggplot(filter(SMSCGzoopsmean, Year != 2022), aes(x = Region, y = CPUE, fill = Taxa))+
   geom_col()+
-  geom_errorbar(aes(ymin = CPUEm -sdcpue, ymax = CPUEm + sdcpue))+
-  facet_wrap(Scenario~Region)+
-  theme_bw()+
-  ylab("Example metric")+
-  scale_y_continuous(breaks = NULL)
+  scale_fill_brewer(palette = "Dark2", labels = c("Calanoid copepods", "Barnacle larvae",
+                                                  "Cladocera", "Cyclopoid copepods",
+                                                  "Shrimp and crab larvae", "Harpactacoid copepods"))+
+  facet_wrap(~Year)+
+  theme_bw()
+
+# #now some example plots so folks know what I'm talking about
+# testdata = read_csv("data/Testdata.csv")
+# 
+# ggplot(testdata, aes(x = Year, y = CPUEm, fill = YearType))+
+#   geom_col()+
+#   geom_errorbar(aes(ymin = CPUEm -sdcpue, ymax = CPUEm + sdcpue))+
+#   facet_wrap(Scenario~Region)+
+#   theme_bw()+
+#   ylab("Example metric")+
+#   scale_y_continuous(breaks = NULL)
+
+#################################################################
+
+#convert year to factor
+SMSCGzoopstot$Year = as.factor(SMSCGzoopstot$Year)
+
+#run a mixed model with random effect of month
+lm1 = lmer(log(CPUE+1)~ Year*Region + (1|Month) , data =  SMSCGzoopstot)
+summary(lm1)
+library(car)
+Anova(lm1, type = "III")
+
+#plot the output
+library(effects)
+plot(allEffects(lm1), x.var = "Region")
 
 
-library(lme4)
-library(lmerTest)
 
-lm1 = lmer(Response ~ Region*Year + (1|DOY) +(1|Station), data = df)
+#pairwise comparisons
+library(emmeans)
+emmeans(lm1, pairwise ~ "Region", by = "Year")
+emmeans(lm1, pairwise ~ "Year", by = "Region")
+emmeans(lm1, pairwise ~ "Year")
+
+#prettier effects plot
+effs = allEffects(lm1)[[1]]
+
+effs_df = data.frame(effs$x, SE = effs$se, Fit = effs$fit)
+
+ggplot(effs_df, aes(x = Region, y = Fit)) + geom_point()+
+  facet_wrap(~Year)+
+  geom_errorbar(aes(ymin = Fit-SE, ymax = Fit+SE))+ theme_bw()

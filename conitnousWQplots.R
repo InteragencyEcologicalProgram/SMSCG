@@ -13,7 +13,7 @@ library(cder)
 
 #x2 plot
 X2 = cdec_query("CX2", sensors = 145,
-                start.date = as.Date("2023-06-01"), end.date =  as.Date("2023-11-01"))
+                start.date = as.Date("2016-06-01"), end.date =  as.Date("2023-11-01"))
 
 X2 = mutate(X2, X2km = case_when(DataFlag == "v" & DateTime > ymd_hm("2023-07-01 11:11")~ 81,
             TRUE~ Value))
@@ -22,6 +22,17 @@ ggplot(X2, aes(x = DateTime, y = X2km)) +
   geom_line()+theme_bw()+
   geom_point(aes(color = DataFlag))+
   scale_color_manual(values = c("black", "red"), labels = c("Value", ">81km"))
+
+
+X2 = mutate(X2, Year = year(DateTime), Month = month(DateTime), DOY = yday(DateTime)) 
+
+ggplot(X2, aes(x = DOY, y = Value, color = as.factor(Year))) +
+  geom_point()+ geom_line()+
+  geom_hline(yintercept = 74)+
+  coord_cartesian(xlim = c(150, 320))+
+  scale_x_continuous(breaks = c(152, 182, 213, 244, 274, 305), labels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))
+  
+
 
 #use the delta operations reporst instead
 library(readxl)
@@ -33,6 +44,8 @@ ggplot( ) +
   #geom_line(filter(X2b, !is.na(X2)),aes(x = Date, y = X2))+
   geom_line(data = filter(X2b, !is.na(X2)),aes(x = Date, y = X2))+
   theme_bw()
+
+
 
 #############################################################################################
 #plot the most recent months of data real quick
@@ -133,6 +146,9 @@ ggplot(WQwmodel, aes(x = DOY, y = Value2, color = StationID, linetype = StationI
 ggsave("plots/BDL2023v2017model.tiff", device = "tiff", width =6.5, height =4.5)
 
 
+###################################################################################
+
+
 ########################################################################################
 
 #plot for monthly update
@@ -211,15 +227,19 @@ WQmeanallx = left_join(WQmeanall, stations, by = c("StationID"="station"))
 WQmeanally = mutate(WQmeanallx, region = factor(region, levels = c("Bay", "Marsh", "River"), 
                          labels = c("Suisun Bay", "Suisun Marsh", "Sacramento River")),
                    Analyte2 = factor(Analyte, levels = c("Chlorophyll", "Salinity", "Temperature", "Turbidity"),
-                                    labels = c("Chlorophyll mg/L", "Salinity PSU", "Temperature C", "Turbidity NTU")))
+                                    labels = c("Chlorophyll ug/L", "Salinity PSU", "Temperature C", "Turbidity FNU")))
 cuttoffs$Analyte2 = factor(cuttoffs$Analyte, levels = c("Chlorophyll", "Salinity", "Temperature", "Turbidity"),
-                          labels = c("Chlorophyll mg/L", "Salinity PSU", "Temperature C", "Turbidity NTU"))
+                          labels = c("Chlorophyll ug/L", "Salinity PSU", "Temperature C", "Turbidity FNU"))
 
-ggplot(WQmeanally, aes(x = Date, y = Value2, color = StationID))+
-  geom_line()+
+ggplot(WQmeanally, aes(x = Date, y = Value2))+
+  geom_line(aes(color = StationID))+
   facet_grid(Analyte2~region, scales = "free_y")+
-  geom_hline(data = cuttoffs, aes(yintercept = cutoff), color = "black", 
+  geom_hline(data = filter(cuttoffs, Analyte2 != "Chlorophyll ug/L"), aes(yintercept = cutoff), color = "black",
              linetype =2, linewidth =1)+
+  geom_hline(data = filter(cuttoffs, Analyte2 == "Chlorophyll ug/L"), aes(yintercept = cutoff), color = "grey",
+             linetype =3, linewidth =1)+
+  geom_vline(xintercept = as.Date("2023-08-15"), color = "red")+
+  geom_vline(xintercept = as.Date("2023-10-17"), color = "red")+
   coord_cartesian(xlim = c(ymd("2023-06-01"), ymd("2023-10-31")))+
   theme_bw()+
   ylab(NULL)
@@ -292,9 +312,20 @@ ggplot(filter(TempsA, !StationID %in%  c("LIS", "GZL")), aes(x = ObsDate, y = Va
   geom_hline(yintercept = 22, linetype =2, color = "red")+
   
   geom_hline(yintercept = 25, linetype =1, color = "red")+
-  coord_cartesian(xlim = c(ymd_hms("2023-08-15 00:00:00"), today()),
+  coord_cartesian(xlim = c(ymd_hms("2023-08-01 00:00:00"), ymd_hms("2023-11-10 00:00:00")),
                   ylim = c(15, 27))+
-  theme_bw()
+  theme_bw()+
+  geom_vline(xintercept = ymd_hm("2023-08-15 00:00"))
+
+ggplot(filter(TempsA, !StationID %in%  c("LIS", "GZL")), aes(x = ObsDate, y = Value, color = StationID))+
+  geom_line()+
+  geom_hline(yintercept = 22, linetype =2, color = "red")+
+  
+  geom_hline(yintercept = 25, linetype =1, color = "red")+
+  coord_cartesian(xlim = c(ymd_hms("2022-08-01 00:00:00"), ymd_hms("2022-11-10 00:00:00")),
+                  ylim = c(15, 27))+
+  theme_bw()+
+  geom_vline(xintercept = ymd_hm("2023-08-15 00:00"))
 
 dailytemps = mutate(TempsA, Date = date(ObsDate)) %>%
   group_by(Date, Yday, StationID) %>%
@@ -317,8 +348,8 @@ Tempsb = filter(TempsA, StationID %in% c("BDL", "RVB")) %>%
 ggplot(Tempsb, aes(x = Yday, y = Diff, color = year(ObsDate))) + geom_point()+
   scale_color_viridis_c(option = "B")
 
-ggplot(Tempsb, aes(x = Yday, y = Diff, color = year(ObsDate))) + geom_point()+
-  scale_color_viridis_c(option = "B")+
+ggplot(Tempsb, aes(x = Yday, y = Diff, color = as.factor(year(ObsDate)))) + geom_point()+
+  scale_color_viridis_d(option = "B")+
   facet_wrap(~year(ObsDate))+
   geom_hline(yintercept =0)
 
@@ -361,7 +392,7 @@ ggplot(dailychl, aes(x = Yday, y = Value, color = as.factor(year(Date))))+
 #pull data from both sites, attach water year type, average by water year type and DOY, compare to this year
 
 WQ = cdec_query(c("BDL","RVB"), sensors = c(100, 25, 27),
-                start.date = as.Date("2000-01-01"), end.date = today())
+                start.date = as.Date("2000-01-01"), end.date = as.Date("2023-11-30"))
 str(WQ)
 
 ggplot(WQ, aes(x = DateTime, y = Value, color = StationID)) + facet_wrap(~SensorType, scales = "free_y")+
@@ -418,7 +449,8 @@ ggplot(filter(WQyearsSF, Yr_type !=2023), aes(x = DOWY, y = Value2, color = Yr_t
              linetype =2, linewidth =1)+
   geom_line(data=filter(WQyearsSF, Yr_type == "2023"), linewidth = 1, color = "black")+
   scale_x_continuous(breaks = c(212, 250, 280, 310, 340), labels = c("Jun", "Jul", "Aug", "Sep", "Oct"))+
-  ylab(NULL)+xlab("Day of Year")+ theme_bw()
+  ylab(NULL)+xlab("Day of Year")+ theme_bw()+
+  theme(legend.position = "bottom")
 
 
 ########################################################################
@@ -487,19 +519,23 @@ ggplot(filter(turbyears, Yr_type !=2023), aes(x = DOWY, y = Value, color = Yr_ty
 
 ########################################################################
 #Plot Delta Outflow
-load("data/Dayflow1997_2021.RData")
+load("data/Dayflow_allw2023.RData")
 wytype = read_csv("data/wateryeartypes.csv") 
 
-DF = mutate(DF, Year = year(Date)) %>%
+DF = mutate(Dayflow, Year = year(Date)) %>%
   left_join(wytype)  
 
-Outflow2023 = read_excel("data/ITP_COA_8.20 - 2023 data.xlsx") %>%
-  select(Date, OUT, CVP, SWP) %>%
-  mutate(Year = year(Date), YT = "2023")
+ Outflow2023 = read_excel("data/ITP_COA_8.20 - 2023 data.xlsx") %>%
+   select(Date, OUT, CVP, SWP) %>%
+  mutate(Year = year(Date), YT = "2023") %>%
+   filter(Date> ymd("2023-09-30"))
 
 DFw2023 = bind_rows(DF, Outflow2023) %>%
   mutate(Month = month(Date), DOY = yday(Date)) %>%
   filter(Month %in% c(6:10), Year %in% c(2017:2023)) %>%
+  select(OUT, X2, CVP, SWP, Date, Month, DOY, Year, YT) %>%
+  mutate(YT = case_when(Year == 2023 ~ "2023",
+                        TRUE ~ YT)) %>%
   mutate(YT = factor(YT, levels = c("C", "D", "BN", "W", "2023"), labels = c("Critical", "Dry", "Below Normal", "Wet", "2023")))
 
 ggplot(DFw2023, aes(x = DOY, y = OUT, group = as.factor(Year), color = YT, linewidth = as.factor(Year))) + 
@@ -529,22 +565,37 @@ ggplot(DFw2023, aes(x = DOY, y = CVP+SWP, group = as.factor(Year), color = YT, l
 ggsave("plots/exports2023.tiff", device = "tiff", width =6.5, height =4.5)
 
 #now the plot of X2
-X2w2023 = mutate(X2, YT = "2023", Date = date(DateTime), Year = year(Date), DOY = yday(DateTime), X2 = X2km) %>%
-  select(X2, Date, YT, Year, DOY, DataFlag) %>%
-  bind_rows(DF) %>%
-  mutate(DOY = yday(Date), Month = month(Date),
-         YT = factor(YT, levels = c("C", "D", "BN", "W", "2023"), labels = c("Critical", "Dry", "Below Normal", "Wet", "2023")))%>%
-  filter(Year >2016, Month %in% c(6:10))
+# X2w2023 = mutate(X2, YT = "2023", Date = date(DateTime), Year = year(Date), DOY = yday(DateTime), X2 = X2km) %>%
+#   select(X2, Date, YT, Year, DOY, DataFlag) %>%
+#   bind_rows(DF) %>%
+#   mutate(DOY = yday(Date), Month = month(Date),
+#          YT = factor(YT, levels = c("C", "D", "BN", "W", "2023"), labels = c("Critical", "Dry", "Below Normal", "Wet", "2023")))%>%
+#   filter(Year >2016, Month %in% c(6:10))
   
+X2 = cdec_query("CX2", sensors = 145,
+                start.date = as.Date("2023-09-30"), end.date =  as.Date("2023-11-01"))
 
-ggplot(X2w2023, aes(x = DOY, y = X2, group = as.factor(Year), color = YT, linewidth = as.factor(Year))) + 
+X2 = mutate(X2, X2 = case_when(DataFlag == "v" & DateTime > ymd_hm("2023-07-01 11:11")~ 81,
+                                 TRUE~ Value), Date = as.Date(DateTime), Month = month(Date),
+            Year = year(Date), YT = "2023", DOY = yday(Date))
+
+DFw20232 = bind_rows(DFw2023, X2)  %>%
+  filter(!is.na(X2))
+#what was the monthly average X2 in year year and month?
+
+monthlyx2 = mutate(X2w2023, Month = month(Date)) %>%
+  group_by(Year, Month) %>%
+  summarize(X2 = mean(X2, na.rm = T))
+
+
+ggplot(DFw20232, aes(x = DOY, y = X2, group = as.factor(Year), color = YT, linewidth = as.factor(Year))) + 
   geom_line()+
   theme_bw()+
   ylab("X2 (km)")+
   xlab("Day of Year")+
   scale_linewidth_manual(values = c(rep(.7, 6), 1.4), guide = NULL)+
-  scale_color_manual(values = c("orangered", "orange", "gold3", "blue", "black"), name = "Year Type")+
-  geom_point(data = filter(X2w2023, DataFlag == "v"), aes(x = DOY, y = X2, shape = "X2 >81"), color = "green3")+
+  scale_color_manual(values = c( "black","orangered", "orange", "gold3", "blue"), name = "Year Type")+
+  geom_point(data = filter(DFw20232, DataFlag == "v"), aes(x = DOY, y = X2, shape = "X2 >81"), color = "green3")+
   scale_shape_manual(values = 16, name = NULL)+
   scale_x_continuous(breaks = c(152, 182, 213, 244, 274, 305), labels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))+
   theme(legend.position = "bottom", legend.margin = margin(t=0, r = 0, b = 0, l = 0))
@@ -583,4 +634,18 @@ ggplot(BDLdaily, aes(x = DOY, y = Salinity, group = as.factor(Year), color = YT,
 
 ggsave("plots/BDLsalinity2023.tiff", device = "tiff", width =6.5, height =4.5)
 
+##########################################################################################
+#random snippit of code for Ted that has nothign to do with anything. 
 
+#example data frame
+ddf = data.frame(startdate = c(ymd("2021-01-01"), ymd("2022-01-01"), ymd("2023-01-01")),
+                 enddate = c(ymd("2021-02-02"), ymd("2022-02-02"), ymd("2023-02-02")),
+                 rating = c("good", "fair", "crappy"), station = c("ANA", "ANA", "PDQ"))
+
+#function to expand each row
+expanddate = function(x) {
+  data.frame(Date = seq(as.Date(x["startdate"]), as.Date(x["enddate"]), by = "day"), rating = x["rating"], station = x["station"])
+}
+
+#apply the function and bind the resulting data set together. 
+ddf2 = bind_rows(apply(ddf,1, expanddate, simplify = TRUE))
