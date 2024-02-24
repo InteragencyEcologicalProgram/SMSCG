@@ -8,7 +8,7 @@
 #https://www.fws.gov/lodi/juvenile_fish_monitoring_program/jfmp_index.htm
 
 #EDSM already has a repository on EDI with all their data
-#https://portal.edirepository.org/nis/mapbrowse?scope=edi&identifier=415&revision=9
+#https://portal.edirepository.org/nis/mapbrowse?scope=edi&identifier=415&revision=10
 
 #This code creates the subset relevant to the SMSCG action
 #Years: 2018 and later
@@ -20,17 +20,18 @@ library(tidyverse)
 library(lubridate)
 
 #get EDSM kodiak trawl data from EDI
-edsm_main<-read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.415.9&entityid=4d7de6f0a38eff744a009a92083d37ae") 
-#glimpse(edsm_main)
+edsm_main<-read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.415.10&entityid=4d7de6f0a38eff744a009a92083d37ae") 
+glimpse(edsm_main)
+#throws a warning but it is for a column I'm not using
 
 #filter to just the needed years, months, regions, and columns
 edsm_sub <- edsm_main %>% 
   #create week, month, and year columns from date column
-  mutate(Date = mdy(SampleDate)
-         ,Year = year(Date)
+  mutate(Date = as_date(SampleDate)
+          ,Year = year(Date)
          ,Month = month(Date)
          ,Week = week(Date)
-         ) %>%
+         ) %>% 
   #filter to only keep desired years, months, and strata
   filter(Year >= "2018" 
          & Month %in% c(7,8,9,10)         
@@ -39,13 +40,16 @@ edsm_sub <- edsm_main %>%
            c("Cache Slough LI","Lower Sacramento","Sac DW Ship Channel","Suisun Bay/Marsh","Lower San Joaquin","Suisun Bay","Suisun Marsh")
          ) %>% 
   #only keep necessary columns
-  select(Stratum,StationCode,Date,Week,Month,Year,TowNumber,OrganismCode,Count)
+  select(Stratum,StationCode,Date,Week,Month,Year,TowNumber,OrganismCode,Count) %>% 
+  arrange(Year,Week,Stratum) %>% 
+  glimpse()
 
 #summarize number of tows per stratum and week
 edsm_sum_tow <- edsm_sub %>% 
   distinct(Stratum,StationCode,Date,Week,Month,Year,TowNumber) %>% 
   group_by(Stratum, Week, Month, Year) %>%
-  summarize(Tows = length(TowNumber),.groups = "drop") %>% 
+  summarize(Tows = length(TowNumber),.groups = "drop"
+            ) %>% 
   arrange(Year,Week,Stratum)
 
 #summarize number of stations per stratum and week
@@ -70,4 +74,4 @@ edsm_comb <- list_df %>%
   glimpse()
 
 #export data for publishing on EDI
-#write_csv(edsm_comb,"./EDI/data_output/EDSM_2018-2022_SummerFall_DSM.csv")
+#write_csv(edsm_comb,"./EDI/data_output/EDSM_2018-2023_SummerFall_DSM.csv")
