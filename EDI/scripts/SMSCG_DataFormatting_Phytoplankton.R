@@ -19,10 +19,11 @@ library(sf) #spatial tools
 
 #Read in data------------------
 
-# Read in the EMP data from EDI
-phytoplankton_emp <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.6&entityid=67b9d4ee30d5eee6e74b2300426471f9") %>% 
+# Read in the EMP data from EDI (includes up to 2022)
+phytoplankton_emp <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.7&entityid=634e9843500249d3b96b45fd6a8cad65") %>% 
   clean_names() %>% 
   glimpse()
+
 
 # Read in and combine the DFW data
 
@@ -334,9 +335,13 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
       ,grepl("801", station_code) ~ "STN_801"
       ,grepl("802", station_code) ~ "FMWT_802"
       #East Marsh stations
+      #in FMWT survey, MONT is now 611
       ,grepl("MON|MONT", station_code) ~ "STN_MONT"
       ,grepl("609", station_code) ~ "STN_609"
-      ,grepl("610", station_code) ~ "STN_610"
+      #in 2022, some samples were collected at FMWT 608 instead of FMWT 610
+      #probably close enough to just lump with rest of 610 data
+      #though 608 is upstream of SMSCGs while 610 is downstream of them
+      ,grepl("610|608", station_code) ~ "STN_610"
       #West Marsh stations
       ,grepl("605", station_code) ~ "FMWT_605"
       ,grepl("606", station_code) & month < 9 ~ "STN_606"
@@ -364,16 +369,16 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
 #looks good
 
 #look at NAs for date time
-#time_nas <- phyto_dfw_stations %>% 
- # select(station_code,date,time,date_time_pdt,date_time_pst) %>% 
-  #filter(is.na(date_time_pdt))
+# time_nas <- phyto_dfw_stations %>%
+# select(station_code,date,time,date_time_pdt,date_time_pst) %>%
+# filter(is.na(date_time_pdt))
 
 #add the region and combo station data 
 phyto_dfw <- left_join(phyto_dfw_stations, stations) %>% 
   glimpse()
 
 #make sure all stations matched
-# phyto_dfw_na <- phyto_dfw %>% 
+# phyto_dfw_na <- phyto_dfw %>%
 #   filter(is.na(station_group))
 #no NAs so matched correctly
 
