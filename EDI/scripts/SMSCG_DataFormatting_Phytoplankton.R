@@ -1,5 +1,5 @@
 #Suisun Marsh Salinity Control Gate
-#Phytoplankton Data 2020-2022
+#Phytoplankton Data 2020-2023
 #Format raw data in preparation for publishing on EDI
 #Biovolume calculations have been corrected
 
@@ -17,15 +17,35 @@ library(sf) #spatial tools
 #which is the total number of cells counted for that taxon in a particular sample
 #calculations in this script were corrected accordingly on 2/10/2022
 
-#Read in data------------------
-
-# Read in the EMP data from EDI (includes up to 2022)
-phytoplankton_emp <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.7&entityid=634e9843500249d3b96b45fd6a8cad65") %>% 
+# Read in the EMP data from EDI (pre-2023)------------------------------
+phytoplankton_emp_edi <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.7&entityid=634e9843500249d3b96b45fd6a8cad65") %>% 
   clean_names() %>% 
   glimpse()
 
+# Read in and combine 2023 EMP data files from GitHub repo--------------------
 
-# Read in and combine the DFW data
+#Create character vectors of EMP phytoplankton files for all years  
+phyto_files_emp <- dir(path = "EDI/data_input/phytoplankton/2023", pattern = "EMP", full.names = T, recursive=T)
+
+phytoplankton_emp_repo <- phyto_files_emp %>% 
+  #set_names() grabs the file names
+  set_names() %>%  
+  #reads in the files, .id adds the file name column
+  map_dfr(~read_excel(.x, col_types = "text"), .id = "source") %>% 
+  #specify the survey
+  mutate(collected_by = as.factor("EMP")) %>% 
+  #code below would pull the survey from the file name; need to update the character range though
+  # mutate(collected_by = as.factor(str_sub(source,25,27))) %>% 
+  clean_names() %>% 
+  glimpse()
+#succeeded in combining all the sample files
+#but date and time are in weird format
+#columns that don't match across files get kicked to back of data set
+#sampling depth column has three variations: "Depth (m)", "Depth (ft.)", "Depth (ft)"
+#after 2020: 'Full Code' is added as column
+#after 2021: Unit Abundance becomes Unit Abundance (# of Natural Units); Number of cells per unit becomes Total Number of Cells
+
+# Read in and combine the DFW data-------------------------
 
 #Create character vectors of DFW phytoplankton files for all years  
 phyto_files_dfw <- dir(path = "EDI/data_input/phytoplankton", pattern = "DFW", full.names = T, recursive=T)
@@ -53,7 +73,7 @@ phytoplankton_dfw <- phyto_files_dfw %>%
 #why is there an NA for station code? Because cell width and depth are on separate lines
 #it's fine for now
 
-# Read in the other files
+# Read in taxonomy and station metadata files-----------------
 
 #read in taxonomy data
 #this probably needs to be updated with each new batch of data
@@ -85,8 +105,11 @@ taxonomy_fix <- read_csv("./EDI/data_input/phytoplankton/smscg_phyto_taxonomy_mi
 
 #read in SMSCG station name info
 #includes region categories, station names, and names that identify comparable stations through time
-stations <- read_csv("./EDI/data_output/smscg_stations_phyto.csv")
-#NOTE: once we have updated this on EDI, we can just pull it from there instead of GitHub repo
+stations <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.876.7&entityid=08de2a97cf2a3743af06e3ff6e0e9b39")
+
+#create vector of EMP station names from station metadata file
+station_names <- stations %>% 
+  pull(station)
 
 #Read in EMP station info
 stn_emp <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.6&entityid=857fb9a315cd6bc47f2090f74fd1c938") %>% 
@@ -99,202 +122,57 @@ stn_emp <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=e
   select(-location) %>% 
   glimpse()
 
+#Repo: format EMP data-------------------------
+#2023 data
+#clean up EMP station names and drop unneeded stations
 
-#EDI: format EMP data-------------------------
+#look at stations in the data set
+#unique(phytoplankton_emp_repo$station_code)
 
-#look at list of stations in phyto dataset
-#unique(phytoplankton_emp$station)
-#31 stations
-
-#is there any data in published EMP phyto data set for D24?
-#d24 <- phytoplankton_emp %>% 
-#  filter(station_code == "D24")
-#yes but only during 2016 and 2017
-#maybe they call it NZ068 after 2017
-
-#nz068 <- phytoplankton_emp %>% 
-#  filter(station_code =="NZ068")
-#range(nz068$date) #"2017-05-19" "2022-12-15"
-#so yeah, D24 was phased out and replaced with NZ068
-
-#filter EMP data set to just the dates needed
-phyto_emp_recent <- phytoplankton_emp %>% 
+phyto_emp_repo_stations <- phytoplankton_emp_repo %>% 
+  #remove empty rows created by linear cell measurement rows (length, width, depth)  
+  #a little tricky just because the survey name appears in every row including the otherwise empty ones
+  #chose the taxon column as the ones to check for missing data
+  drop_na(taxon) %>%
   mutate(
-    #add a column to indicate who collected the samples
-    collected_by = "EMP"
+    #format date
+    date = as.Date(as.numeric(sample_date),origin = "1899-12-30")
+    #format time and specify that time zone is PST
+    ,time = as_hms(as.numeric(sample_time)*60*60*24)
+    #create a date time colum
+    ,date_time_PST = ymd_hms(as.character(paste(date, time)),tz="Etc/GMT+8")
     #create a month column
     ,month = as.numeric(month(date))
-    #create a year column
-    ,year = as.numeric(year(date))
-    ) %>% 
-  unite('program_station', c(collected_by,station),sep="_",remove=F) %>% 
-  #only keep 2018 and beyond and July-Oct
-  filter(year > 2017 & month > 6 & month < 11) %>% 
-  glimpse()
-  
-#check date range
-#range(phyto_emp_recent$date)
-#looks good; "2018-07-09" "2022-10-20"
-
-#look at list of stations
-#unique(phyto_emp_recent$station)
-#29 stations
-
-#create list of EMP stations needed from the station metadata file
-# stations_emp <- stations %>% 
-#   filter(grepl("EMP",alias)) %>% 
-#   pull(alias)
-
-#add station lat/long to phyto data file; should join by station
-phyto_emp_coords <- left_join(phyto_emp_recent, stn_emp) %>% 
-  #create lat/long columns that combine the two sets of lat/long
-  mutate(latitude3 = case_when(!is.na(latitude)~latitude,
-                               TRUE~latitude2)
-         ,longitude3 = case_when(!is.na(longitude)~longitude,
-                                TRUE~longitude2)) %>% 
-  #drop the old lat/long columns
-  select(-c(latitude,longitude,latitude2,longitude2)
-         ,latitude = latitude3
-         ,longitude = longitude3
-  ) %>% 
-  #there are a few samples still missing lat/long so drop them for now
-  filter(!is.na(latitude) & !is.na(longitude)) %>% 
-  #add geometry column
-  #specify the crs which is wgs84
-  st_as_sf(coords = c(x='longitude',y='latitude')
-           ,crs = 4326 #EPSG code for WGS84
-           ,remove = F
-  )   %>%
-  glimpse()
-  
-#are there any rows without lat/long?
-#there shouldn't be
-# phyto_emp_coords_na <- phyto_emp_coords %>% 
-#   filter(is.na(latitude) | is.na(longitude)) %>% 
-#   distinct(station,date,time)
-#yes there are; mostly EZ samples that didn't have coordinates added by EMP
-#exception is one sample from EMP_NZ328; probably a typo for NZ325 (Grizzly Bay station)
-
-#write file to share with EMP
-#write_csv(phyto_emp_coords_na,"./EDI/data_input/phytoplankton/phyto_emp_miss_coords.csv")
-
-#Prepare shapefile for filtering data spatially
-
-#look at coordinate reference system (CRS) of regions and basemap
-#EDSM 2019 Phase 3 Subregions
-# st_crs(R_EDSM_Subregions_19P3) #NAD83 / UTM zone 10N which is EPSG = 26910
-# st_crs(WW_Delta) #NAD83 which is EPSG = 4269
-
-#change CRS of both to match zoop data sets EPSG = 4326
-ww_delta_4326 <- st_transform(WW_Delta, crs = 4326)
-subregions_4326 <- st_transform(R_EDSM_Subregions_19P3, crs = 4326)
-
-#make map
-# (map_region_all<-ggplot()+
-#     #CDFW Delta waterways
-#     geom_sf(data = ww_delta_4326, fill= "lightblue", color= "black")+
-#     #EDSM 2017-18 Phase 1 Strata
-#     geom_sf(data = subregions_4326, aes(fill=SubRegion), alpha=0.8)+
-#     #add title
-#     ggtitle("R_EDSM_Subregions_19P3")+
-#     theme_bw()
-# )
-
-#only keep the needed subregions
-
-#create vector of subregions to keep
-subregions_focal <- c("Suisun Marsh","Grizzly Bay","Mid Suisun Bay","Honker Bay","Confluence","Lower Sacramento River","Sacramento River near Rio Vista")
-
-#categorize subregions into regions useful for SMSCG
-regions_new <- as.data.frame(
-  cbind(
-    "Region_smscg" = c("Suisun Marsh",rep("Suisun Bay",3),rep("River",3))
-    ,"SubRegion" = c("Suisun Marsh","Grizzly Bay","Mid Suisun Bay","Honker Bay","Confluence","Lower Sacramento River","Sacramento River near Rio Vista")
-  )
-)
-
-region_focal <- subregions_4326 %>% 
-  #just keep the needed subregions
-  filter(SubRegion %in% subregions_focal) %>% 
-  #add SMSCG regions which groups the subregions appropriately
-  left_join(regions_new) %>% 
-  group_by(Region_smscg) %>% 
-  summarise(SQM = sum(SQM), do_union = TRUE)
-
-#remake map with SMSCG regions  
-# (map_region_focal<-ggplot()+
-#     #CDFW Delta waterways
-#     geom_sf(data= ww_delta_4326, fill= "lightblue", color= "black")+
-#     #reduced region
-#     geom_sf(data =region_focal, aes(fill=Region_smscg), alpha=0.8)+
-#     #add title
-#     ggtitle("Focal Region")+
-#     theme_bw()
-# )
-
-#filter phyto data by region
-phyto_emp_spatial_filter <- phyto_emp_coords %>% 
-  #assign samples to regions
-  st_join(region_focal,join = st_within) %>% 
-  #drop any samples outside of focal region
-  st_filter(region_focal) %>% 
+    #correct two typos in station names
+    # ,'station_corr' = case_when(grepl("E26", station_code) ~ "EZ6"
+    #                             ,grepl("NZ542", station_code) ~"NZS42"
+    #                             ,TRUE ~ as.character(station_code))
+     )  %>% 
+  #add prefix to station names
+  unite('station', c(collected_by,station_code),sep="_",remove=F) %>% 
+  #drop the June samples
+  #filter(month!=6) %>% 
+  #drop one sample that was submitted to BSA empty
+  #filter(!(station=="EMP_EZ6" & date=="2020-09-10")) %>% 
   glimpse()
 
-#look at program_stations
-#unique(phyto_emp_spatial_filter$program_station)
-#"EMP_D10"   "EMP_EZ2"   "EMP_EZ6"   "EMP_D8"    "EMP_NZS42" "EMP_NZ032" "EMP_D7"    "EMP_D22"   "EMP_NZ068" "EMP_D4"   
 
-#let's look at which stations are retained, what region they were assigned, and and how many samples
-# phyto_emp_freq <- table(phyto_emp_spatial_filter$Region_smscg,phyto_emp_spatial_filter$station)
+#check time zone
+#tz(phyto_emp_repo_stations$date_time_PST)
+
+#look at station names again
+#unique(phyto_emp_repo_stations$station)
+
+#filter the data set to just the stations needed for SMSCG  
+phyto_emp_repo <- phyto_emp_repo_stations %>% 
+  filter(station %in% station_names) %>% 
+  glimpse()
+
+#make sure the right stations were retained
+#unique(phyto_emp_repo$station)
+#"EMP_D4"    "EMP_NZ068" "EMP_D7"    "EMP_D22"   "EMP_NZS42" "EMP_EZ6"   "EMP_NZ032" "EMP_D8"    "EMP_EZ2"   "EMP_D10"  
 #looks good
 
-#format EMP data to then combine with DFW data
-phyto_emp_format <- phyto_emp_spatial_filter %>% 
-  #switched to spatial filter above so don't need to filter by station name
-  #filter(station %in% stations_emp) %>% 
-  #for now, add debris column with "Unknown" for all
-  #hopefully, EMP will add this to their published dataset at some point
-  add_column(debris = "Unknown") %>% 
-  #drop geometry column
-  st_set_geometry(NULL) %>% 
-  #reorder and rename columns as needed
-  select(station = program_station
-         ,collected_by
-         ,date 
-         ,time_pst =time
-         ,latitude
-         ,longitude
-         ,taxon_original = orig_taxon
-         ,taxon
-         ,kingdom:species
-         ,units_per_ml = units_per_m_l
-         ,cells_per_ml = cells_per_m_l
-         ,biovolume_per_ml = average_biovolume_per_m_l
-         ,gald_um = gald
-         ,phyto_form
-         ,quality_check
-         ,debris
-  ) %>% 
-  glimpse()
-
-#look at list of stations remaining
-#unique(phyto_emp_format$station)
-#"EMP_D10"   "EMP_D8"    "EMP_NZS42" "EMP_NZ032" "EMP_D7"    "EMP_D22"   "EMP_NZ068" "EMP_D4"    "EMP_D12"  
-#looks good 
-
-#look at data start date by station
-# emp_start_date <- phyto_emp_format %>% 
-#   group_by(station) %>% 
-#   summarize(date_min = min(date))
-#all start in 2018 as expected
-
-#look at summary of samples for these stations
-# #phyto_emp_samp_sum <- phyto_emp_format %>% 
-#   distinct(station,date,time_pst) %>% 
-#   group_by(station) %>% 
-#   count()
-#expecting 20 samples per station (4 months x 5 years)
-#no missing samples
 
 #format DFW data-------------
 
@@ -336,7 +214,7 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
       ,grepl("802", station_code) ~ "FMWT_802"
       #East Marsh stations
       #in FMWT survey, MONT is now 611
-      ,grepl("MON|MONT", station_code) ~ "STN_MONT"
+      ,grepl("MON|MONT|611", station_code) ~ "STN_MONT"
       ,grepl("609", station_code) ~ "STN_609"
       #in 2022, some samples were collected at FMWT 608 instead of FMWT 610
       #probably close enough to just lump with rest of 610 data
@@ -362,9 +240,9 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
 #17 stations, which is correct
 
 #make sure conversion of DFW time from PDT to PST worked
-#tz_check <- phyto_dfw_stations %>%
-#  select(date_time_pdt,date_time_pst) %>% 
-#  mutate(time_dif = ymd_hms(date_time_pdt) - ymd_hms(date_time_pst)) %>% 
+# tz_check <- phyto_dfw_stations %>%
+#  select(date_time_pdt,date_time_pst) %>%
+#  mutate(time_dif = ymd_hms(date_time_pdt) - ymd_hms(date_time_pst)) %>%
 #  glimpse()
 #looks good
 
@@ -372,6 +250,7 @@ phyto_dfw_stations <- phytoplankton_dfw %>%
 # time_nas <- phyto_dfw_stations %>%
 # select(station_code,date,time,date_time_pdt,date_time_pst) %>%
 # filter(is.na(date_time_pdt))
+#none
 
 #add the region and combo station data 
 phyto_dfw <- left_join(phyto_dfw_stations, stations) %>% 
@@ -637,6 +516,202 @@ phyto_dfw_tax <- left_join(phyto_dfw_cleanest,taxonomy_emp_amend) %>%
   ) %>%
   glimpse()
 
+#EDI: format EMP data-------------------------
+#pre-2023 data
+
+#look at list of stations in phyto dataset
+#unique(phytoplankton_emp$station)
+#31 stations
+
+#is there any data in published EMP phyto data set for D24?
+#d24 <- phytoplankton_emp %>% 
+#  filter(station_code == "D24")
+#yes but only during 2016 and 2017
+#maybe they call it NZ068 after 2017
+
+#nz068 <- phytoplankton_emp %>% 
+#  filter(station_code =="NZ068")
+#range(nz068$date) #"2017-05-19" "2022-12-15"
+#so yeah, D24 was phased out and replaced with NZ068
+
+#filter EMP data set to just the dates needed
+phyto_emp_recent <- phytoplankton_emp %>% 
+  mutate(
+    #add a column to indicate who collected the samples
+    collected_by = "EMP"
+    #create a month column
+    ,month = as.numeric(month(date))
+    #create a year column
+    ,year = as.numeric(year(date))
+  ) %>% 
+  unite('program_station', c(collected_by,station),sep="_",remove=F) %>% 
+  #only keep 2018 and beyond and July-Oct
+  filter(year > 2017 & month > 6 & month < 11) %>% 
+  glimpse()
+
+#check date range
+#range(phyto_emp_recent$date)
+#looks good; "2018-07-09" "2022-10-20"
+
+#look at list of stations
+#unique(phyto_emp_recent$station)
+#29 stations
+
+#create list of EMP stations needed from the station metadata file
+# stations_emp <- stations %>% 
+#   filter(grepl("EMP",alias)) %>% 
+#   pull(alias)
+
+#add station lat/long to phyto data file; should join by station
+phyto_emp_coords <- left_join(phyto_emp_recent, stn_emp) %>% 
+  #create lat/long columns that combine the two sets of lat/long
+  mutate(latitude3 = case_when(!is.na(latitude)~latitude,
+                               TRUE~latitude2)
+         ,longitude3 = case_when(!is.na(longitude)~longitude,
+                                 TRUE~longitude2)) %>% 
+  #drop the old lat/long columns
+  select(-c(latitude,longitude,latitude2,longitude2)
+         ,latitude = latitude3
+         ,longitude = longitude3
+  ) %>% 
+  #there are a few samples still missing lat/long so drop them for now
+  filter(!is.na(latitude) & !is.na(longitude)) %>% 
+  #add geometry column
+  #specify the crs which is wgs84
+  st_as_sf(coords = c(x='longitude',y='latitude')
+           ,crs = 4326 #EPSG code for WGS84
+           ,remove = F
+  )   %>%
+  glimpse()
+
+#are there any rows without lat/long?
+#there shouldn't be
+# phyto_emp_coords_na <- phyto_emp_coords %>% 
+#   filter(is.na(latitude) | is.na(longitude)) %>% 
+#   distinct(station,date,time)
+#yes there are; mostly EZ samples that didn't have coordinates added by EMP
+#exception is one sample from EMP_NZ328; probably a typo for NZ325 (Grizzly Bay station)
+
+#write file to share with EMP
+#write_csv(phyto_emp_coords_na,"./EDI/data_input/phytoplankton/phyto_emp_miss_coords.csv")
+
+#Prepare shapefile for filtering data spatially
+
+#look at coordinate reference system (CRS) of regions and basemap
+#EDSM 2019 Phase 3 Subregions
+# st_crs(R_EDSM_Subregions_19P3) #NAD83 / UTM zone 10N which is EPSG = 26910
+# st_crs(WW_Delta) #NAD83 which is EPSG = 4269
+
+#change CRS of both to match zoop data sets EPSG = 4326
+ww_delta_4326 <- st_transform(WW_Delta, crs = 4326)
+subregions_4326 <- st_transform(R_EDSM_Subregions_19P3, crs = 4326)
+
+#make map
+# (map_region_all<-ggplot()+
+#     #CDFW Delta waterways
+#     geom_sf(data = ww_delta_4326, fill= "lightblue", color= "black")+
+#     #EDSM 2017-18 Phase 1 Strata
+#     geom_sf(data = subregions_4326, aes(fill=SubRegion), alpha=0.8)+
+#     #add title
+#     ggtitle("R_EDSM_Subregions_19P3")+
+#     theme_bw()
+# )
+
+#only keep the needed subregions
+
+#create vector of subregions to keep
+subregions_focal <- c("Suisun Marsh","Grizzly Bay","Mid Suisun Bay","Honker Bay","Confluence","Lower Sacramento River","Sacramento River near Rio Vista")
+
+#categorize subregions into regions useful for SMSCG
+regions_new <- as.data.frame(
+  cbind(
+    "Region_smscg" = c("Suisun Marsh",rep("Suisun Bay",3),rep("River",3))
+    ,"SubRegion" = c("Suisun Marsh","Grizzly Bay","Mid Suisun Bay","Honker Bay","Confluence","Lower Sacramento River","Sacramento River near Rio Vista")
+  )
+)
+
+region_focal <- subregions_4326 %>% 
+  #just keep the needed subregions
+  filter(SubRegion %in% subregions_focal) %>% 
+  #add SMSCG regions which groups the subregions appropriately
+  left_join(regions_new) %>% 
+  group_by(Region_smscg) %>% 
+  summarise(SQM = sum(SQM), do_union = TRUE)
+
+#remake map with SMSCG regions  
+# (map_region_focal<-ggplot()+
+#     #CDFW Delta waterways
+#     geom_sf(data= ww_delta_4326, fill= "lightblue", color= "black")+
+#     #reduced region
+#     geom_sf(data =region_focal, aes(fill=Region_smscg), alpha=0.8)+
+#     #add title
+#     ggtitle("Focal Region")+
+#     theme_bw()
+# )
+
+#filter phyto data by region
+phyto_emp_spatial_filter <- phyto_emp_coords %>% 
+  #assign samples to regions
+  st_join(region_focal,join = st_within) %>% 
+  #drop any samples outside of focal region
+  st_filter(region_focal) %>% 
+  glimpse()
+
+#look at program_stations
+#unique(phyto_emp_spatial_filter$program_station)
+#"EMP_D10"   "EMP_EZ2"   "EMP_EZ6"   "EMP_D8"    "EMP_NZS42" "EMP_NZ032" "EMP_D7"    "EMP_D22"   "EMP_NZ068" "EMP_D4"   
+
+#let's look at which stations are retained, what region they were assigned, and and how many samples
+# phyto_emp_freq <- table(phyto_emp_spatial_filter$Region_smscg,phyto_emp_spatial_filter$station)
+#looks good
+
+#format EMP data to then combine with DFW data
+phyto_emp_format <- phyto_emp_spatial_filter %>% 
+  #switched to spatial filter above so don't need to filter by station name
+  #filter(station %in% stations_emp) %>% 
+  #for now, add debris column with "Unknown" for all
+  #hopefully, EMP will add this to their published dataset at some point
+  add_column(debris = "Unknown") %>% 
+  #drop geometry column
+  st_set_geometry(NULL) %>% 
+  #reorder and rename columns as needed
+  select(station = program_station
+         ,collected_by
+         ,date 
+         ,time_pst =time
+         ,latitude
+         ,longitude
+         ,taxon_original = orig_taxon
+         ,taxon
+         ,kingdom:species
+         ,units_per_ml = units_per_m_l
+         ,cells_per_ml = cells_per_m_l
+         ,biovolume_per_ml = average_biovolume_per_m_l
+         ,gald_um = gald
+         ,phyto_form
+         ,quality_check
+         ,debris
+  ) %>% 
+  glimpse()
+
+#look at list of stations remaining
+#unique(phyto_emp_format$station)
+#"EMP_D10"   "EMP_D8"    "EMP_NZS42" "EMP_NZ032" "EMP_D7"    "EMP_D22"   "EMP_NZ068" "EMP_D4"    "EMP_D12"  
+#looks good 
+
+#look at data start date by station
+# emp_start_date <- phyto_emp_format %>% 
+#   group_by(station) %>% 
+#   summarize(date_min = min(date))
+#all start in 2018 as expected
+
+#look at summary of samples for these stations
+# #phyto_emp_samp_sum <- phyto_emp_format %>% 
+#   distinct(station,date,time_pst) %>% 
+#   group_by(station) %>% 
+#   count()
+#expecting 20 samples per station (4 months x 5 years)
+#no missing samples
 
 #combine EMP and SMSCG data sets---------------
 # glimpse(phyto_emp_format) 
