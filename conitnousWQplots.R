@@ -525,10 +525,72 @@ wytype = read_csv("data/wateryeartypes.csv")
 DF = mutate(Dayflow, Year = year(Date)) %>%
   left_join(wytype)  
 
+
+#how does outflow in spring of a dry year look compared to summer/fall of a dry year?
+
+
+DFtest = DF %>%
+  mutate(Month = month(Date), DOY = yday(Date)) %>%
+  filter( Year %in% c(2000:2023)) %>%
+  select(OUT, X2, CVP, SWP, Date, Month, DOY, Year, YT) %>%
+  filter(OUT>0) %>%
+  mutate(YT = factor(YT, levels = c("C", "D", "BN", "AN", "W")))
+
+
+ggplot(DFtest, aes(x = DOY, y = OUT, group = as.factor(Year), color = YT)) + 
+  geom_line()+
+  theme_bw()+
+  ylab("Delta Outflow Index (cfs)")+
+  xlab("Day of Year")+
+  scale_color_manual(values = c("orangered", "orange", "gold3", "springgreen3", "blue"), name = "Year Type")+
+  scale_x_continuous(breaks = c(152, 182, 213, 244, 274, 305), labels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))+
+  theme(legend.position = "bottom", legend.margin = margin(t=0, r = 0, b = 0, l = 0))
+
+
+ggplot(DFtest, aes(x = DOY, y = OUT, color = YT)) + 
+  geom_smooth()+
+  theme_bw()+
+  ylab("Delta Outflow Index (cfs)")+
+  xlab("Day of Year")+
+  scale_color_manual(values = c("orangered", "orange", "gold3", "springgreen3", "blue"), name = "Year Type")+
+  scale_x_continuous(breaks = c(31, 90, 152, 182, 213, 244, 274, 305), labels = c("Feb", "Apr", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))+
+  theme(legend.position = "bottom", legend.margin = margin(t=0, r = 0, b = 0, l = 0))
+
+
+ggplot(DFtest, aes(x = DOY, y = OUT/43559, color = YT)) + 
+  geom_smooth()+
+  theme_bw()+
+  ylab("Delta Outflow Index (acre feet per sec)")+
+  xlab("Day of Year")+
+  scale_color_manual(values = c("orangered", "orange", "gold3", "springgreen3", "blue"), name = "Year Type")+
+  scale_x_continuous(breaks = c(31, 90, 152, 182, 213, 244, 274, 305), labels = c("Feb", "Apr", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))+
+  theme(legend.position = "bottom", legend.margin = margin(t=0, r = 0, b = 0, l = 0))
+
+
+#how many acre feet per second in each month?
+
+afs = group_by(DFtest,Month, YT) %>%
+  summarize(OUT = mean(OUT, na.rm =T))
+
+#if we have 100 TAF, and we want to use it over a 7 day period, this would increase our outflow by...
+100000/(86400*7)*43559
+
+#it's probably not possible to use it that fast, but over a month
+
+afs = mutate(afs, OUT2 = OUT + 100000/(86400*30)*43559, OUTpercent = OUT2/OUT*100)
+
+100000/(86400*30)*43559
+
+################################
+
+
+
  Outflow2023 = read_excel("data/ITP_COA_8.20 - 2023 data.xlsx") %>%
    select(Date, OUT, CVP, SWP) %>%
   mutate(Year = year(Date), YT = "2023") %>%
    filter(Date> ymd("2023-09-30"))
+ 
+ 
 
 DFw2023 = bind_rows(DF, Outflow2023) %>%
   mutate(Month = month(Date), DOY = yday(Date)) %>%
@@ -587,6 +649,7 @@ monthlyx2 = mutate(X2w2023, Month = month(Date)) %>%
   group_by(Year, Month) %>%
   summarize(X2 = mean(X2, na.rm = T))
 
+write.csv(monthlyx2, "outputs/monthlyx2.csv")
 
 ggplot(DFw20232, aes(x = DOY, y = X2, group = as.factor(Year), color = YT, linewidth = as.factor(Year))) + 
   geom_line()+
@@ -649,3 +712,44 @@ expanddate = function(x) {
 
 #apply the function and bind the resulting data set together. 
 ddf2 = bind_rows(apply(ddf,1, expanddate, simplify = TRUE))
+
+################################################
+DFw20232 = bind_rows(DF, Outflow2023) %>%
+  mutate(Month = month(Date), DOY = yday(Date)) %>%
+ # filter(Month %in% c(6:10), Year %in% c(2017:2023)) %>%
+  select(OUT, X2, CVP, SWP, Date, Month, DOY, Year, YT) %>%
+  mutate(YT = case_when(Year == 2023 ~ "2023",
+                        TRUE ~ YT)) %>%
+  mutate(YT = factor(YT, levels = c("C", "D", "BN", "W", "2023"), labels = c("Critical", "Dry", "Below Normal", "Wet", "2023")))
+
+
+X2b = filter(DFw20232, !is.na(X2)) %>%
+  ungroup()
+X2monthly = group_by(X2b, Month, Year, YT) %>%
+  summarize(X2 = mean(X2))
+
+ggplot(X2b, aes(x = DOY, y = X2, color = YT, group = Year))+
+  geom_line()
+
+library(readxl)
+
+oldX2 = read_excel("data/supplemental_data_wr.1943-5452.0000617_hutton3.xlsx")
+names(oldX2) = c("Date", "X2", "SJRX2")
+
+X2all = filter(oldX2, year(Date)<1997) %>%
+  bind_rows(X2b) %>%
+  select(Date, X2) %>%
+  mutate(Year = year(Date), Month = month(Date)) %>%
+  left_join(yrs)
+
+FallX2 = filter(X2all, Month %in% c(6:10)) %>%
+  group_by(Year, `Yr-type`) %>%
+  summarize(FallX2 = mean(X2)) %>%
+  mutate(YT = factor(`Yr-type`, levels = c("C", "D", "BN","AN", "W")))
+
+ggplot(FallX2, aes(x = Year, y = FallX2, fill = YT))+ geom_col()+
+  geom_hline(yintercept = 80)+
+  geom_hline(yintercept = 74, linetype = 2)+
+  theme_bw()+
+  ylab("Mean Jun-Oct X2, km")+
+  scale_fill_manual(values = c("darkred", "orange", "yellow", "lightgreen", "darkblue"))

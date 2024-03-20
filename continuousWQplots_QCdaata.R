@@ -179,6 +179,20 @@ ggplot(WQmeanally, aes(x = Date, y = Value))+
 
 ggsave("plots/AVGwq2023.png", device = "png", width =8, height =8)
 
+###############################################
+#focus in on temperature in Grizzly Bay
+
+grizz = filter(WQmeanally, station %in% c("GZL", "GZM", "GZB", "BDL"), Analyte == "watertemperature")
+
+ggplot(grizz, aes(x = Date, y = Value, color = station))+
+  geom_line()+
+  coord_cartesian(xlim = c(as.Date("2023-07-01"), as.Date("2023-09-30")),
+                  ylim = c(18, 25))+
+  ylab("Water Temperature C")+
+  xlab("Date - 2023")+
+  geom_hline(yintercept = 22, linetype = 2)+
+  #geom_hline(yintercept = 25, linetype =2, color = "red")+
+  theme_bw()
 
 ########################################
 #plot for smelt cage report

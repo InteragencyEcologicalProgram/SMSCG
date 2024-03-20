@@ -39,7 +39,7 @@ zooper = Zoopsynther(Data_type = "Community",
 
 #add in the stations locations/ regions for the zooper dataset before taking averages
 
-load("SMSCGRegions.RData")
+load("Data/SMSCGRegions.RData")
 
 na_coords = zooper %>% 
   subset(is.na(zooper$Latitude)) #need to check which coordinates have NAs, looks like its from a 2018 LSC station, which don't need anyway
@@ -66,7 +66,7 @@ avgzoopCPUE = zoopstations %>%
 
 #read in the biomass file 
 
-biomass = read.csv("Mesomicrotaxa Biomass.csv")
+biomass = read.csv("Data/Mesomicrotaxa Biomass.csv")
 
 zooper_bpue = left_join(avgzoopCPUE, biomass) %>% 
   mutate(BPUE = meanCPUE*Carbon_weight_ug) %>% 
@@ -79,7 +79,7 @@ zooper_bpue = left_join(avgzoopCPUE, biomass) %>%
 
 #read in SMSCG data which has EMP that hasn't been published yet
 
-SMSCG_CPUE = read.csv("SMSCG_CBNet_2018to2023CPUE_07Feb2024.csv") %>% 
+SMSCG_CPUE = read.csv("Data/SMSCG_CBNet_2018to2023CPUE_07Feb2024.csv") %>% 
   select(Project, Year, Date, Station, ACARTELA:CUMAC ) %>% 
   rename(Source = Project) %>% #renaming Project so that the survey matches the source column in zooper
   mutate(Date2 = mdy(Date)) %>% #change the date column to be a date format since its a character now
@@ -92,7 +92,7 @@ SMSCG_CPUE = read.csv("SMSCG_CBNet_2018to2023CPUE_07Feb2024.csv") %>%
 
 #read in station locations file for lat and long
 
-SMSCG_CPUE_Loc = read.csv("SMSCG_Station_Coords.csv") %>% 
+SMSCG_CPUE_Loc = read.csv("Data/SMSCG_Station_Coords.csv") %>% 
   select(Project, Station, longitude, latitude) %>% 
   rename(Source = Project, Longitude = longitude, Latitude = latitude) #renaming so can combine down the line
 
@@ -281,6 +281,8 @@ hist(zooptots$logBPUE) #skewed so need to use log bpue
 zlmer = lmer(logBPUE~ Region*Year + (1|Month), data = zooptots)
 summary(zlmer)
 plot(zlmer)
+
+summary(zlmer)$coefficients
 
 #plot the output of the linear model. Need the effects package for that. This is just an effects plot
 
