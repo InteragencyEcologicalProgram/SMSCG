@@ -84,24 +84,50 @@ taxonomy <- read_csv("./EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-
   rename(taxon_original = taxon) %>% 
   glimpse()
 
-#read in EMP taxonomy data from PESP GitHub repo
+#read in EMP taxonomy data from PESP GitHub repo (10/10/2023)
 taxonomy_emp <- read_csv("./EDI/data_input/phytoplankton/phyto_classification_PESP_2023_10_10.csv") %>% 
   #for some reason, a few names in the current_name column of the file from PESP Github repo taxonomy file could not be edited with code
   #Actinocyclus cuneiformis, Gomphonema lingulatum var. constrictum
   #had to create new file, which I put in the SMSCG repo, delete these two cells and retype them; then things worked like normal
   #read_csv("https://raw.githubusercontent.com/InteragencyEcologicalProgram/PESP/main/admin/global_data/phyto_classification.csv") %>% 
-  clean_names() %>% 
+  clean_names()  %>% 
   #rename taxonomic name column to taxon_original
   rename(taxon_original = name) %>% 
   glimpse()
 
+#read in EMP taxonomy data from PESP GitHub repo (3/21/2024)
+taxonomy_emp_new <- read_csv("./EDI/data_input/phytoplankton/phyto_classifications_PESP_2024-03-21.csv") %>% 
+  clean_names() %>% 
+  #rename taxonomic name column to taxon_original
+  rename(taxon_original = taxon) %>% 
+  glimpse()
+
+#read in additional EMP taxonomy data from PESP GitHub repo (3/21/2024)
+#not sure what this is but probably taxa not in EMP survey but in other phyto surveys
+#there is redundancy between these two new EMP dataframes so "extra" might include everything in the other df plus the extras
+taxonomy_emp_extra_new <- read_csv("./EDI/data_input/phytoplankton/phyto_classifications_extra_PESP_2024-03-21.csv") %>% 
+  clean_names() %>% 
+  #rename taxonomic name column to taxon_original
+  rename(taxon_original = taxon) %>% 
+  glimpse()
+
+#combine new EMP taxonomy data frames
+taxonomy_emp_comb <- bind_rows(taxonomy_emp_new, taxonomy_emp_extra_new) %>% 
+  distinct() %>% 
+  glimpse()
+  
+
 #read in file with taxa from AWCA that didn't match EMP taxonomy
 taxonomy_awca_mism <- read_csv("https://raw.githubusercontent.com/EMRR-DISE/DSRS_AWCA/main/phyto/data_input/other/phyto_taxonomy_mismatch_fixed_2023-08-11.csv") %>% 
-  rename(taxon_original = name) %>% 
+  rename(taxon_original = name
+         ,current_taxon = current_name
+         ) %>% 
   select(-species)
 
 #read in supplementary taxonomy info that fills gaps in PESP list
-taxonomy_fix <- read_csv("./EDI/data_input/phytoplankton/smscg_phyto_taxonomy_mismatch_fixed_2023-08-25.csv")
+taxonomy_fix <- read_csv("./EDI/data_input/phytoplankton/smscg_phyto_taxonomy_mismatch_fixed_2023-08-25.csv") %>% 
+  rename(current_taxon = current_name) %>% 
+  glimpse()
 
 #read in SMSCG station name info
 #includes region categories, station names, and names that identify comparable stations through time
@@ -419,12 +445,6 @@ phyto_dfw_cleanest <- phyto_dfw_cleaner %>%
   clean_names() %>% 
   glimpse()
   
-
-  
-
-
-
-
 #look closer at how comments were translated to categories for debris and quality_check
 # phyto_comment_check <- phyto_dfw_cleanest %>% 
 #   filter(!is.na(comments)) %>% 
@@ -478,9 +498,13 @@ phyto_dfw_cleanest <- phyto_dfw_cleaner %>%
 #nonmatching columns won't be in final version anyway
 #glimpse(taxonomy_fix) 
 #glimpse(taxonomy_emp)
-taxonomy_emp_amend <- bind_rows(taxonomy_fix,taxonomy_emp)  %>% 
+taxonomy_emp_amend <- bind_rows(taxonomy_fix,taxonomy_emp_comb)  %>% 
   select(kingdom:genus) %>% 
+  distinct() %>% 
   glimpse()
+
+# Monoraphidium <- taxonomy_emp_amend %>% 
+#   filter(genus =="Monoraphidium")
 
 #look at cf. Chlorella sp.
 # chlor <- taxonomy_emp_amend %>% 
@@ -501,10 +525,10 @@ phyto_dfw_tax <- left_join(phyto_dfw_cleanest,taxonomy_emp_amend) %>%
   mutate(
     #create taxon column that is taxon_original with old names replaced with current names
     #ie, shouldn't have any missing names in the new taxon column
-    taxon = case_when((current_name!="None" & current_name!="Unknown")~current_name
+    taxon = case_when((current_taxon!="None" & current_taxon!="Unknown")~current_taxon
                       ,TRUE~taxon_original)
     #create new taxon_original column that only includes a name if there is a new one to replace it
-    ,taxon_original2 = case_when((current_name!="None" & current_name!="Unknown")~taxon_original
+    ,taxon_original2 = case_when((current_taxon!="None" & current_taxon!="Unknown")~taxon_original
                                  ,TRUE ~ NA)
     #looks like genus is wrong in cases where the new name is a different genus
     #so need to make new genus column
@@ -535,7 +559,23 @@ phyto_dfw_tax <- left_join(phyto_dfw_cleanest,taxonomy_emp_amend) %>%
     ,quality_check
     ,debris
   ) %>%
+  #combining by taxon original and genus created duplicated rows in some cases
+  #for now, fix this with distinct function. this gets back to correct number of rows
+  distinct() %>% 
   glimpse()
+
+#look for non-matching taxa
+tax_mism2 <- phyto_dfw_tax %>% 
+  filter(is.na(kingdom)) %>% 
+  select(taxon_original:species) %>% 
+  distinct() %>% 
+  arrange(taxon) %>% 
+  select(taxon_original = taxon
+         ,genus
+         ,species
+         )
+#11 non-matching taxa to add to taxonomy file
+#write_csv(tax_mism2,"./EDI/data_input/phytoplankton/smscg_phyto_taxonomy_mismatch_2024-03-21.csv")
 
 #EDI: format EMP data-------------------------
 #pre-2023 data

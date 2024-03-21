@@ -32,3 +32,14 @@ Plantae,Chlorophyta,Nephroselmidophyceae,Green Algae,None,cf. Nephroselmis sp.,N
 Plantae,Chlorophyta,Trebouxiophyceae,Green Algae,None,cf. Nannochloris sp.,Nannochloris,sp.,
 Plantae,Chlorophyta,Ulvophyceae,Green Algae,None,cf. Ulothrix sp.,Ulothrix,sp.,
 Protozoa,Euglenozoa,Euglenophyceae,Euglenoids,Lepocinclis acus ,Euglena acus,Euglena,acus,
+Chromista,Ochrophyta,Coscinodiscophyceae,Centric Diatoms,,Chaetoceros subtilis,Chaetoceros,subtilis,pull high taxonomy from emp
+Plantae,Chlorophyta,Chlorophyceae,Green Algae,,Chlamydomonas spp.,Chlamydomonas,spp.,"pull high taxonomy from emp, would have matched EMP if ""sp"" instead of ""spp"""
+Chromista,Ochrophyta,Coscinodiscophyceae,Centric Diatoms,,Cyclotella spp.,Cyclotella,spp.,"pull high taxonomy from emp, would have matched EMP if ""sp"" instead of ""spp"""
+Bacteria,Cyanobacteria,Cyanophyceae,Cyanobacteria,,Merismopedia tranquilla,Merismopedia,tranquilla,pull high taxonomy from emp
+Plantae,Chlorophyta,Chlorophyceae,Green Algae,,Monoraphidium spp.,Monoraphidium,spp.,"pull high taxonomy from emp, would have matched EMP if ""sp"" instead of ""spp"""
+Chromista,Ochrophyta,Bacillariophyceae,Pennate Diatoms,,Nitzschia spp.,Nitzschia,spp.,"pull high taxonomy from emp, would have matched EMP if ""sp"" instead of ""spp"""
+,,,,,Pedinomonas sp.,Pedinomonas,sp.,not in emp
+Chromista,Cryptophyta,Cryptophyceae,Cryptophytes,,Plagioselmis cf. lacustris,Plagioselmis,lacustris,pull high taxonomy from emp
+Chromista,Cryptophyta,Cryptophyceae,Cryptophytes,,Rhodomonas sp,Rhodomonas,sp.,"would match EMP if ""sp."" instead of ""sp"""
+,,,,,cf. Geminella sp.,Geminella,sp.,not in emp
+Chromista,Ochrophyta,Bacillariophyceae,Pennate Diatoms,,cf. Reimeria sp.,Reimeria,sp.,
