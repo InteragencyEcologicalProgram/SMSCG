@@ -18,7 +18,7 @@ library(sf) #spatial tools
 #calculations in this script were corrected accordingly on 2/10/2022
 
 # Read in the EMP data from EDI (pre-2023)------------------------------
-phytoplankton_emp_edi <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.7&entityid=634e9843500249d3b96b45fd6a8cad65") %>% 
+phytoplankton_emp_edi <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.8&entityid=634e9843500249d3b96b45fd6a8cad65") %>% 
   clean_names() %>% 
   glimpse()
 
@@ -266,7 +266,6 @@ phyto_dfw <- left_join(phyto_dfw_stations, stations) %>%
 #   distinct(region, station, month, collected_by) %>% 
 #   arrange(month, station, collected_by)
 
-
 #format DFW data set
 phyto_dfw_cleaner <- phyto_dfw %>% 
   mutate(
@@ -372,37 +371,59 @@ phyto_dfw_cleaner <- phyto_dfw %>%
 #some about high sediment/detritus
 #some about many broken diatoms
 
-#create new columns summarizing comments
-#ideally would make a separate column for each issue type and then combine into one later
-#but few enough comments per comment field to just start with one quality check column instead
-phyto_dfw_cleanest <- phyto_dfw_cleaner %>% 
-  mutate(
-    #add column for quality based on comments
-    #order of these is by importance because earlier ones get "set" first 
-    #eg, BadData is first because that is most important type of note
-    quality_check = case_when(
-      grepl("50 fields",comments,ignore.case=T)~"BadData"
-      ,grepl("degraded", comments, ignore.case=T) ~ "Degraded"
-       ,grepl("fragment", comments,ignore.case=T) ~"Fragmented"
-       ,grepl("fungus",comments,ignore.case=T)~"PoorlyPreserved"
-       ,grepl("broken",comments,ignore.case=T)~"BrokenDiatoms"
-       ,TRUE ~ "Good"
-     )
-    #add column indicating amount of sediment and detritus
-    #comments often note differing levels of sediment vs detritus
-    #for simplicity combine them and use the highest level indicated
-    #eg, low detritus and high sediment simply becomes high
-    ,debris = case_when(
-      grepl("high sediment",comments, ignore.case=T)~"High"
-      ,grepl("high det",comments, ignore.case=T)~"High" #shortened because of typo "detitus"
-      ,grepl("moderate sediment",comments, ignore.case=T)~"Moderate"
-      ,grepl("moderate detritus",comments, ignore.case=T)~"Moderate"
-      ,grepl("low sediment",comments, ignore.case=T)~"Low"
-      ,grepl("low detritus",comments, ignore.case=T)~"Low"
-      ,TRUE~NA
+#Summarize comments
+#simplify them into two columns QualityCheck and Debris
+#implemented Perry's functions to do this
+#The only difference between my code and Perry's code is I used "comments" instead of "Comments"
+
+#function for generating QualityCheck column
+add_qc_col <- function(df){
+  df <- df %>%
+    mutate(
+      QC_1 = case_when(grepl('delete|cross contamination', comments, ignore.case = TRUE) ~ 'BadData'),
+      QC_2 = case_when(grepl('did not reach|cannot meet tally|cannot meet natural unit', comments, ignore.case = TRUE) ~ 'TallyNotMet'),
+      QC_3 = case_when(grepl('degraded', comments, ignore.case = TRUE) ~ 'Degraded'),
+      QC_4 = case_when(grepl('poor preservation|poorly preserved|weak preservation|weakly preserved|fungus', comments, ignore.case = TRUE) ~ 'PoorlyPreserved'),
+      QC_5 = case_when(grepl('obscured', comments, ignore.case = TRUE) ~ 'Obscured'),
+      QC_6 = case_when(grepl('fragment\\.|diatom fragment', comments, ignore.case = TRUE) ~ 'Fragmented'),
+      QC_7 = case_when(grepl('broken diatom', comments, ignore.case = TRUE) & !grepl('broken diatom fragment', comments, ignore.case = TRUE) ~ 'BrokenDiatoms'),
+      QC_8 = case_when(grepl('mucilaginous detritus', comments, ignore.case = TRUE) ~ 'MucilaginousDetritus')
+    ) %>%
+    unite(QualityCheck, starts_with('QC'), remove = TRUE, na.rm = TRUE, sep = ' ')
+  
+  df$QualityCheck[df$QualityCheck == ''] <- 'Good'
+  
+  return(df)
+}
+
+#function for generating Debris column
+add_debris_col <- function(df){
+  df <- df %>%
+    mutate(
+      debris =
+        case_when(
+          grepl('high detritus|high sediment|heavy detritus|heavy sediment', comments, ignore.case = TRUE) ~ 'high',
+          grepl('moderate detritus|moderate sediment', comments, ignore.case = TRUE) ~ 'moderate',
+          grepl('low detritus|low sediment', comments, ignore.case = TRUE) ~ 'low',
+          TRUE ~ NA_character_
+        )
     )
-  ) %>% 
+  
+  return(df)
+}
+
+#add QualityCheck and Debris columns to my dataset
+phyto_dfw_cleanest <- phyto_dfw_cleaner %>% 
+  add_qc_col() %>% 
+  add_debris_col() %>% 
+  clean_names() %>% 
   glimpse()
+  
+
+  
+
+
+
 
 #look closer at how comments were translated to categories for debris and quality_check
 # phyto_comment_check <- phyto_dfw_cleanest %>% 
