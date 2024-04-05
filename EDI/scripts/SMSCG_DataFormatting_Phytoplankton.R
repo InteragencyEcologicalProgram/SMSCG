@@ -939,7 +939,7 @@ phyto_all <- bind_rows(phyto_emp_format,phyto_dfw_tax,phyto_emp_repo_tax) %>%
     #to be safe, change time to character for exporting data
     time_pst = as.character(time_pst)
     #also need to change some EMP quality check from Fragmented to Fragment
-    ,quality_check2 = case_when(quality_check=="Fragmented"~"Fragment",TRUE~quality_check)
+    ,quality_check2 = case_when(quality_check=="Fragmented" | quality_check=="Fragment"~"BrokenDiatoms",TRUE~quality_check)
     ) %>% 
   select(-quality_check) %>% 
   rename(quality_check = quality_check2) %>% 
@@ -992,13 +992,18 @@ phyto_all_tax <- phyto_all %>%
                         ,class=="Synurophyceae"~"Chrysophyceae"
                         ,TRUE~class
     ),.after=algal_group
+    #fix an error in one taxon 
+    ,species2 = case_when(taxon =="Teleaulax amphioxeia" & taxon_original=="Plagioselmis prolonga" & species == "prolonga"~"amphioxeia"
+                         ,TRUE~species
+                         )
   ) %>% 
-  select(-c(kingdom:algal_group)) %>% 
+  select(-c(kingdom:algal_group,species)) %>% 
   rename(
     kingdom = kingdom2
     ,phylum = phylum2
     ,class = class2
     ,algal_group = algal_group2
+    ,species = species2
   ) %>% 
   glimpse()
 
@@ -1072,6 +1077,27 @@ phyto_smscg <- phyto_all_tax %>%
 
 #write the output data file for SMSCG EDI
 #write_csv(phyto_smscg, "./EDI/data_output/smscg_phytoplankton_samples_2020-2023.csv")
+
+
+#recombine taxonomy and abunance data to make sure it works correctly
+phyto_all_tax_recomb <- left_join(phyto_smscg,phyto_tax_final) 
+#2966 instead of 2924 rows (42 extra created when recombining data frames)
+#fixed one error in taxonomy so now there are no duplicates
+
+#look for duplicates of station, date, time, taxon, taxon_original
+# find_dups <- phyto_all_tax_recomb %>% 
+#   group_by(station, date, time_pst, taxon, taxon_original) %>% 
+#   filter(n()>1) %>% 
+#   summarize(n=n())
+#in all cases, there are two copies of a record Teleaulax amphioxeia
+
+#look at this taxon's records more closely
+# ta_check <- phyto_all_tax_recomb %>% 
+#   filter(taxon =="Teleaulax amphioxeia")
+#for some reason, we have two records that have taxon == Teleaulax amphioxeia and taxon_original == Plagioselmis prolonga
+#one is genus == Teleaulax and species == amphioxeia (correct)
+#the other is genus == Teleaulax and species == prolonga (incorrect)
+#for now just do a quick change from incorrect to correct species (done above)
 
 
 # #Add higher level taxonomic information manually-------------
