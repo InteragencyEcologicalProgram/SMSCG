@@ -17,6 +17,46 @@ library(sf) #spatial tools
 #which is the total number of cells counted for that taxon in a particular sample
 #calculations in this script were corrected accordingly on 2/10/2022
 
+# Functions-----------------
+#these are Perry's functions for summarizing taxonomist comments
+#The only difference between my code and Perry's code is I used "comments" instead of "Comments"
+
+#function for generating QualityCheck column
+add_qc_col <- function(df){
+  df <- df %>%
+    mutate(
+      QC_1 = case_when(grepl('delete|cross contamination', comments, ignore.case = TRUE) ~ 'BadData'),
+      QC_2 = case_when(grepl('did not reach|cannot meet tally|cannot meet natural unit', comments, ignore.case = TRUE) ~ 'TallyNotMet'),
+      QC_3 = case_when(grepl('degraded', comments, ignore.case = TRUE) ~ 'Degraded'),
+      QC_4 = case_when(grepl('poor preservation|poorly preserved|weak preservation|weakly preserved|fungus', comments, ignore.case = TRUE) ~ 'PoorlyPreserved'),
+      QC_5 = case_when(grepl('obscured', comments, ignore.case = TRUE) ~ 'Obscured'),
+      QC_6 = case_when(grepl('fragment\\.|diatom fragment', comments, ignore.case = TRUE) ~ 'Fragmented'),
+      QC_7 = case_when(grepl('broken diatom', comments, ignore.case = TRUE) & !grepl('broken diatom fragment', comments, ignore.case = TRUE) ~ 'BrokenDiatoms'),
+      QC_8 = case_when(grepl('mucilaginous detritus', comments, ignore.case = TRUE) ~ 'MucilaginousDetritus')
+    ) %>%
+    unite(QualityCheck, starts_with('QC'), remove = TRUE, na.rm = TRUE, sep = ' ')
+  
+  df$QualityCheck[df$QualityCheck == ''] <- 'Good'
+  
+  return(df)
+}
+
+#function for generating Debris column
+add_debris_col <- function(df){
+  df <- df %>%
+    mutate(
+      debris =
+        case_when(
+          grepl('high detritus|high sediment|heavy detritus|heavy sediment', comments, ignore.case = TRUE) ~ 'high',
+          grepl('moderate detritus|moderate sediment', comments, ignore.case = TRUE) ~ 'moderate',
+          grepl('low detritus|low sediment', comments, ignore.case = TRUE) ~ 'low',
+          TRUE ~ NA_character_
+        )
+    )
+  
+  return(df)
+}
+
 # Read in the EMP data from EDI (pre-2023)------------------------------
 phytoplankton_emp_edi <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.8&entityid=634e9843500249d3b96b45fd6a8cad65") %>% 
   clean_names() %>% 
@@ -78,55 +118,65 @@ phytoplankton_dfw <- phyto_files_dfw %>%
 #read in taxonomy data
 #this probably needs to be updated with each new batch of data
 #update this file with the updates/corrections I got from AlgaeBase 2/24/2022
-taxonomy <- read_csv("./EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-02-09.csv") %>% 
-  clean_names() %>% 
-  #rename taxonomic name column to taxon_original
-  rename(taxon_original = taxon) %>% 
-  glimpse()
+# taxonomy <- read_csv("./EDI/data_input/phytoplankton/PhytoplanktonTaxonomy_2022-02-09.csv") %>% 
+#   clean_names() %>% 
+#   #rename taxonomic name column to taxon_original
+#   rename(taxon_original = taxon) %>% 
+#   glimpse()
 
 #read in EMP taxonomy data from PESP GitHub repo (10/10/2023)
-taxonomy_emp <- read_csv("./EDI/data_input/phytoplankton/phyto_classification_PESP_2023_10_10.csv") %>% 
-  #for some reason, a few names in the current_name column of the file from PESP Github repo taxonomy file could not be edited with code
-  #Actinocyclus cuneiformis, Gomphonema lingulatum var. constrictum
-  #had to create new file, which I put in the SMSCG repo, delete these two cells and retype them; then things worked like normal
-  #read_csv("https://raw.githubusercontent.com/InteragencyEcologicalProgram/PESP/main/admin/global_data/phyto_classification.csv") %>% 
-  clean_names()  %>% 
-  #rename taxonomic name column to taxon_original
-  rename(taxon_original = name) %>% 
-  glimpse()
+# taxonomy_emp <- read_csv("./EDI/data_input/phytoplankton/phyto_classification_PESP_2023_10_10.csv") %>% 
+#   #for some reason, a few names in the current_name column of the file from PESP Github repo taxonomy file could not be edited with code
+#   #Actinocyclus cuneiformis, Gomphonema lingulatum var. constrictum
+#   #had to create new file, which I put in the SMSCG repo, delete these two cells and retype them; then things worked like normal
+#   #read_csv("https://raw.githubusercontent.com/InteragencyEcologicalProgram/PESP/main/admin/global_data/phyto_classification.csv") %>% 
+#   clean_names()  %>% 
+#   #rename taxonomic name column to taxon_original
+#   rename(taxon_original = name) %>% 
+#   glimpse()
 
 #read in EMP taxonomy data from PESP GitHub repo (3/21/2024)
-taxonomy_emp_new <- read_csv("./EDI/data_input/phytoplankton/phyto_classifications_PESP_2024-03-21.csv") %>% 
-  clean_names() %>% 
-  #rename taxonomic name column to taxon_original
-  rename(taxon_original = taxon) %>% 
-  glimpse()
+# taxonomy_emp_new <- read_csv("./EDI/data_input/phytoplankton/phyto_classifications_PESP_2024-03-21.csv") %>% 
+#   clean_names() %>% 
+#   #rename taxonomic name column to taxon_original
+#   rename(taxon_original = taxon) %>% 
+#   glimpse()
 
 #read in additional EMP taxonomy data from PESP GitHub repo (3/21/2024)
 #not sure what this is but probably taxa not in EMP survey but in other phyto surveys
 #there is redundancy between these two new EMP dataframes so "extra" might include everything in the other df plus the extras
-taxonomy_emp_extra_new <- read_csv("./EDI/data_input/phytoplankton/phyto_classifications_extra_PESP_2024-03-21.csv") %>% 
+taxonomy_emp_extra <- read_csv("./EDI/data_input/phytoplankton/phyto_classifications_extra_PESP_2024-03-21.csv") %>% 
   clean_names() %>% 
   #rename taxonomic name column to taxon_original
   rename(taxon_original = taxon) %>% 
   glimpse()
 
 #combine new EMP taxonomy data frames
-taxonomy_emp_comb <- bind_rows(taxonomy_emp_new, taxonomy_emp_extra_new) %>% 
-  distinct() %>% 
-  glimpse()
+# taxonomy_emp_comb <- bind_rows(taxonomy_emp_new, taxonomy_emp_extra_new) %>% 
+#   distinct() %>% 
+#   glimpse()
   
 
 #read in file with taxa from AWCA that didn't match EMP taxonomy
-taxonomy_awca_mism <- read_csv("https://raw.githubusercontent.com/EMRR-DISE/DSRS_AWCA/main/phyto/data_input/other/phyto_taxonomy_mismatch_fixed_2023-08-11.csv") %>% 
-  rename(taxon_original = name
-         ,current_taxon = current_name
-         ) %>% 
-  select(-species)
+# taxonomy_awca_mism <- read_csv("https://raw.githubusercontent.com/EMRR-DISE/DSRS_AWCA/main/phyto/data_input/other/phyto_taxonomy_mismatch_fixed_2023-08-11.csv") %>% 
+#   rename(taxon_original = name
+#          ,current_taxon = current_name
+#          ) %>% 
+#   select(-species)
 
 #read in supplementary taxonomy info that fills gaps in PESP list
-taxonomy_fix <- read_csv("./EDI/data_input/phytoplankton/smscg_phyto_taxonomy_mismatch_fixed_2023-08-25.csv") %>% 
+taxonomy_fix <- read_csv("./EDI/data_input/phytoplankton/smscg_phyto_taxonomy_mismatch_fixed_2024-03-21.csv") %>% 
   rename(current_taxon = current_name) %>% 
+  glimpse()
+
+#add the missing taxa to the PESP/EMP taxonomy dataset and then add to SMSCG dataset
+#some differences in columns between datasets but bind_rows will figure it out
+#nonmatching columns won't be in final version anyway
+#glimpse(taxonomy_fix) 
+#glimpse(taxonomy_emp_extra)
+taxonomy_emp_amend <- bind_rows(taxonomy_fix,taxonomy_emp_extra)  %>% 
+  select(kingdom:genus) %>% 
+  distinct() %>% 
   glimpse()
 
 #read in SMSCG station name info
@@ -166,7 +216,7 @@ phyto_emp_repo_stations <- phytoplankton_emp_repo %>%
     #format time and specify that time zone is PST
     ,time = as_hms(as.numeric(sample_time)*60*60*24)
     #create a date time colum
-    ,date_time_PST = ymd_hms(as.character(paste(date, time)),tz="Etc/GMT+8")
+    ,date_time_pst = ymd_hms(as.character(paste(date, time)),tz="Etc/GMT+8")
     #create a month column
     ,month = as.numeric(month(date))
     #correct two typos in station names
@@ -189,16 +239,171 @@ phyto_emp_repo_stations <- phytoplankton_emp_repo %>%
 #look at station names again
 #unique(phyto_emp_repo_stations$station)
 
-#filter the data set to just the stations needed for SMSCG  
+#filter the data set to just the stations needed for SMSCG and add additional station metadata
 phyto_emp_repo <- phyto_emp_repo_stations %>% 
   filter(station %in% station_names) %>% 
+  left_join(stations) %>% 
+  #for now, leave out EZ stations because we don't have coordinates for them handy
+  filter(station!="EMP_EZ2" & station!="EMP_EZ6") %>% 
   glimpse()
 
-#make sure the right stations were retained
-#unique(phyto_emp_repo$station)
-#"EMP_D4"    "EMP_NZ068" "EMP_D7"    "EMP_D22"   "EMP_NZS42" "EMP_EZ6"   "EMP_NZ032" "EMP_D8"    "EMP_EZ2"   "EMP_D10"  
-#looks good
+#make sure all stations matched
+# phyto_emp_repo_na <- phyto_emp_repo %>%
+#   filter(is.na(station_group))
+#no NAs so matched correctly
 
+#summary of station info
+# phyto_emp_repo_combo <- phyto_emp_repo %>%
+#   distinct(region, station, month, collected_by) %>%
+#   arrange(month, station, collected_by)
+
+
+
+#format EMP repo data set
+phyto_emp_repo_cleaner <- phyto_emp_repo %>% 
+  #mutate(
+    #combine data from the two total cells columns (just different names for same thing)
+    # total_cells = as.numeric(case_when(!is.na(number_of_cells_per_unit)~number_of_cells_per_unit
+    #                                    ,!is.na(total_number_of_cells)~total_number_of_cells))
+    #combine data from the two unit abundance columns (just different names for same thing)
+  #   ,unit_abundance2 = as.numeric(case_when(!is.na(unit_abundance)~unit_abundance
+  #                                           ,!is.na(unit_abundance_number_of_natural_units)~unit_abundance_number_of_natural_units))
+  # ) %>% 
+  #drop old unit abundance column
+  #select(-unit_abundance) %>% 
+  #subset to just the needed columns
+  select(station
+         , collected_by
+         , latitude
+         , longitude
+         , date_time_pst
+         , genus
+         , species
+         , taxon
+         , phyto_form = colony_filament_individual_group_code
+         , unit_abundance = unit_abundance_number_of_natural_units
+         , slide_chamber_area_mm2
+         , volume_analyzed_m_l
+         , field_of_view_mm2
+         , number_of_fields_counted
+         , factor
+         , gald_1
+         , total_cells = total_number_of_cells
+         , biovolume_1:biovolume_10
+         ,comments) %>% 
+  mutate(across(c(unit_abundance:biovolume_10),as.numeric)) %>% 
+  rowwise() %>% 
+  mutate(  
+    #use the date-time column with standardized time zone to extract time
+    time_pst = as_hms(date_time_pst)
+    #use date-time column to extract date
+    ,date = date(date_time_pst)
+    #create new column that calculates mean biovolume per cell
+    ,mean_cell_biovolume = mean(c_across(biovolume_1:biovolume_10),na.rm=T)
+    #create new column that calculates organisms per mL; round number to nearest tenth
+    #different from cells per mL because some organisms are multicellular
+    ,units_per_ml = round((unit_abundance*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted),1)
+    #,units_per_ml_easy = (unit_abundance*factor)
+    #create new column that calculates cells per mL; round number to nearest tenth
+    ,cells_per_ml = round((total_cells*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted),1)
+    #,cells_per_ml_easy = (total_cells*factor)
+    #create a column that calculates biovolume per mL
+    #units for biovolume are cubic microns; old version is incorrect calculations; round number to nearest tenth
+    #,biovolume_per_ml_old = units_per_ml * total_cells * mean_cell_biovolume
+    ,biovolume_per_ml = round((total_cells* mean_cell_biovolume*slide_chamber_area_mm2)/(volume_analyzed_m_l*field_of_view_mm2*number_of_fields_counted),1)
+    #,biovolume_per_ml_easy = factor * total_cells * mean_cell_biovolume
+  ) %>% 
+  #subset and reorder columns again to just those needed
+  select(station
+         ,collected_by
+         ,latitude
+         ,longitude
+         ,date
+         ,time_pst
+         ,taxon_original = taxon                            
+         ,genus
+         ,species
+         ,units_per_ml
+         #,units_per_ml_easy
+         ,cells_per_ml
+         #,cells_per_ml_easy
+         #,biovolume_per_ml_old
+         ,biovolume_per_ml
+         #,biovolume_per_ml_easy
+         ,gald_um = gald_1
+         ,phyto_form 
+         ,comments
+  ) %>% 
+  glimpse()
+#I prefer to use the formulas based on the more raw version of the data 
+#rather than the ones based on the factor column
+#which is a derived column and therefore more prone to errors
+
+#Summarize comments
+#simplify them into two columns QualityCheck and Debris
+
+#add QualityCheck and Debris columns to my dataset
+phyto_emp_repo_cleanest <- phyto_emp_repo_cleaner %>% 
+  add_qc_col() %>% 
+  add_debris_col() %>% 
+  clean_names() %>% 
+  glimpse()
+
+#add taxonomic info to EMP repo data set
+phyto_emp_repo_tax <- left_join(phyto_emp_repo_cleanest,taxonomy_emp_amend)   %>%  
+  mutate(
+    #create taxon column that is taxon_original with old names replaced with current names
+    #ie, shouldn't have any missing names in the new taxon column
+    taxon = case_when((current_taxon!="None" & current_taxon!="Unknown")~current_taxon
+                      ,TRUE~taxon_original)
+    #create new taxon_original column that only includes a name if there is a new one to replace it
+    ,taxon_original2 = case_when((current_taxon!="None" & current_taxon!="Unknown")~taxon_original
+                                 ,TRUE ~ NA)
+    #looks like genus is wrong in cases where the new name is a different genus
+    #so need to make new genus column
+    #start by copying taxon column and dropping all the qualifiers
+    ,taxon2 =str_replace_all(taxon, pattern = c('cf[.] ' = '',' cf[.]'="",' var[.]' = "", ' fo[.]' = ""," sp[.]"="","2"="","  "=" "))
+    #now make new genus column
+    ,genus2 = word(taxon2, 1, sep=" ")
+    # #for some reason, a few taxa didn't work with word(); ie still full name, not genus
+    #Actinocyclus cuneiformis, Gomphonema lingulatum var. constrictum
+    #nothing could edit these names from the PESP Github repo taxonomy file
+    #had to create new file, which I put in the SMSCG repo, delete these two cells and retype them
+    #then the functions worked as expected
+    #next, make a couple of corrections for phylum and class
+    ,phylum2 = case_when(phylum == "Cryptophycophyta incertae sedis"~"Cryptista",TRUE ~ phylum)
+    ,class2 = case_when(class == "Cryptophycophyta incertae sedis"~"Katablepharidophyceae",TRUE ~ class )
+    ,.after=taxon_original
+  ) %>% 
+  select(
+    station:time_pst
+    ,taxon_original = taxon_original2
+    ,taxon
+    ,kingdom
+    ,phylum = phylum2
+    ,class = class2
+    ,algal_group
+    ,genus = genus2
+    ,species:phyto_form
+    ,quality_check
+    ,debris
+  ) %>%
+  #combining by taxon original and genus created duplicated rows in some cases
+  #for now, fix this with distinct function. this gets back to correct number of rows
+  distinct() %>% 
+  glimpse()
+
+#look for non-matching taxa
+tax_mism_emp <- phyto_emp_repo_tax %>%
+  filter(is.na(kingdom)) %>%
+  select(taxon_original:species) %>%
+  distinct() %>%
+  arrange(taxon) %>%
+  select(taxon_original = taxon
+         ,genus
+         ,species
+         )
+#9 taxa that didn't match
 
 #format DFW data-------------
 
@@ -399,44 +604,6 @@ phyto_dfw_cleaner <- phyto_dfw %>%
 
 #Summarize comments
 #simplify them into two columns QualityCheck and Debris
-#implemented Perry's functions to do this
-#The only difference between my code and Perry's code is I used "comments" instead of "Comments"
-
-#function for generating QualityCheck column
-add_qc_col <- function(df){
-  df <- df %>%
-    mutate(
-      QC_1 = case_when(grepl('delete|cross contamination', comments, ignore.case = TRUE) ~ 'BadData'),
-      QC_2 = case_when(grepl('did not reach|cannot meet tally|cannot meet natural unit', comments, ignore.case = TRUE) ~ 'TallyNotMet'),
-      QC_3 = case_when(grepl('degraded', comments, ignore.case = TRUE) ~ 'Degraded'),
-      QC_4 = case_when(grepl('poor preservation|poorly preserved|weak preservation|weakly preserved|fungus', comments, ignore.case = TRUE) ~ 'PoorlyPreserved'),
-      QC_5 = case_when(grepl('obscured', comments, ignore.case = TRUE) ~ 'Obscured'),
-      QC_6 = case_when(grepl('fragment\\.|diatom fragment', comments, ignore.case = TRUE) ~ 'Fragmented'),
-      QC_7 = case_when(grepl('broken diatom', comments, ignore.case = TRUE) & !grepl('broken diatom fragment', comments, ignore.case = TRUE) ~ 'BrokenDiatoms'),
-      QC_8 = case_when(grepl('mucilaginous detritus', comments, ignore.case = TRUE) ~ 'MucilaginousDetritus')
-    ) %>%
-    unite(QualityCheck, starts_with('QC'), remove = TRUE, na.rm = TRUE, sep = ' ')
-  
-  df$QualityCheck[df$QualityCheck == ''] <- 'Good'
-  
-  return(df)
-}
-
-#function for generating Debris column
-add_debris_col <- function(df){
-  df <- df %>%
-    mutate(
-      debris =
-        case_when(
-          grepl('high detritus|high sediment|heavy detritus|heavy sediment', comments, ignore.case = TRUE) ~ 'high',
-          grepl('moderate detritus|moderate sediment', comments, ignore.case = TRUE) ~ 'moderate',
-          grepl('low detritus|low sediment', comments, ignore.case = TRUE) ~ 'low',
-          TRUE ~ NA_character_
-        )
-    )
-  
-  return(df)
-}
 
 #add QualityCheck and Debris columns to my dataset
 phyto_dfw_cleanest <- phyto_dfw_cleaner %>% 
@@ -493,18 +660,6 @@ phyto_dfw_cleanest <- phyto_dfw_cleaner %>%
 #export mismatch taxa to fill in results
 #write_csv(tax_mism,"./EDI/data_input/phytoplankton/smscg_phyto_taxonomy_mismatch_2023-08-25.csv")
 
-#add the missing taxa to the PESP/EMP taxonomy dataset and then add to SMSCG dataset
-#some differences in columns between datasets but bind_rows will figure it out
-#nonmatching columns won't be in final version anyway
-#glimpse(taxonomy_fix) 
-#glimpse(taxonomy_emp)
-taxonomy_emp_amend <- bind_rows(taxonomy_fix,taxonomy_emp_comb)  %>% 
-  select(kingdom:genus) %>% 
-  distinct() %>% 
-  glimpse()
-
-# Monoraphidium <- taxonomy_emp_amend %>% 
-#   filter(genus =="Monoraphidium")
 
 #look at cf. Chlorella sp.
 # chlor <- taxonomy_emp_amend %>% 
@@ -565,16 +720,17 @@ phyto_dfw_tax <- left_join(phyto_dfw_cleanest,taxonomy_emp_amend) %>%
   glimpse()
 
 #look for non-matching taxa
-tax_mism2 <- phyto_dfw_tax %>% 
-  filter(is.na(kingdom)) %>% 
-  select(taxon_original:species) %>% 
-  distinct() %>% 
-  arrange(taxon) %>% 
-  select(taxon_original = taxon
-         ,genus
-         ,species
-         )
-#11 non-matching taxa to add to taxonomy file
+# tax_mism2 <- phyto_dfw_tax %>% 
+#   filter(is.na(kingdom)) %>% 
+#   select(taxon_original:species) %>% 
+#   distinct() %>% 
+#   arrange(taxon) %>% 
+#   select(taxon_original = taxon
+#          ,genus
+#          ,species
+#          )
+#initially 11 non-matching taxa to add to taxonomy file
+#after updating taxonomy file, there are now zero non-matches as expected
 #write_csv(tax_mism2,"./EDI/data_input/phytoplankton/smscg_phyto_taxonomy_mismatch_2024-03-21.csv")
 
 #EDI: format EMP data-------------------------
@@ -596,7 +752,7 @@ tax_mism2 <- phyto_dfw_tax %>%
 #so yeah, D24 was phased out and replaced with NZ068
 
 #filter EMP data set to just the dates needed
-phyto_emp_recent <- phytoplankton_emp %>% 
+phyto_emp_recent <- phytoplankton_emp_edi %>% 
   mutate(
     #add a column to indicate who collected the samples
     collected_by = "EMP"
@@ -777,7 +933,7 @@ phyto_emp_format <- phyto_emp_spatial_filter %>%
 #combine EMP and SMSCG data sets---------------
 # glimpse(phyto_emp_format) 
 # glimpse(phyto_dfw_tax)
-phyto_all <- bind_rows(phyto_emp_format,phyto_dfw_tax) %>% 
+phyto_all <- bind_rows(phyto_emp_format,phyto_dfw_tax,phyto_emp_repo_tax) %>% 
   arrange(date,time_pst,station) %>% 
   mutate(
     #to be safe, change time to character for exporting data
@@ -898,7 +1054,7 @@ phyto_smscg <- phyto_all_tax %>%
     ,longitude 
     ,date
     ,time_pst
-    #,taxon_original
+    ,taxon_original
     ,taxon 
     # ,algal_group
     # ,kingdom:class
@@ -915,7 +1071,7 @@ phyto_smscg <- phyto_all_tax %>%
   glimpse()
 
 #write the output data file for SMSCG EDI
-#write_csv(phyto_smscg, "./EDI/data_output/smscg_phytoplankton_samples_2020-2022.csv")
+#write_csv(phyto_smscg, "./EDI/data_output/smscg_phytoplankton_samples_2020-2023.csv")
 
 
 # #Add higher level taxonomic information manually-------------

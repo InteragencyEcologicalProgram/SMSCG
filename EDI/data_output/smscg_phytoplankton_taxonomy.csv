@@ -1,4 +1,5 @@
 taxon,taxon_original,genus,species,algal_group,kingdom,phylum,class
+Tintinnopsis sp.,NA,Tintinnopsis,sp.,Ciliates,Chromista,Ciliophora,Spirotrichea
 Chroomonas sp.,NA,Chroomonas,sp.,Cryptophytes,Chromista,Cryptista,Cryptophyceae
 cf. Chroomonas sp.,NA,Chroomonas,sp.,Cryptophytes,Chromista,Cryptista,Cryptophyceae
 Cryptomonas marssonii,NA,Cryptomonas,marssonii,Cryptophytes,Chromista,Cryptista,Cryptophyceae
@@ -11,14 +12,18 @@ Plagioselmis lacustris,NA,Plagioselmis,lacustris,Cryptophytes,Chromista,Cryptist
 Plagioselmis nannoplanctica,NA,Plagioselmis,nannoplanctica,Cryptophytes,Chromista,Cryptista,Cryptophyceae
 Plagioselmis sp.,NA,Plagioselmis,sp.,Cryptophytes,Chromista,Cryptista,Cryptophyceae
 cf. Plagioselmis sp.,NA,Plagioselmis,sp.,Cryptophytes,Chromista,Cryptista,Cryptophyceae
+Rhodomonas sp,NA,Rhodomonas,sp.,Cryptophytes,Chromista,Cryptista,Cryptophyceae
+Rhodomonas sp.,NA,Rhodomonas,sp.,Cryptophytes,Chromista,Cryptista,Cryptophyceae
 Teleaulax amphioxeia,Plagioselmis prolonga,Teleaulax,amphioxeia,Cryptophytes,Chromista,Cryptista,Cryptophyceae
 Teleaulax amphioxeia,NA,Teleaulax,amphioxeia,Cryptophytes,Chromista,Cryptista,Cryptophyceae
 Teleaulax amphioxeia,Plagioselmis prolonga,Teleaulax,prolonga,Cryptophytes,Chromista,Cryptista,Cryptophyceae
+Teleaulax sp.,NA,Teleaulax,sp.,Cryptophytes,Chromista,Cryptista,Cryptophyceae
 Chrysochromulina sp.,NA,Chrysochromulina,sp.,Haptophytes,Chromista,Haptophyta,Coccolithophyceae
 cf. Chrysochromulina sp.,NA,Chrysochromulina,sp.,Haptophytes,Chromista,Haptophyta,Coccolithophyceae
 Achnanthidium minutissimum,NA,Achnanthidium,minutissimum,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Achnanthidium sp.,NA,Achnanthidium,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 cf. Achnanthidium sp.,NA,Achnanthidium,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+Amphora sp.,NA,Amphora,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Bacillaria cf. paxillifera,NA,Bacillaria,paxillifera,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Bacillaria sp.,NA,Bacillaria,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Cocconeis placentula,NA,Cocconeis,placentula,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
@@ -55,6 +60,7 @@ Gomphonema sp.,NA,Gomphonema,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Baci
 Gyrosigma fasciola,NA,Gyrosigma,fasciola,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Gyrosigma sp.,NA,Gyrosigma,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Hantzschia sp.,NA,Hantzschia,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+Hippodonta sp.,NA,Hippodonta,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 cf. Humidophila contenta,cf. Diadesmis sp.,Humidophila,contenta,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 cf. Mastogloia sp.,NA,Mastogloia,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Mayamaea sp.,NA,Mayamaea,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
@@ -77,23 +83,31 @@ Nitzschia acicularis,NA,Nitzschia,acicularis,Pennate Diatoms,Chromista,Heterokon
 Nitzschia cf. acicularis,NA,Nitzschia,acicularis,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia alpina,NA,Nitzschia,alpina,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia amphibia,NA,Nitzschia,amphibia,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+Nitzschia brevissima,NA,Nitzschia,brevissima,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia clausii,NA,Nitzschia,clausii,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia dissipata,NA,Nitzschia,dissipata,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia exilis,NA,Nitzschia,exilis,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia fonticola,NA,Nitzschia,fonticola,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+Nitzschia cf. fruticosa,NA,Nitzschia,fruticosa,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+Nitzschia fruticosa,NA,Nitzschia,fruticosa,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia incognita,NA,Nitzschia,incognita,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia cf. inconspicua,NA,Nitzschia,inconspicua,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia inconspicua,NA,Nitzschia,inconspicua,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia liebetruthii,NA,Nitzschia,liebetruthii,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+Nitzschia cf. ligowski,NA,Nitzschia,ligowski,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+Nitzschia linearis,NA,Nitzschia,linearis,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia longissima,NA,Nitzschia,longissima,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia palea,NA,Nitzschia,palea,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia cf. reversa,NA,Nitzschia,reversa,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia reversa,NA,Nitzschia,reversa,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia cf. sigma,NA,Nitzschia,sigma,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+Nitzschia sigma,NA,Nitzschia,sigma,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia sociabilis,NA,Nitzschia,sociabilis,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia cf. soratensis,NA,Nitzschia,soratensis,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Nitzschia sp.,NA,Nitzschia,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 cf. Nitzschia sp.,NA,Nitzschia,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+Nitzschia spp.,NA,Nitzschia,spp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+Odontidium mesodon,NA,Odontidium,mesodon,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Pinnularia cf. moelderi,Pinnularia cf. hustedtii,Pinnularia,hustedtii,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 cf. Pinnularia sp.,NA,Pinnularia,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Planothidium frequentissimum,NA,Planothidium,frequentissimum,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
@@ -101,10 +115,15 @@ Planothidium incuriatum,NA,Planothidium,incuriatum,Pennate Diatoms,Chromista,Het
 Planothidium sp.,NA,Planothidium,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Pleurosigma sp.,NA,Pleurosigma,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Psammodictyon sp.,NA,Psammodictyon,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+cf. Psammodictyon sp.,NA,Psammodictyon,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Pseudostaurosira sp.,NA,Pseudostaurosira,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+cf. Pseudostaurosira sp.,NA,Pseudostaurosira,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Reimeria sinuata,NA,Reimeria,sinuata,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+Reimeria sp.,NA,Reimeria,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+cf. Reimeria sp.,NA,Reimeria,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Rhoicosphenia abbreviata,NA,Rhoicosphenia,abbreviata,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Rhoicosphenia sp.,NA,Rhoicosphenia,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
+Sellaphora sp.,NA,Sellaphora,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Seminavis sp.,NA,Seminavis,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Stauroforma exiguiformis,NA,Stauroforma,exiguiformis,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 cf. Stauroforma sp.,NA,Stauroforma,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
@@ -129,10 +148,12 @@ Ulnaria sp.,NA,Ulnaria,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillario
 cf. Ulnaria sp.,NA,Ulnaria,sp.,Pennate Diatoms,Chromista,Heterokontophyta,Bacillariophyceae
 Chrysosaccus sp.,NA,Chrysosaccus,sp.,Chrysophytes,Chromista,Heterokontophyta,Chrysophyceae
 Dinobryon sp.,NA,Dinobryon,sp.,Chrysophytes,Chromista,Heterokontophyta,Chrysophyceae
+Kephyrion sp.,NA,Kephyrion,sp.,Chrysophytes,Chromista,Heterokontophyta,Chrysophyceae
 cf. Kephyrion sp.,NA,Kephyrion,sp.,Chrysophytes,Chromista,Heterokontophyta,Chrysophyceae
 cf. Mallomonas sp.,NA,Mallomonas,sp.,Chrysophytes,Chromista,Heterokontophyta,Chrysophyceae
 Ochromonas sp.,NA,Ochromonas,sp.,Chrysophytes,Chromista,Heterokontophyta,Chrysophyceae
 cf. Ochromonas sp.,NA,Ochromonas,sp.,Chrysophytes,Chromista,Heterokontophyta,Chrysophyceae
+Pseudokephyrion sp.,NA,Pseudokephyrion,sp.,Chrysophytes,Chromista,Heterokontophyta,Chrysophyceae
 Acanthoceras sp.,NA,Acanthoceras,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Actinocyclus sp.,NA,Actinocyclus,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Aulacoseira alpigena,NA,Aulacoseira,alpigena,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
@@ -140,19 +161,28 @@ Aulacoseira pusilla,NA,Aulacoseira,pusilla,Centric Diatoms,Chromista,Heterokonto
 Aulacoseira sp.,NA,Aulacoseira,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Cerataulina sp.,NA,Cerataulina,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Chaetoceros sp.,NA,Chaetoceros,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
+Chaetoceros subtilis,NA,Chaetoceros,subtilis,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Coscinodiscus sp.,NA,Coscinodiscus,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 cf. Coscinodiscus sp.,NA,Coscinodiscus,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Cyclotella gamma,NA,Cyclotella,gamma,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Cyclotella meneghiniana,NA,Cyclotella,meneghiniana,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Cyclotella sp.,NA,Cyclotella,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 cf. Cyclotella sp.,NA,Cyclotella,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
+Cyclotella spp.,NA,Cyclotella,spp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
+cf. Cyclotella spp.,NA,Cyclotella,spp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
+Hydrosera sp.,NA,Hydrosera,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
+Leptocylindrus sp.,NA,Leptocylindrus,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
+cf. Leptocylindrus sp.,NA,Leptocylindrus,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Melosira sp.,NA,Melosira,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Melosira varians,NA,Melosira,varians,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Rhizosolenia sp.,NA,Rhizosolenia,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 cf. Rhizosolenia sp.,NA,Rhizosolenia,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Skeletonema cf. costatum,NA,Skeletonema,costatum,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
+Skeletonema potamos,NA,Skeletonema,potamos,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Skeletonema sp.,NA,Skeletonema,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 cf. Skeletonema sp.,NA,Skeletonema,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
+Stephanocyclus sp.,NA,Stephanocyclus,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
+Stephanodiscus sp.,NA,Stephanodiscus,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Thalassiosira eccentrica,NA,Thalassiosira,eccentrica,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 Thalassiosira sp.,NA,Thalassiosira,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
 cf. Thalassiosira sp.,NA,Thalassiosira,sp.,Centric Diatoms,Chromista,Heterokontophyta,Coscinodiscophyceae
@@ -162,51 +192,72 @@ Lindavia cf. bodanica,Cyclotella cf. bodanica,Lindavia,bodanica,Centric Diatoms,
 Lindavia sp.,NA,Lindavia,sp.,Centric Diatoms,Chromista,Heterokontophyta,Mediophyceae
 cf. Lindavia sp.,NA,Lindavia,sp.,Centric Diatoms,Chromista,Heterokontophyta,Mediophyceae
 Skeletonema ardens,NA,Skeletonema,ardens,Centric Diatoms,Chromista,Heterokontophyta,Mediophyceae
+Heterosigma sp.,NA,Heterosigma,sp.,Raphidophytes,Chromista,Heterokontophyta,Raphidophyceae
 Glenodinium sp.,NA,Glenodinium,sp.,Dinoflagellates,Chromista,Miozoa,Dinophyceae
 Gymnodinium sp.,NA,Gymnodinium,sp.,Dinoflagellates,Chromista,Miozoa,Dinophyceae
 cf. Gymnodinium sp.,NA,Gymnodinium,sp.,Dinoflagellates,Chromista,Miozoa,Dinophyceae
+Karlodinium sp.,NA,Karlodinium,sp.,Dinoflagellates,Chromista,Miozoa,Dinophyceae
+cf. Karlodinium sp.,NA,Karlodinium,sp.,Dinoflagellates,Chromista,Miozoa,Dinophyceae
 Peridinium sp.,NA,Peridinium,sp.,Dinoflagellates,Chromista,Miozoa,Dinophyceae
 cf. Peridinium sp.,NA,Peridinium,sp.,Dinoflagellates,Chromista,Miozoa,Dinophyceae
+cf. Anabaenopsis sp.,NA,Anabaenopsis,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Aphanizomenon sp.,NA,Aphanizomenon,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 cf. Aphanizomenon sp.,NA,Aphanizomenon,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
+Aphanocapsa sp.,NA,Aphanocapsa,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Chroococcus minimus,NA,Chroococcus,minimus,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Chroococcus cf. minutus,NA,Chroococcus,minutus,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Chroococcus minutus,NA,Chroococcus,minutus,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Chroococcus sp.,NA,Chroococcus,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 cf. Chroococcus sp.,NA,Chroococcus,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
+Coelosphaerium sp.,NA,Coelosphaerium,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Cyanodictyon sp.,NA,Cyanodictyon,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Cylindrospermum sp.,NA,Cylindrospermum,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Dolichospermum sp.,NA,Dolichospermum,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
+cf. Dolichospermum sp.,NA,Dolichospermum,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Eucapsis microscopica,NA,Eucapsis,microscopica,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Eucapsis sp.,NA,Eucapsis,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 cf. Eucapsis sp.,NA,Eucapsis,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Komvophoron sp.,NA,Komvophoron,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 cf. Komvophoron sp.,NA,Komvophoron,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
+Leptolyngbya sp.,NA,Leptolyngbya,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Merismopedia sp.,NA,Merismopedia,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Merismopedia cf. tenuissima,NA,Merismopedia,tenuissima,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Merismopedia tenuissima,NA,Merismopedia,tenuissima,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
+Merismopedia tranquilla,NA,Merismopedia,tranquilla,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Microcystis sp.,NA,Microcystis,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 cf. Microcystis sp.,NA,Microcystis,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Oscillatoria sp.,NA,Oscillatoria,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
+Planktolyngbya limnetica,NA,Planktolyngbya,limnetica,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Planktolyngbya sp.,NA,Planktolyngbya,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 cf. Planktolyngbya sp.,NA,Planktolyngbya,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Pseudanabaena cf. mucicola,NA,Pseudanabaena,mucicola,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Pseudanabaena mucicola,NA,Pseudanabaena,mucicola,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Pseudanabaena sp.,NA,Pseudanabaena,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
+Raphidiopsis sp.,NA,Raphidiopsis,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
+cf. Raphidiopsis sp.,NA,Raphidiopsis,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Snowella sp.,NA,Snowella,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 cf. Synechococcus sp.,NA,Synechococcus,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
 Synechocystis sp.,NA,Synechocystis,sp.,Cyanobacteria,Eubacteria,Cyanobacteria,Cyanophyceae
+Ankistrodesmus sp.,NA,Ankistrodesmus,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Chlamydomonas sp.,NA,Chlamydomonas,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 cf. Chlamydomonas sp.,NA,Chlamydomonas,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+Chlamydomonas spp.,NA,Chlamydomonas,spp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Chlorella sp.,NA,Chlorella,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 cf. Chlorella sp.,NA,Chlorella,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+cf. Chlorella spp.,NA,Chlorella,spp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Chlorococcum minutum,NA,Chlorococcum,minutum,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+Closteriopsis sp.,NA,Closteriopsis,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Coccomyxa sp.,NA,Coccomyxa,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+Crucigenia sp.,NA,Crucigenia,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+Desmodesmus sp.,NA,Desmodesmus,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Dictyochloris fragrans,NA,Dictyochloris,fragrans,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+Dictyosphaerium sp.,NA,Dictyosphaerium,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 cf. Dictyosphaerium sp.,NA,Dictyosphaerium,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Drepanochloris nannoselene,NA,Drepanochloris,nannoselene,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+Kirchneriella sp.,NA,Kirchneriella,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Lagerheimia cf. genevensis,NA,Lagerheimia,genevensis,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Lagerheimia genevensis,NA,Lagerheimia,genevensis,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+Lagerheimia sp.,NA,Lagerheimia,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 cf. Lagerheimia sp.,NA,Lagerheimia,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 cf. Microspora sp.,NA,Microspora,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Monoraphidium cf. contortum,NA,Monoraphidium,contortum,Green Algae,Plantae,Chlorophyta,Chlorophyceae
@@ -214,6 +265,8 @@ Monoraphidium contortum,NA,Monoraphidium,contortum,Green Algae,Plantae,Chlorophy
 Monoraphidium convolutum,NA,Monoraphidium,convolutum,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Monoraphidium minutum,NA,Monoraphidium,minutum,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Monoraphidium sp.,NA,Monoraphidium,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+cf. Monoraphidium sp.,NA,Monoraphidium,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+Monoraphidium spp.,NA,Monoraphidium,spp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Monoraphidium tortile,NA,Monoraphidium,tortile,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Raphidocelis sp.,NA,Raphidocelis,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 cf. Raphidocelis sp.,NA,Raphidocelis,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
@@ -223,15 +276,26 @@ Schroederia sp.,NA,Schroederia,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 cf. Schroederia sp.,NA,Schroederia,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 Sphaerocystis sp.,NA,Sphaerocystis,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 cf. Sphaerocystis sp.,NA,Sphaerocystis,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+Tetradesmus sp.,NA,Tetradesmus,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+Tetraedron sp.,NA,Tetraedron,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 cf. Tetraselmis sp.,cf. Carteria sp.,Tetraselmis,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+Tetraspora sp.,NA,Tetraspora,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
+Tetrastrum sp.,NA,Tetrastrum,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 cf. Vitreochalmys sp.,NA,Vitreochalmys,sp.,Green Algae,Plantae,Chlorophyta,Chlorophyceae
 cf. Nephroselmis sp.,NA,Nephroselmis,sp.,Green Algae,Plantae,Chlorophyta,Nephroselmidophyceae
+Pedinomonas sp.,NA,Pedinomonas,sp.,Green Algae,Plantae,Chlorophyta,Pedinophyceae
+cf. Geminella sp.,NA,Geminella,sp.,Green Algae,Plantae,Chlorophyta,Trebouxiophyceae
 cf. Nannochloris sp.,NA,Nannochloris,sp.,Green Algae,Plantae,Chlorophyta,Trebouxiophyceae
+Elakatothrix sp.,NA,Elakatothrix,sp.,Green Algae,Plantae,Chlorophyta,Ulvophyceae
 cf. Ulothrix sp.,NA,Ulothrix,sp.,Green Algae,Plantae,Chlorophyta,Ulvophyceae
+Closterium sp.,NA,Closterium,sp.,Green Algae,Plantae,Chlorophyta,Zygnematophyceae
+Mougeotia sp.,NA,Mougeotia,sp.,Green Algae,Plantae,Chlorophyta,Zygnematophyceae
 Euglena sp.,NA,Euglena,sp.,Euglenoids,Protozoa,Euglenophyta,Euglenophyceae
+cf. Euglena sp.,NA,Euglena,sp.,Euglenoids,Protozoa,Euglenophyta,Euglenophyceae
 Euglena viridis,NA,Euglena,viridis,Euglenoids,Protozoa,Euglenophyta,Euglenophyceae
 Eutreptiella sp.,NA,Eutreptiella,sp.,Euglenoids,Protozoa,Euglenophyta,Euglenophyceae
 Lepocinclis acus,Euglena acus,Lepocinclis,acus,Euglenoids,Protozoa,Euglenophyta,Euglenophyceae
 Lepocinclis sp.,NA,Lepocinclis,sp.,Euglenoids,Protozoa,Euglenophyta,Euglenophyceae
 cf. Lepocinclis sp.,NA,Lepocinclis,sp.,Euglenoids,Protozoa,Euglenophyta,Euglenophyceae
+Phacus sp.,NA,Phacus,sp.,Euglenoids,Protozoa,Euglenophyta,Euglenophyceae
 Trachelomonas volvocina,NA,Trachelomonas,volvocina,Euglenoids,Protozoa,Euglenophyta,Euglenophyceae
