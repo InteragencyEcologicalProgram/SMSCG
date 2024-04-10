@@ -12,7 +12,15 @@ library(readxl) #importing data from excel files
 library(deltamapr) #Delta shape files
 library(sf) #spatial tools
 
-#Notes
+# Notes------------------
+#starting July 2024, AEU will update phyto enumeration methods to match the new ones that EMP implemented
+
+#Starting July 2023, EMP changed the way BSA enumerates phytoplankton to better detect large, rare taxa.This new method is not
+#comparable to the previous enumeration method. To compare the new data with the old data, the taxa enumerated from the transects 
+#need to be removed. The transect taxa are those with field-of-view (column J) listed as 5.9 or 5.96 and number of fields counted (column M) of 1 or 2.
+#removing those taxa leaves just the field counts, which are directly comparable to the old data
+#I have filtered these data to remove transect taxa in this script
+
 #For all BSA files from 2013 to 2021, the column "Number of cells per unit" really means "Total cells", 
 #which is the total number of cells counted for that taxon in a particular sample
 #calculations in this script were corrected accordingly on 2/10/2022
@@ -232,6 +240,12 @@ phyto_emp_repo_stations <- phytoplankton_emp_repo %>%
   #filter(!(station=="EMP_EZ6" & date=="2020-09-10")) %>% 
   glimpse()
 
+#look at combinations of field of view and number of field counted
+#transects are ones with 5.9 or 5.96 for field of view and 1 or 2 for number of fields
+# transect_fields <- phyto_emp_repo_stations %>% 
+#   distinct(field_of_view_mm2,number_of_fields_counted) %>% 
+#   arrange(field_of_view_mm2,number_of_fields_counted)
+#the combinations of numbers for these two columns makes sense
 
 #check time zone
 #tz(phyto_emp_repo_stations$date_time_PST)
@@ -293,6 +307,9 @@ phyto_emp_repo_cleaner <- phyto_emp_repo %>%
          ,comments) %>% 
   mutate(across(c(unit_abundance:biovolume_10),as.numeric)) %>% 
   rowwise() %>% 
+  #drop the taxa from the transects and only keep the ones from field counts
+  #this makes the new data comparable with the old data
+  filter(field_of_view_mm2<5.9) %>% 
   mutate(  
     #use the date-time column with standardized time zone to extract time
     time_pst = as_hms(date_time_pst)
@@ -1080,7 +1097,7 @@ phyto_smscg <- phyto_all_tax %>%
 
 
 #recombine taxonomy and abunance data to make sure it works correctly
-phyto_all_tax_recomb <- left_join(phyto_smscg,phyto_tax_final) 
+#phyto_all_tax_recomb <- left_join(phyto_smscg,phyto_tax_final) 
 #2966 instead of 2924 rows (42 extra created when recombining data frames)
 #fixed one error in taxonomy so now there are no duplicates
 
