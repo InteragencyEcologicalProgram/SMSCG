@@ -203,7 +203,7 @@ ggqqplot(log(wp_all$total_carbon),ylab = "carbon") #doesn't look too bad
     geom_smooth(method = "lm")  +
     geom_cor(method = "spearman") 
 )
-ggsave(plot=plot_cc_all_log,"Plots/Phytoplankton/smscg_phyto_carbon_chlora.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+#ggsave(plot=plot_cc_all_log,"Plots/Phytoplankton/smscg_phyto_carbon_chlora.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
 
 
 #look at pearson correlation after log transformation
