@@ -166,9 +166,43 @@ alg_grp_biov_summary %>%
   theme(axis.text.x = element_text(angle = 90))
 #pretty strongly correlated overall; one outlier
 
+#correlations
+#biomass and LCEFA are estimated from biovolume so should be pretty linearly correlated
+
+#check assumptions for biovolume
+hist(alg_grp_biov_summary$biovolume_per_ml) #strongly clustered at low end with a few high values 
+hist(log(alg_grp_biov_summary$biovolume_per_ml)) #looks much closer to normal 
+shapiro.test(alg_grp_biov_summary$biovolume_per_ml) #W = 0.27126, p-value < 2.2e-16
+shapiro.test(log(alg_grp_biov_summary$biovolume_per_ml)) #W = 0.99403, p-value = 0.04845
+ggqqplot(log(alg_grp_biov_summary$biovolume_per_ml),ylab = "biovolume") #looks OKish
+
+#check assumptions for biomass
+hist(alg_grp_biov_summary$biomass_ug_c_l) #strongly clustered at low end with a few high values 
+hist(log(alg_grp_biov_summary$biomass_ug_c_l)) #looks much closer to normal 
+shapiro.test(alg_grp_biov_summary$biomass_ug_c_l) #W = 0.50416, p-value < 2.2e-16
+shapiro.test(log(alg_grp_biov_summary$biomass_ug_c_l)) #W = 0.99626, p-value = 0.2967
+ggqqplot(log(alg_grp_biov_summary$biomass_ug_c_l),ylab = "biovolume") #looks OKish
+
+#check assumptions for LCEFA
+hist(alg_grp_biov_summary$lcefa_per_l) #strongly clustered at low end with a few high values 
+hist(log(alg_grp_biov_summary$lcefa_per_l)) #looks much closer to normal 
+shapiro.test(alg_grp_biov_summary$lcefa_per_l) #W = 0.45061, p-value < 2.2e-16
+shapiro.test(log(alg_grp_biov_summary$lcefa_per_l)) #W = 0.92851, p-value = 1.229e-14
+ggqqplot(log(alg_grp_biov_summary$lcefa_per_l),ylab = "biovolume") #looks OKish
+
+#correlation between biovolume and biomass
+#use spearman because normality violated especially for LCEFA
+cor.test(log(alg_grp_biov_summary$biovolume_per_ml),log(alg_grp_biov_summary$biomass_ug_c_l),method="spearman")
+#corr = 0.9661786
+
+cor.test(log(alg_grp_biov_summary$biovolume_per_ml),log(alg_grp_biov_summary$lcefa_per_l),method="spearman")
+#corr = 0.9409912
+
+
+
 #look at outlier 
-phyto_outlier <- alg_grp_biov_summary %>% 
-  filter(lcefa_per_l > 30)
+# phyto_outlier <- alg_grp_biov_summary %>% 
+#   filter(lcefa_per_l > 30)
 #STN 602 July 2022
 
 #look closer at composition of outlier
@@ -255,42 +289,42 @@ alg_grp_biov_adj$algal_group_adj <- factor(alg_grp_biov_adj$algal_group_adj, lev
 #stacked barplots of biovolume by algal group, region and month-------------
 
 #stacked bar plot of biovolume
-(plot_alg_grp_rm <- ggplot(alg_grp_biov, aes(x = month, y = total_biovolume, fill = algal_group))+
-   geom_bar(position = "stack", stat = "identity") + 
-   facet_wrap(year~region,ncol = 4)
-   )
+# (plot_alg_grp_rm <- ggplot(alg_grp_biov, aes(x = month, y = total_biovolume, fill = algal_group))+
+#    geom_bar(position = "stack", stat = "identity") + 
+#    facet_wrap(year~region,ncol = 4)
+#    )
 #not very easy to look at, mostly because of high diatom abundance in July 2022 in bay
 
 #stacked bar plot: log transformed biovolume, all regions and years
-(plot_alg_grp_rm <- ggplot(alg_grp_biov, aes(x = month, y = log(total_biovolume), fill = algal_group))+
-    geom_bar(position = "stack", stat = "identity") + 
-    facet_wrap(year~region,ncol = 4)
-)
+# (plot_alg_grp_rm <- ggplot(alg_grp_biov, aes(x = month, y = log(total_biovolume), fill = algal_group))+
+#     geom_bar(position = "stack", stat = "identity") + 
+#     facet_wrap(year~region,ncol = 4)
+# )
 #easier to see the various algal groups but hard to interpret
 
 #stacked bar plot: log transformed biovolume, 2020-2023, no FLO
-(plot_alg_grp_rm_recent <- alg_grp_biov %>% 
-    filter(year>2019 & region!="FLO") %>% 
-    ggplot(aes(x = month, y = log(total_biovolume), fill = algal_group_adj))+
-    geom_bar(position = "stack", stat = "identity") + 
-    facet_wrap(year~region,ncol = 3)
-)
+# (plot_alg_grp_rm_recent <- alg_grp_biov %>% 
+#     filter(year>2019 & region!="FLO") %>% 
+#     ggplot(aes(x = month, y = log(total_biovolume), fill = algal_group_adj))+
+#     geom_bar(position = "stack", stat = "identity") + 
+#     facet_wrap(year~region,ncol = 3)
+# )
 #ggsave(plot=plot_alg_grp_rm_recent,"Plots/Phytoplankton/smscg_phyto_stacked_bar_tot.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
 
   
 #percent stacked bar plot: all regions and years
-(plot_alg_grp_rm_perc <- ggplot(alg_grp_biov, aes(x = month, y = total_biovolume, fill = algal_group))+
-    geom_bar(position = "fill", stat = "identity") + 
-    facet_wrap(year~region,ncol = 4)
-)
+# (plot_alg_grp_rm_perc <- ggplot(alg_grp_biov, aes(x = month, y = total_biovolume, fill = algal_group))+
+#     geom_bar(position = "fill", stat = "identity") + 
+#     facet_wrap(year~region,ncol = 4)
+# )
 
 #stacked bar plot: all algal groups, biovolume, 2020-2023, no FLO
-(plot_alg_grp_rm_perc_recent <- alg_grp_biov %>% 
-    filter(year>2019 & region!="FLO") %>% 
-    ggplot(aes(x = month, y = total_biovolume, fill = algal_group))+
-    geom_bar(position = "fill", stat = "identity",color = "black") + 
-    facet_wrap(year~region,ncol = 3)
-)
+# (plot_alg_grp_rm_perc_recent <- alg_grp_biov %>% 
+#     filter(year>2019 & region!="FLO") %>% 
+#     ggplot(aes(x = month, y = total_biovolume, fill = algal_group))+
+#     geom_bar(position = "fill", stat = "identity",color = "black") + 
+#     facet_wrap(year~region,ncol = 3)
+# )
 
 #stacked bar plot: rare algal grouped lumped into "other", biovolume, 2020-2023, no FLO
 (plot_alg_grp_rm_perc_recent_adj <- alg_grp_biov_adj %>% 
@@ -303,7 +337,7 @@ alg_grp_biov_adj$algal_group_adj <- factor(alg_grp_biov_adj$algal_group_adj, lev
 )
 #ggsave(plot=plot_alg_grp_rm_perc_recent_adj,"Plots/Phytoplankton/smscg_phyto_stacked_bar_perc.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
 
-#plot composition by region and year (not month)
+#summarize composition by region and year (not month)
 alg_grp_biov_ry <- alg_grp_biov %>% 
   group_by(year,region,algal_group) %>% 
   summarise(across(c(total_biovolume:total_lcefa), ~mean(.x, na.rm = TRUE)),.groups='drop') %>% 
@@ -359,7 +393,7 @@ alg_grp_biov_ry_adj <- alg_grp_biov_adj %>%
                ,labeller = as_labeller(c("BAY"="Suisun Bay","MAR"="Suisun Marsh","RIV"="River"))
                )
 )
-#ggsave(plot=plot_alg_grp_ry_tot_biov_adj,"Plots/Phytoplankton/smscg_phyto_stacked_bar_tot_bvol.png",type ="cairo-png",width=8, height=6,units="in",dpi=300)
+#ggsave(plot=plot_alg_grp_ry_tot_biov_adj,"Plots/Phytoplankton/smscg_phyto_stacked_bar_tot_bvol.png",type ="cairo-png",width=8, height=7,units="in",dpi=300)
 
 
 #time series plot of eastern marsh stations before, during, after gate operations---------------
@@ -375,8 +409,16 @@ stn_east <- c("STN_609","STN_610","STN_MONT")
 east23 <- alg_grp_biov_samp %>% 
   filter(year=="2023" & station %in% stn_east) %>% 
   #add column that assigns samples to pre vs post SMSCG ops starting
-  mutate(timing = as.factor(case_when(date < "2023-08-15"~1
-                            ,date>"2023-08-15"~2))) %>% 
+  mutate(timing = as.factor(case_when(date < "2023-08-15"~"Before"
+                            ,date>="2023-08-15" ~"During"
+                            ))
+         #add a new column that lumps together less common algal groups into "other" category
+         ,algal_group_adj = case_when(algal_group == "Chrysophytes" | algal_group == "Haptophytes" | 
+                                        algal_group == "Raphidophytes" | algal_group == "Dinoflagellates" ~ "Other"
+                                      ,TRUE ~ algal_group), .after = algal_group
+         ) %>% 
+  group_by(station,date,timing,algal_group_adj) %>% 
+  summarise(across(c(biovolume_per_ml,biomass_ug_c_l,lcefa_per_l), ~sum(.x, na.rm = TRUE)),.groups='drop') %>% 
   glimpse()
 
 #create list of unique station x date combos
@@ -385,7 +427,7 @@ east23sd <- east23 %>%
 #three sampling dates before gate operations started
 
 #make stacked bar plot for each date with stations as facets
-(plot_alg_grp_east <- ggplot(east23, aes(x = date, y = biovolume_per_ml, fill=algal_group))+
+(plot_alg_grp_east <- ggplot(east23, aes(x = date, y = biovolume_per_ml, fill=algal_group_adj))+
   geom_bar(position = "stack", stat = "identity", color="black") + 
   labs(x="Year",y = "Biovolume" )+
   scale_fill_discrete(name = "Algal Group")+
@@ -397,17 +439,53 @@ east23sd <- east23 %>%
 
 #summarize data by pre vs post SMSCG
 east23_gates<- east23 %>% 
-  group_by(timing,algal_group) %>% 
-  summarise(total_biovolume = mean(biovolume_per_ml,na.rm=T),.groups='drop')
+  group_by(timing,algal_group_adj) %>% 
+  summarise(total_biovolume = mean(biovolume_per_ml,na.rm=T),.groups='drop') %>% 
+  arrange(desc(timing),algal_group_adj)
+
+#sum phyto biovolume across algal groups by timing
+east23_gates_sum <- east23_gates %>% 
+  group_by(timing) %>% 
+  summarize(grand_biovolume = sum(total_biovolume)) %>% 
+  arrange(desc(timing))
+
+#effect size of difference between before and after
+east23_gates_sum[2,2]/east23_gates_sum[1,2] # 2.213091x more biovolume before than after
+
+#cyanobacteria change
+east23_gates[10,3]/east23_gates[3,3] #3.579333x higher before than after
+
+#cyanobacteria change proportions
+#before
+east23_gates[10,3]/east23_gates_sum[2,2] # 0.2565589 of total composition
+#after  
+east23_gates[3,3]/east23_gates_sum[1,2] #0.1586296 of total composition
+
+
+#diatom change
+(east23_gates[8,3]+east23_gates[14,3])/(east23_gates[1,3]+east23_gates[7,3]) #1.673098x higher before than after
+#before
+(east23_gates[8,3]+east23_gates[14,3])/east23_gates_sum[2,2] #0.5056648
+#after
+(east23_gates[1,3]+east23_gates[7,3])/east23_gates_sum[1,2] #0.6688682
+
+#set order of adjusted algal groups based on contribution to biovolume
+east23_gates$algal_group_adj <- factor(east23_gates$algal_group_adj, levels=algal_group_adj_rank)
 
 #make stacked bar plot showing before and after gate ops started
-(plot_alg_grp_east_gates <- ggplot(east23_gates, aes(x = timing, y = total_biovolume, fill=algal_group))+
+(plot_alg_grp_east_gates <- ggplot(east23_gates, aes(x = factor(timing,level=c("Before","During")), y = total_biovolume/1000000000, fill=algal_group_adj))+
     geom_bar(position = "stack", stat = "identity", color="black") + 
-    labs(x="Timing",y = "Biovolume" )+
+    labs(x="SMSCG operation",y = bquote("Biovolume"~(mm^3~mL^-1) ) )+
     scale_fill_discrete(name = "Algal Group")
 )
+#ggsave(plot=plot_alg_grp_east_gates,"Plots/Phytoplankton/smscg_phyto_stacked_bar_tot_bvol_2023_east_marsh.png",type ="cairo-png",width=5, height=6,units="in",dpi=300)
 
-
+#make stacked bar plot showing before and after gate ops started
+(plot_alg_grp_east_gates_prop <- ggplot(east23_gates, aes(x = factor(timing,level=c("Before","During")), y = total_biovolume, fill=algal_group_adj))+
+    geom_bar(position = "fill", stat = "identity", color="black") + 
+    labs(x="SMSCG operation",y = "Proportion biovolume" )+
+    scale_fill_discrete(name = "Algal Group")
+)
 
 #stacked barplots of biomass by algal group, region and month-------------
 #tried log transforming data but doesn't improve plots
@@ -699,33 +777,36 @@ tot_biov_nobay <- tot_biov %>%
   glimpse()
 
 #analysis with log transformed response
-mod_tbiov_log_full <- glm(log(total_biovolume) ~ region * month* year, data = tot_biov_nobay)
-
-#model checking plots
-#plot(mod_tbiov_log_full)
-#plots look pretty good
-
-#look at model results
-summary(mod_tbiov_log_full)
-#Anova(mod_tbiov_log_full) #not working
+# mod_tbiov_log_full <- glm(log(total_biovolume) ~ region * month* year, data = tot_biov_nobay)
+# 
+# #model checking plots
+# #plot(mod_tbiov_log_full)
+# #plots look pretty good
+# 
+# #look at model results
+# summary(mod_tbiov_log_full)
+# Anova(mod_tbiov_log_full,type = "III") 
 #three way interaction not significant so drop it
 
 #model with two way interactions
-mod_tbiov_log_twoway = glm(log(total_biovolume) ~ region + month + year + region:month + region:year, data = tot_biov_nobay)
-summary(mod_tbiov_log_twoway)
-drop1(mod_tbiov_log_twoway, test="Chi")
+# mod_tbiov_log_twoway = glm(log(total_biovolume) ~ region + month + year + region:month + region:year, data = tot_biov_nobay)
+# summary(mod_tbiov_log_twoway)
+# Anova(mod_tbiov_log_twoway,type = "III")
+# drop1(mod_tbiov_log_twoway, test="Chi")
 #the two way interactions aren't significant
 
 #additive model
-mod_tbiov_log_oneway = glm(log(total_biovolume) ~ region + month + year, data = tot_biov_nobay)
-#plot(mod_tbiov_log_oneway)
-summary(mod_tbiov_log_oneway)
-drop1(mod_tbiov_log_oneway, test="Chi")
+# mod_tbiov_log_oneway = glm(log(total_biovolume) ~ region + month + year, data = tot_biov_nobay)
+# #plot(mod_tbiov_log_oneway)
+# summary(mod_tbiov_log_oneway)
+# Anova(mod_tbiov_log_oneway)
+#drop1(mod_tbiov_log_oneway, test="Chi")
 #years are different but not month or region
 
 #anova version of analysis
 mod_tbiov_log_oneway_aov = aov(log(total_biovolume) ~ region + month + year, data = tot_biov_nobay)
 Anova(mod_tbiov_log_oneway_aov)
+#tried dropping month completely but didn't change results
 
 #multiple comparison
 #determine which years differ
@@ -737,6 +818,22 @@ TukeyHSD(mod_tbiov_log_oneway_aov)
 #2021 vs 2023: p = 0.9766188
 #2022 vs 2023: p = 0.3353901
 #so 2020 is higher than all other years but no other differences
+
+#generate effect sizes for total phyto by month
+effszm<-tot_biov_nobay %>% 
+  group_by(month) %>% 
+  summarize(
+    bvol_mean = mean(total_biovolume)
+    ,bvol_sd = sd(total_biovolume)
+    , .groups = 'drop')
+
+#generate effect sizes for total phyto by region
+effszr<-tot_biov_nobay %>% 
+  group_by(region) %>% 
+  summarize(
+    bvol_mean = mean(total_biovolume)
+    ,bvol_sd = sd(total_biovolume)
+    , .groups = 'drop')
 
 #generate effect sizes for total phyto by year
 effsz<-tot_biov_nobay %>% 
@@ -751,6 +848,33 @@ effsz$bvol_mean[1]/effsz$bvol_mean[2] #2.043231
 
 #total phyto: compare 2020 vs 2022
 effsz$bvol_mean[1]/effsz$bvol_mean[3] #2.142461
+
+#total phyto: compare 2020 vs 2023
+effsz$bvol_mean[1]/effsz$bvol_mean[4] #2.218698
+
+#GLM for before and during SMSCG for east marsh ------------------------------------
+
+#create subset of data
+east23_samp <- east23 %>% 
+  group_by(station,date,timing) %>% 
+  summarise(across(c(biovolume_per_ml,biomass_ug_c_l,lcefa_per_l), ~sum(.x, na.rm = TRUE)),.groups='drop') %>% 
+  glimpse()
+
+#analysis with log transformed response
+mod_tbiov_log_east <- glm(biovolume_per_ml ~ timing, data = east23_samp)
+
+#model checking plots
+plot(mod_tbiov_log_east)
+#the Q-Q plot doesn't look great
+
+#look at model results
+summary(mod_tbiov_log_east)
+Anova(mod_tbiov_log_east) 
+#timing not significant; p = 0.2951
+
+#multiple comparison
+#determine which years differ
+TukeyHSD(mod_tbiov_log_oneway_aov)
 
 
 #summarize biovolume by genus and filter rare taxa-----------------
@@ -844,7 +968,8 @@ genus_ct1 <- genus_bv_ct1 %>%
   #drop unneeded column 
   select(-algal_group) %>% 
   #convert long to wide; fill missing data with zeros
-  pivot_wider(id_cols = c(station:year), names_from = genus, values_from = biovolume_gn,values_fill = 0)
+  pivot_wider(id_cols = c(station:year), names_from = genus, values_from = biovolume_gn,values_fill = 0) %>% 
+  glimpse()
 
 #abundances
 genus_ct1_abund <- genus_ct1 %>% 
@@ -852,6 +977,22 @@ genus_ct1_abund <- genus_ct1 %>%
 
 #predictors
 genus_ct1_pred <- genus_ct1 %>% 
+  select(c(station:year)) %>% 
+  #add column with combo of year and region
+  unite('year_region',c(year,region),remove = F) %>% 
+  #make columns factors
+  mutate(across(c(year_region:year),as.factor)) %>% 
+  glimpse()
+
+#create another version of the dataset with 2020 removed to see how much this year affects results
+#abundances
+genus_ct1_abund2 <- genus_ct1 %>% 
+  filter(year!=2020) %>% 
+  select(-(c(station:year)))
+
+#predictors
+genus_ct1_pred2 <- genus_ct1 %>% 
+  filter(year!=2020) %>% 
   select(c(station:year)) %>% 
   #add column with combo of year and region
   unite('year_region',c(year,region),remove = F) %>% 
@@ -877,11 +1018,66 @@ gg_ordiplot(genus_ct1_nmds,groups = genus_ct1_pred$month, pt.size = 3)
 gg_ordiplot(genus_ct1_nmds,groups = genus_ct1_pred$year, pt.size = 3)
 
 #ggordiplot: ellipses for year x region
-gg_ordiplot(genus_ct1_nmds,groups = genus_ct1_pred$year_region, pt.size = 3)
+plot_nmds_yr<-gg_ordiplot(genus_ct1_nmds,groups = genus_ct1_pred$year_region, pt.size = 3)
+ggsave(plot=plot_nmds_yr,"Plots/Phytoplankton/smscg_phyto_nmds_region-year.png",type ="cairo-png",width=8, height=5,units="in",dpi=300)
+
 
 #basic plot with ggvegan
 #ordiplot(genus_ct1_nmds)
 #ordiplot(genus_ct1_nmds,type="t") #adds labels for samples and genera
+
+
+#before doing adonis, need to make distance matrix of abundances
+#needed for adonis and betadisper
+dis <- vegdist(genus_ct1_abund)
+dis2 <- vegdist(genus_ct1_abund2)
+
+
+#adonis by region
+summary(genus_ct1_pred)
+adonis2(dis~genus_ct1_pred$region)
+#regions did differ (p = 0.001); adding station as strata makes results not significant
+#region doesn't explain much variation (R2 = 0.01002 or 1%)
+mod<-betadisper(dis,genus_ct1_pred$region)
+anova(mod) #p=0.58
+#regions not significantly different (ie, homogeneity of variances is fine)
+plot(mod, ellipse = TRUE, hull = FALSE) # 1 sd data ellipse
+
+#adonis by region without 2020
+adonis2(dis2~genus_ct1_pred2$region) #still significant
+
+#adonis by year
+adonis2(dis~genus_ct1_pred$year,strata = genus_ct1_pred$station) #p=0.001
+adonis2(dis2~genus_ct1_pred2$year,strata = genus_ct1_pred2$station) #still significant, p=0.001
+
+
+#need to check dispersion which could also explain differences
+#year doesn't explain much variation (R2 = 0.0422 or 4.2%)
+mod2<-betadisper(dis,genus_ct1_pred$year)
+anova(mod2) #p = 6.822e-07
+#regions are significantly different (ie, homogeneity of variances violated)
+plot(mod2, ellipse = TRUE, hull = FALSE) # 1 sd data ellipse
+
+#adonis by year x region
+adonis2(dis~year_region,data=genus_ct1_pred)
+adonis2(dis~genus_ct1_pred$region*genus_ct1_pred$year,strata = genus_ct1_pred$station) #interaction term is significant
+#year_region did differ (p = 0.001)
+#doesn't explain much variation but better than any one predictor (R2 = 0.07 or 6.9%)
+mod3<-betadisper(dis,genus_ct1_pred$year_region)
+anova(mod3) #p = 6.822e-07
+#year_regions are significantly different (ie, homogeneity of variances violated)
+plot(mod3, ellipse = TRUE, hull = FALSE) # 1 sd data ellipse
+
+#adonis by year x region (no 2020)
+adonis2(dis~year_region,data=genus_ct1_pred)
+adonis2(dis2~genus_ct1_pred2$region*genus_ct1_pred2$year,strata = genus_ct1_pred2$station) #interaction term is significant
+#everything, including interaction term, still significant without 2020
+
+
+#adonis by month
+adonis2(dis~month,data=genus_ct1_pred)
+#months did not differ (p = 0.127)
+#month doesn't explain much variation (R2 = 0.01433 or 1.4%)
 
 #show nmds plot by region
 #fortify() creates a data frame with nmds scores
@@ -905,14 +1101,6 @@ ggplot() +
         panel.background=element_blank(),
         axis.line=element_line(colour="black"))
 
-
-#adonis by region
-summary(genus_ct1_pred)
-adonis2(genus_ct1_abund~region,data=genus_ct1_pred)
-#regions did differ (p = 0.002)
-#need to check dispersion which could also explain differences
-#region doesn't explain much variation (R2 = 0.01087 or 1.1%)
-
 #nmds by year
 ggplot() +
   geom_point(data=subset(fort, score == "sites"),
@@ -932,17 +1120,6 @@ ggplot() +
         panel.grid.minor=element_blank(),
         panel.background=element_blank(),
         axis.line=element_line(colour="black"))
-
-#adonis by year
-adonis2(genus_ct1_abund~year,data=genus_ct1_pred)
-#years did differ (p = 0.001)
-#need to check dispersion which could also explain differences
-#year doesn't explain much variation (R2 = 0.0422 or 4.2%)
-
-#adonis by year x region
-adonis2(genus_ct1_abund~year_region,data=genus_ct1_pred)
-#year_region did differ (p = 0.001)
-#doesn't explain much variation but better than any one predictor (R2 = 0.07 or 6.9%)
 
 #nmds by month
 ggplot() +
@@ -964,8 +1141,4 @@ ggplot() +
         panel.background=element_blank(),
         axis.line=element_line(colour="black"))
 
-#adonis by month
-adonis2(genus_ct1_abund~month,data=genus_ct1_pred)
-#months did not differ (p = 0.127)
-#month doesn't explain much variation (R2 = 0.01433 or 1.4%)
 
