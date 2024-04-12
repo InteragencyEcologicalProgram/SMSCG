@@ -411,16 +411,16 @@ phyto_emp_repo_tax <- left_join(phyto_emp_repo_cleanest,taxonomy_emp_amend)   %>
   glimpse()
 
 #look for non-matching taxa
-tax_mism_emp <- phyto_emp_repo_tax %>%
-  filter(is.na(kingdom)) %>%
-  select(taxon_original:species) %>%
-  distinct() %>%
-  arrange(taxon) %>%
-  select(taxon_original = taxon
-         ,genus
-         ,species
-         )
-#9 taxa that didn't match
+# tax_mism_emp <- phyto_emp_repo_tax %>%
+#   filter(is.na(kingdom)) %>%
+#   select(taxon_original:species) %>%
+#   distinct() %>%
+#   arrange(taxon) %>%
+#   select(taxon_original = taxon
+#          ,genus
+#          ,species
+#          )
+#9 taxa that didn't match initially
 
 #format DFW data-------------
 
@@ -1094,7 +1094,6 @@ phyto_smscg <- phyto_all_tax %>%
 
 #write the output data file for SMSCG EDI
 #write_csv(phyto_smscg, "./EDI/data_output/smscg_phytoplankton_samples_2020-2023.csv")
-
 
 #recombine taxonomy and abunance data to make sure it works correctly
 #phyto_all_tax_recomb <- left_join(phyto_smscg,phyto_tax_final) 
