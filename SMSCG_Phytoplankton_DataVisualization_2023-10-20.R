@@ -46,6 +46,11 @@ region <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=ed
 lcefa <- read_csv("./EDI/data_output/smscg_phytoplankton_lcefa.csv") %>% 
   select(-lcefa_group)
 
+#read in gate operation summary
+#indicates when gates are operated and closed during summer-fall months
+#summary based on daily gate operations data
+gates <- read_csv("./Data/gate_operations_2017-2022.csv")
+
 #format the station metadata file----------------
 
 #drop lat/long because those are already in abundance data set
@@ -396,37 +401,49 @@ alg_grp_biov_ry_adj <- alg_grp_biov_adj %>%
 #ggsave(plot=plot_alg_grp_ry_tot_biov_adj,"Plots/Phytoplankton/smscg_phyto_stacked_bar_tot_bvol.png",type ="cairo-png",width=8, height=7,units="in",dpi=300)
 
 
-#time series plot of eastern marsh stations before, during, after gate operations---------------
+#time series plot of eastern marsh stations before and during gate operations---------------
 #specifically MONT, 609, 610
-#gates operated August 15 to Oct 17
-#because this comparison is within one year and only includes samples collected by DFW
-#inconsistencies in how samples were enumerated don't apply here
+#2023 gates operated August 15 to Oct 17
 
 #create vector of stations for filtering
 stn_east <- c("STN_609","STN_610","STN_MONT")
 
 #create subset of data
 east23 <- alg_grp_biov_samp %>% 
-  filter(year=="2023" & station %in% stn_east) %>% 
+  #filter(year=="2023" & station %in% stn_east) %>%
+  filter(station %in% stn_east) %>% 
   #add column that assigns samples to pre vs post SMSCG ops starting
-  mutate(timing = as.factor(case_when(date < "2023-08-15"~"Before"
-                            ,date>="2023-08-15" ~"During"
-                            ))
+  mutate(timing = as.factor(case_when(
+    #before gate operations for 2020: : before 9/8
+    (between(date,ymd("2020-07-01"),ymd("2020-09-07"))
+     #2021: before 9/13 (closed for 9 days before op)
+    | between(date,ymd("2021-07-01"),ymd("2021-09-12"))
+     #2022: before 9/1 (closed for 3 weeks before)
+    | between(date,ymd("2022-07-01"),ymd("2022-08-31"))
+    #2023: before 8/15
+    | between(date,ymd("2023-07-01"),ymd("2023-08-14")))
+    ~"Before"
+    #during gate operations: will be any other date in this data set
+    ,TRUE~"During"))
          #add a new column that lumps together less common algal groups into "other" category
          ,algal_group_adj = case_when(algal_group == "Chrysophytes" | algal_group == "Haptophytes" | 
                                         algal_group == "Raphidophytes" | algal_group == "Dinoflagellates" ~ "Other"
                                       ,TRUE ~ algal_group), .after = algal_group
          ) %>% 
-  group_by(station,date,timing,algal_group_adj) %>% 
+  group_by(station,year,date,timing,algal_group_adj) %>% 
   summarise(across(c(biovolume_per_ml,biomass_ug_c_l,lcefa_per_l), ~sum(.x, na.rm = TRUE)),.groups='drop') %>% 
+  arrange(date,station) %>% 
   glimpse()
 
 #create list of unique station x date combos
-east23sd <- east23 %>% 
-  distinct(station,date)
-#three sampling dates before gate operations started
+# east23sd <- east23 %>% 
+#   distinct(timing,station,year,date) %>% 
+#   count(year,timing) %>% 
+#   arrange(year,timing)
+#samples size between before and during are a bit uneven but overall not too bad
 
 #make stacked bar plot for each date with stations as facets
+#doesn't work as well now that we are showing all years rather than just 2023
 (plot_alg_grp_east <- ggplot(east23, aes(x = date, y = biovolume_per_ml, fill=algal_group_adj))+
   geom_bar(position = "stack", stat = "identity", color="black") + 
   labs(x="Year",y = "Biovolume" )+
@@ -436,6 +453,12 @@ east23sd <- east23 %>%
 #abundances seem to vary a lot among stations prior to gate operations starting so difficult
 #to draw conclusions about impact of gate ops
 #could make a plot that shows one bar for pre-SMSCG and one after start of SMSCG
+
+#add plot that shows before and during by year
+east23_gates_sumyr<- east23 %>% 
+  group_by(year,timing,algal_group_adj) %>% 
+  summarise(total_biovolume = mean(biovolume_per_ml,na.rm=T),.groups='drop') %>% 
+  arrange(desc(timing),algal_group_adj)
 
 #summarize data by pre vs post SMSCG
 east23_gates<- east23 %>% 
@@ -468,6 +491,19 @@ east23_gates[3,3]/east23_gates_sum[1,2] #0.1586296 of total composition
 (east23_gates[8,3]+east23_gates[14,3])/east23_gates_sum[2,2] #0.5056648
 #after
 (east23_gates[1,3]+east23_gates[7,3])/east23_gates_sum[1,2] #0.6688682
+
+#set order of adjusted algal groups based on contribution to biovolume
+east23_gates_sumyr$algal_group_adj <- factor(east23_gates_sumyr$algal_group_adj, levels=algal_group_adj_rank)
+
+#make stacked bar plot showing before and after gate ops started by year
+(plot_alg_grp_east_gates <- ggplot(east23_gates_sumyr, aes(x = factor(timing,level=c("Before","During")), y = total_biovolume/1000000000, fill=algal_group_adj))+
+    geom_bar(position = "stack", stat = "identity", color="black") + 
+    labs(x="SMSCG operation",y = bquote("Biovolume"~(mm^3~mL^-1) ) )+
+    scale_fill_discrete(name = "Algal Group")+
+    facet_grid(.~year)
+)
+#varies among years whether before or during is higher
+#haven't added SD bars but they would probably be very large because biovolume varies a lot among samples
 
 #set order of adjusted algal groups based on contribution to biovolume
 east23_gates$algal_group_adj <- factor(east23_gates$algal_group_adj, levels=algal_group_adj_rank)
@@ -861,20 +897,17 @@ east23_samp <- east23 %>%
   glimpse()
 
 #analysis with log transformed response
-mod_tbiov_log_east <- glm(biovolume_per_ml ~ timing, data = east23_samp)
+mod_tbiov_log_east <- glm(log(biovolume_per_ml) ~ timing, data = east23_samp)
 
 #model checking plots
 plot(mod_tbiov_log_east)
-#the Q-Q plot doesn't look great
+#without log transformation, Q-Q plot is terrible; quite a bit better but far from perfect with log transform
+#other plots seem OK
 
 #look at model results
 summary(mod_tbiov_log_east)
 Anova(mod_tbiov_log_east) 
-#timing not significant; p = 0.2951
-
-#multiple comparison
-#determine which years differ
-TukeyHSD(mod_tbiov_log_oneway_aov)
+#timing not significant; p = 0.9575
 
 
 #summarize biovolume by genus and filter rare taxa-----------------
