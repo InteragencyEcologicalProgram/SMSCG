@@ -71,13 +71,13 @@ ggplot(habarea, aes(x = time, y = lsz_area, color = scenario))+
 
 #Cut off on November 1st. Some of the scenarios started in July instead of June (arg)
 #so also cut of june so its standardized
-habarea = mutate(habarea, DOY = yday(time)) %>%
-  filter(DOY < 305, DOY > 181)
+habarea = mutate(habarea, DOY = yday(time), Month = month(time)) %>%
+  filter(Month %in% c(7:10))
 
 #calculate average habitat area by day
 
 habsum = group_by(habarea, YT, Year, scenario, region) %>%
-  summarize(LSZ = mean(lsz_area))
+  summarize(LSZ = mean(lsz_area)) 
 
 #average percent increase - suisun marsh
 marshsum = filter(habsum, region == "Suisun Marsh") %>%
@@ -213,7 +213,7 @@ HabitatPercent = bind_rows(marsh, bay, grizz) %>%
 
 ggplot(filter(HabitatPercent, scenario != "100 TAF continuous starting July1"),
        aes(fill = scenario, y = Percent, x = YT))+ 
-  geom_col(position =  position_dodge2(width = 0.8, preserve = "single"),, color = "black")+
+  geom_col(position =  position_dodge2(width = 0.8, preserve = "single"), color = "black")+
   facet_wrap(~Region) + ylab("Percent increase in LSZ") + xlab("Water Year Type")+
   scale_fill_brewer(palette = "Dark2")+
   theme_bw()+ theme(legend.position = c(.5, .8), legend.direction = "vertical", 
@@ -322,6 +322,19 @@ ggplot(habarea23a, aes(x = DOY, y = acres, color = Year, linetype = scenario)) +
   geom_line(linewidth =1)+
   facet_wrap(~region, scales = "free") + ylab("LSZ area (acres)")+
   theme_bw()
+
+
+#compare 2023 to other years
+
+compar23 = filter(habarea23a, scenario %in% c("base", "2023operation"), Year %in% c(2017, 2020, 2023)) %>%
+  filter(!(Year == 2023 & scenario == "base"))
+
+
+ggplot(compar23, aes(x = DOY, y = acres, color = Year)) +
+  geom_line(linewidth =1)+
+  facet_wrap(~region, scales = "free") + ylab("LSZ area (acres)")+
+  theme_bw()+
+  scale_x_continuous(breaks = c(182, 210, 240, 270, 300), labels = c("Jul", "Aug", "Sep", "Oct", "Nov"))
 
 
 #calculate average habitat area by year
@@ -520,7 +533,8 @@ areas2 = group_by(ANbase, region) %>%
 #plot one year at a time for powerpoint
 
 #above normal, 2010
-ggplot(filter(habarea2, Year == 2010), aes(x = time, y = LSZ*0.000247105, color = scenario))+ geom_line(linewidth = 0.75)+
+ggplot(filter(habarea2, Year == 2010), aes(x = time, y = LSZ*0.000247105, color = scenario, linetype = scenario))+ 
+  geom_line(linewidth = 0.75)+
   facet_grid(Zone~YT, scales = "free")+
   theme_bw()+
   scale_color_brewer(palette = "Dark2")+
@@ -565,7 +579,8 @@ ggsave("plots/dry_LSZ_wgrizzly.tiff", device = "tiff", width = 10, height =6)
 
 
 #below normal, 2016
-ggplot(filter(habarea2, Year == 2016), aes(x = time, y = LSZ*0.000247105, color = scenario))+ geom_line(linewidth = 0.75)+
+ggplot(filter(habarea2, Year == 2016), aes(x = time, y = LSZ*0.000247105, color = scenario, linetype = scenario))+ 
+  geom_line(linewidth = 0.75)+
   facet_grid(Zone~YT, scales = "free")+
   theme_bw()+
   scale_color_brewer(palette = "Dark2")+
@@ -590,4 +605,250 @@ ggplot(filter(habarea2, Year == 2017, scenario != "100 TAF continusous starting 
 ggsave("plots/Wet_LSZ_wgrizzly.tiff", device = "tiff", width = 10, height =6)
 
 ####################################################################################
-#break out grizzly bay seperately
+#Now britt wants them by month and i'm a little grumpy about it
+
+
+#calculate average habitat area by day
+names(habarea)
+habsumm = habarea %>%
+  mutate(Month = month(time)) %>%
+  group_by(YT, Year, scenario, region, Month) %>%
+  summarize(LSZ = mean(lsz_area))
+
+#average percent increase - suisun marsh
+marshsumm = filter(habsumm, region == "Suisun Marsh") %>%
+  pivot_wider(id_cols = c(Month, Year, region, YT), names_from = scenario, values_from = LSZ) %>%
+  mutate(SevenSevenPercent = (`7_7`-base)/(base)*100, SixtyDayPercent = (`60d`-base)/base*100,
+         SixtyTAF = (`60d_100TAF`-base)/base*100, TAFaug = (`100TAFaug15`-base)/base*100,
+         TAFjul = (`100TAFjul1`-base)/base*100)
+
+marshsumlongm = pivot_longer(select(marshsumm, Month, YT, Year, region, SevenSevenPercent,
+                                   SixtyDayPercent, SixtyTAF, TAFaug, TAFjul), 
+                            cols = c(SevenSevenPercent,
+                                     SixtyDayPercent, SixtyTAF, TAFaug, TAFjul),
+                            names_to = "scenario", values_to = "Percent") %>%
+  filter(!is.na(Percent)) %>%
+  mutate(scenario = case_when(scenario == "SixtyDayPercent" ~ "60d",
+                              scenario == "SixtyTAF" ~ "60d_100TAF",
+                              scenario == "SevenSevenPercent" ~ "7_7",
+                              scenario == "TAFaug" ~ "100TAFaug15",
+                              scenario == "TAFjul" ~ "100TAFjul1",
+                              TRUE ~ scenario))
+
+marshsumlong2m = pivot_longer(select(marshsumm, Month, YT, Year, region, base, `60d`, `60d_100TAF`, `7_7`,
+                                    `100TAFaug15`,  `100TAFjul1`), 
+                             cols = c(base,`60d`, `60d_100TAF`, `7_7`,
+                                      `100TAFaug15`,  `100TAFjul1`),
+                             names_to = "scenario", values_to = "MetersSquared") %>%
+  filter(!is.na(MetersSquared))%>%
+  mutate(Acres = MetersSquared*0.000247105)
+
+
+marshm = left_join(marshsumlong2m, marshsumlongm) %>%
+  mutate(Region = "Suisun Marsh",
+         Percent = case_when(is.na(Percent)~ 0,
+                             TRUE ~ Percent))
+
+#now for suisun bay
+
+bysumm = filter(habsumm, region %in% c("NE Suisun",  "SE Suisun", "SW Suisun")) %>%
+  group_by(scenario, YT, Year, Month) %>%
+  summarize(LSZ = sum(LSZ)) %>%
+  pivot_wider(names_from = scenario, values_from = LSZ) %>%
+  mutate(SevenSevenPercent = (`7_7`-base)/(base)*100, SixtyDayPercent = (`60d`-base)/base*100,
+         SixtyTAF = (`60d_100TAF`-base)/base*100, TAFaug = (`100TAFaug15`-base)/base*100,
+         TAFjul = (`100TAFjul1`-base)/base*100)
+
+baysumlongm = pivot_longer(select(bysumm, Month, YT, Year, SevenSevenPercent,
+                                 SixtyDayPercent, SixtyTAF, TAFaug, TAFjul), 
+                          cols = c(SevenSevenPercent,
+                                   SixtyDayPercent, SixtyTAF, TAFaug, TAFjul),
+                          names_to = "scenario", values_to = "Percent") %>%
+  mutate(Percent = case_when(is.nan(Percent)~0,
+                             is.infinite(Percent)~0,
+                             TRUE ~ Percent)) %>%
+  filter(!is.na(Percent))%>%
+  mutate(scenario = case_when(scenario == "SixtyTAF" ~ "60d_100TAF",
+                              scenario == "SixtyDayPercent" ~ "60d",
+                              scenario == "SevenSevenPercent" ~ "7_7",
+                              scenario == "TAFaug" ~ "100TAFaug15",
+                              scenario == "TAFjul" ~ "100TAFjul1",
+                              TRUE ~ scenario))
+
+
+baysumlong2m = pivot_longer(select(bysumm, Month,  YT, Year, base, `60d_100TAF`, `7_7`, `60d`,
+                                  `100TAFaug15`,  `100TAFjul1`), 
+                           cols = c(base, `60d`, `60d_100TAF`, `7_7`,
+                                    `100TAFaug15`,  `100TAFjul1`),
+                           names_to = "scenario", values_to = "MetersSquared") %>%
+  filter(!is.na(MetersSquared)) %>%
+  mutate(Acres = MetersSquared*0.000247105)
+
+baym = left_join(baysumlong2m, baysumlongm) %>%
+  mutate(Region = "Suisun Bay",
+         Percent = case_when(is.na(Percent)~ 0,
+                             TRUE ~ Percent))
+
+########################################################################################
+
+grizzlym = filter(habsumm, region %in% c("NW Suisun")) %>%
+  group_by(scenario, YT, Year, Month) %>%
+  summarize(LSZ = sum(LSZ)) %>%
+  pivot_wider(names_from = scenario, values_from = LSZ) %>%
+  mutate(SevenSevenPercent = (`7_7`-base)/(base)*100, SixtyDayPercent = (`60d`-base)/base*100,
+         SixtyTAF = (`60d_100TAF`-base)/base*100, TAFaug = (`100TAFaug15`-base)/base*100,
+         TAFjul = (`100TAFjul1`-base)/base*100)
+
+grizzlongm = pivot_longer(select(grizzlym, Month, YT, Year, SevenSevenPercent,
+                                SixtyDayPercent, SixtyTAF, TAFaug, TAFjul), 
+                         cols = c(SevenSevenPercent,
+                                  SixtyDayPercent, SixtyTAF, TAFaug, TAFjul),
+                         names_to = "scenario", values_to = "Percent") %>%
+  mutate(Percent = case_when(is.nan(Percent)~0,
+                             is.infinite(Percent)~0,
+                             TRUE ~ Percent)) %>%
+  filter(!is.na(Percent))%>%
+  mutate(scenario = case_when(scenario == "SixtyTAF" ~ "60d_100TAF",
+                              scenario == "SixtyDayPercent" ~ "60d",
+                              scenario == "SevenSevenPercent" ~ "7_7",
+                              scenario == "TAFaug" ~ "100TAFaug15",
+                              scenario == "TAFjul" ~ "100TAFjul1",
+                              TRUE ~ scenario))
+
+
+grizzlong2m = pivot_longer(select(grizzlym, Month, YT, Year, base, `60d_100TAF`, `7_7`, `60d`,
+                                 `100TAFaug15`,  `100TAFjul1`), 
+                          cols = c(base, `60d`, `60d_100TAF`, `7_7`,
+                                   `100TAFaug15`,  `100TAFjul1`),
+                          names_to = "scenario", values_to = "MetersSquared") %>%
+  filter(!is.na(MetersSquared)) %>%
+  mutate(Acres = MetersSquared*0.000247105)
+
+grizzm = left_join(grizzlong2m, grizzlongm) %>%
+  mutate(Region = "Grizzly Bay",
+         Percent = case_when(is.na(Percent)~ 0,
+                             TRUE ~ Percent))
+#################################################################################
+
+HabitatPercentm = bind_rows(marshm, baym, grizzm) %>%
+  mutate(scenario = factor(scenario, levels = c("base", "7_7", "60d", "60d_100TAF", "100TAFjul1", "100TAFaug15"),
+                           labels = c("base", "60 days, 7 days-on/ 7 days-off",
+                                      "60 days continuous", "60 days continuous, followed by 100 TAF",
+                                      "100 TAF continuous starting July1",
+                                      "100 TAF continuous starting Aug 15")),
+         YT = factor(YT, levels = c("Dry", "Below Normal", "Above Normal", "Wet"),
+                     labels = c("Dry", "Below\nNormal", "Above\nNormal", "Wet")))
+
+ggplot(filter(HabitatPercentm, scenario != "100 TAF continuous starting July1"),
+       aes(fill = scenario, y = Percent, x = YT))+ 
+  geom_col(position =  position_dodge2(width = 0.8, preserve = "single"), color = "black")+
+  facet_grid(Month~Region) + ylab("Percent increase in LSZ") + xlab("Water Year Type")+
+  scale_fill_brewer(palette = "Dark2")+
+  theme_bw()+ theme(legend.position = c(.5, .8), legend.direction = "vertical", 
+                    legend.background= element_rect(fill = "white", color = "black"),
+                    axis.text = element_text(size =12),
+                    axis.title = element_text(size =12),
+                    strip.text = element_text(size =12))
+
+ggsave("Plots/Habatatpercent100TAF.png", device = "png", width =8, height =6)
+
+ggplot(filter(HabitatPercentm,scenario != "100 TAF continuous starting July1", Month !=6),
+       aes(fill = scenario, y = Acres, x = YT))+ 
+  geom_col(position = position_dodge2(width = 0.8, preserve = "single"), color = "black")+
+  facet_grid(Month~Region, scales = "free_y") + ylab("LSZ area (acres)")+
+  xlab("Water Year Type")+
+  scale_fill_brewer(palette = "Dark2")+
+  theme_bw() + theme(legend.position ="bottom", legend.direction = "vertical", 
+                     legend.background= element_rect(fill = "white", color = "black"),
+                     axis.text = element_text(size =12),
+                     axis.title = element_text(size =12),
+                     strip.text = element_text(size =12))
+
+
+ggsave("Plots/Habatatacres100TAF_bymonth.png", device = "png", width =10, height =10)
+
+
+AN = filter(HabitatPercentm,Month !=6, YT == "Above\nNormal")
+ggplot(AN,
+       aes(fill = scenario, y = Acres, x = YT))+ 
+  geom_col(position = position_dodge2(width = 0.8, preserve = "single"), color = "black")+
+  facet_grid(Month~Region, scales = "free_y") + ylab("LSZ area (acres)")+
+  xlab("Water Year Type")+
+  scale_fill_brewer(palette = "Dark2")+
+  theme_bw() + theme(legend.position ="right", legend.direction = "vertical", 
+                     legend.background= element_rect(fill = "white", color = "black"),
+                     axis.text = element_text(size =12),
+                     axis.title = element_text(size =12),
+                     strip.text = element_text(size =12))
+
+
+ggsave("Plots/Habatatacres100TAF_AN_bymonth.png", device = "png", width =10, height =8)
+
+
+
+BN = filter(HabitatPercentm,Month !=6, YT == "Below\nNormal")
+ggplot(BN,
+       aes(fill = scenario, y = Acres, x = YT))+ 
+  geom_col(position = position_dodge2(width = 0.8, preserve = "single"), color = "black")+
+  facet_grid(Month~Region, scales = "free_y") + ylab("LSZ area (acres)")+
+  xlab("Water Year Type")+
+  scale_fill_brewer(palette = "Dark2")+
+  theme_bw() + theme(legend.position ="right", legend.direction = "vertical", 
+                     legend.background= element_rect(fill = "white", color = "black"),
+                     axis.text = element_text(size =12),
+                     axis.title = element_text(size =12),
+                     strip.text = element_text(size =12))
+
+
+ggsave("Plots/Habatatacres100TAF_BN_bymonth.png", device = "png", width =10, height =8)
+
+
+
+write.csv(HabitatPercentm, "outputs/Habitatpercent100TAF_grizz_month.csv", row.names = FALSE)
+
+
+
+
+ggplot(filter(HabitatPercentm, scenario != "100 TAF continuous starting July1"),
+       aes(fill = scenario, y = Percent, x = YT))+ 
+  geom_col(position =  position_dodge2(width = 0.8, preserve = "single"), color = "black")+
+  facet_grid(Month~Region) + ylab("Percent increase in LSZ") + xlab("Water Year Type")+
+  scale_fill_brewer(palette = "Dark2")+
+  theme_bw()+ theme(legend.position = "bottom", legend.direction = "vertical", 
+                    legend.background= element_rect(fill = "white", color = "black"),
+                    axis.text = element_text(size =12),
+                    axis.title = element_text(size =12),
+                    strip.text = element_text(size =12))+
+  coord_cartesian(ylim = c(0,900))
+
+ggsave("Plots/Habatatpercent100TAF_bymonth.png", device = "png", width =10, height =10)
+
+habmwide = pivot_wider(HabitatPercentm, id_cols = c(Month, Region), names_from = c(YT, scenario), values_from = Percent) %>%
+  mutate(Metric = "Percent")
+
+habmwide2 = pivot_wider(HabitatPercentm, id_cols = c(Month, Region), names_from = c(YT, scenario), values_from = Acres) %>%
+  mutate(Metric = "area")
+
+habm = bind_rows(habmwide, habmwide2)
+
+write.csv(habm, "outputs/habitat_bymonth_forsdm.csv", row.names = FALSE)
+
+########################################################
+
+#I think actions started at 4psu, but not sure
+
+ANwide = bind_rows(AN60d, ANbase) %>%
+  filter(region == "Suisun Marsh") %>%
+  pivot_wider(names_from = scenario, values_from = lsz_area) %>%
+  mutate(diff = `60d`-base)
+
+ggplot(ANwide, aes(x = time, y = diff))+ geom_line()
+#nope, that one was July 1
+
+BNwide = bind_rows(BN60d, BNbase) %>%
+  filter(region == "Suisun Marsh") %>%
+  pivot_wider(names_from = scenario, values_from = lsz_area)%>%
+  mutate(diff = `60d`-base)
+
+
+ggplot(BNwide, aes(x = time, y = diff))+ geom_line()

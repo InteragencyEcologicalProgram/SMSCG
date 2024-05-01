@@ -19,9 +19,9 @@ dwr <- dwrurl %>%
 head = str_locate(dwr,'SACRAMENTO VALLEY WATER YEAR TYPE INDEX') 
 headlocal = which(head[,1]== 1)
 
-dwrdf  = data.frame(text = dwr[c(headlocal:(7+headlocal))]) 
+dwrdf  = data.frame(text = dwr[c(headlocal:(8+headlocal))]) 
 
-dwrtable = read_table(dwrdf[5:8,], col_names = FALSE)
+dwrtable = read_table(dwrdf[5:9,], col_names = FALSE)
 names(dwrtable) = c("Month", "Day", "Year", "p99", "p90", "p75", "p50", "p25", "p10")
 
 dwrtablelong = mutate(dwrtable, Date = mdy(paste(Month, Day, Year))) %>%
@@ -50,7 +50,7 @@ cnrfc <- cnrfcurl%>%
   unlist() %>% 
   str_trim()
 
-head = str_locate(cnrfc,'Seasonal Mean') 
+head = str_locate(cnrfc,'Seasonal') 
 headlocal = which(head[,1]== 1)
 
 #this is the april-july forcast
@@ -72,7 +72,7 @@ cnrfc2 <- cnrfcurl2%>%
   str_trim()
 
 
-head = str_locate(cnrfc2, "March") 
+head = str_locate(cnrfc2, "April") 
 headlocal = which(head[,1]== 1)
 
 #year to date
@@ -99,7 +99,7 @@ ggplot(cnrfcall, aes(x = Percentnum, y = WYI))+ geom_point()+ geom_line()
 
 ################################
 #join to DWR and compare
-dwrtm = filter(dwrtablelong, Month == "Mar") %>%
+dwrtm = filter(dwrtablelong, Month == "Apr") %>%
   select(WYI, Percentnum) %>%
   mutate(forcast = "DWR")
 
@@ -120,7 +120,7 @@ cuttoffs = data.frame(YT = c("Critical", "Dry", "Below Normal", "Above Normal"),
 ggplot(WYIall, aes(x = Percentnum, y = WYI, linetype = forcast))+ geom_point()+ geom_line()+
   geom_hline(data = cuttoffs, aes(yintercept = WYI, color = YT ))+
   theme_bw()+
-  scale_linetype(name = "Forecast Source", labels = c(paste("CNRFC", today()), "DWR 2024-3-1"))+ 
+  scale_linetype(name = "Forecast Source", labels = c(paste("CNRFC", today()), "DWR 2024-4-1"))+ 
   scale_color_manual(values = c("darkred", "orange", "springgreen4", "blue"), guide = NULL)+
   annotate("text", x = 25, y = c(5.3, 5.6, 6.8, 8, 9.3), 
            label = c("Critical", "Dry", "Below Normal", "Above Normal", "Wet"))+

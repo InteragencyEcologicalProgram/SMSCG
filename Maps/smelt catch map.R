@@ -28,6 +28,8 @@ ggplot()+
 ggsave("Plots/smeltmap2023.tiff", device = "tiff", width =8, height =8)
 ggsave("Plots/smeltmap2023.png", device = "png", width =8, height =8)
 
+###########################################################
+#map for Katie
 smelt2 = read_excel("Data/Running Delta Smelt Catch_2023-09-05.xlsx", sheet = "Delta Smelt Catch Data")
 
 smeltsf = st_as_sf(smelt2, coords = c("LongitudeStart", "LatitudeStart"), crs = 4326) %>%
@@ -49,3 +51,4 @@ ggplot()+
   annotation_scale()+
   annotation_north_arrow(aes(location = "tl"))
 
+ggsave("plots/Releasemap.png", device = "png", width =8, height =6)

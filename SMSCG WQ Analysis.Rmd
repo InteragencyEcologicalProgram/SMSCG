@@ -251,6 +251,8 @@ rm(df_BDL, df_CSE, df_GOD, df_GZB, df_GZM, df_HUN, df_NSL, df_VOL)
 -Combine both WQA data frames
 ```{r}
 df_WQA_all <- bind_rows(df_WQA_2023,df_WQAwide)
+
+save(df_WQA_all, file = "data/df_WQA_all.RData")
 ```
 
 
@@ -468,6 +470,8 @@ range(df_comb$temperature_C_value, na.rm = TRUE)
 
 -Replace all values that have Bad ("B" and "X") codes with NAs
 ```{r}
+
+save(df_comb, file + "df_comb.RData")
 #fluorescence
 unique(df_comb$fluorescence_ugL_code) #has both X and B codes, which indicates bad data
 df_comb$fluorescence_ugL_value <- replace(df_comb$fluorescence_ugL_value, df_comb$fluorescence_ugL_code=="B", NA)

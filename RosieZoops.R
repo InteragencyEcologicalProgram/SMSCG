@@ -44,7 +44,8 @@ Regions = filter(R_EDSM_Subregions_1718P1, SubRegion %in% c("Suisun Marsh", "Mid
 save(Regions, file = "data/SMSCGRegions.RData")
 
 
-SMSCGzoops2 = st_as_sf(filter(SMSCGzoopsx, !is.na(Latitude)), coords = c("Longitude", "Latitude"), crs = 4326) %>%
+SMSCGzoops2.1 = st_as_sf(filter(SMSCGzoopsx, !is.na(Latitude)), coords = c("Longitude", "Latitude"), 
+                       crs = 4326) %>%
   st_transform(crs = st_crs(Regions)) %>%
   st_join(Regions) %>%
   filter(!is.na(SubRegion)) 
@@ -53,7 +54,17 @@ ggplot()+
   geom_sf(data=Regions)+
   geom_sf(data=SMSCGzoops2, aes(shape = Source))
 
-SMSCGzoops2 = mutate(SMSCGzoops2, Region = case_when(SubRegion %in% c("Mid Suisun Bay", "Honker Bay")~ "Suisun Bay",
+
+library(ggspatial)
+ggplot()+
+  geom_sf(data = WW_Delta, color = "grey", fill = "lightskyblue")+
+  theme_bw()+
+  coord_sf(ylim = c(38, 38.4), xlim = c(-122.2, -121.5))+
+  annotation_north_arrow(location = "tl")+
+  annotation_scale()
+
+
+SMSCGzoops2 = mutate(SMSCGzoops2.1, Region = case_when(SubRegion %in% c("Mid Suisun Bay", "Honker Bay")~ "Suisun Bay",
                                                      SubRegion %in% c("Lower Sacramento River", "Sacramento River near Rio Vista") ~ "River",
                                                      TRUE ~ SubRegion),
                      Month = month(Date),
@@ -172,7 +183,7 @@ SMSCGzoops2023long = pivot_longer(SMSCGzoops2023, ACARTELA:last_col(), names_to 
   group_by(Source, Year, Month, Date, Station, Region) %>%
   summarize(CPUE = sum(CPUE))
 
-#load("Data/SMSCGRegions.RData")
+load("Data/SMSCGRegions.RData")
 
 SMSCGzoops2 = st_as_sf(filter(SMSCGzoops, !is.na(Latitude)), coords = c("Longitude", "Latitude"), crs = 4326) %>%
   st_transform(crs = st_crs(Regions)) %>%
@@ -186,7 +197,7 @@ SMSCGzoops2 = mutate(SMSCGzoops2, Region = case_when(SubRegion %in% c("Mid Suisu
                                                      SubRegion %in% c("Lower Sacramento River", "Sacramento River near Rio Vista") ~ "River",
                                                      TRUE ~ SubRegion),
                      Month = month(Date)) %>%
-  filter(Month %in% c(6:10), Genus == "Pseudodiaptomus")
+  filter(Month %in% c(6:10), Species == "Pseudodiaptomus forbesi")
 
 yrs = read_csv("data/wtryrtype.csv") %>%
   mutate(Year = WY)
@@ -197,15 +208,40 @@ bind_rows(SMSCGzoops2023long) %>%
   left_join(yrs) %>%
   mutate(Yrtype = factor(`Yr-type`, levels = c("C", "D", "BN", "AN", "W")))
 
+samples = group_by(SMSCGzoops3, Region, Year) %>%
+  summarize(N = n())
+
 ggplot(SMSCGzoops3, aes(x = as.factor(Year), y = log(CPUE+1), fill = Yrtype)) + geom_boxplot()+
   facet_wrap(~Region)+
   xlab("Year - June-October only")+
+  ylab("P. forbesi log(CPUE+1)")+
+  scale_fill_manual(values = c("darkred", "orange", "yellow", "lightgreen", "darkblue"),
+                    name = "Year Type")+
+  theme_bw()+
+  geom_label(data = samples, aes(x = as.factor(Year),label = N), y =1, inherit.aes = FALSE,
+             label.padding = unit(0.1, "lines"), size =3)+
+  theme(axis.text.x = element_text(angle = 90, hjust =1, vjust =0.5),
+        legend.position = "bottom")
+
+ggsave("Plots/Psudodiaptomus_23years.tiff", device = "tiff", width =10, height =6)
+
+
+ggplot(SMSCGzoops3, aes(x = SalSurf, y = log(CPUE+1), fill = Yrtype)) + geom_point()+
+  facet_grid(Month~Region)+
+  xlab("Salinity")+
   ylab("Pseudodiaptomus log(CPUE+1)")+
   scale_fill_manual(values = c("darkred", "orange", "yellow", "lightgreen", "darkblue"))+
   theme_bw()+
   theme(axis.text.x = element_text(angle = 90, hjust =1, vjust =0.5))
 
-ggsave("Plots/Psudodiaptomus_23years.tiff", device = "tiff", width =10, height =5)
+ggplot(SMSCGzoops3, aes(x = yday(Date), y = log(CPUE+1), color = SalSurf)) + geom_point()+
+  facet_wrap(~Region)+
+  geom_smooth(method = "lm")+
+  xlab("Day of Year")+
+  scale_color_viridis_c()+
+  ylab("Pseudodiaptomus log(CPUE+1)")+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 90, hjust =1, vjust =0.5))
 
 ################################################################################
 
@@ -217,4 +253,158 @@ ggplot(SMSCGzoops3, aes(x = SalSurf, y = log(CPUE+1)))+ geom_point()+
   xlab("Salinity (psu)")+
   ylab("Log Psudodiaptoums CPUE")
 
-#OK, change in 
+# Should i be doing just forbesi? or doe s it matter?
+
+Foo = group_by(SMSCGzoops, Species) %>%
+  summarize(tot = sum(CPUE))
+
+#######################################################################
+#Pascale wants spring zooplankton
+
+SMSCGzoops = Zoopsynther(Data_type = "Community", Sources = c("EMP", "20mm", "FMWT", "STN", "DOP"),
+                         Years = 2000:2022, Size_class = "Meso") %>%
+  filter(!Undersampled)
+
+
+#filter the CPUE file so it only has the stations we're interested in 
+Regions = filter(R_EDSM_Subregions_1718P1, SubRegion %in% c("Suisun Marsh", "Mid Suisun Bay", "Grizzly Bay",
+                                                            "Lower Sacramento River", "Honker Bay", "Sacramento River near Rio Vista")) %>%
+  mutate(Region = case_when(SubRegion %in% c("Mid Suisun Bay", "Honker Bay")~ "Suisun Bay",
+                            SubRegion %in% c("Lower Sacramento River", "Sacramento River near Rio Vista") ~ "River",
+                            TRUE ~ SubRegion))
+
+save(Regions, file = "data/SMSCGRegions.RData")
+
+
+SMSCGzoops2.1 = st_as_sf(filter(SMSCGzoops, !is.na(Latitude)), coords = c("Longitude", "Latitude"), 
+                         crs = 4326) %>%
+  st_transform(crs = st_crs(Regions)) %>%
+  st_join(Regions) %>%
+  filter(!is.na(SubRegion)) 
+
+
+
+load("data/Dayflow_allw2023.RData")
+outflow = select(Dayflow, Year, Date, OUT) 
+
+springzoops = SMSCGzoops2.1 %>%
+  mutate(Month = month(Date)) %>%
+  filter(Taxname %in% 
+                       c("Pseudodiaptomus forbesi", "Pseudodiaptomus_UnID",
+                         "Cladocera_UnID", "Daphnia_UnID","Daphniidae_UnID")) %>%
+  st_drop_geometry()
+
+#monthly means
+sprzop = springzoops %>%
+  filter(Region %in% c("Suisun Marsh", "Suisun Bay", "Grizzly Bay")) %>%
+  group_by(Month, Year, Taxname) %>%
+  summarize(CPUE = mean(CPUE))
+
+#add outflow
+outflowmonthly = outflow %>%
+  mutate(Month = month(Date)) %>%
+  group_by(Month, Year) %>%
+  summarize(OUT = mean(OUT))
+
+
+springzoops2 =  left_join(sprzop, outflowmonthly)
+
+ggplot(filter(springzoops2, Month %in% c(3,4,5)), aes(x = log(OUT), y = log(CPUE), color = Taxname)) + geom_point()+
+  theme_bw()+
+  geom_smooth(method = "lm")
+
+
+
+ggplot(filter(springzoops2, Month %in% c(6,7,8,9)), aes(x = log(OUT), y = log(CPUE), color = Taxname)) + geom_point()+
+  theme_bw()+
+  geom_smooth(method = "lm")
+
+##################################
+#spring flow versus summer pseudodiaptomus
+
+sprzop2 = springzoops %>%
+  filter(Region %in% c("Suisun Marsh", "Suisun Bay", "Grizzly Bay"), Month %in% c(6,7,8,9),
+         Taxname == "Pseudodiaptomus forbesi") %>%
+  group_by(Year, Taxname) %>%
+  summarize(CPUEm = mean(CPUE), sdcpue = sd(CPUE), secpue = sdcpue/3)
+
+  
+outyearly = filter(outflowmonthly, Month %in% c(2,3,4,5)) %>%
+  group_by(Year) %>%
+  summarize(SpringOut = mean(OUT))
+
+summerpseudo = left_join(sprzop2, outyearly) 
+
+ggplot(summerpseudo, aes(x = log(SpringOut), y = log(CPUEm))) + geom_point()+
+  geom_smooth(method = "lm")+
+  geom_errorbar(aes(ymin = log(CPUEm -secpue ), ymax = log(CPUEm + secpue)))+
+  theme_bw()+
+  ylab("Log-Transformed Pseudodiaptomus CPUE")+
+  xlab("Log-Transformed mean Feb-May Delta Outflow")
+  
+
+#OK, now spring flow versus spring aboundacne
+sprzop3 = springzoops %>%
+  filter(Region %in% c("Suisun Marsh", "Suisun Bay", "Grizzly Bay"), Month %in% c(2,3,4,5),
+         Taxname == "Pseudodiaptomus forbesi") %>%
+  group_by(Year, Taxname) %>%
+  summarize(CPUEm = mean(CPUE), sdcpue = sd(CPUE), secpue = sdcpue/3) %>%
+  left_join(outyearly)
+
+
+ggplot(sprzop3, aes(x = log(SpringOut), y = log(CPUEm))) + geom_point()+
+  geom_smooth(method = "lm")+
+  geom_errorbar(aes(ymin = log(CPUEm -secpue ), ymax = log(CPUEm + secpue)))+
+  theme_bw()+
+  ylab("Log-Transformed Spring Pseudodiaptomus CPUE")+
+  xlab("Log-Transformed mean Feb-May Delta Outflow")
+
+psduedo = filter(springzoops, Genus == "Pseudodiaptomus")
+ggplot(psduedo, aes(x = Month, y = log(CPUE+1)))+
+  geom_col()+
+  facet_wrap(~Lifestage)
+
+#break out by life stage
+
+sprzop2 = springzoops %>%
+  filter(Region %in% c("Suisun Marsh", "Suisun Bay", "Grizzly Bay"), Month %in% c(6,7,8,9),
+         Genus == "Pseudodiaptomus") %>%
+  group_by(Year, Taxname, Lifestage) %>%
+  summarize(CPUEm = mean(CPUE), sdcpue = sd(CPUE), secpue = sdcpue/3)
+
+
+outyearly = filter(outflowmonthly, Month %in% c(2,3,4,5)) %>%
+  group_by(Year) %>%
+  summarize(SpringOut = mean(OUT))
+
+summerpseudo = left_join(sprzop2, outyearly) 
+
+ggplot(summerpseudo, aes(x = log(SpringOut), y = log(CPUEm))) + geom_point()+
+  geom_smooth(method = "lm")+
+  geom_errorbar(aes(ymin = log(CPUEm -secpue ), ymax = log(CPUEm + secpue)))+
+  facet_wrap(~Lifestage)+
+  theme_bw()+
+  ylab("Log-Transformed Summer Pseudodiaptomus CPUE")+
+  xlab("Log-Transformed mean Feb-May Delta Outflow")
+
+
+sprzop3 = springzoops %>%
+  filter(Region %in% c("Suisun Marsh", "Suisun Bay", "Grizzly Bay"), Month %in% c(2:5),
+         Genus == "Pseudodiaptomus") %>%
+  group_by(Year, Taxname, Lifestage) %>%
+  summarize(CPUEm = mean(CPUE), sdcpue = sd(CPUE), secpue = sdcpue/3)
+
+
+outyearly = filter(outflowmonthly, Month %in% c(2,3,4,5)) %>%
+  group_by(Year) %>%
+  summarize(SpringOut = mean(OUT))
+
+summerpseudo = left_join(sprzop3, outyearly) 
+
+ggplot(summerpseudo, aes(x = log(SpringOut), y = log(CPUEm))) + geom_point()+
+  geom_smooth(method = "lm")+
+  geom_errorbar(aes(ymin = log(CPUEm -secpue ), ymax = log(CPUEm + secpue)))+
+  facet_wrap(~Lifestage)+
+  theme_bw()+
+  ylab("Log-Transformed Spring Pseudodiaptomus CPUE")+
+  xlab("Log-Transformed mean Feb-May Delta Outflow")
