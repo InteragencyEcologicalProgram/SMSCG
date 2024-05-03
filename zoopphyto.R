@@ -153,3 +153,35 @@ ggplot(psusum, aes(x = log(bv/1000+1), y = log(BPUE+1)))+
   ylab("Log-transformed Pseudodiaptomus BPUE")+
   xlab("log-transformed biovolume")+
   theme_bw()
+
+
+###################################
+library(lme4)
+library(lmerTest)
+library(effects)
+
+#just look at centric diatoms
+cen = filter(phytoAG, algal_group == "Centric Diatoms", region != "FLO") %>%
+  mutate(Yearf = as.factor(Year), Monthf = as.factor(Month))
+
+cenlm = lmer(log(bv/1000+1) ~ Yearf + region + (1|station)+ (1|Month), data = cen)
+summary(cenlm)
+plot(allEffects(cenlm))
+
+cenlm2 = lmer(log(bv/1000+1) ~ Yearf + region + Monthf + (1|station), data = cen)
+summary(cenlm2)
+plot(allEffects(cenlm2))
+
+
+
+#pennate diatoms
+pen = filter(phytoAG, algal_group == "Pennate Diatoms", region != "FLO") %>%
+  mutate(Yearf = as.factor(Year), Monthf = as.factor(Month))
+
+penlm = lmer(log(bv/1000+1) ~ Yearf*region + (1|station)+ (1|Month), data = pen)
+summary(penlm)
+plot(allEffects(penlm))
+
+penlm2 = lmer(log(bv/1000+1) ~ Yearf + region + Monthf + (1|station), data = pen)
+summary(penlm2)
+plot(allEffects(penlm2))

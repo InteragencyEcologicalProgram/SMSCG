@@ -4,7 +4,7 @@ EMP,NZ032,-122.020833,38.170278,Montezuma Slough 2nd bend from mouth,NA,606,2144
 EMP,NZ054,-121.906389,38.045833,"Sacramento River at mouth of Mallard Slough, near Chipps Island",D10,508,8528.373797,RIV,1,2018,NA
 EMP,NZ060,-121.828889,38.064444,Sacramento River abover Point Sacramento (bet. Lights 5 and 9),D4,801,7180.252445,RIV,1,2018,NA
 EMP,NZ064,-121.738056,38.084722,Sacramento River at Emmaton (upstrm of lights 13 and 14),D22,706,15749.93089,RIV,1,2018,NA
-EMP,NZ068,-121.6836111,38.14805556,Sacramento River at Rio Vista Coast Guard Sta,D24,710,24029.46839,RIV,0,2018,2019
+EMP,NZ068,-121.6836111,38.14805556,Sacramento River at Rio Vista Coast Guard Sta,D24,710,24029.46839,RIV,1,2018,NA
 EMP,NZS42,-122.0472222,38.18055556,Suisun Slough at mouth of Volanti Slough,NA,NZS42,23982.41212,MAR,1,2018,NA
 EMP,NZEZ2,NA,NA,"Floating entrapment zone station, taken where bottom EC is approximately 2000 uS/cm",NA,NZEZ2,NA,FLO,1,2018,NA
 EMP,NZEZ6,NA,NA,"Floating entrapment zone station, taken where bottom EC is approximately 6000 uS/cm",NA,NZEZ6,NA,FLO,1,2018,NA
@@ -18,7 +18,7 @@ FMWT,606,-122.02177,38.1698,West end of Montezuma Slough - at overhead power cab
 FMWT,608,-121.88332,38.0887,Montezuma Slough - at E. end of Roaring River Slough,NA,608,653.6082482,MAR,0,2021,2021
 FMWT,704,-121.77892,38.07087,Sacramento River - 1300 yards upstream of Lights 11 and 12,NA,704,11778.12382,RIV,1,2018,NA
 FMWT,706,-121.74,38.0903,Sacramento River - upstream of Lights 15 and 16,NA,706,15875.18086,RIV,1,2018,NA
-FMWT,707,-121.70797,38.11397,Sacramento River - upstream of Lights 19 and 20,NA,707,19755.19656,RIV,0,2018,2019
+FMWT,707,-121.70797,38.11397,Sacramento River - upstream of Lights 19 and 20,NA,707,19755.19656,RIV,1,2018,NA
 FMWT,802,-121.83875,38.03528,San Joaquin River - 500 yards N. of Point Beenar,NA,801,8392.227669,RIV,1,2018,NA
 FRP,GRIZZ,-121.98897,38.113421,Southeastern corner of Grizzly Bay,NA,GRIZZ,22284.79148,BAY,0,2018,2019
 STN,405,-122.1505044,38.03805793,Carquinez Strait just W of Benecia army dock,NA,405,30526.90346,BAY,0,2018,2019
@@ -36,7 +36,7 @@ STN,609,-121.938,38.16719444,Montezuma Slough at Nurse Slough,NA,609,12560.43272
 STN,610,-121.8891944,38.11880556,Montezuma Slough at road from Bird's Landing,NA,610,3283.609954,MAR,1,2018,NA
 STN,704,-121.7750077,38.06776131,Sacramento River N side across from Sherman Lake,NA,704,12082.30343,RIV,1,2018,NA
 STN,706,-121.7390041,38.09005982,Sacramento River below S tip of Decker Island,NA,706,15936.81994,RIV,1,2018,NA
-STN,707,-121.7060062,38.11225854,Sacramento River at Three Mile Slough in channel f,NA,707,19745.19392,RIV,0,2018,2019
+STN,707,-121.7060062,38.11225854,Sacramento River at Three Mile Slough in channel f,NA,707,19745.19392,RIV,1,2018,NA
 STN,801,-121.847,38.05561111,San Joaquin River -1km upstream of the mouth,NA,801,6147.064037,RIV,1,2018,NA
 STN,HONK,-121.92111,38.0728,"Eastern Honker Bay, north of Chipps Island",NA,HONK,10659.11143,BAY,0,2018,2019
 STN,MONT,-121.90889,38.14387,"Montezuma Slough, midway between STN 609 and STN 610",NA,MONT,8981.895878,RIV,1,2018,NA
