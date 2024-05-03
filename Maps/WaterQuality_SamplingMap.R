@@ -12,14 +12,11 @@ library(ggrepel) #nonoverlapping point labels
 #get station names and coordinates from EDI
 #stations_all <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.876.3&entityid=877edca4c29ec491722e9d20a049a31c")
 
-#use my updated version instead
-#stations_all <-read_csv("./Data/wq_stations_2023-03-03.csv")
-
 #more updated version with USBR stations replaced with CEMP stations
 stations_all <-read_csv("./Data/wq_stations_2023-05-02.csv")
 
 #look at WW_Delta base map CRS
-st_crs(WW_Delta)
+#st_crs(WW_Delta)
 #CRS = NAD83, which is different than our sample data points
 #EPSG: 4269
 
@@ -41,20 +38,28 @@ smscg <- stations_all %>%
 
 #create object from bounding box for the stations
 #add a buffer around points to improve map aesthetic
-bbox_p <- st_bbox(st_buffer(stations,2000))
+bbox_p <- st_bbox(st_buffer(stations,1500))
 
 #Prepare shapefile for adding regions to map--------------
 
 #look at coordinate reference system (CRS) of regions and basemap
 #EDSM 2019 Phase 3 Subregions
-st_crs(R_EDSM_Subregions_19P3) #NAD83 / UTM zone 10N which is EPSG = 26910
-st_crs(WW_Delta) #NAD83 which is EPSG = 4269
+#st_crs(R_EDSM_Subregions_19P3) #NAD83 / UTM zone 10N which is EPSG = 26910
+#st_crs(WW_Delta) #NAD83 which is EPSG = 4269
 
 #change CRS of both to match station data sets EPSG = 4326
 ww_delta_4326 <- st_transform(WW_Delta, crs = 4326)
-subregions_4326 <- st_transform(R_EDSM_Subregions_19P3, crs = 4326)
+#subregions_4326 <- st_transform(R_EDSM_Subregions_19P3, crs = 4326)
+subregions_4326 <- st_transform(R_EDSM_Subregions_Mahardja, crs = 4326)
 
-#make map
+
+#alternative maps
+#R_EDSM_Subregions_1718P1
+#R_EDSM_Subregions_18P23
+#R_EDSM_Subregions_1819P1
+#R_EDSM_Subregions_Mahardja
+
+#make map showing all subregions
 (map_region_all<-ggplot()+
     #CDFW Delta waterways
     geom_sf(data = ww_delta_4326, fill= "lightblue", color= "black")+
@@ -114,12 +119,12 @@ ggplot()+
   geom_sf(data= smscg, fill = "black", shape = 23, color= "black",  size= 4.5)+
   #add label for SMSCG
   geom_label_repel(data = smscg, aes(x=longitude,y=latitude, label=station) #label the points
-                   ,nudge_x = -0.04, nudge_y = -0.008 #can specify the magnitude of nudges if necessary
+                   ,nudge_x = -0.04, nudge_y = 0.008 #can specify the magnitude of nudges if necessary
                    , size = 5 #adjust size and position relative to points
                    ,inherit.aes = F #tells it to look at points not base layer
   ) + 
   geom_label_repel(data = stations, aes(x=longitude,y=latitude, label=station) #label the points
-                   #,nudge_x = 0.02, nudge_y = 0.02 #can specify the magnitude of nudges if necessary
+                   ,nudge_x = 0.01, nudge_y = 0.01 #can specify the magnitude of nudges if necessary
                    , size = 3 #adjust size and position relative to points
                    ,inherit.aes = F #tells it to look at points not base layer
   ) + 
@@ -132,14 +137,14 @@ ggplot()+
   #theme(legend.position =c(-121.80, y = 38.20))+ #this isn't working
   theme(plot.margin=grid::unit(c(0,0,0,0), "in"))+
   #annotate("text", label = "2023 SMSCG Plankton stations", x = -121.80, y = 38.20, size = 4)+
-  annotate("text", x = c(-121.78,-121.75,-121.98), y=c(38.19,38.13,38.025), label = c("Suisun Marsh","River","Suisun Bay"), size=8)+
+  annotate("text", x = c(-121.78,-121.75,-121.98), y=c(38.19,38.13,38.03), label = c("Suisun Marsh","River","Suisun Bay"), size=8)+
   theme_bw()+
   labs(x="Longitude",y="Latitude")
-#ggsave(file = "./Maps/SMSCG_WQ_Map_Plan_2023.png",type ="cairo-png", scale=1.5, dpi=300)
+#ggsave(file = "./Maps/SMSCG_WQ_Map_Plan_2024.png",type ="cairo-png", scale=1.5, dpi=300)
 
 
 
-#zoomed in map of grizlly bay
+#zoomed in map of grizzly bay
 
 
 #plot for study plan-------------------
