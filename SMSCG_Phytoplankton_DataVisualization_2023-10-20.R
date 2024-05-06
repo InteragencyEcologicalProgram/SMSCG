@@ -49,7 +49,7 @@ lcefa <- read_csv("./EDI/data_output/smscg_phytoplankton_lcefa.csv") %>%
 #read in gate operation summary
 #indicates when gates are operated and closed during summer-fall months
 #summary based on daily gate operations data
-gates <- read_csv("./Data/gate_operations_2017-2022.csv")
+gates <- read_csv("./Data/gate_operations_2017-2023.csv")
 
 #format the station metadata file----------------
 
