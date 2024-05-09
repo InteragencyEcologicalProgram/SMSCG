@@ -19,9 +19,9 @@ dwr <- dwrurl %>%
 head = str_locate(dwr,'SACRAMENTO VALLEY WATER YEAR TYPE INDEX') 
 headlocal = which(head[,1]== 1)
 
-dwrdf  = data.frame(text = dwr[c(headlocal:(8+headlocal))]) 
+dwrdf  = data.frame(text = dwr[c(headlocal:(9+headlocal))]) 
 
-dwrtable = read_table(dwrdf[5:9,], col_names = FALSE)
+dwrtable = read_table(dwrdf[5:10,], col_names = FALSE)
 names(dwrtable) = c("Month", "Day", "Year", "p99", "p90", "p75", "p50", "p25", "p10")
 
 dwrtablelong = mutate(dwrtable, Date = mdy(paste(Month, Day, Year))) %>%
@@ -83,8 +83,8 @@ ytd = as.numeric(ytd[which(!is.na(as.numeric(ytd)))])[3]
 
 
 #this is the Oct-March forcast
-cnrfcdf2  = data.frame(text = cnrfc2[c((headlocal+1):(3+headlocal))]) 
-cnOM = str_split(cnrfcdf2[2,1], " ") %>%
+cnrfcdf2  = data.frame(text = cnrfc2[c((headlocal+1):(5+headlocal))]) 
+cnOM = str_split(cnrfcdf2[5,1], " ") %>%
   unlist()
 cnOM = as.numeric(cnOM[which(!is.na(as.numeric(cnOM)))])
 
@@ -99,7 +99,7 @@ ggplot(cnrfcall, aes(x = Percentnum, y = WYI))+ geom_point()+ geom_line()
 
 ################################
 #join to DWR and compare
-dwrtm = filter(dwrtablelong, Month == "Apr") %>%
+dwrtm = filter(dwrtablelong, Month == "May") %>%
   select(WYI, Percentnum) %>%
   mutate(forcast = "DWR")
 
@@ -120,9 +120,85 @@ cuttoffs = data.frame(YT = c("Critical", "Dry", "Below Normal", "Above Normal"),
 ggplot(WYIall, aes(x = Percentnum, y = WYI, linetype = forcast))+ geom_point()+ geom_line()+
   geom_hline(data = cuttoffs, aes(yintercept = WYI, color = YT ))+
   theme_bw()+
-  scale_linetype(name = "Forecast Source", labels = c(paste("CNRFC", today()), "DWR 2024-4-1"))+ 
+  scale_linetype(name = "Forecast Source", labels = c(paste("CNRFC", today()), "DWR 2024-5-1"))+ 
   scale_color_manual(values = c("darkred", "orange", "springgreen4", "blue"), guide = NULL)+
   annotate("text", x = 25, y = c(5.3, 5.6, 6.8, 8, 9.3), 
            label = c("Critical", "Dry", "Below Normal", "Above Normal", "Wet"))+
   ylab("Water Year Index")+
   xlab("Percent Exceedance Forecast")
+
+################################################################
+#add the B120 update to the plot 
+
+b120update <- read_html("https://cdec.water.ca.gov/reportapp/javareports?name=B120DIST")
+
+extract_td_row <- function(min_element, max_element) {
+  col_names <- c(
+    "Watershed",
+    "Oct_thru_Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "WY_total",
+    "80_perc_range_lower",
+    "80_perc_range_upper",
+    "WY_perc_avg"
+  )
+  
+  html_elements(b120update, "td")[seq.int(min_element, max_element, 1)] %>%
+    html_text2() %>% 
+    set_names(col_names) %>% 
+    as_tibble_row()
+}
+
+create_index_seq <- function(i) {
+  c(min_seq = 14 * i + 1, max_seq = 14 * (i + 1))
+}
+
+b120table <- map(0:15, create_index_seq) %>% 
+  enframe() %>% 
+  unnest_wider(value) %>% 
+  mutate(df_data = map2(min_seq, max_seq, extract_td_row)) %>% 
+  unnest_wider(df_data) %>% 
+  select(-c(name, min_seq, max_seq))
+
+b120t = b120table %>%
+  mutate(across(Oct_thru_Jan:last_col(), function(x) as.numeric(str_remove(x, ","))))
+
+# It’s a bit manual, but by adding up rows 2 to 5, across columns 1 to 3,  - Does he mean 3 to 6?
+# you can get the median October through March. Then by adding the same 
+# rows over columns 4 to 7, you get the median April through July. Then 
+# I sort of take a leap that all the uncertainty of the WY 80% probability 
+# range is coming from the April through July, and I apply those offsets to the AJ 
+# value. This is correct for updates in April and May, but not quite for updates in February and March.
+# Anyway, this gives an estimate of the 10%, 50%, and 90% exceedance forecasts:
+  
+OctMar = sum(b120t[3:6,2:4])
+AprJul = sum(b120t[3:6,5:8])
+CI =c(sum(b120t[3:6,11])- sum(b120t[3:6,12]), sum(b120t[3:6,13])- sum(b120t[3:6,12]))
+
+b120svi = 9350*0.3+OctMar*0.3 + 0.4*AprJul
+b120sviL = 9350*0.3+OctMar*0.3 + 0.4*(AprJul-CI[1])
+b120sviU = 9350*0.3+OctMar*0.3 + 0.4*(AprJul-CI[2])
+
+b120df = data.frame(Month = month(today()), Day = day(today()), Year = 2024, Percentnum = c(10,50,90),
+                    WYI = c(b120sviL, b120svi , b120sviU)/1000, Source = "B120")
+
+WYIall = bind_rows(cnrfcall, dwrtm, b120df)
+
+ggplot(WYIall, aes(x = Percentnum, y = WYI, linetype = forcast))+ geom_point()+ geom_line()+
+  geom_hline(data = cuttoffs, aes(yintercept = WYI, color = YT ))+
+  theme_bw()+
+  scale_linetype(name = "Forecast Source", labels = c(paste("CNRFC", today()), "DWR 2024-5-1", "B120"))+ 
+  scale_color_manual(values = c("darkred", "orange", "springgreen4", "blue"), guide = NULL)+
+  annotate("text", x = 25, y = c(5.3, 5.6, 6.8, 8, 9.3), 
+           label = c("Critical", "Dry", "Below Normal", "Above Normal", "Wet"))+
+  ylab("Water Year Index")+
+  xlab("Percent Exceedance Forecast")
+
+#ok, that's not working. Not sure what he did there. 

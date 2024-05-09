@@ -19,6 +19,7 @@ stations_zoop <- read_csv("EDI/data_output/smscg_stations_zoop.csv") %>%
 stations_phyto <- read_csv("EDI/data_output/smscg_stations_phyto.csv")
 
 stations_all = mutate(stations_zoop,Type = case_when(station %in% stations_phyto$station ~ "Phyto + Zoop",
+                                                     program == "EMP" ~ "Phyto + Zoop",
                                                        TRUE ~ "Zoop"))
 
 #look at WW_Delta base map CRS
@@ -80,6 +81,8 @@ region_focal <- subregions_4326 %>%
   left_join(regions_new) %>% 
   group_by(Region_smscg) %>% 
   summarise(SQM = sum(SQM), do_union = TRUE)
+
+save(region_focal, file = "Data/regions_focal.RData")
 
 #DFW sites phyto and zoop map------------------
 ggplot()+

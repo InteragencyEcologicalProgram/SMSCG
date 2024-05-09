@@ -87,7 +87,6 @@ chl = select(alldata,  station_id, station_name, datetime, chl_a_ug_l, chl_sop_p
 alldata2 = bind_rows(turb, temp, chl, cond) %>%
   rename(station = station_name)
 
-
 ###########################################
 #other data
 alldata3 = bind_rows(GZL, HON, MAL, RVB, SSI) %>%
@@ -105,6 +104,9 @@ reallyallthedata = bind_rows(alldata2, alldatalong) %>%
 
 cuttoffs = data.frame(Analyte = c("Salinity", "Chlorophyll", "Temperature", "Turbidity"),
                       cutoff = c(6, 10, 22, 12))
+
+
+save(alldata2, alldata3, alldatalong, reallyallthedata, file = "data/WQdata2023.Rdata")
 
 ######################################
 #bdl salinity (deal with later)
@@ -178,6 +180,21 @@ ggplot(WQmeanally, aes(x = Date, y = Value))+
   ylab(NULL)
 
 ggsave("plots/AVGwq2023.png", device = "png", width =8, height =8)
+
+#salinityonly
+mypal = c(brewer.pal(8, "Dark2"), brewer.pal(8, "Set3"))
+ggplot(filter(WQmeanally, Analyte2 == "Salinity PSU"), aes(x = Date, y = Value))+
+  geom_line(aes(color = station))+
+  scale_color_manual(values = mypal)+
+  facet_grid(Analyte2~region, scales = "free_y")+
+  geom_vline(xintercept = as.Date("2023-08-15"), color = "red")+
+  geom_vline(xintercept = as.Date("2023-10-17"), color = "red")+
+  coord_cartesian(xlim = c(ymd("2023-06-01"), ymd("2023-10-31")))+
+  theme_bw()+
+  ylab(NULL)+
+  theme(legend.position = "bottom")
+
+
 
 ###############################################
 #focus in on temperature in Grizzly Bay

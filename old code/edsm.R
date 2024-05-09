@@ -27,53 +27,63 @@ write.csv(edsmdata, "Data/EDSMsmelt_summer_2018.csv")
 #it looked like there were some problems with the number of trawls
 
 EDSM = get_edi_data(415, fnames = "EDSM_KDTR.csv")
+EDSM = EDSM[[1]]
+#EDSM = read.csv("Data/EDSM_KDTR.csv")
 
-EDSM = read.csv("Data/EDSM_KDTR.csv")
-
-EDSM2 = mutate(EDSM, Date = ymd(Date), Year = year(Date), 
+EDSM2 = mutate(EDSM, Date = ymd(SampleDate), Year = year(Date), 
                Month = month(Date), Week = week(Date)) %>%
-  filter(Year %in% c(2018,2019,2020),  Month %in% c(7,8,9,10), !is.na(Tow))
-
-
-EDSM2x = mutate(EDSM, Date = ymd(Date), Year = year(Date), 
-                Month = month(Date), Week = week(Date)) %>%
-  filter(Year %in% c(2018,2019,2020), Month %in% c(7,8,9,10))
+  filter(Year %in% c(2017:2023),  Month %in% c(7,8,9,10), !is.na(TowNumber))
 
 
 
-EDSM3 = group_by(EDSM2, Stratum, Station, Date, Tow, Month, Year, Week) %>%
+
+EDSM3 = group_by(EDSM2, Stratum, Subregion, StationCode, Date, TowNumber, Month, Year, Week) %>%
   summarize(totcatch = length(ForkLength), 
             DSM = length(ForkLength[which(OrganismCode == "DSM")]))
 
-EDSM4 = group_by(EDSM3, Week, Stratum, Station) %>%
-  summarize(tows = length(Tow), DSM = sum(DSM)) %>%
-  group_by(Stratum, Week) %>%
+EDSM4 = group_by(EDSM3, Week, Year, Subregion, StationCode) %>%
+  summarize(tows = length(TowNumber), DSM = sum(DSM)) %>%
+   # mutate(Stratum = case_when(Stratum %in% c("Suisun Bay", "Suisun Marsh", "Suisun Bay/Marsh")~ "Suisun",
+   #                           TRUE ~ Stratum)) %>%
+  group_by(Subregion, Week, Year) %>%
   summarize(tows = sum(tows, na.rm = T), 
-            Stations = length(Station), DSM = sum(DSM),
+            Stations = length(StationCode), DSM = sum(DSM),
             DSMcpue = DSM/tows)
+ 
 
-EDSMwide = pivot_wider(EDSM4, id_cols = c(Week), 
-                       names_from = Stratum, values_from = DSMcpue,
+EDSMwide = pivot_wider(EDSM4, id_cols = c(Week, Year), 
+                       names_from = Subregion, values_from = DSMcpue,
                        values_fill = 0)
 
-#weeks = read.csv("weeks.csv")
-#names(weeks) = c("Week", "EndWeek")
-#EDSM4 = merge(EDSM4, weeks) %>%
-#  mutate(EndWeek = mdy(EndWeek))
+# weeks = read.csv("weeks.csv")
+# names(weeks) = c("Week", "EndWeek")
+# EDSM4 = merge(EDSM4, weeks) %>%
+#   mutate(EndWeek = mdy(EndWeek))
 
 library(RColorBrewer)
 
-pE = ggplot(EDSM4, aes(x = EndWeek, y = DSMcpue, fill = Stratum)) +
-  annotate("rect", xmin = ymd("2018-08-01"), xmax = ymd("2018-09-06"), 
-           ymin = 0, ymax = 1, alpha = 0.5, fill = "grey" )+
-  annotate("text", x= ymd("2018-08-15"), y = .9, label = "Action \nPeriod")+
+pE = ggplot(EDSM4, aes(x = Week, y = DSMcpue, fill = Subregion)) +
+  facet_wrap(~Year, scales = "free_y")+
+  # annotate("rect", xmin = ymd("2018-08-01"), xmax = ymd("2018-09-06"), 
+  #          ymin = 0, ymax = 1, alpha = 0.5, fill = "grey" )+
+  # annotate("text", x= ymd("2018-08-15"), y = .9, label = "Action \nPeriod")+
   geom_bar(stat = "identity") + xlab("Week of Year") +
-  scale_fill_brewer(palette = "Set1", name = "Region") +
+  #scale_fill_brewer(palette = "Set1", name = "Region") +
   ylab("Delta Smelt Catch per Trawl") +
   theme_bw() + theme(text = element_text(size = 14))
-
+pE
 #ggsave("EDSM_suisun.png", plot = pE, width = 7, height = 5, dpi = 300)
 
+#Egh, 2023 data not on EDI yet. 
+edsm2023 = read_excel("Data/Running Delta Smelt Catch_2023-09-05.xlsx", sheet = "Delta Smelt Catch Data") %>%
+  mutate(Date = ymd(SampleDate), Year = year(Date), 
+         Month = month(Date), Week = week(Date)) %>%
+  filter( Month %in% c(7,8,9,10))
+#eh, but this doesn't have number of tows, so no real good way to look at effort
+
+#maybe just to total catch by region for now?
+
+#or nothing, not worth it. 
 
 #################################################################
 #let's look at all years
