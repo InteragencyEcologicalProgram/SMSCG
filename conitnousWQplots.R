@@ -1,6 +1,6 @@
-#Water quality time series plots for 2020.
+#Water quality time series plots for 2024.
 
-#Rosemary Hartman last updated 7/25/2023
+#Rosemary Hartman last updated 6/26/2024
 
 library(tidyverse)
 library(lubridate)
@@ -13,7 +13,7 @@ library(cder)
 
 #x2 plot
 X2 = cdec_query("CX2", sensors = 145,
-                start.date = as.Date("2016-06-01"), end.date =  as.Date("2023-11-01"))
+                start.date = as.Date("2016-06-01"), end.date =  as.Date("2024-11-01"))
 
 X2 = mutate(X2, X2km = case_when(DataFlag == "v" & DateTime > ymd_hm("2023-07-01 11:11")~ 81,
             TRUE~ Value))
@@ -34,43 +34,27 @@ ggplot(X2, aes(x = DOY, y = Value, color = as.factor(Year))) +
   
 
 
-#use the delta operations reporst instead
-library(readxl)
-
-X2b = read_excel("data/fallX2.xlsx")
-
-
-ggplot( ) +
-  #geom_line(filter(X2b, !is.na(X2)),aes(x = Date, y = X2))+
-  geom_line(data = filter(X2b, !is.na(X2)),aes(x = Date, y = X2))+
-  theme_bw()
-
-
 
 #############################################################################################
 #plot the most recent months of data real quick
 
-WQ = cdec_query(c("GZB", "GZM", "GZL", "BDL", "NSL", "RVB", "CSE"), sensors = c(100, 25, 27, 28),
-                start.date = as.Date("2023-06-01"), end.date =  as.Date("2023-11-01"))
+WQ = cdec_query(c("GZB", "GZM", "GZL", "BDL", "NSL", "RVB",  "HUN", "CSE"), 
+                sensors = c(100, 25, 27, 28),
+                start.date = as.Date("2024-06-01"), end.date =  today())
 str(WQ)
 
 ggplot(WQ, aes(x = DateTime, y = Value, color = StationID)) + facet_wrap(~SensorType, scales = "free_y")+
-  geom_line()+geom_vline(xintercept = ymd_hm("2023-08-15 00:00"))+
+  geom_line()+geom_vline(xintercept = ymd_hm("2024-07-01 00:00"))+
   scale_color_brewer(palette = "Dark2")+theme_bw()
-
-ggplot(filter(WQ, SensorType == "CHLORPH"), aes(x = DateTime, y = Value, color = StationID)) + 
-  geom_line()+
-  scale_color_brewer(palette = "Dark2")+theme_bw()+
-  ylab("Chlorophyll")+
-  coord_cartesian(xlim = c(ymd_hm("2023-09-15 00:00"), ymd_hm("2023-10-12 00:00")))
 
 WQx = mutate(WQ, Value2 = case_when(SensorNumber == 100 ~ ec2pss(Value/1000, 25),
                                SensorNumber == 25 ~ (Value - 32)*5/9,
-                               SensorNumber == 25 & Value >30 ~ NA,
+                               #SensorNumber == 25 & Value >30 ~ NA,
+                               SensorNumber == 25 & Value <40 ~ NA,
             TRUE~ Value),
             Analyte = factor(SensorType, levels = c("EL COND", "CHLORPH", "TEMP W", "TURB W"), 
                              labels = c("Salinity", "Chlorophyll", "Temperature", "Turbidity"))) %>%
-  filter(Value2 >0, !(SensorNumber ==25 & Value2>26), !(SensorNumber ==27 & Value2>200), 
+  filter(Value2 >0, !(SensorNumber ==25 & Value2>26),!(SensorNumber ==25 & Value2<5), !(SensorNumber ==27 & Value2>200), 
          !(SensorNumber ==28 & Value2>20))
 
 
@@ -83,7 +67,7 @@ ggplot(WQx, aes(x = DateTime, y = Value2, color = StationID)) +
   geom_hline(data = cuttoffs, aes(yintercept = cutoff), color = "red", linetype =2)+
   facet_wrap(~Analyte, scales = "free_y")+
    theme_bw()   +
-  coord_cartesian(xlim = c(ymd_hms("2023-08-15 00:00:00"), now()))
+  coord_cartesian(xlim = c(ymd_hms("2024-06-01 00:00:00"), now()))
 
 #just BDL and RVB for smelt cages
 ggplot(filter(WQx, StationID %in% c("RVB", "BDL")), aes(x = DateTime, y = Value2, color = StationID)) + 
@@ -91,7 +75,7 @@ ggplot(filter(WQx, StationID %in% c("RVB", "BDL")), aes(x = DateTime, y = Value2
   geom_hline(data = cuttoffs, aes(yintercept = cutoff), color = "red", linetype =2)+
   facet_wrap(~Analyte, scales = "free_y")+
   theme_bw()   +
-  coord_cartesian(xlim = c(ymd_hms("2023-08-15 00:00:00"), ymd_hms("2023-10-12 00:00:00")))
+  coord_cartesian(xlim = c(ymd_hms("2024-08-15 00:00:00"), ymd_hms("2023-10-12 00:00:00")))
 
 
 ggplot(filter(WQx, StationID %in% c("RVB", "BDL"), Analyte == "Temperature"), aes(x = DateTime, y = Value2, color = StationID)) + 
@@ -99,7 +83,7 @@ ggplot(filter(WQx, StationID %in% c("RVB", "BDL"), Analyte == "Temperature"), ae
   geom_hline(yintercept = 25, color = "red", linetype =2)+
   facet_wrap(~Analyte, scales = "free_y")+
   theme_bw()   + ylab("Tempearature C")+
-  coord_cartesian(xlim = c(ymd_hms("2023-08-15 00:00:00"), ymd_hms("2023-08-31 00:00:00")))
+  coord_cartesian(xlim = c(ymd_hms("2024-08-15 00:00:00"), ymd_hms("2023-08-31 00:00:00")))
 
 
 #Do daily means instead
@@ -155,7 +139,7 @@ ggsave("plots/BDL2023v2017model.tiff", device = "tiff", width =6.5, height =4.5)
 ggplot(WQmean, aes(x = Date, y = Value2, color = StationID)) + 
   geom_hline(data = cuttoffs, aes(yintercept = cutoff), color = "red", 
              linetype =2, linewidth =1)+
-  geom_vline(xintercept = ymd("2023-08-15"))+
+  geom_vline(xintercept = ymd("2024-07-01"))+
   facet_wrap(~Analyte, scales = "free_y")+
   geom_line( linewidth =1)   + theme_bw() +ylab(NULL)
 
@@ -164,9 +148,9 @@ ggplot(WQmean, aes(x = Date, y = Value2, color = StationID)) +
 cuttoffs2 =  data.frame(Analyte = c("Salinity", "Temperature", "Turbidity"),
                         cutoff = c(10600, 71.6, 12))
 
-ggplot(filter(WQmean, Analyte != "Chlorophyll", !StationID %in% c("GZB", "GZM")),
+ggplot(filter(WQmean,  !StationID %in% c("GZB", "GZM")),
        aes(x = Date, y = Value, color = StationID)) + 
-  scale_color_brewer(palette = c("Dark2"), labels = c("Beldens Landing", "Collinsville", "Grizzly Bay",
+  scale_color_brewer(palette = c("Dark2"), labels = c("Beldens Landing", "Collinsville", "Grizzly Bay", "Hunter Cut", 
                                                       "National Steel", "Rio Vista"))+
   geom_hline(data = cuttoffs2, aes(yintercept = cutoff), color = "red", 
              linetype =2, linewidth =1)+
