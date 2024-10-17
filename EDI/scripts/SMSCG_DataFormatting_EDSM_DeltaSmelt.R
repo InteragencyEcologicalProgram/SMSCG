@@ -11,7 +11,7 @@
 #https://portal.edirepository.org/nis/mapbrowse?scope=edi&identifier=415&revision=10
 
 #This code creates the subset relevant to the SMSCG action
-#Years: 2018 and later
+#Years: 2017 and later
 #Months: July - October
 #Survey regions: Suisun Marsh, Suisun Bay, Lower Sacramento
 
@@ -20,9 +20,8 @@ library(tidyverse)
 library(lubridate)
 
 #get EDSM kodiak trawl data from EDI
-edsm_main<-read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.415.10&entityid=4d7de6f0a38eff744a009a92083d37ae") 
-glimpse(edsm_main)
-#throws a warning but it is for a column I'm not using
+edsm_main<-read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.415.10&entityid=4d7de6f0a38eff744a009a92083d37ae") %>% 
+  glimpse()
 
 #filter to just the needed years, months, regions, and columns
 edsm_sub <- edsm_main %>% 
@@ -33,7 +32,7 @@ edsm_sub <- edsm_main %>%
          ,Week = week(Date)
          ) %>% 
   #filter to only keep desired years, months, and strata
-  filter(Year >= "2018" 
+  filter(Year >= "2017" 
          & Month %in% c(7,8,9,10)         
          & !is.na(TowNumber)
          & Stratum %in% 
