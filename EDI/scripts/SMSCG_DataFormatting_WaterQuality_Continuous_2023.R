@@ -19,11 +19,28 @@ sharepoint_path <- normalizePath(
   )
 ) 
 
-#full data set
+#full WQ data set
 wq<-read_csv(file = paste0(sharepoint_path,"./SMSCG_wq_data_2017-2023_clean.csv")) %>% 
   arrange(date_time_pst,station) %>% 
   glimpse()
 #everything looks good
+
+#station metadata tables to combine
+wqm<-read_csv(file = paste0(sharepoint_path,"./smscg_stations_wq_updated.csv")) %>% 
+  glimpse()
+
+wqg<-read_csv(file = paste0(sharepoint_path,"./wq_stations_regions_group.csv")) %>% 
+  glimpse()
+
+#integrate the two metadata files
+wqmeta <-left_join(wqm,wqg) %>% 
+  #move group up closer to front
+  relocate(group,.after=station) %>% 
+  glimpse()
+
+#write data file for publishing on EDI
+#write_csv(wqmeta,file = paste0(sharepoint_path,"./smscg_stations_wq_combined.csv"))
+
 
 #make a few minor edits
 #correct time zone
