@@ -4,6 +4,8 @@
 #Biovolume calculations have been corrected
 
 #required packages
+library(purrr) #for function that downloads EDI data
+library(glue) #for function that downloads EDI data
 library(tidyverse) #suite of data science tools
 library(janitor) #functions for cleaning up data sets
 library(hms) #working with date/time
@@ -65,10 +67,52 @@ add_debris_col <- function(df){
   return(df)
 }
 
+#function for downloading EDI data
+get_edi_file = function(pkg_id, fnames){
+  # Get revision
+  revision_url = glue::glue('https://pasta.lternet.edu/package/eml/edi/{pkg_id}')
+  all_revisions = readLines(revision_url, warn = FALSE) 
+  latest_revision = tail(all_revisions, 1)
+  
+  # Get entities 
+  pkg_url = glue::glue('https://pasta.lternet.edu/package/data/eml/edi/{pkg_id}/{latest_revision}')
+  all_entities = readLines(pkg_url, warn = FALSE)
+  name_urls = glue::glue('https://pasta.lternet.edu/package/name/eml/edi/{pkg_id}/{latest_revision}/{all_entities}')
+  names(all_entities) = purrr::map_chr(name_urls, readLines, warn = FALSE)
+  
+  # Select entities that match fnames
+  fname_regex = stringr::str_c(glue::glue('({fnames})'), collapse = '|')
+  included_entities = all_entities[stringr::str_detect(names(all_entities), fname_regex)]
+  if(length(included_entities) != length(fnames)){
+    stop('Not all specified filenames are included in package')
+  }
+  # Download data
+  dfs = purrr::map(glue::glue('https://pasta.lternet.edu/package/data/eml/edi/{pkg_id}/{latest_revision}/{included_entities}'),
+                   readr::read_csv, guess_max = 1000000, show_col_types = FALSE)
+  names(dfs) = names(included_entities)
+  
+  if (length(dfs) == 1) {
+    return(dfs[[1]])
+  } else {
+    return(dfs)
+  }
+}
+
+
 # Read in the EMP data from EDI (pre-2023)------------------------------
-phytoplankton_emp_edi <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.8&entityid=634e9843500249d3b96b45fd6a8cad65") %>% 
-  clean_names() %>% 
-  glimpse()
+
+#these links don't work anymore
+# phytoplankton_emp_edi <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1320.8&entityid=634e9843500249d3b96b45fd6a8cad65") %>% 
+#   clean_names() %>% 
+#   glimpse()
+
+#use function to download data
+#specify package number and name of specific file
+#if file name not specified, will download all files
+phytoplankton_emp_edi = get_edi_file(pkg_id = 876, fnames = "smscg_phytoplankton_samples")  
+#this was working but now is not as of 5/30/25 (HTTP status was '429 Unknown Error'); try again later
+#also need to apply clean_names() function to this
+
 
 # Read in and combine 2023 EMP data files from GitHub repo--------------------
 

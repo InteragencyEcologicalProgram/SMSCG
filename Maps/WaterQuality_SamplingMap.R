@@ -146,11 +146,15 @@ ggplot()+
   #theme(legend.position =c(-121.80, y = 38.20))+ #this isn't working
   theme(plot.margin=grid::unit(c(0,0,0,0), "in"))+
   #annotate("text", label = "2023 SMSCG Plankton stations", x = -121.80, y = 38.20, size = 4)+
-  annotate("text", x = c(-121.78,-121.72,-121.98), y=c(38.19,38.16,38.03), label = c("Suisun Marsh","River","Suisun Bay"), size=8)+
+  annotate("text", x = c(-121.8,-121.72,-121.98), y=c(38.19,38.16,38.03), label = c("Suisun Marsh","River","Suisun Bay"), size=8)+
   theme_bw()+
   labs(x="Longitude",y="Latitude")
 
+<<<<<<< HEAD
 ggsave(file = "./Maps/SMSCG_WQ_Map_Plan_2025.png",device = "png", width = 7, height =5, dpi=300)
+=======
+#ggsave(file = "./Maps/SMSCG_WQ_Map_Plan_2024.png",type ="cairo-png", scale=2.05, dpi=300)
+>>>>>>> 49c92f76f29abe07a803312cc42b8fcce04a423c
 
 
 #zoomed in map of grizzly bay
