@@ -1,6 +1,6 @@
-#Water quality time series plots for 2020.
+#Water quality time series plots for 2024.
 
-#Rosemary Hartman last updated 7/25/2023
+#Rosemary Hartman last updated 7/29/2024
 
 library(tidyverse)
 library(lubridate)
@@ -14,7 +14,7 @@ library(cder)
 #plot the most recent months of data real quick
 
 WQ = cdec_query(c("GZB", "GZM", "GZL", "BDL", "NSL", "RVB", "CSE"), sensors = c(100, 25, 27, 28),
-                start.date = as.Date("2023-06-01"), end.date = today())
+                start.date = as.Date("2024-06-01"), end.date = today())
 str(WQ)
 
 #calculate salinity and convert temperature to celcisu
@@ -36,7 +36,7 @@ ggplot(WQx, aes(x = DateTime, y = Value2, color = StationID)) +
   geom_hline(data = cuttoffs, aes(yintercept = cutoff), color = "red", linetype =2)+
   facet_wrap(~Analyte, scales = "free_y")+
   theme_bw()   +
-  coord_cartesian(xlim = c(ymd_hms("2023-08-15 00:00:00"), now()))
+  coord_cartesian(xlim = c(ymd_hms("2024-06-01 00:00:00"), now()))
 
 
 #Do daily means instead
@@ -49,7 +49,7 @@ WQmean = WQx %>%
 ggplot(WQmean, aes(x = Date, y = Value2, color = StationID)) + 
   geom_hline(data = cuttoffs, aes(yintercept = cutoff), color = "red", 
              linetype =2, linewidth =1)+
-  geom_vline(xintercept = ymd("2023-08-15"))+
+  geom_vline(xintercept = ymd("2024-07-01"))+
   facet_wrap(~Analyte, scales = "free_y")+
   geom_line( linewidth =1)   + theme_bw() +ylab(NULL)
 

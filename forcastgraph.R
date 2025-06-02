@@ -4,6 +4,37 @@ library(lubridate)
 library(tidyverse)
 library(rvest)
 
+##########################################################
+#manual copy-paste download
+library(readxl)
+
+forecast2025 = read_excel("Data/forecast.xlsx")
+
+cuttoffs = data.frame(YT = c("Critical", "Dry", "Below Normal", "Above Normal"),
+                      WYI = c(5.4, 6.5, 7.8, 9.2)) %>%
+  mutate(YT = factor(YT, levels = c("Critical", "Dry", "Below Normal", "Above Normal")))
+
+
+forec2025 = pivot_longer(forecast2025, cols = c(`0.99`:`0.1`), names_to = "Exceedance", values_to = "Index")
+
+ggplot()+ 
+  geom_ribbon(data = forecast2025, aes(x = `Forecast Date`, ymin = `0.9`, ymax = `0.1`), alpha = 0.2, fill = "skyblue")+
+  geom_ribbon(data = forecast2025, aes(x = `Forecast Date`, ymin = `0.75`, ymax = `0.25`), alpha = 0.5, fill = "skyblue")+
+   geom_line(data = filter(forec2025, Exceedance == 0.5), aes(x = `Forecast Date`, y = Index), size =1)+
+geom_hline(data = cuttoffs, aes(yintercept = WYI, linetype = YT))+
+  annotate("text", x = ymd_hm("2025-01-01 00:00"), y = c(5.3, 5.6, 6.8, 8, 9.3), 
+           label = c("Critical", "Dry", "Below Normal", "Above Normal", "Wet"))+
+  ylab("Water Year Index")+
+  xlab("Date - 2025")+
+  theme_bw()+
+  theme(legend.position = "none")
+
+ggsave("plots/WYI2025.png", device = "png", width =8, height =6)
+
+
+
+#############################################################
+#direct frkom the interenet
 dwrurl = read_html("https://cdec.water.ca.gov/reportapp/javareports?name=WSI")
 
 
@@ -72,7 +103,7 @@ cnrfc2 <- cnrfcurl2%>%
   str_trim()
 
 
-head = str_locate(cnrfc2, "April") 
+head = str_locate(cnrfc2, "February") 
 headlocal = which(head[,1]== 1)
 
 #year to date

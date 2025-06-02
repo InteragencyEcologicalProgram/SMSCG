@@ -25,7 +25,8 @@ stations_all <-read_csv("./Data/wq_stations_2023-05-02.csv")
 stations <- stations_all %>%
   #specify CRS WGS84 (EPSG = 4326)
   st_as_sf(coords = c(x='longitude',y='latitude'), remove=F,crs = 4326) %>% 
-  glimpse()
+  glimpse() %>%
+  filter(station != "GZB", station != "GZM")
 
 #create separate dataframe for SMSCG to plot on map
 smscg <- stations_all %>% 
@@ -149,7 +150,7 @@ ggplot()+
   theme_bw()+
   labs(x="Longitude",y="Latitude")
 
-ggsave(file = "./Maps/SMSCG_WQ_Map_Plan_2024.png",type ="cairo-png", scale=1.5, dpi=300)
+ggsave(file = "./Maps/SMSCG_WQ_Map_Plan_2025.png",device = "png", width = 7, height =5, dpi=300)
 
 
 #zoomed in map of grizzly bay

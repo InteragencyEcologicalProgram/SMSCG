@@ -1,0 +1,380 @@
+﻿Lifestage,Taxname,IBMR,Taxlifestage
+Undifferentiated,Hirudinea,other,Hirudinea Undifferentiated
+Adult,Annelida,other,Annelida Adult
+Adult,Annelida,other,Annelida Adult
+Undifferentiated,Annelida,other,Annelida Undifferentiated
+Undifferentiated,Lumbricidae,other,Lumbricidae Undifferentiated
+Undifferentiated,Stylaria,other,Stylaria Undifferentiated
+Undifferentiated,Oligochaeta,other,Oligochaeta Undifferentiated
+Undifferentiated,Polychaeta,other,Polychaeta Undifferentiated
+Undifferentiated,Hediste limnicola,other,Hediste limnicola Undifferentiated
+Adult,Araneae,other,Araneae Adult
+Adult,Hydrachnidia,other,Hydrachnidia Adult
+Adult,Bosmina longirostris,othclad,Bosmina longirostris Adult
+Adult,Monospilus dispar,othclad,Monospilus dispar Adult
+Adult,Ceriodaphnia,othclad,Ceriodaphnia Adult
+Adult,Chydorus,othclad,Chydorus Adult
+Adult,Cladocera,othclad,Cladocera Adult
+Adult,Cladocera,othclad,Cladocera Adult
+Adult,Daphnia,daphnia,Daphnia Adult
+Adult,Diaphanosoma,othclad,Diaphanosoma Adult
+Adult,Holopedium,othclad,Holopedium Adult
+Adult,Ilyocryptus,othclad,Ilyocryptus Adult
+Adult,Latona,othclad,Latona Adult
+Adult,Macrothricidae,othclad,Macrothricidae Adult
+Adult,Moina,othclad,Moina Adult
+Adult,Scapholeberis,othclad,Scapholeberis Adult
+Adult,Sida,othclad,Sida Adult
+Adult,Simocephalus,othclad,Simocephalus Adult
+Juvenile,Daphnia,daphnia,Daphnia Juvenile
+Larva,Cladocera,othclad,Cladocera Larva
+Undifferentiated,Alona,othclad,Alona Undifferentiated
+Undifferentiated,Alonella,othclad,Alonella Undifferentiated
+Undifferentiated,Ceriodaphnia,othclad,Ceriodaphnia Undifferentiated
+Undifferentiated,Chydorus,othclad,Chydorus Undifferentiated
+Undifferentiated,Cladocera,othclad,Cladocera Undifferentiated
+Undifferentiated,Daphnia,daphnia,Daphnia Undifferentiated
+Undifferentiated,Diaphanosoma,othclad,Diaphanosoma Undifferentiated
+Undifferentiated,Disparalona,othclad,Disparalona Undifferentiated
+Undifferentiated,Eurycercus,othclad,Eurycercus Undifferentiated
+Undifferentiated,Graptoleberis,othclad,Graptoleberis Undifferentiated
+Undifferentiated,Ilyocryptus,othclad,Ilyocryptus Undifferentiated
+Undifferentiated,Kurzia,othclad,Kurzia Undifferentiated
+Undifferentiated,Leydigia,othclad,Leydigia Undifferentiated
+Undifferentiated,Macrothricidae,othclad,Macrothricidae Undifferentiated
+Undifferentiated,Moina,othclad,Moina Undifferentiated
+Undifferentiated,Monospilus,othclad,Monospilus Undifferentiated
+Undifferentiated,Picripleuroxus,othclad,Picripleuroxus Undifferentiated
+Undifferentiated,Pleuroxus,othclad,Pleuroxus Undifferentiated
+Undifferentiated,Pseudochydorus globosus,othclad,Pseudochydorus globosus Undifferentiated
+Undifferentiated,Pseudochydorus,othclad,Pseudochydorus Undifferentiated
+Undifferentiated,Scapholeberis,othclad,Scapholeberis Undifferentiated
+Undifferentiated,Sida,othclad,Sida Undifferentiated
+Undifferentiated,Simocephalus,othclad,Simocephalus Undifferentiated
+Undifferentiated,Leptodora,othclad,Leptodora Undifferentiated
+Undifferentiated,Anchistropus,NA,Anchistropus Undifferentiated
+Undifferentiated,Camptocercus,NA,Camptocercus Undifferentiated
+Undifferentiated,Collembola,NA,Collembola Undifferentiated
+Adult,Acartia,othcalad,Acartia Adult
+Adult,Acartiella sinensis,acartela,Acartiella sinensis Adult
+Adult,Arctodiaptomus dorsalis,othcalad,Arctodiaptomus dorsalis Adult
+Adult,Calanoida,othcalad,Calanoida Adult
+Adult,Calanoida,othcalad,Calanoida Adult
+Adult,Diaptomus dorsalis,othcalad,Diaptomus dorsalis Adult
+Adult,Diaptomus siciloides,othcalad,Diaptomus siciloides Adult
+Adult,Diaptomus,othcalad,Diaptomus Adult
+Adult,Eurytemora affinis,eurytem,Eurytemora affinis Adult
+Adult,Eurytemora,eurytem,Eurytemora Adult
+Adult,Hesperodiaptomus californiensis,othcalad,Hesperodiaptomus californiensis Adult
+Adult,Hesperodiaptomus franciscanus,othcalad,Hesperodiaptomus franciscanus Adult
+Adult,Hesperodiaptomus,othcalad,Hesperodiaptomus Adult
+Adult,Leptodiaptomus siciloides,othcalad,Leptodiaptomus siciloides Adult
+Adult,Osphranticum labronectum,othcalad,Osphranticum labronectum Adult
+Adult,Pseudodiaptomus,pdiapfor,Pseudodiaptomus Adult
+Adult,Pseudodiaptomus forbesi,pdiapfor,Pseudodiaptomus forbesi Adult
+Adult,Sinocalanus doerrii,othcalad,Sinocalanus doerrii Adult
+Adult,Sinocalanus doerrii,othcalad,Sinocalanus doerrii Adult
+Adult,Skistodiaptomus pallidus,othcalad,Skistodiaptomus pallidus Adult
+Adult,Skistodiaptomus,othcalad,Skistodiaptomus Adult
+Adult,Tortanus,othcalad,Tortanus Adult
+Adult,Calanoida,othcalad,Calanoida Adult
+Adult,Diaptomidae,othcalad,Diaptomidae Adult
+Adult,Pseudodiaptomus euryhalinus,othcalad,Pseudodiaptomus euryhalinus Adult
+Adult,Pseudodiaptomus marinus,othcalad,Pseudodiaptomus marinus Adult
+Adult,Tortanus dextrilobatus,othcalad,Tortanus dextrilobatus Adult
+Adult,Tortanus discaudatus,othcalad,Tortanus discaudatus Adult
+Juvenile,Acartia,othcaljuv,Acartia Juvenile
+Juvenile,Acartiella sinensis,othcaljuv,Acartiella sinensis Juvenile
+Juvenile,Calanoida,othcaljuv,Calanoida Juvenile
+Juvenile,Diaptomus,othcaljuv,Diaptomus Juvenile
+Juvenile,Eurytemora affinis,othcaljuv,Eurytemora affinis Juvenile
+Juvenile,Osphranticum,othcaljuv,Osphranticum Juvenile
+Juvenile,Pseudodiaptomus forbesi,pdiapjuv,Pseudodiaptomus forbesi Juvenile
+Juvenile,Sinocalanus doerrii,othcaljuv,Sinocalanus doerrii Juvenile
+Juvenile,Tortanus,othcaljuv,Tortanus Juvenile
+Juvenile,Acartia,othcaljuv,Acartia Juvenile
+Juvenile,Acartiella,othcaljuv,Acartiella Juvenile
+Juvenile,Acartiella sinensis,othcaljuv,Acartiella sinensis Juvenile
+Juvenile,Calanoida,othcaljuv,Calanoida Juvenile
+Juvenile,Diaptomidae,othcaljuv,Diaptomidae Juvenile
+Juvenile,Pseudodiaptomus,othcaljuv,Pseudodiaptomus Juvenile
+Juvenile,Sinocalanus,othcaljuv,Sinocalanus Juvenile
+Juvenile,Tortanus,othcaljuv,Tortanus Juvenile
+Larva,Eurytemora,allcopnaup,Eurytemora Larva
+Larva,Eurytemora affinis,allcopnaup,Eurytemora affinis Larva
+Larva,Pseudodiaptomus,allcopnaup,Pseudodiaptomus Larva
+Larva,Sinocalanus,allcopnaup,Sinocalanus Larva
+Larva,Sinocalanus doerrii,allcopnaup,Sinocalanus doerrii Larva
+Undifferentiated,Eurytemora affinis,othcalad,Eurytemora affinis Undifferentiated
+Undifferentiated,Sinocalanus doerrii,othcalad,Sinocalanus doerrii Undifferentiated
+Undifferentiated,Pseudodiaptomus forbesi,pdiapfor,Pseudodiaptomus forbesi Undifferentiated
+Adult,Acanthocyclops,othcyc,Acanthocyclops Adult
+Adult,Acanthocyclops vernalis,othcyc,Acanthocyclops vernalis Adult
+Adult,Cyclopoida,othcyc,Cyclopoida Adult
+Adult,Cyclopoida,othcyc,Cyclopoida Adult
+Adult,Diacyclops,othcyc,Diacyclops Adult
+Adult,Diacyclops thomasi,othcyc,Diacyclops thomasi Adult
+Adult,Platycyclops phaleratus,othcyc,Platycyclops phaleratus Adult
+Adult,Ergasilus,othcyc,Ergasilus Adult
+Adult,Eucyclops agilis,othcyc,Eucyclops agilis Adult
+Adult,Eucyclops elegans,othcyc,Eucyclops elegans Adult
+Adult,Eucyclops pectinifer,othcyc,Eucyclops pectinifer Adult
+Adult,Platycyclops phaleratus,othcyc,Platycyclops phaleratus Adult
+Adult,Eucyclops prionophorus,othcyc,Eucyclops prionophorus Adult
+Adult,Eucyclops,othcyc,Eucyclops Adult
+Adult,Lernaea,othcyc,Lernaea Adult
+Adult,Limnoithona sinensis,limno,Limnoithona sinensis Adult
+Adult,Limnoithona,limno,Limnoithona Adult
+Adult,Limnoithona tetraspina,limno,Limnoithona tetraspina Adult
+Adult,Macrocyclops albidus,othcyc,Macrocyclops albidus Adult
+Adult,Macrocyclops,othcyc,Macrocyclops Adult
+Adult,Mesocyclops edax,othcyc,Mesocyclops edax Adult
+Adult,Microcyclops rubellus,othcyc,Microcyclops rubellus Adult
+Adult,Microcyclops,othcyc,Microcyclops Adult
+Adult,Oithona davisae,othcyc,Oithona davisae Adult
+Adult,Oithona similis,othcyc,Oithona similis Adult
+Adult,Oithona,othcyc,Oithona Adult
+Adult,Paracyclops chiltoni,othcyc,Paracyclops chiltoni Adult
+Adult,Paracyclops fimbriatus,othcyc,Paracyclops fimbriatus Adult
+Adult,Paracyclops poppei,othcyc,Paracyclops poppei Adult
+Adult,Paracyclops,othcyc,Paracyclops Adult
+Adult,Tropocyclops prasinus,othcyc,Tropocyclops prasinus Adult
+Adult,Tropocyclops,othcyc,Tropocyclops Adult
+Adult,Cyclopoida,othcyc,Cyclopoida Adult
+Adult,Halicyclops,othcyc,Halicyclops Adult
+Adult,Homocyclops,othcyc,Homocyclops Adult
+Adult,Mesocyclops,othcyc,Mesocyclops Adult
+Juvenile,Acanthocyclops vernalis,othcyc,Acanthocyclops vernalis Juvenile
+Juvenile,Cyclopoida,othcyc,Cyclopoida Juvenile
+Juvenile,Platycyclops phaleratus,othcyc,Platycyclops phaleratus Juvenile
+Juvenile,Ergasilus,othcyc,Ergasilus Juvenile
+Juvenile,Limnoithona,othcyc,Limnoithona Juvenile
+Juvenile,Oithona,othcyc,Oithona Juvenile
+Juvenile,Cyclopoida,othcyc,Cyclopoida Juvenile
+Undifferentiated,Cyclopoida,othcyc,Cyclopoida Undifferentiated
+Undifferentiated,Limnoithona sinensis,othcyc,Limnoithona sinensis Undifferentiated
+Undifferentiated,Harpacticoida,othcyc,Harpacticoida Undifferentiated
+Adult,Copepoda,othcalad,Copepoda Adult
+Adult,Copepoda,othcalad,Copepoda Adult
+Larva,Copepoda,othcaljuv,Copepoda Larva
+Larva,Copepoda,othcaljuv,Copepoda Larva
+Undifferentiated,Copepoda,othcalad,Copepoda Undifferentiated
+Adult,Chrysomelidae,other,Chrysomelidae Adult
+Adult,Coccinellidae,other,Coccinellidae Adult
+Adult,Coleoptera,other,Coleoptera Adult
+Adult,Curculionidae,other,Curculionidae Adult
+Adult,Curculionidae,other,Curculionidae Adult
+Adult,Dytiscidae,other,Dytiscidae Adult
+Adult,Elmidae,other,Elmidae Adult
+Adult,Hydraenidae,other,Hydraenidae Adult
+Adult,Hydrophilidae,other,Hydrophilidae Adult
+Adult,Hydroscaphidae,other,Hydroscaphidae Adult
+Adult,Noteridae,other,Noteridae Adult
+Adult,Ptiliidae,other,Ptiliidae Adult
+Adult,Scirtidae,other,Scirtidae Adult
+Adult,Scolytus,other,Scolytus Adult
+Adult,Staphylinidae,other,Staphylinidae Adult
+Adult,Tenebrionidae,other,Tenebrionidae Adult
+Larva,Carabidae,other,Carabidae Larva
+Larva,Coccinellidae,other,Coccinellidae Larva
+Larva,Coleoptera,other,Coleoptera Larva
+Larva,Curculionidae,other,Curculionidae Larva
+Larva,Dytiscidae,other,Dytiscidae Larva
+Larva,Elmidae,other,Elmidae Larva
+Larva,Gyrinidae,other,Gyrinidae Larva
+Larva,Haliplidae,other,Haliplidae Larva
+Larva,Hydrophilidae,other,Hydrophilidae Larva
+Adult,Dermaptera,other,Dermaptera Adult
+Adult,Diptera,other,Diptera Adult
+Larva,Chironomidae,other,Chironomidae Larva
+Larva,Ceratopogonidae,other,Ceratopogonidae Larva
+Larva,Culicidae,other,Culicidae Larva
+Larva,Diptera,other,Diptera Larva
+Larva,Diptera,other,Diptera Larva
+Larva,Diptera,other,Diptera Larva
+Larva,Dolichopodidae,other,Dolichopodidae Larva
+Larva,Ephydridae,other,Ephydridae Larva
+Larva,Muscidae,other,Muscidae Larva
+Larva,Psychodidae,other,Psychodidae Larva
+Larva,Sciomyzidae,other,Sciomyzidae Larva
+Larva,Simuliidae,other,Simuliidae Larva
+Larva,Stratiomyidae,other,Stratiomyidae Larva
+Larva,Tabanidae,other,Tabanidae Larva
+Larva,Tipulidae,other,Tipulidae Larva
+Pupa,Diptera,other,Diptera Pupa
+Pupa,Diptera,other,Diptera Pupa
+Pupa,Diptera,other,Diptera Pupa
+Pupa,Diptera,other,Diptera Pupa
+Adult,Ephemeroptera,other,Ephemeroptera Adult
+Larva,Baetidae,other,Baetidae Larva
+Larva,Caenidae,other,Caenidae Larva
+Larva,Ephemeroptera,other,Ephemeroptera Larva
+Larva,Ephemeroptera,other,Ephemeroptera Larva
+Larva,Tricorythidae,other,Tricorythidae Larva
+Larva,Tricorythodes minutus,other,Tricorythodes minutus Larva
+Adult,Aphididae,other,Aphididae Adult
+Adult,Belostomatidae,other,Belostomatidae Adult
+Adult,Cicadellidae,other,Cicadellidae Adult
+Adult,Corixidae,other,Corixidae Adult
+Adult,Gerridae,other,Gerridae Adult
+Adult,Hebridae,other,Hebridae Adult
+Adult,Hemiptera,other,Hemiptera Adult
+Adult,Hemiptera,other,Hemiptera Adult
+Adult,Hemiptera,other,Hemiptera Adult
+Adult,Hydrometridae,other,Hydrometridae Adult
+Adult,Mesoveliidae,other,Mesoveliidae Adult
+Adult,Nepidae,other,Nepidae Adult
+Adult,Psyllidae,other,Psyllidae Adult
+Adult,Veliidae,other,Veliidae Adult
+Juvenile,Cicadellidae,other,Cicadellidae Juvenile
+Larva,Aphididae,other,Aphididae Larva
+Larva,Psyllidae,other,Psyllidae Larva
+Adult,Formicidae,other,Formicidae Adult
+Adult,Hymenoptera,other,Hymenoptera Adult
+Adult,Lepidoptera,other,Lepidoptera Adult
+Larva,Lepidoptera,other,Lepidoptera Larva
+Pupa,Lepidoptera,other,Lepidoptera Pupa
+Larva,Insecta,other,Insecta Larva
+Larva,Insecta,other,Insecta Larva
+Undifferentiated,Insecta,other,Insecta Undifferentiated
+Larva,Sisyridae,other,Sisyridae Larva
+Adult,Odonata,other,Odonata Adult
+Larva,Aeshnidae,other,Aeshnidae Larva
+Larva,Coenagrionidae,other,Coenagrionidae Larva
+Larva,Gomphidae,other,Gomphidae Larva
+Larva,Libellulidae,other,Libellulidae Larva
+Larva,Odonata,other,Odonata Larva
+Adult,Orthoptera,other,Orthoptera Adult
+Adult,Psocoptera,other,Psocoptera Adult
+Larva,Psocoptera,other,Psocoptera Larva
+Adult,Thysanoptera,other,Thysanoptera Adult
+Adult,Hydroptilidae,other,Hydroptilidae Adult
+Adult,Trichoptera,other,Trichoptera Adult
+Larva,Hydroptilidae,other,Hydroptilidae Larva
+Larva,Polycentropodidae,other,Polycentropodidae Larva
+Larva,Trichoptera,other,Trichoptera Larva
+Larva,Trichoptera,other,Trichoptera Larva
+Pupa,Hydroptilidae,other,Hydroptilidae Pupa
+Adult,Americorophium spinicorne,other,Americorophium spinicorne Adult
+Adult,Americorophium stimpsoni,other,Americorophium stimpsoni Adult
+Adult,Ampelisca abdita,other,Ampelisca abdita Adult
+Adult,Amphipoda,other,Amphipoda Adult
+Adult,Ampithoe,other,Ampithoe Adult
+Adult,Caprellidae,other,Caprellidae Adult
+Adult,Corophiidae,other,Corophiidae Adult
+Adult,Crangonyx,other,Crangonyx Adult
+Adult,Eogammarus,other,Eogammarus Adult
+Adult,Gammarus,other,Gammarus Adult
+Adult,Gammarus daiberi,other,Gammarus daiberi Adult
+Adult,Grandidierella,other,Grandidierella Adult
+Adult,Grandidierella japonica,other,Grandidierella japonica Adult
+Adult,Hyalella,other,Hyalella Adult
+Adult,Monocorophium,other,Monocorophium Adult
+Adult,Oedicerotidae,other,Oedicerotidae Adult
+Adult,Pleustidae,other,Pleustidae Adult
+Adult,Melita,other,Melita Adult
+Adult,Sinocorophium alienense,other,Sinocorophium alienense Adult
+Adult,Talitridae,other,Talitridae Adult
+Juvenile,Amphipoda,other,Amphipoda Juvenile
+Juvenile,Amphipoda,other,Amphipoda Juvenile
+Juvenile,Corophiidae,other,Corophiidae Juvenile
+Juvenile,Gammaridae,other,Gammaridae Juvenile
+Undifferentiated,Americophium,other,Americophium Undifferentiated
+Undifferentiated,Corophium,other,Corophium Undifferentiated
+Undifferentiated,Gammarus,other,Gammarus Undifferentiated
+Adult,Cumacea,other,Cumacea Adult
+Adult,Crangon,other,Crangon Adult
+Adult,Decapoda,other,Decapoda Adult
+Adult,Exopalaemon modestus,other,Exopalaemon modestus Adult
+Adult,Pacifastacus,other,Pacifastacus Adult
+Adult,Palaemon,other,Palaemon Adult
+Adult,Palaemon,other,Palaemon Adult
+Adult,Palaemon,other,Palaemon Adult
+Adult,Rhithropanopeus harrisii,other,Rhithropanopeus harrisii Adult
+Juvenile,Decapoda,other,Decapoda Juvenile
+Larva,Decapoda,other,Decapoda Larva
+Larva,Decapoda,other,Decapoda Larva
+Undifferentiated,Decapoda,other,Decapoda Undifferentiated
+Adult,Asellidae,other,Asellidae Adult
+Adult,Caecidotea,other,Caecidotea Adult
+Adult,Gnorimosphaeroma insulare,other,Gnorimosphaeroma insulare Adult
+Adult,Isopoda,other,Isopoda Adult
+Adult,Isopoda,other,Isopoda Adult
+Adult,Ligidium lates??,other,Ligidium lates?? Adult
+Adult,Munnidae,other,Munnidae Adult
+Juvenile,Isopoda,other,Isopoda Juvenile
+Undifferentiated,Isopoda,other,Isopoda Undifferentiated
+Adult,Alienacanthomysis macropsis,mysid,Alienacanthomysis macropsis Adult
+Adult,Deltamysis holmquistae,mysid,Deltamysis holmquistae Adult
+Adult,Hyperacanthomysis longirostris,mysid,Hyperacanthomysis longirostris Adult
+Adult,Hyperacanthomysis longirostris,mysid,Hyperacanthomysis longirostris Adult
+Adult,Mysida,mysid,Mysida Adult
+Adult,Neomysis kadiakensis,mysid,Neomysis kadiakensis Adult
+Adult,Neomysis mercedis,mysid,Neomysis mercedis Adult
+Adult,Orientomysis aspera,mysid,Orientomysis aspera Adult
+Adult,Orientomysis hwanhaiensis,mysid,Orientomysis hwanhaiensis Adult
+Juvenile,Mysida,mysid,Mysida Juvenile
+Undifferentiated,Mysidae,mysid,Mysidae Undifferentiated
+Undifferentiated,Malacostraca,other,Malacostraca Undifferentiated
+Undifferentiated,Tanaidacea,other,Tanaidacea Undifferentiated
+Larva,Arthropoda,other,Arthropoda Larva
+Adult,Ostracoda,other,Ostracoda Adult
+Undifferentiated,Ostracoda,other,Ostracoda Undifferentiated
+Adult,Pectinatella magnifica,other,Pectinatella magnifica Adult
+Adult,Actinopterygii,other,Actinopterygii Adult
+Larva,Actinopterygii,other,Actinopterygii Larva
+Undifferentiated,Actinopterygii,other,Actinopterygii Undifferentiated
+Egg,Chordata,other,Chordata Egg
+Undifferentiated,Teleostei,other,Teleostei Undifferentiated
+Adult,Hydra,other,Hydra Adult
+Undifferentiated,Aequorea,other,Aequorea Undifferentiated
+Undifferentiated,Maeotias,other,Maeotias Undifferentiated
+Undifferentiated,Cnidaria,other,Cnidaria Undifferentiated
+Undifferentiated,Cnidaria,other,Cnidaria Undifferentiated
+Undifferentiated,Aurelia,other,Aurelia Undifferentiated
+Larva,Cirripedia,other,Cirripedia Larva
+Adult,Potamocorbula amurensis,other,Potamocorbula amurensis Adult
+Adult,Bivalvia,other,Bivalvia Adult
+Adult,Bivalvia,other,Bivalvia Adult
+Juvenile,Bivalvia,other,Bivalvia Juvenile
+Juvenile,Bivalvia,other,Bivalvia Juvenile
+Undifferentiated,Bivalvia,other,Bivalvia Undifferentiated
+Adult,Corbicula fluminea,other,Corbicula fluminea Adult
+Adult,Fluminicola,other,Fluminicola Adult
+Adult,Galba,other,Galba Adult
+Adult,Lymnaea,other,Lymnaea Adult
+Adult,Melanoides tuberculata,other,Melanoides tuberculata Adult
+Adult,Gyraulus,other,Gyraulus Adult
+Adult,Physa,other,Physa Adult
+Adult,Planorbella,other,Planorbella Adult
+Adult,Planorbidae,other,Planorbidae Adult
+Adult,Ferrissia californica,other,Ferrissia californica Adult
+Adult,Hydrobiidae,other,Hydrobiidae Adult
+Adult,Gastropoda,other,Gastropoda Adult
+Adult,Gastropoda,other,Gastropoda Adult
+Adult,Gastropoda,other,Gastropoda Adult
+Juvenile,Gastropoda,other,Gastropoda Juvenile
+Undifferentiated,Mollusca,other,Mollusca Undifferentiated
+Undifferentiated,Nudibranchia,other,Nudibranchia Undifferentiated
+Adult,UnID Invertebrate,other,UnID Invertebrate Adult
+Egg,Egg,other,Egg Egg
+Egg,UNID,other,UNID Egg
+Undifferentiated,Animal material UNID,other,Animal material UNID Undifferentiated
+Undifferentiated,Nematoda,other,Nematoda Undifferentiated
+Undifferentiated,Prostoma,other,Prostoma Undifferentiated
+Undifferentiated,Nemertea,other,Nemertea Undifferentiated
+Undifferentiated,Girardia tigrina,other,Girardia tigrina Undifferentiated
+Adult,Asplanchna,other,Asplanchna Adult
+Adult,Branchionus,other,Branchionus Adult
+Adult,Kellicottia,other,Kellicottia Adult
+Adult,Keratella,other,Keratella Adult
+Adult,Platyias,other,Platyias Adult
+Adult,Polyarthra,other,Polyarthra Adult
+Adult,Synchaeta,other,Synchaeta Adult
+Adult,Synchaeta bicornis,other,Synchaeta bicornis Adult
+Adult,Trichocerca,other,Trichocerca Adult
+Adult,Rotifera,other,Rotifera Adult
+Adult,Rotifera,other,Rotifera Adult
+Undifferentiated,Rotifera,other,Rotifera Undifferentiated
+Adult,Tardigrada,other,Tardigrada Adult
+Undifferentiated,Tardigrada,other,Tardigrada Undifferentiated

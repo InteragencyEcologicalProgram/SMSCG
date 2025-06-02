@@ -205,7 +205,7 @@ ggplot()+
   ggtitle(label = "2024 FMWT SMSCG Phytoplankton Stations")
 ggsave(file = "./Maps/SMSCG_Phytoplankton_Map_Field_FMWT_2024.png",type ="cairo-png", scale=1.25, height=3.5, units="in",dpi=300)
 
-#Study plan map-------------------
+#Study plan map------------------- now with zoops only
 #includes shaded regions
 ggplot()+
   #plot waterways base layer
@@ -216,18 +216,12 @@ ggplot()+
           , alpha=0.2)+
   #plot station locations using different shapes and colors for different types of stations
   geom_sf(data= smscg, fill = "black", shape = 23, color= "black",  size= 4.5)+
-  geom_sf(data= stations_plan, aes(fill=Type,color=Type, shape=program), size= 2.5)+
+  geom_sf(data= filter(stations_plan, program != "ICF"), aes(shape=program), size= 2.5, fill = "blue")+
   scale_shape_manual(
-    labels=c('EMP','FMWT','STN'),
-    values=c(21:23)
+    labels=c('EMP','FMWT', 'STN'),
+    values=c(21:24)
   )+
-   scale_color_manual(
-    values=c("#CD6600","#7A378B")
-   )+
-  scale_fill_manual(
-   
-    values=c("#CD6600","#7A378B")
-    )+
+
   #add point for SMSCG 
   geom_sf(data= smscg, fill = "black", shape = 23, color= "black",  size= 4.5)+
   #add label for SMSCG
@@ -247,7 +241,7 @@ ggplot()+
   annotate("text", x = c(-121.9,-121.75,-121.98), y=c(38.24,38.13,38.02), label = c("Suisun Marsh","River","Suisun Bay"), size=6)+
   theme_bw()+
   labs(x="Longitude",y="Latitude")
-ggsave(file = "./Maps/SMSCG_Plankton_Map_Plan_2024.png",type ="cairo-png", scale=1, dpi=300)
+ggsave(file = "./Maps/SMSCG_zoops_Map_Plan_2025.png",device = "png", width = 8, height =5)
 
 
 

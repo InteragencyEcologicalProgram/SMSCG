@@ -23,7 +23,7 @@ library(lmerTest)
 #let's pull all the zooplankton data from Jun-October, 2017-present
 
 SMSCGzoops = Zoopsynther(Data_type = "Community", Sources = c("EMP", "FMWT", "STN", "DOP"),
-                         Years = 2017:2022, Size_class = "Meso") %>%
+                         Years = 2017:2022, Size_class = c("Meso", "Micro")) %>%
   filter(!Undersampled)
 
 limno = Zoopsynther(Data_type = "Community", Sources = c("EMP", "FMWT", "STN", "DOP"),
@@ -35,16 +35,21 @@ SMSCGzoopsx = bind_rows(SMSCGzoops, limno)
 zoop_biomass <- read_csv("./Data/zoop_Copepod and Cladoceran Biomass Values.csv")
 
 #filter the CPUE file so it only has the stations we're interested in 
-Regions = filter(R_EDSM_Subregions_1718P1, SubRegion %in% c("Suisun Marsh", "Mid Suisun Bay", "Grizzly Bay",
-                                                            "Lower Sacramento River", "Honker Bay", "Sacramento River near Rio Vista")) %>%
-  mutate(Region = case_when(SubRegion %in% c("Mid Suisun Bay", "Honker Bay")~ "Suisun Bay",
-                     SubRegion %in% c("Lower Sacramento River", "Sacramento River near Rio Vista") ~ "River",
+#wait... where should i put the confluence?
+Regions = filter(R_EDSM_Subregions_1718P1, SubRegion %in% c("Suisun Marsh", "Mid Suisun Bay", 
+                                                            "West Suisun Bay" ,
+                                                            "Grizzly Bay", "Confluence",
+                                                            "Lower Sacramento River", "Honker Bay",
+                                                            "Sacramento River near Rio Vista")) %>%
+  mutate(Region = case_when(SubRegion %in% c("Mid Suisun Bay", "Honker Bay", "West Suisun Bay" )~ "Suisun Bay",
+                     SubRegion %in% c("Lower Sacramento River", "Sacramento River near Rio Vista", "Confluence") ~ "River",
                      TRUE ~ SubRegion))
 
 save(Regions, file = "data/SMSCGRegions.RData")
 
 
-SMSCGzoops2.1 = st_as_sf(filter(SMSCGzoopsx, !is.na(Latitude)), coords = c("Longitude", "Latitude"), 
+SMSCGzoops2.1 = st_as_sf(filter(SMSCGzoopsx, !is.na(Latitude)),
+                         coords = c("Longitude", "Latitude"), 
                        crs = 4326) %>%
   st_transform(crs = st_crs(Regions)) %>%
   st_join(Regions) %>%
@@ -52,7 +57,7 @@ SMSCGzoops2.1 = st_as_sf(filter(SMSCGzoopsx, !is.na(Latitude)), coords = c("Long
 
 ggplot()+
   geom_sf(data=Regions)+
-  geom_sf(data=SMSCGzoops2, aes(shape = Source))
+  geom_sf(data=SMSCGzoops2.1, aes(shape = Source))
 
 
 library(ggspatial)
@@ -112,19 +117,17 @@ ggplot(filter(SMSCGzoopsmean, Year != 2022), aes(x = Region, y = CPUE, fill = Ta
   theme_bw()
 
 # #now some example plots so folks know what I'm talking about
-testdata = read_csv("data/Testdata.csv") %>%
-  mutate(YearType = case_when(YearType %in% c("CD", "Dry")~ "Dry - no action",
-                              TRUE ~ YearType))
+testdata = read_csv("data/Testdata.csv")
 
 ggplot(testdata, aes(x = Year, y = CPUEm, fill = YearType))+
   geom_col(color =  "black")+
   geom_errorbar(aes(ymin = CPUEm -sdcpue, ymax = CPUEm + sdcpue))+
   facet_wrap(Scenario~Region)+
   theme_bw()+
-  ylab("Example metric")+
+  ylab("Example Metric")+
   scale_y_continuous(breaks = NULL)+
-  scale_fill_manual(values = c("orange", "darkred", "lightblue", "palegreen"))+
-                    scale_x_continuous(breaks = c(2017, 2018, 2019, 2020, 2021, 2022, 2023))+
+  scale_fill_manual(values = c("orange", "darkred", "lightblue", "palegreen", "limegreen"))+
+                    scale_x_continuous(breaks = c(2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024))+
   theme(axis.text.x = element_text(angle = 45, hjust =1))+
   xlab(NULL)
 
@@ -167,15 +170,16 @@ SMSCGzoops = Zoopsynther(Data_type = "Community", Sources = c("EMP", "FMWT", "ST
                          Years = 2000:2022, Size_class = "Meso") %>%
   filter(!Undersampled)
 
-SMSCGzoops2023 = read_csv("Data/SMSCG_CBNet_2018to2023CPUE_07Feb2024.csv") %>%
-  filter(Year == 2023) %>%
+SMSCGzoops2023 = read_csv("Data/SMSCG_CBNet_2018to2024CPUE_03Feb2025.csv") %>%
+  filter(Year %in% c(2023, 2024)) %>%
   rename(Source = Project) %>%
   mutate(Region = case_when(Region %in% c("Suisun Bay", 
-                                          "Suisun Bay (Honker)", "Honker Bay")~ "Suisun Bay",
+                                          "Suisun Bay (Honker)", "Honker Bay", "Suisun Bay (Mothball)", "Suisun Bay (Carquinez St.)")~ "Suisun Bay",
                             Region %in% c("Suisun Bay (Grizzly)", "Grizzly Bay", "Suisun Bay (Mont. Sl.)") ~ "Grizzly Bay",
                             Region %in% c("SuiMar", "Montezuma Slough")~ "Suisun Marsh",
                             Region %in% c("Lower Sacramento River", "Confluence")~ "River"),
-         Date = mdy(Date))
+         Date = mdy(Date)) %>%
+  filter(!is.na(Region))
 
 
 SMSCGzoops2023long = pivot_longer(SMSCGzoops2023, ACARTELA:last_col(), names_to = "taxon", values_to= "CPUE") %>%
@@ -193,37 +197,62 @@ SMSCGzoops2 = st_as_sf(filter(SMSCGzoops, !is.na(Latitude)), coords = c("Longitu
 
 
 
-SMSCGzoops2 = mutate(SMSCGzoops2, Region = case_when(SubRegion %in% c("Mid Suisun Bay", "Honker Bay")~ "Suisun Bay",
-                                                     SubRegion %in% c("Lower Sacramento River", "Sacramento River near Rio Vista") ~ "River",
+SMSCGzoops2 = mutate(SMSCGzoops2, Region = case_when(SubRegion %in% c("Mid Suisun Bay", "Honker Bay", "West Suisun Bay")~ "Suisun Bay",
+                                                     SubRegion %in% c("Lower Sacramento River", "Sacramento River near Rio Vista", "Confluence") ~ "River",
                                                      TRUE ~ SubRegion),
                      Month = month(Date)) %>%
   filter(Month %in% c(6:10), Species == "Pseudodiaptomus forbesi")
 
+SMSCGzoops2sum = mutate(SMSCGzoops2, Region = case_when(SubRegion %in% c("Mid Suisun Bay", "Honker Bay", "West Suisun Bay")~ "Suisun Bay",
+                                                     SubRegion %in% c("Lower Sacramento River", "Sacramento River near Rio Vista", "Confluence") ~ "River",
+                                                     TRUE ~ SubRegion),
+                     Month = month(Date)) %>%
+  filter(Month %in% c(6:8), Species == "Pseudodiaptomus forbesi") %>%
+  mutate(season = "Summer")
+
+SMSCGzoops2f = mutate(SMSCGzoops2, Region = case_when(SubRegion %in% c("Mid Suisun Bay", "Honker Bay", "West Suisun Bay")~ "Suisun Bay",
+                                                        SubRegion %in% c("Lower Sacramento River", "Sacramento River near Rio Vista", "Confluence") ~ "River",
+                                                        TRUE ~ SubRegion),
+                        Month = month(Date)) %>%
+  filter(Month %in% c(9:10), Species == "Pseudodiaptomus forbesi") %>%
+  mutate(season = "Fall")
+
+SMSCGzoops2s = bind_rows(SMSCGzoops2sum, SMSCGzoops2f)  %>%
+  filter(!is.na(season))
+
+
 yrs = read_csv("data/wtryrtype.csv") %>%
   mutate(Year = WY)
 
-SMSCGzoops3 = group_by(SMSCGzoops2, Source, SampleID, Date, Station, Region, SalSurf, Month, Year) %>%
+SMSCGzoops3 = group_by(SMSCGzoops2s, Source, SampleID, Date, Station, Region, SalSurf, Month, Year, season) %>%
   summarize(CPUE = sum(CPUE)) %>%
 bind_rows(SMSCGzoops2023long) %>%
   left_join(yrs) %>%
-  mutate(Yrtype = factor(`Yr-type`, levels = c("C", "D", "BN", "AN", "W")))
+  mutate(Yrtype = factor(`Yr-type`, levels = c("C", "D", "BN", "AN", "W"))) %>%
+  mutate(season = case_when(Month %in% c(9:10) ~ "Fall",
+            Month %in% c(8:9) ~ "Summer",
+            TRUE ~ season),
+         Region = case_match(Region, "River" ~ "Sacramento River",
+                                    .default = Region))
 
-samples = group_by(SMSCGzoops3, Region, Year) %>%
-  summarize(N = n())
+samples = group_by(SMSCGzoops3, Region, Year, season) %>%
+  summarize(N = n()) %>%
+  filter(!is.na(season))
 
-ggplot(SMSCGzoops3, aes(x = as.factor(Year), y = log(CPUE+1), fill = Yrtype)) + geom_boxplot()+
-  facet_wrap(~Region)+
-  xlab("Year - June-October only")+
+
+ggplot(filter(SMSCGzoops3, !is.na(season), Year >2016), aes(x = as.factor(Year), y = log(CPUE+1), fill = Yrtype)) + geom_boxplot()+
+  facet_grid(season~Region)+
+  xlab("Year ")+
   ylab("P. forbesi log(CPUE+1)")+
   scale_fill_manual(values = c("darkred", "orange", "yellow", "lightgreen", "darkblue"),
                     name = "Year Type")+
   theme_bw()+
-  geom_label(data = samples, aes(x = as.factor(Year),label = N), y =1, inherit.aes = FALSE,
+  geom_label(data = filter(samples, Year >2016), aes(x = as.factor(Year),label = N), y =1, inherit.aes = FALSE,
              label.padding = unit(0.1, "lines"), size =3)+
   theme(axis.text.x = element_text(angle = 90, hjust =1, vjust =0.5),
-        legend.position = "bottom")
+        legend.position = "bottom") 
 
-ggsave("Plots/Psudodiaptomus_23years.tiff", device = "tiff", width =10, height =6)
+ggsave("Plots/Psudodiaptomus_24years.tiff", device = "tiff", width =10, height =6)
 
 
 ggplot(SMSCGzoops3, aes(x = SalSurf, y = log(CPUE+1), fill = Yrtype)) + geom_point()+
@@ -236,12 +265,23 @@ ggplot(SMSCGzoops3, aes(x = SalSurf, y = log(CPUE+1), fill = Yrtype)) + geom_poi
 
 ggplot(SMSCGzoops3, aes(x = yday(Date), y = log(CPUE+1), color = SalSurf)) + geom_point()+
   facet_wrap(~Region)+
-  geom_smooth(method = "lm")+
+  geom_smooth()+
   xlab("Day of Year")+
   scale_color_viridis_c()+
   ylab("Pseudodiaptomus log(CPUE+1)")+
   theme_bw()+
   theme(axis.text.x = element_text(angle = 90, hjust =1, vjust =0.5))
+
+
+ggplot(SMSCGzoops3, aes(x = as.factor(Year), y = log(CPUE+1), fill = Yrtype)) + geom_boxplot()+
+  facet_wrap(~Region)+
+  xlab("Year ")+
+  ylab("P. forbesi log(CPUE+1)")+
+  scale_fill_manual(values = c("darkred", "orange", "yellow", "lightgreen", "darkblue"),
+                    name = "Year Type")+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 90, hjust =1, vjust =0.5),
+        legend.position = "bottom") 
 
 ################################################################################
 
@@ -408,3 +448,129 @@ ggplot(summerpseudo, aes(x = log(SpringOut), y = log(CPUEm))) + geom_point()+
   theme_bw()+
   ylab("Log-Transformed Spring Pseudodiaptomus CPUE")+
   xlab("Log-Transformed mean Feb-May Delta Outflow")
+
+#########################################################
+#Matt wants pseudo by month, LSZ seperate
+
+Pesudo = Zoopsynther(Data_type = "Community", Sources = c("EMP", "20mm", "FMWT", "STN", "DOP"),
+                         Years = 2000:2022, Size_class = "Meso") %>%
+  filter(!Undersampled, Taxname %in% c("Pseudodiaptomus forbesi", "Pseudodiaptomus_UnID"))
+
+Pesudo = mutate(Pesudo, Salbin = case_when(SalSurf < 0.5 ~ "Fresh <0.5",
+                                           SalSurf >= 0.5 & SalSurf < 6 ~ "LSZ 0.5-6",
+                                           SalSurf >=6 ~ "Salty >6"),
+                Month = month(Date), Year = year(Date))
+
+Pesudo2 =Pesudo %>%
+  group_by(Year, Month, Taxname, Lifestage, Salbin) %>%
+  summarize(CPUEm = mean(CPUE, na.rm =T)) %>%
+  filter(!is.na(Salbin))
+
+ggplot(Pesudo2, aes(x = Month, y = CPUEm, color = Lifestage)) + geom_point()+
+  geom_smooth()+
+  facet_wrap(~Salbin)
+
+
+####################################################################
+#limnoithona
+Limno = Zoopsynther(Data_type = "Community", Sources = c("EMP", "20mm", "FMWT", "STN", "DOP"),
+                     Years = 2017:2023, Size_class = c("Meso", "Micro")) %>%
+  filter(Taxname %in% c("Limnoithona tetraspina", "Limnoithona_UnID"))
+
+Limno = mutate(Limno, Salbin = case_when(SalSurf < 0.5 ~ "Fresh <0.5",
+                                           SalSurf >= 0.5 & SalSurf < 6 ~ "LSZ 0.5-6",
+                                           SalSurf >=6 ~ "Salty >6"),
+                Month = month(Date), Year = year(Date))
+
+Limno2 =Limno %>%
+  group_by(Year, Month, Taxname, Lifestage, Salbin) %>%
+  summarize(CPUEm = mean(CPUE, na.rm =T), nsamples = n()) %>%
+  filter(!is.na(Salbin))
+ggplot(Limno2, aes(x = Month, y = CPUEm, color = Lifestage)) + geom_point()+
+  geom_smooth()+
+  facet_wrap(~Salbin)
+
+#now by regions
+Limno3 = filter(SMSCGzoops2.1, Taxname %in%c("Limnoithona tetraspina", "Limnoithona_UnID", "Limnoithona sinensis")) %>%
+  st_drop_geometry() %>%
+  mutate(Month = month(Date)) %>%
+  filter(Lifestage == "Adult", Month %in% c(6:10)) %>%
+  group_by(Region, Source, SampleID, Date, Year, Month) %>%
+  summarize(CPUE = sum(CPUE)) %>%
+  group_by(Year, Month, Region) %>%
+  summarize(CPUE = mean(CPUE), N = n())
+
+
+ggplot(Limno3, aes(x = Month, y = CPUE)) +
+  facet_grid(Year~Region)+ geom_col(fill = "lightblue")+
+  scale_y_log10()+
+  geom_text(aes(label = N, y = 10))
+
+ggplot(Limno3, aes(x = Month, y = CPUE)) +
+  facet_grid(Year~Region)+ geom_col(fill = "lightblue")+
+  #scale_y_log10()+
+  geom_text(aes(label = N, y = 10))
+
+ggplot(Limno3, aes(x = Year, y = CPUE)) +
+  facet_grid(Month~Region)+ geom_col(fill = "lightblue")+
+  scale_y_log10()+
+  geom_text(aes(label = N, y = 10))
+
+LImnoannual = Limno3 %>%
+  group_by(Year, Region) %>%
+  summarize(CPUE = mean(CPUE))
+
+
+#############################################################
+#quick QC of DOP data
+
+DOPzoops = read_excel("Data/SupplementalDOPData.xlsx", na = "NA")
+
+DOPzoops2 = read_excel("Data/SupplementalDOPData.xlsx", na = "NA", sheet = "MesozooplanktonAbundance") %>%
+  pivot_longer(cols = c(Acartiella_sinensis_adult:last_col()), names_to = "Taxon", values_to = "CPUE")
+
+DOPzoops2B = read_excel("Data/SupplementalDOPData.xlsx", na = "NA", sheet = "MesozooplanktonBiomass") %>%
+  pivot_longer(cols = c(Acartiella_sinensis_adult:last_col()), names_to = "Taxon", values_to = "BPUE")
+
+DOPzoop = mutate(DOPzoops, DO = as.numeric(DO_Surface),  Station = str_sub(StationID, 9, 11)) %>%
+  left_join(DOPzoops2)
+
+
+DOPzoopB = mutate(DOPzoops, DO = as.numeric(DO_Surface),  Station = str_sub(StationID, 9, 11)) %>%
+  left_join(DOPzoops2B) %>%
+  mutate(Type = "Meso")
+ggplot(DOPzoop, aes(x = DateTime, y = DO, color = Station)) + geom_line()
+ggplot(DOPzoop, aes(x = Temperature_Surface, y = DO, color = Station)) + geom_line()
+
+ggplot(DOPzoop,aes(x = DateTime, y = CPUE, fill = Taxon))+geom_area(position = "fill")+
+  facet_wrap(~Station, nrow =2)
+
+
+DOPzoops2mac = read_excel("Data/SupplementalDOPData.xlsx", na = "NA", sheet = "MacrozooplanktonAbundance") %>%
+  pivot_longer(cols = c(Americorophium_spinicorne:last_col()), names_to = "Taxon", values_to = "CPUE")
+
+DOPmac =  mutate(DOPzoops, DO = as.numeric(DO_Surface),  Station = str_sub(StationID, 9, 11)) %>%
+  left_join(DOPzoops2mac)
+
+
+ggplot(DOPmac,aes(x = DateTime, y = CPUE, fill = Taxon))+geom_area()+
+  facet_wrap(~Station, nrow =2)
+
+
+
+DOPzoops2macB = read_excel("Data/SupplementalDOPData.xlsx", na = "NA", sheet = "MacrozooplanktonBiomass") %>%
+  pivot_longer(cols = c(Americorophium_spinicorne:last_col()), names_to = "Taxon", values_to = "BPUE")
+
+DOPmacB =  mutate(DOPzoops, DO = as.numeric(DO_Surface),  Station = str_sub(StationID, 9, 11)) %>%
+  left_join(DOPzoops2macB) %>%
+  mutate(Type = "Macro", BPUE2 = BPUE, BPUE = BPUE*1000)
+
+
+ggplot(DOPmacB,aes(x = DateTime, y = BPUE, fill = Taxon))+geom_area()+
+  facet_wrap(~Station, nrow =2)
+
+Allbiomass = bind_rows(DOPmacB, DOPzoopB)
+
+
+ggplot(Allbiomass,aes(x = DateTime, y = BPUE, fill = Taxon))+geom_area()+
+  facet_wrap(~Station, nrow =2)

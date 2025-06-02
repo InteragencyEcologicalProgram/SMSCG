@@ -39,4 +39,6 @@ STN,706,-121.7390041,38.09005982,Sacramento River below S tip of Decker Island,N
 STN,707,-121.7060062,38.11225854,Sacramento River at Three Mile Slough in channel f,NA,707,19745.19392,RIV,1,2018,NA
 STN,801,-121.847,38.05561111,San Joaquin River -1km upstream of the mouth,NA,801,6147.064037,RIV,1,2018,NA
 STN,HONK,-121.92111,38.0728,"Eastern Honker Bay, north of Chipps Island",NA,HONK,10659.11143,BAY,0,2018,2019
-STN,MONT,-121.90889,38.14387,"Montezuma Slough, midway between STN 609 and STN 610",NA,MONT,8981.895878,RIV,1,2018,NA
+STN,MONT,-121.90889,38.14387,"Montezuma Slough, midway between STN 609 and STN 610",NA,MONT,8981.895878,MAR,1,2018,NA
+ICF,BDL,-121.9708,38.1869,Montezuma Slough at Beldens Landing,NA,BDL,16710,MAR,1,2024,NA
+ICF,GZB,-122.0154125,38.1125669,Grizzly Bay,NA,GZB,,BAY,1,2024,NA

@@ -39,7 +39,7 @@ zooper = Zoopsynther(Data_type = "Community",
 
 #add in the stations locations/ regions for the zooper dataset before taking averages
 
-load("C:/Users/cburdi/Documents/Data/Suisun Marsh Salinity Gate Project/Zooplankton CPUE Analysis/2023 Report/2017 to 2022 Analysis/Data/SMSCGRegions.RData")
+load("Data/SMSCGRegions.RData")
 
 na_coords = zooper %>% 
   subset(is.na(zooper$Latitude)) #need to check which coordinates have NAs, looks like its from a 2018 LSC station, which don't need anyway
@@ -66,7 +66,7 @@ avgzoopCPUE = zoopstations %>%
 
 #read in the biomass file 
 
-biomass = read.csv("~/Data/Suisun Marsh Salinity Gate Project/Zooplankton CPUE Analysis/2023 Report/2017 to 2022 Analysis/Data/Mesomicrotaxa Biomass.csv")
+biomass = read.csv("Data/Mesomicrotaxa Biomass.csv")
 
 zooper_bpue = left_join(avgzoopCPUE, biomass) %>% 
   mutate(BPUE = meanCPUE*Carbon_weight_ug) %>% 
@@ -79,7 +79,7 @@ zooper_bpue = left_join(avgzoopCPUE, biomass) %>%
 
 #read in SMSCG data which has EMP that hasn't been published yet
 
-SMSCG_CPUE = read.csv("~/Data/Suisun Marsh Salinity Gate Project/Zooplankton CPUE Analysis/2023 Report/2017 to 2022 Analysis/Data/SMSCG_CBNet_2018to2023CPUE_07Feb2024.csv") %>% 
+SMSCG_CPUE = read_csv("Data/SMSCG_CBNet_2018to2024CPUE_03Feb2025.csv") %>% 
   select(Project, Year, Date, Station, ACARTELA:CUMAC ) %>% 
   rename(Source = Project) %>% #renaming Project so that the survey matches the source column in zooper
   mutate(Date2 = mdy(Date)) %>% #change the date column to be a date format since its a character now
@@ -92,7 +92,7 @@ SMSCG_CPUE = read.csv("~/Data/Suisun Marsh Salinity Gate Project/Zooplankton CPU
 
 #read in station locations file for lat and long
 
-SMSCG_CPUE_Loc = read.csv("~/Data/Suisun Marsh Salinity Gate Project/Zooplankton CPUE Analysis/2023 Report/2017 to 2022 Analysis/Data/SMSCG_Station_Coords.csv") %>% 
+SMSCG_CPUE_Loc = read.csv("Data/SMSCG_Station_Coords.csv") %>% 
   select(Project, Station, longitude, latitude) %>% 
   rename(Source = Project, Longitude = longitude, Latitude = latitude) #renaming so can combine down the line
 
@@ -163,7 +163,7 @@ dups = rbind(zooper_bpue, SMSCG_bpue) %>% #checking to make the numbers match up
 #numbers work out with combing two datasets and removing the duplicates
 
 #write csv for combined dataset without the zoops grouped
-write.csv(all_data, file = "smscgto2023_ungrp_long.csv", row.names = FALSE)
+#write.csv(all_data, file = "smscgto2023_ungrp_long.csv", row.names = FALSE)
 
 
 
@@ -191,10 +191,11 @@ zoopgroups= mutate(all_data_wide,
                                 `Calanoida_UnID Adult` + `Calanoida_UnID Juvenile`) %>% 
   select(Source:Month, Acartiella, Tortanus, Pseudodiaptomus, Eurytemora, 'Other Calanoids') %>%  #remove all the other taxa files
   mutate(SampleID = paste (Source, Region, Year, Month, Station, sep = ' ')) %>%   #create a sample ID b/c things get funky with the total graph later
-  pivot_longer(., cols = (c(Acartiella: Eurytemora, 'Other Calanoids')), names_to = "Taxa_Group", values_to = "BPUE")  #move back to long format for combining
+  pivot_longer(., cols = (c(Acartiella: Eurytemora, 'Other Calanoids')), names_to = "Taxa_Group", values_to = "BPUE") %>%
+  filter(!is.na(Region)) #move back to long format for combining
 
 #make csv for the calanoids
-write.csv(zoopgroups, file = "smscgto2023_cals_long.csv", row.names = FALSE)
+#write.csv(zoopgroups, file = "smscgto2023_cals_long.csv", row.names = FALSE)
 
 ####Plots------
 
@@ -213,12 +214,14 @@ zoopsummary_month = group_by(zoopgroups, Region, Year, Month, Taxa_Group) %>%
 #then do the mean by year for the graph. 
 zoopsummary_yr = group_by(zoopsummary_month, Region, Year, Taxa_Group) %>% 
   mutate(Region = factor(Region, levels = c("Suisun Bay", "Suisun Marsh", "River"))) %>% #change levels so geographically organized from W to E
-  summarize(mean_BPUE2 = mean(mean_BPUE))
+  summarize(mean_BPUE2 = mean(mean_BPUE)) %>%
+  filter(!is.na(Region))
 
 #need to create a sample size based on the number of actual samples since if we do it in the summary files it won't calc by samples but by month
 zoopsampsize = group_by(zoopgroups, Region, Year) %>%
   summarize(N = length(unique(SampleID))) %>% 
-  mutate(Region = factor(Region, levels = c("Suisun Bay", "Suisun Marsh", "River")))
+  mutate(Region = factor(Region, levels = c("Suisun Bay", "Suisun Marsh", "River"))) %>%
+  filter(!is.na(Region))
 
 #Making plot
 bpue1 = ggplot(zoopsummary_yr, aes(x = Year, y = mean_BPUE2))
@@ -233,7 +236,59 @@ bpue2 = bpue1+ geom_bar(stat = "identity", aes(fill = Taxa_Group)) +
 
 bpue2
 
-ggsave(plot = bpue2, filename = "SMSCG_2017to2023_Zoop.tiff", device = "tiff", width = 6, height =5, units = "in", dpi = 300)
+ggsave(plot = bpue2, filename = "SMSCG_2017to2024_Zoop.tiff", device = "tiff", width = 6, height =5, units = "in", dpi = 300)
+
+#version for BDSC presentation
+
+ggplot(filter(zoopsummary_yr, Region == "Suisun Bay"),
+       aes(x = Year, y = mean_BPUE2))+ geom_bar(stat = "identity", aes(fill = Taxa_Group)) + 
+  facet_wrap(facets= vars(Region)) + 
+  scale_fill_brewer(palette = "Set3", name = NULL) +
+  ylab("Mean BPUE (µgC/m3)") +
+  theme_few() + theme(text = element_text(family = "sans", size = 10),
+                      legend.text = element_text(face = "italic"), 
+                      axis.text.x = element_text(angle=45, hjust=1))
+
+#just pseudodiaptomus
+ggplot(filter(zoopsummary_yr, Region == "Suisun Bay", Taxa_Group == "Pseudodiaptomus"),
+       aes(x = Year, y = mean_BPUE2))+ geom_bar(stat = "identity", aes(fill = Taxa_Group)) + 
+  facet_wrap(facets= vars(Region)) + 
+  ylab("Mean BPUE (µgC/m3)") +
+  theme_few() + theme(text = element_text(family = "sans", size = 10),
+                      legend.text = element_text(face = "italic"), 
+                      axis.text.x = element_text(angle=45, hjust=1))
+
+
+
+ggplot(filter(zoopsummary_yr, Region == "Suisun Marsh"),
+       aes(x = Year, y = mean_BPUE2))+ geom_bar(stat = "identity", aes(fill = Taxa_Group)) + 
+  facet_wrap(facets= vars(Region)) + 
+  scale_fill_brewer(palette = "Set3", name = NULL) +
+  ylab("Mean BPUE (µgC/m3)") +
+  theme_few() + theme(text = element_text(family = "sans", size = 10),
+                      legend.text = element_text(face = "italic"), 
+                      axis.text.x = element_text(angle=45, hjust=1))
+
+#just pseudodiaptomus
+ggplot(filter(zoopsummary_yr, Region == "Suisun Marsh", Taxa_Group == "Pseudodiaptomus"),
+       aes(x = Year, y = mean_BPUE2))+ geom_bar(stat = "identity", aes(fill = Taxa_Group)) + 
+  facet_wrap(facets= vars(Region)) + 
+  ylab("Mean BPUE (µgC/m3)") +
+  theme_few() + theme(text = element_text(family = "sans", size = 10),
+                      legend.text = element_text(face = "italic"), 
+                      axis.text.x = element_text(angle=45, hjust=1))
+
+
+#just pseudodiaptomus - all revions
+ggplot(filter(zoopsummary_yr,  Taxa_Group == "Pseudodiaptomus"),
+       aes(x = Year, y = mean_BPUE2))+ geom_bar(stat = "identity", aes(fill = Taxa_Group)) + 
+  facet_wrap(facets= vars(Region)) + 
+  ylab("Mean BPUE (µgC/m3) of Pseudodiaptomus forbesi") +
+  theme_few() + theme(text = element_text(family = "sans", size = 10),
+                      legend.text = element_text(face = "italic"), 
+                      axis.text.x = element_text(angle=45, hjust=1))+
+  theme(legend.position = "none")
+
 
 
 ####Analysis------------------------------------

@@ -1,0 +1,47 @@
+"YT","Year","region","scenario","MetersSquared","Acres","Percent","Region"
+"Above
+Normal","2010","Suisun Marsh","base",14656860.4295629,3621.78349644715,0,"Suisun Marsh"
+"Above
+Normal","2010","Suisun Marsh","60 days continuous",16801019.7241139,4151.61597892717,14.6290490030606,"Suisun Marsh"
+"Above
+Normal","2010","Suisun Marsh","60 days continuous, followed by 100 TAF",18519766.9753422,4576.32701844194,26.3556207302608,"Suisun Marsh"
+"Above
+Normal","2010","Suisun Marsh","60 days, 7 days-on/ 7 days-off",17687500.2184444,4370.6697414787,20.6772780804314,"Suisun Marsh"
+"Below
+Normal","2016","Suisun Marsh","base",6275517.71479225,1550.71180491374,0,"Suisun Marsh"
+"Below
+Normal","2016","Suisun Marsh","60 days continuous",12301807.5386069,3039.83815182745,96.0285684416098,"Suisun Marsh"
+"Below
+Normal","2016","Suisun Marsh","60 days continuous, followed by 100 TAF",17463343.6438674,4315.27953111786,178.277338022709,"Suisun Marsh"
+"Below
+Normal","2016","Suisun Marsh","60 days, 7 days-on/ 7 days-off",14638324.6927865,3617.203223211,133.260829752451,"Suisun Marsh"
+"Dry","2020","Suisun Marsh","base",2110751.63473166,521.577282700366,0,"Suisun Marsh"
+"Dry","2020","Suisun Marsh","60 days continuous",8673903.15996356,2143.3648403428,310.939071051165,"Suisun Marsh"
+"Dry","2020","Suisun Marsh","60 days continuous, followed by 100 TAF",13100967.8344971,3237.31465674341,520.677848541032,"Suisun Marsh"
+"Dry","2020","Suisun Marsh","60 days, 7 days-on/ 7 days-off",9828933.98604331,2428.77873262123,365.660375399537,"Suisun Marsh"
+"Wet","2017","Suisun Marsh","base",17898251.8572922,4422.74752519619,0,"Suisun Marsh"
+"Wet","2017","Suisun Marsh","100 TAF continuous starting Aug 15",18493168.5349821,4569.75441083674,3.32388147419806,"Suisun Marsh"
+"Wet","2017","Suisun Marsh","100 TAF continuous starting July1",18068328.2905345,4464.77426223253,0.950240473753294,"Suisun Marsh"
+"Wet","2017",NA,"base",56973520.3451729,14078.4417448939,0,"Suisun Bay"
+"Wet","2017",NA,"100 TAF continuous starting Aug 15",59185893.0093486,14625.1300920751,3.88315949369484,"Suisun Bay"
+"Wet","2017",NA,"100 TAF continuous starting July1",59027827.0799432,14586.0712105894,3.60572196052535,"Suisun Bay"
+"Above
+Normal","2010",NA,"base",27259419.7633985,6735.93892063459,0,"Suisun Bay"
+"Above
+Normal","2010",NA,"60 days continuous",29659106.6226664,7328.91354199399,0,"Suisun Bay"
+"Above
+Normal","2010",NA,"60 days continuous, followed by 100 TAF",31539710.2865775,7793.62011036474,15.7020602798237,"Suisun Bay"
+"Above
+Normal","2010",NA,"60 days, 7 days-on/ 7 days-off",29097305.8606741,7190.08976470188,6.7422054953031,"Suisun Bay"
+"Below
+Normal","2016",NA,"base",13285987.8420254,3283.03402570368,0,"Suisun Bay"
+"Below
+Normal","2016",NA,"60 days continuous",15268285.9791401,3772.86980687541,0,"Suisun Bay"
+"Below
+Normal","2016",NA,"60 days continuous, followed by 100 TAF",15305759.9928365,3782.12982302986,15.2022730626196,"Suisun Bay"
+"Below
+Normal","2016",NA,"60 days, 7 days-on/ 7 days-off",13771675.3486522,3403.04983702871,3.65563714495198,"Suisun Bay"
+"Dry","2020",NA,"base",2167110.84997716,535.503926583606,0,"Suisun Bay"
+"Dry","2020",NA,"60 days continuous",1485503.97037865,367.075458600416,0,"Suisun Bay"
+"Dry","2020",NA,"60 days continuous, followed by 100 TAF",1479978.71954052,365.710141492061,-31.7072903974376,"Suisun Bay"
+"Dry","2020",NA,"60 days, 7 days-on/ 7 days-off",1818542.69120597,449.370991710451,-16.0844637354321,"Suisun Bay"

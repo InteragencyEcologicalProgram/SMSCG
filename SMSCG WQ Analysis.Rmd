@@ -471,7 +471,6 @@ range(df_comb$temperature_C_value, na.rm = TRUE)
 -Replace all values that have Bad ("B" and "X") codes with NAs
 ```{r}
 
-save(df_comb, file + "df_comb.RData")
 #fluorescence
 unique(df_comb$fluorescence_ugL_code) #has both X and B codes, which indicates bad data
 df_comb$fluorescence_ugL_value <- replace(df_comb$fluorescence_ugL_value, df_comb$fluorescence_ugL_code=="B", NA)
@@ -490,6 +489,8 @@ df_comb$specific_conductance_uScm_value <- replace(df_comb$specific_conductance_
 #water temperature
 unique(df_comb$temperature_C_code) #has X codes, which indicates bad data
 df_comb$temperature_C_value <- replace(df_comb$temperature_C_value, df_comb$temperature_C_code=="X", NA)
+
+save(df_comb, file = "df_comb.RData")
 
 ```
 
@@ -538,6 +539,9 @@ df_comb$temperature_C_value <- replace(df_comb$temperature_C_value, df_comb$temp
 ```{r}
 df_comb$specific_conductance_uScm_value <- replace(df_comb$specific_conductance_uScm_value, df_comb$specific_conductance_uScm_value>30000, NA)
 df_comb$specific_conductance_uScm_value <- replace(df_comb$specific_conductance_uScm_value, df_comb$specific_conductance_uScm_value<0, NA)
+
+
+save(df_comb, file = "df_comb.RData")
 
 ```
 
@@ -780,6 +784,8 @@ df_averages$chl[is.nan(df_averages$chl)]<-NA
 df_averages$turb[is.nan(df_averages$turb)]<-NA
 df_averages$wt[is.nan(df_averages$wt)]<-NA
 df_averages$salinity[is.nan(df_averages$salinity)]<-NA
+
+save(df_averages, file = "Data/df_averages.RData")
 ```
 
 -Plot the daily averages
@@ -932,6 +938,7 @@ df_habitat_year <- df_habitat_year %>%
   group_by(year, water_year_type) %>%
   summarize(good_smelt_habitat_days= sum(good_smelt_habitat)) #now we can add them all up for the entire year
 
+
 #determine number of days each STATION had suitable smelt habitat
 df_habitat_station <- df_smelt %>%
   group_by(station, year, region) %>%
@@ -945,6 +952,7 @@ df_habitat_region <- df_smelt %>%
 df_habitat_region <- df_habitat_region %>%
 group_by(year, region, water_year_type) %>%
 summarize(good_smelt_habitat_days= sum(good_smelt_habitat)) #now we can add them all up for the entire year
+
 
 #do the same thing for each station, but see which of the three parameters is the limiting factor
 df_limitor_station <- df_smelt %>%
@@ -966,6 +974,9 @@ group_by(year, region) %>%
 summarize(good_smelt_habitat_days= sum(good_smelt_habitat),
            turbdays = sum(turbmax), tempdays = sum(tempmax), tempdays2 = sum(tempmax2),saldays = sum(salmax))
 
+
+save(df_habitat_region, df_habitat_year, df_smelt,df_limitor_region, file ="data/df_habitat_year.RData")
+
 write.csv(df_limitor_region, "Plots/limitingfactors.csv", row.names = FALSE)
 
 df_limitor_rlong = pivot_longer(df_limitor_region, cols = c(good_smelt_habitat_days, turbdays, tempdays, saldays),
@@ -974,7 +985,7 @@ df_limitor_rlong = pivot_longer(df_limitor_region, cols = c(good_smelt_habitat_d
 
 -Plot number of days with good smelt habitat by year, station, and region 
 ```{r}
-habitat_year_plot <- ggplot(df_habitat_year, aes(x = year, y = good_smelt_habitat_days, fill= water_year_type)) +
+habitat_year_plot <- ggplot(df_habitat_year, aes(x = year, y = good_smelt_habitat, fill= water_year_type)) +
   geom_col(stat = "identity") +
    labs(fill = "Water Year Type") +
   labs(x = "Year") +
@@ -999,7 +1010,10 @@ habitat_region_plot <- ggplot(df_habitat_region, aes(x = year, y = good_smelt_ha
   labs(x = "Year") +
   labs(y = "Days with Suitable Smelt Habitat")
 plot(habitat_region_plot)
+```
 
+
+```{r}
 #plot number of days with good smelt habitat for each station and include the liming factors of temp, turb, and salinity
 limitor_station_plot <- ggplot(df_limitor_slong, aes(x = year, y = Days, fill = Metric))+
   facet_wrap(~station)+
@@ -1011,7 +1025,56 @@ limitor_region_plot <- ggplot(df_limitor_rlong, aes(x = year, y = Days, fill = M
   facet_grid(Metric~region)+
   geom_col(position = "dodge")
 plot(limitor_region_plot)
+```
 
+
+```{r}
+#cleaned up version for BDSC talk
+yrtyps = ungroup(df_habitat_region) %>%
+  rename(wy=water_year_type ) %>%
+  select(year, wy) %>%
+  distinct()
+
+limits2024 = data.frame(Metric = "good_smelt_habitat_days", region = c("Bay", "Marsh", "River"),
+                        Days = c(118, 120, 109), wy = "Above Normal", year = 2024)
+
+
+df_limitor_rlong2 = left_join(df_limitor_rlong, yrtyps) %>%
+  bind_rows(limits2024) %>%
+  mutate(Metric = factor(Metric, levels = c("turbdays", "tempdays" , "saldays","good_smelt_habitat_days" ),
+                         labels = c("Turbidity", "Temperature", "Salinity", "Good Habitat")),
+  wy = factor(wy, levels = c("critically dry", "dry", "below normal", "Above Normal", "wet"),
+              labels= c("C", "D", "BN", "AN", "W")))
+
+limitor_region_plot <- ggplot(df_limitor_rlong2, aes(x = year, y = Days, fill = wy))+
+  facet_grid(Metric~region)+
+  geom_col(position = "dodge", color = "black")+
+  scale_fill_manual(values = c("red", "orange", "yellow", "blue"), name = "water year\ntype")+
+  theme_bw()+
+  scale_x_continuous(breaks = c(2017,2018, 2019, 2020, 2021, 2022, 2023))+
+  theme(legend.position = "top")+
+  ylab("Days of Appropriate Smelt Habitat")+
+  xlab(NULL)
+  
+limitor_region_plot
+
+limitor_region_plot2 <- ggplot(filter(df_limitor_rlong2, Metric == "Good Habitat"),
+                               aes(x = year, y = Days, fill = wy))+
+  facet_grid(.~region)+
+  geom_col(position = "dodge", color = "black")+
+  scale_fill_manual(values = c("red", "orange", "yellow", "springgreen3", "blue"), name = "water year\ntype")+
+  theme_bw()+
+  scale_x_continuous(breaks = c(2017,2018, 2019, 2020, 2021, 2022, 2023, 2024))+
+  theme(legend.position = "top")+
+  ylab("Days of Appropriate Smelt Habitat")+
+  xlab(NULL)
+  
+limitor_region_plot2
+
+```
+
+
+```{r}
 #this is the graph that will go into the report
 limitor_region_plot <- ggplot(df_limitor_rlong, aes(x = year, y = Days, fill = Metric))+
   scale_x_continuous(breaks = c(2017, 2018, 2019, 2020, 2021, 2022, 2023), labels = c("2017\n(W)", "2018\n(BN)", "2019\n(W)", "2020\n(D)", "2021\n(CD)", "2022\n(CD)", "2023\n(W)")) +
@@ -1027,6 +1090,48 @@ ggsave(filename = "Plots/limitor_regionPlot.tiff", device = "tiff", width =8, he
 #for the report, have the plot with the limiting factors and plotted by region (put note on plot that the turb data wasn't available for 2017 in the marsh)
 #add comment in daily average plots that says data from Oct still being QA/QCd
 #2023 and 2018 - SMSCG action years and X2 action year= 2017, 2019, 2023 (can also add note in Turb marsh that data not available)
+
+```{r}
+
+#just hte number of combined days for BDSC presentation
+df_habitat_region = mutate(df_habitat_region, 
+                           wy = factor(water_year_type, levels = c("critically dry", "dry", "below normal", "wet")))
+
+habitat_region_plot <- ggplot(df_habitat_region, aes(x = year, y = good_smelt_habitat_days, fill= wy)) +
+  geom_col(color = "black") +
+  theme_bw() +
+  facet_wrap(.~region) +
+   labs(fill = "Water Year Type") +
+  labs(x = "Year") +
+  labs(y = "Days with Suitable Smelt Habitat")+
+  scale_fill_manual(values = c("red", "orange", "yellow", "blue"))
+plot(habitat_region_plot)
+
+habitat_Bay <- ggplot(filter(df_habitat_region, region == "Bay"), aes(x = year, y = good_smelt_habitat_days, fill= wy)) +
+  geom_col(color = "black") +
+  theme_bw() +
+  facet_wrap(.~region) +
+   labs(fill = "Water Year Type") +
+  labs(x = "Year") +
+  labs(y = "Days with Suitable Smelt Habitat")+
+  scale_x_continuous(breaks = c(2017,2018, 2019, 2020, 2021, 2022, 2023))+
+  scale_fill_manual(values = c("red", "orange", "yellow", "blue"))
+
+
+habitat_Marsh <- ggplot(filter(df_habitat_region, region == "Marsh"), aes(x = year, y = good_smelt_habitat_days, fill= wy)) +
+  geom_col(color = "black") +
+  theme_bw() +
+  facet_wrap(.~region) +
+   labs(fill = "Water Year Type") +
+  labs(x = "Year") +
+  labs(y = "Days with Suitable Smelt Habitat")+
+  scale_x_continuous(breaks = c(2017,2018, 2019, 2020, 2021, 2022, 2023))+
+  scale_fill_manual(values = c("red", "orange", "yellow", "blue"))
+
+
+```
+
+
 
 ## 12 - Mixed Models (may not be doing this)
 

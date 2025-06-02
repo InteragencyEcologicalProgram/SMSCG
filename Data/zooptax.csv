@@ -1,0 +1,49 @@
+Taxlifestage,Taxname,Lifestage,Category,Cat2
+Acanthocyclops Adult,Acanthocyclops,Adult,Cyclopoid,Other cyclopoid
+Acartia_UnID Adult,Acartia,Adult,Calaniod,Other calaniod
+Acartia_UnID Juvenile,Acartia,Juvenile,Calaniod,Other calaniod
+Acartiella sinensis Adult,Acartiella,Adult,Calaniod,Other calaniod
+Acartiella sinensis Juvenile,Acartiella,Juvenile,Calaniod,Other calaniod
+Asplanchna_UnID Adult,Asplanchna,Adult,Rotifer,Rotier
+Bosmina longirostris Adult,Bosmina,Adult,Cladocera,Bosmina
+Calanoida_UnID Adult,Calanoida,Adult,Calaniod,Other calaniod
+Calanoida_UnID Juvenile,Calanoida,Juvenile,Calaniod,Other calaniod
+Cirripedia_UnID Larva,Cirripedia,Larva,Cirripedia,Cirripedia
+Cladocera_UnID Adult,Cladocera,Adult,Cladocera,Other cladocera
+Cyclopoida_UnID Adult,Cyclopoida,Adult,Cyclopoid,Other cyclopoid
+Cyclopoida_UnID Juvenile,Cyclopoida,Juvenile,Cyclopoid,Other cyclopoid
+Daphnia_UnID Adult,Daphnia,Adult,Cladocera,Daphnia
+Decapoda_UnID Larva,Decapoda,Larva,Decapoda,Decapoda
+Diaphanosoma_UnID Adult,Diaphanosoma,Adult,Cladocera,Other cladocera
+Diaptomidae_UnID Adult,Diaptomidae,Adult,Calaniod,Other calaniod
+Diaptomidae_UnID Juvenile,Diaptomidae,Juvenile,Calaniod,Other calaniod
+Eurytemora affinis Adult,Eurytemora,Adult,Calaniod,Eurytemora
+Eurytemora affinis Juvenile,Eurytemora,Juvenile,Calaniod,Eurytemora
+Eurytemora affinis Larva,Eurytemora,Larva,Calaniod,Eurytemora
+Eurytemora_UnID Larva,Eurytemora,Larva,Calaniod,Eurytemora
+Harpacticoida_UnID Undifferentiated,Harpacticoida,Undifferentiated,Harpactocoid,Harpacticoid
+Keratella_UnID Adult,Keratella,Adult,Rotifer,Rotier
+Limnoithona sinensis Adult,Limnoithona sinensis,Adult,Cyclopoid,Limnoithona
+Limnoithona tetraspina Adult,Limnoithona tetraspina,Adult,Cyclopoid,Limnoithona
+Limnoithona_UnID Adult,Limnoithona,Adult,Cyclopoid,Limnoithona
+Limnoithona_UnID Juvenile,Limnoithona,Juvenile,Cyclopoid,Limnoithona
+Oithona davisae Adult,Oithona davisae,Adult,Cyclopoid,Other cyclopoid
+Oithona similis Adult,Oithona similis,Adult,Cyclopoid,Other cyclopoid
+Oithona_UnID Adult,Oithona,Adult,Cyclopoid,Other cyclopoid
+Oithona_UnID Juvenile,Oithona,Juvenile,Cyclopoid,Other cyclopoid
+Polyarthra_UnID Adult,Polyarthra,Adult,Rotifer,Rotier
+Pseudodiaptomus forbesi Adult,Pseudodiaptomus forbesi,Adult,Calanoid,Pseudodiaptomus
+Pseudodiaptomus forbesi Juvenile,Pseudodiaptomus forbesi,Juvenile,Calanoid,Pseudodiaptomus
+Pseudodiaptomus marinus Adult,Pseudodiaptomus marinus,Adult,Calanoid,Pseudodiaptomus
+Pseudodiaptomus_UnID Adult,Pseudodiaptomus,Adult,Calanoid,Pseudodiaptomus
+Pseudodiaptomus_UnID Juvenile,Pseudodiaptomus,Juvenile,Calanoid,Pseudodiaptomus
+Pseudodiaptomus_UnID Larva,Pseudodiaptomus,Larva,Calanoid,Pseudodiaptomus
+Rotifera_UnID Adult,Rotiera,Adult,Rotifer,Rotier
+Sinocalanus doerrii Adult,Sinocalanus,Adult,Calanoid,Other calanoid
+Sinocalanus doerrii Juvenile,Sinocalanus,Juvenile,Calanoid,Other calanoid
+Sinocalanus doerrii Larva,Sinocalanus,Larva,Calanoid,Other calanoid
+Sinocalanus_UnID Juvenile,Sinocalanus,Juvenile,Calanoid,Other calanoid
+Synchaeta bicornis Adult,Synchaeta,Adult,Rotifer,Rotier
+Tortanus_UnID Adult,Tortanus,Adult,Calanoid,Tortanus
+Tortanus_UnID Juvenile,Tortanus,Juvenile,Calanoid,Tortanus
+Trichocerca_UnID Adult,Trichocerca,Adult,Rotifer,Rotier
