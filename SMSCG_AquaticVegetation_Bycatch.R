@@ -60,8 +60,15 @@ spp <- read_csv(read_data_entity(packageId = "edi.1947.1", entityId= ucd_marsh_f
   clean_names() %>% 
   glimpse()
 
-#read in water quality data
-#wq_data<-read_csv(file = paste0(sharepoint_path,"./WaterQuality/AquaticVegetation_WQ_SummarizedData.csv"))
+#trawl effort
+teff <- read_csv(read_data_entity(packageId = "edi.1947.1", entityId= ucd_marsh_fish_pkg$entityId[18])) %>% 
+  clean_names() %>% 
+  glimpse()
+
+#seine effort
+seff <- read_csv(read_data_entity(packageId = "edi.1947.1", entityId= ucd_marsh_fish_pkg$entityId[15])) %>% 
+  clean_names() %>% 
+  glimpse()
 
 # Simplify and combine data sets--------------------
 
@@ -93,8 +100,22 @@ station_ft <- station %>%
     ,y_wgs84
   ) %>% 
   glimpse()
-#NOTE: need to convert GPS coordinates to correct format
 
+#format trawl effort
+
+#first are there multiple trawls per sample?
+# trawl_sample <- teff %>% 
+#   distinct(trawl_row_id, sample_row_id)
+#no, never more than one trawl per sample
+
+#tow duration is in minutes
+teff_ft <- teff %>% 
+  select(
+    sample_row_id
+    ,tow_duration
+  ) %>% 
+  glimpse()
+  
 #format spp data
 spp_ft <- spp %>% 
   select(
@@ -135,7 +156,8 @@ sample_catch <- sample_ft %>%
   #          ,remove=F #retains original lat/long columns
   # ) %>% 
   select(
-    date = sample_date
+    sample_row_id
+    ,date = sample_date
     ,station = station_code
     ,method = method_code
     ,organism = organism_code
@@ -186,15 +208,43 @@ sample_catch_stn_ct <- sample_catch %>%
   arrange(method, -n)
 #those with coordinates are not necessarily the ones with the most samples
 
-#create subset of catch data without hook and line surveys because veg data recorded differently for that survey
-sample_catch_nets <- sample_catch %>% 
-  filter(method_code != "HKLN")
+#sum samples with vs without GPS coordinates
+sample_catch_stn_ct_sum <- sample_catch_stn_ct %>% 
+  #add column that indicates whether coordinates or not
+  mutate(gps = case_when(is.na(x_wgs84) | is.na(y_wgs84) ~ 0
+                         ,TRUE ~ 1)) %>% 
+  group_by(gps) %>% 
+  summarise(sample_count = sum(n))
+#2/3 of samples have GPS coordinates
 
-#look at unique survey methods remaining
-#unique(sample_catch_nets$method_code)
-#"BSEIN" "OTR"  
-#I guess the midwater trawl and larval sled data were dropped somewhere along the way
-#perhaps they were only done in years before 2014
+#Look at otter trawls
+sample_catch_otr <- sample_catch %>% 
+  #for now drop, samples without GPS coordinates
+  filter(method == "OTR" & !(is.na(x_wgs84) | is.na(y_wgs84))) %>% 
+  #specify the crs as wgs84
+  st_as_sf(coords = c(x='x_wgs84',y='y_wgs84'), #identify the lat/long columns
+           crs = 4326 #EPSG code for WGS84
+           ,remove=T #drop original lat/long columns
+  ) %>%
+  #add sample effort
+  left_join(teff_ft) %>%
+  glimpse()
+
+#how many trawl stations are left?
+otr_stn_ct <- unique(sample_catch_otr$station)
+#31 stations 
+
+  #calculate mL of veg per minute of trawl effort
+  mutate(
+    volume_ml = case_when(is.na(volume)~0, TRUE ~ volume)
+    ,veg_ml_min = volume_ml/tow_duration)
+  
+
+#stacked bar plot showing each plant taxon by station with years as facet
+#could lump plant taxa by life form (SAV, FAV) and/or station by region
+#could also look at seasonal abundances and/or just look at summer/fall months 
+#plot total veg abundance relative to SMSCGs
+
 
 
 
