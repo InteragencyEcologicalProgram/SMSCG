@@ -115,7 +115,12 @@ teff_ft <- teff %>%
     ,tow_duration
   ) %>% 
   glimpse()
-  
+
+#make list of FAV taxa
+fav_codes = c("AZ","EICR","LUPE")
+
+#make a list of Other taxa
+
 #format spp data
 spp_ft <- spp %>% 
   select(
@@ -127,14 +132,19 @@ spp_ft <- spp %>%
     ,species
   ) %>% 
   filter(phylum == "Tracheophytes" | organism_code == "SAVSPP") %>% 
+  filter(organism_code != "PICK" & organism_code != "SEPU" ) %>% 
+  #add veg type
+  mutate(type = case_when(organism_code %in% fav_codes ~ "fav",
+                          TRUE ~ "sav")) %>% 
+  arrange(type,organism_code) %>% 
+  select(organism_code
+         ,native
+         ,genus
+         ,species
+         ,type) %>% 
   glimpse()
 #SAVSPP includes veg and algae
-#I don't think pickleweed (PICK) or sea purlane (SEPU) are aquatic so we will see how much they come up in the data sets
-
-#create a list of the organism codes for veg
-#will be used to filter catch data
-veg_codes <- spp_ft %>% 
-  pull(organism_code)
+#pickleweed (PICK) and sea purlane (SEPU) are not aquatic so drop them
 
 #filter catch data to just include veg 
 catch_veg <- catch_ft %>% 
@@ -160,7 +170,7 @@ sample_catch <- sample_ft %>%
     ,date = sample_date
     ,station = station_code
     ,method = method_code
-    ,organism = organism_code
+    ,organism_code
     ,volume
     ,x_wgs84
     ,y_wgs84
@@ -188,10 +198,10 @@ sample_catch <- sample_ft %>%
 
 #Do hook and line surveys ever record veg catch? 
 #I think for these surveys, veg data wouldn't be in catch. they would be in the habitat table
-sample_catch_hkln <- sample_catch %>% 
-  filter(method_code == "HKLN" 
-         #& volume != 0
-         )
+# sample_catch_hkln <- sample_catch %>% 
+#   filter(method_code == "HKLN" 
+#          & volume != 0
+#          )
 #as expected, no veg catch for this survey method
 #pull this survey method from rest of data
 #if using veg data from this survey method, need to reference habitat data set
@@ -226,277 +236,62 @@ sample_catch_otr <- sample_catch %>%
            crs = 4326 #EPSG code for WGS84
            ,remove=T #drop original lat/long columns
   ) %>%
-  #add sample effort
-  left_join(teff_ft) %>%
+  #add species info
+  left_join(spp_ft) %>% 
+  #add year column 
+  mutate(year = year(date),.after = date) %>% 
   glimpse()
 
 #how many trawl stations are left?
+#these are all otter trawl samples since April 2014 with GPS coordinates
 otr_stn_ct <- unique(sample_catch_otr$station)
 #31 stations 
 
-  #calculate mL of veg per minute of trawl effort
-  mutate(
-    volume_ml = case_when(is.na(volume)~0, TRUE ~ volume)
-    ,veg_ml_min = volume_ml/tow_duration)
-  
+#what is date range?
+#range(sample_catch_otr$date)
+#"2014-04-17 UTC" "2025-02-14 UTC"
 
+#columns to group by
+
+
+#sum sav and fav data by sample and calculate ml per min
+sum_veg_otr <- sample_catch_otr %>% 
+  group_by(sample_row_id,date,year,station,location, geometry,type) %>% 
+  summarise(tot_volume = sum(volume),.groups = 'drop') %>% 
+  #add zeros where no veg
+  mutate(tot_volume = case_when(is.na(tot_volume)~0,
+                                 TRUE ~ tot_volume)) %>% 
+  #add effort data
+  left_join(teff_ft) %>% 
+  #volume (ml) per trawl effort (min)
+  mutate(ml_per_min = tot_volume/tow_duration) %>% 
+  glimpse()
+
+
+#median sav and fav ml per min by station and year
+median_veg_otr <- sum_veg_otr %>% 
+  group_by(year,station,location, geometry, type) %>% 
+  summarize(median_ml_per_min = median(ml_per_min)) %>% 
+  glimpse()
+
+#to do
+#look at similar maps I made for drought barrier and plankton sampling
+#make SAV map for each year
+
+
+  #calculate mL of veg per minute of trawl effort
+  # mutate(
+  #   volume_ml = case_when(is.na(volume)~0, TRUE ~ volume)
+  #   ,veg_ml_min = volume_ml/tow_duration)
+  
+#start with map for each year showing SAV abundance per sample effort at each station using point size
+#that would be 2015-2024
 #stacked bar plot showing each plant taxon by station with years as facet
 #could lump plant taxa by life form (SAV, FAV) and/or station by region
 #could also look at seasonal abundances and/or just look at summer/fall months 
 #plot total veg abundance relative to SMSCGs
 
 
-
-
-
-#might just need to create a file that has the stations categorized into region if we want to look by region
-
-#probably need to incorporate survey effort into this because I doubt it's the same through time
-#take total veg volume and divide by survey effort
-#not perfect because some regions are more prone to veg invasion than others
-
-
-
-#examine SAV data columns-------------
-
-#generate list of the column names
-names(sav_cleaner)
-
-#how many stations in data set?
-unique(sav_cleaner$station_code)
-#n=16
-
-#range of dates?
-range(sav_cleaner$date)
-#2014-04-17" "2020-12-23"
-
-#which SAV species?
-unique(sav_cleaner$organism_code)
-#Nine categories
-#"ELCA" = Elodea canadensis = American waterweed   
-#"EGDE" = Egeria densa = Brazilian waterweed   
-#"CEDE" = Ceratophyllum demersum = coontail   
-#"MYSP" = Myriophyllum spicatum = Eurasian watermilfoil   
-#"ALG" = filamentous green algae (not SAV)
-#"POCR" = Potamogeton crispa = curlyleaf pondweed   
-#"STSPP" = Stuckenia spp = Sago pondweed  (salt tolerant native)
-#"SAVSPP" = unidentified submerged aquatic plant species
-#"CACA" = Cabomba caroliniana = Carolina Fanwort    
-
-#distribution of SAV volume
-range(sav_cleaner$volume) #1 - 102206
-hist(sav_cleaner$volume)
-#vast majority are small but at least one or two that are very large
-
-#create data frame that categorizes station by region
-#and identifies the closest water quality station
-#E = eastern marsh, C = central marsh, W = western marsh
-rgwq <- data.frame(
-  station_code = c("MZ1", "MZ2", "MZ6", "NS3", "NS2", "NS1", "DV2", "DV1","MZN3","CO1", "SU2", "SB1", "BY3","SD2", "SU4", "SU3"),
-  region = c(rep("E",9), rep("C",5), rep("W",2)),
-  wq = c("MSL", "NSL", rep("BLL",7),rep("SFBFMWQ",5),rep("GOD",2))
-)
-
-#fish stations that seem to be missing
-#East marsh: DV3
-#Central marsh: CO2, SB2, SU1, BY1, PT1, PT2
-#West marsh: GY2, GY1, GY3
-#all of these are active stations according to data base
-#two stations that aren't on my map of the study: 
-#"MZN3": Montezuma Slough - at side channel, 38.1503740699, -121.916719863 (East marsh)
-#"SD2": Sheldrake Slough - at Suisun Slough, no coordinates in database (West Marsh)
-
-#add region categories to main data set
-savr<- inner_join(sav_cleaner,rgwq) %>% 
-  mutate_at(vars(station_code, organism_code,region,wq),factor)
-#glimpse(savr)
-
-#look at samples by station and year
-#vast majority of samples are in eastern Montezuma Slough (MZ1, MZ2, MZ6)
-#note there are multiple entries per month in some cases because of multiple species
-savt1<-savr %>% 
-  tabyl(station_code)
-
-savt2<-savr %>% 
-  tabyl(station_code, year)
-
-#create new data frame that sums all SAV by taxon 
-sav_sum_tax <- savr %>% 
-  group_by(organism_code) %>% 
-  summarize(
-    sav_tot = sum(volume))
-glimpse(sav_sum_tax)
-
-#create new data frame that sums all SAV by station 
-sav_sum_tot <- savr %>% 
-  group_by(station_code,region, wq) %>% 
-  summarize(
-    sav_tot = sum(volume))
-glimpse(sav_sum_tot)
-
-#create new data frame that sums all SAV by station and date
-sav_sum_dt <- savr %>% 
-  group_by(station_code,region, wq, date) %>% 
-  summarize(
-    sav_tot = sum(volume)) %>% 
-  #create a month column 
-  mutate(month = month(date)) %>% 
-  #create a year column 
-  mutate(year = year(date)) 
-
-#create new data frame that sums all SAV by station and date
-#And removes algae (not SAV) and sago (salt tolerant native)
-sav_sum_dt_sub <- savr %>% 
-  filter(organism_code != "STSPP" & organism_code != "ALG") %>% 
-  group_by(station_code,region, wq, date) %>% 
-  summarize(
-    sav_tot = sum(volume)) %>% 
-  #create a month column 
-  mutate(month = month(date)) %>% 
-  #create a year column 
-  mutate(year = year(date))
-
-#create new data frame with just egeria
-sav_sum_dt_egde <- savr %>% 
-  filter(organism_code == "EGDE") %>% 
-  #create a month column 
-  mutate(month = month(date)) %>% 
-  #create a year column 
-  mutate(year = year(date))
-
-#create new data frame that sums volume by species for each station
-sav_sum_stn_spp <- savr %>% 
-  group_by(station_code,region, wq, organism_code) %>% 
-  summarize(
-    sav_spp_tot = sum(volume))
-
-#create subset with just MZ1 which has by far the most veg
-#mostly on a single date
-mz1 <- savr %>% 
-  filter(station_code == "MZ1")
-
-#plots-----------
-
-#total SAV volume by taxon
-(plot_tot_vol_tax <-ggplot(sav_sum_tax, aes(x=organism_code, y=sav_tot))+ 
-   geom_bar(stat="identity")
-)
-#mostly Egeria by volume, followed by algae, coontail, and sago
-
-#total SAV volume by station
-(plot_tot_vol_stn <-ggplot(sav_sum_tot, aes(x=station_code, y=sav_tot))+ 
-    geom_bar(stat="identity")
-)
-
-#total SAV volume time series by station
-(plot_tot_vol_stn_dt <-ggplot(sav_sum_dt, aes(x=date, y=sav_tot))+ 
-    geom_line() + 
-    geom_point() + 
-    #ylim(0,13000)+ #exclude a high end outlier in MZ1
-    facet_wrap(~station_code)
-)
-
-#stacked bar plots showing composition by station
-(plot_tot_vol_stn_spp <-ggplot(sav_sum_stn_spp
-                               , aes(x=station_code, y= sav_spp_tot,  fill = organism_code))+
-    geom_bar(position = "stack", stat = "identity") + 
-    ylim(0,25000)+ #zooms in on lower volume stations (MZ1 bar not accurate this way)
-    ylab("Volume") + xlab("Station")
-)
-
-#stacked bar plots showing composition by month for MZ1
-(plot_tot_vol_mz1_spp <-ggplot(mz1
-                               , aes(x=date, y= volume,  fill = organism_code))+
-    geom_bar(position = "stack", stat = "identity") + 
-    #ylim(0,25000)+ #zooms in on lower volume stations (MZ1 bar not accurate this way)
-    ylab("Volume") + xlab("Date")
-)
-
-#combine SAV and WQ data sets------------
-
-glimpse(sav_sum_dt)
-glimpse(wq_data)
-wq_data$wq <- factor(wq_data$wq)
-#NOTE: some missing WQ data for BLL, so can't include some SAV samples in plots and analyses below
-#use different WQ station for those SAV samples
-
-#join them by month, year, and wq station name
-vgwq <- left_join(sav_sum_dt,wq_data) %>% 
-  #filter out the one extreme outlier for total SAV 
-  filter(sav_tot <9000)
-#NOTE: BLL is the WQ station used for a number of veg stations
-#but BLL data stops in July 2019
-#for veg data past that month, would need to designate a different WQ station (NSL)
-
-#join them by month, year, and wq station name
-#but with algae and sago excluded
-vgwq_sub <- left_join(sav_sum_dt_sub,wq_data) %>% 
-  filter(sav_tot <9000)
-
-#join dataset with just egeria with wq
-#join them by month, year, and wq station name
-vgwq_egde <- left_join(sav_sum_dt_egde,wq_data) %>% 
-  filter(volume <9000)
-
-#look at correlation between total vegetation biomass and specific conductance------
-#one high end outlier removed
-
-(plot_vg_sc_corr <- ggplot(vgwq, aes(x=sp_cond_avg, y=sav_tot))+
-   geom_point()+
-   geom_smooth(method='lm')
-)
-
-cor.test(x = vgwq$sp_cond_avg, y=vgwq$sav_tot)
-#t = -0.30938, df = 78, p-value = 0.7579
-#cor = -0.03500853 
-#not a significant correlation
-
-#same analysis but with algae and sago excluded
-(plot_vg_sc_corr2 <- ggplot(vgwq_sub, aes(x=sp_cond_avg, y=sav_tot))+
-    geom_point()+
-    geom_smooth(method='lm')
-)
-
-cor.test(x = vgwq_sub$sp_cond_avg, y=vgwq_sub$sav_tot)
-#t = -0.15111, df = 64, p-value = 0.8804
-#corr = -0.01888581
-
-#same analysis but just egeria
-(plot_vg_sc_corr3 <- ggplot(vgwq_egde, aes(x=sp_cond_avg, y=volume))+
-    geom_point()+
-    geom_smooth(method='lm')
-)
-
-cor.test(x = vgwq_egde$sp_cond_avg, y=vgwq_egde$volume)
-#t = -0.18162, df = 50, p-value = 0.8566
-#corr = -0.02567717
-
-
-
-#look at correlation between total vegetation biomass and temperature------
-(plot_vg_tp_corr <- ggplot(vgwq, aes(x=temp_avg, y=sav_tot))+
-   geom_point()+
-   geom_smooth(method='lm')
-)
-
-cor.test(x = vgwq$temp_avg, y=vgwq$sav_tot)
-#t = 0.050997, df = 79, p-value = 0.9595
-#cor = 0.005737467
-#not a significant correlation
-
-
-#next steps-----------
-
-
-#look at correlations for particular species instead of totals (when data sufficient)
-
-#could focus on just a few of the stations in East Marsh where most samples are collected
-
-#could look at particular water year types (very dry and very wet)
-
-#look at correlation between SAV volume and flows into the marsh via SMSCG
-#veg caught in the trawl might not have been growing in location where it was collected
-#SAV drifts around and could have come from upstream in the Delta
 
 
 
