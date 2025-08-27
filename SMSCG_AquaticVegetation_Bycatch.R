@@ -20,6 +20,7 @@ library(tidyverse)
 library(janitor) #function for data frame clean up
 library(EDIutils) #download EDI data
 library(sf) #working with spatial data
+library(deltamapr) #delta base maps
 
 #additional data sets needed for analysis----------
 #survey effort: need to know SAV volume per unit survey effort (though maybe this is standardized)
@@ -238,57 +239,221 @@ sample_catch_otr <- sample_catch %>%
   ) %>%
   #add species info
   left_join(spp_ft) %>% 
-  #add year column 
-  mutate(year = year(date),.after = date) %>% 
+  #add month and year columns 
+  mutate(month = month(date)
+    ,year = year(date),.after = date) %>% 
   glimpse()
 
 #how many trawl stations are left?
 #these are all otter trawl samples since April 2014 with GPS coordinates
-otr_stn_ct <- unique(sample_catch_otr$station)
+#otr_stn_ct <- unique(sample_catch_otr$station)
 #31 stations 
 
 #what is date range?
 #range(sample_catch_otr$date)
 #"2014-04-17 UTC" "2025-02-14 UTC"
 
-#columns to group by
+#summer fall months to target
+sfmonths <- c(7,8,9,10)
 
-
-#sum sav and fav data by sample and calculate ml per min
+#sum sav volume data by sample and calculate ml per min
+#no fav samples in dataset
 sum_veg_otr <- sample_catch_otr %>% 
-  group_by(sample_row_id,date,year,station,location, geometry,type) %>% 
-  summarise(tot_volume = sum(volume),.groups = 'drop') %>% 
+  #focus just on summer-fall period (July-Oct)
+  filter(month %in% sfmonths) %>% 
   #add zeros where no veg
-  mutate(tot_volume = case_when(is.na(tot_volume)~0,
-                                 TRUE ~ tot_volume)) %>% 
+  mutate(volume = case_when(is.na(volume)~0,
+                                TRUE ~ volume)) %>% 
+  #sum all species volumes into total sav volume per sample
+  group_by(sample_row_id,date,year,month,station,location, geometry) %>% 
+  summarise(samp_volume = sum(volume),.groups = 'drop') %>% 
   #add effort data
+  #NOTE: only one NA for tow duration and it is for a sample with no veg volume so doesn't matter
   left_join(teff_ft) %>% 
+  #let's just sum all veg volume across all summer fall months
+  group_by(year,station,location, geometry) %>% 
+  summarise(tot_volume = sum(samp_volume)
+            ,tot_duration = sum(tow_duration)
+            ,.groups = 'drop') %>% 
   #volume (ml) per trawl effort (min)
-  mutate(ml_per_min = tot_volume/tow_duration) %>% 
+  mutate(ml_per_min = tot_volume/tot_duration) %>% 
+  arrange(year,station) %>% 
   glimpse()
 
+#confirm it only includes summer fall months
+#unique(sum_veg_otr$month)
+# 7  8  9 10
 
-#median sav and fav ml per min by station and year
-median_veg_otr <- sum_veg_otr %>% 
-  group_by(year,station,location, geometry, type) %>% 
-  summarize(median_ml_per_min = median(ml_per_min)) %>% 
-  glimpse()
+#no 2025 map because data only for Jan-Feb on EDI as of 8/26/25
 
-#to do
-#look at similar maps I made for drought barrier and plankton sampling
+#split data set into one year increments for mapping
+sav24 <- sum_veg_otr %>% filter(year == 2024)
+sav23 <- sum_veg_otr %>% filter(year == 2023)
+sav22 <- sum_veg_otr %>% filter(year == 2022)
+sav21 <- sum_veg_otr %>% filter(year == 2021)
+sav20 <- sum_veg_otr %>% filter(year == 2020)
+sav19 <- sum_veg_otr %>% filter(year == 2019)
+sav18 <- sum_veg_otr %>% filter(year == 2018)
+sav17 <- sum_veg_otr %>% filter(year == 2017)
+sav16 <- sum_veg_otr %>% filter(year == 2016)
+sav15 <- sum_veg_otr %>% filter(year == 2015)
+sav14 <- sum_veg_otr %>% filter(year == 2014)
+
 #make SAV map for each year
 
+#match CRS of base map and stations
+st_crs(WW_Delta) #NAD83 which is EPSG = 4269
+st_crs(sum_veg_otr$geometry) #4326
 
-  #calculate mL of veg per minute of trawl effort
-  # mutate(
-  #   volume_ml = case_when(is.na(volume)~0, TRUE ~ volume)
-  #   ,veg_ml_min = volume_ml/tow_duration)
-  
-#start with map for each year showing SAV abundance per sample effort at each station using point size
-#that would be 2015-2024
+ww_delta_4326 <- st_transform(WW_Delta, crs = 4326)
+
+#make 2024 map
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+  #plot stations with point size set to veg volume per effort
+  geom_sf(data= sav24, color= "red",  aes(size= ml_per_min))+ 
+  #crop area to just marsh
+  coord_sf( 
+    xlim =c(-122.15, -121.85)
+    ,ylim = c(38.025,38.25)
+  )+
+  ggtitle( label = "2024 SAV (July-Oct)")
+
+#make 2023 map
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+  #plot stations with point size set to veg volume per effort
+  geom_sf(data= sav23, color= "red",  aes(size= ml_per_min))+ 
+  #crop area to just marsh
+  coord_sf( 
+    xlim =c(-122.15, -121.85)
+    ,ylim = c(38.025,38.25)
+  )+
+  ggtitle( label = "2023 SAV (July-Oct)")
+#NOTE: apparently one value missing, look into this
+
+#make 2022 map
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+  #plot stations with point size set to veg volume per effort
+  geom_sf(data= sav22, color= "red",  aes(size= ml_per_min))+ 
+  #crop area to just marsh
+  coord_sf( 
+    xlim =c(-122.15, -121.85)
+    ,ylim = c(38.025,38.25)
+  )+
+  ggtitle( label = "2022 SAV (July-Oct)")
+
+#make 2021 map
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+  #plot stations with point size set to veg volume per effort
+  geom_sf(data= sav21, color= "red",  aes(size= ml_per_min))+ 
+  #crop area to just marsh
+  coord_sf( 
+    xlim =c(-122.15, -121.85)
+    ,ylim = c(38.025,38.25)
+  )+
+  ggtitle( label = "2021 SAV (July-Oct)")
+
+#make 2020 map
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+  #plot stations with point size set to veg volume per effort
+  geom_sf(data= sav20, color= "red",  aes(size= ml_per_min))+ 
+  #crop area to just marsh
+  coord_sf( 
+    xlim =c(-122.15, -121.85)
+    ,ylim = c(38.025,38.25)
+  )+
+  ggtitle( label = "2020 SAV (July-Oct)")
+
+#make 2019 map
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+  #plot stations with point size set to veg volume per effort
+  geom_sf(data= sav19, color= "red",  aes(size= ml_per_min))+ 
+  #crop area to just marsh
+  coord_sf( 
+    xlim =c(-122.15, -121.85)
+    ,ylim = c(38.025,38.25)
+  )+
+  ggtitle( label = "2019 SAV (July-Oct)")
+
+#make 2018 map
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+  #plot stations with point size set to veg volume per effort
+  geom_sf(data= sav18, color= "red",  aes(size= ml_per_min))+ 
+  #crop area to just marsh
+  coord_sf( 
+    xlim =c(-122.15, -121.85)
+    ,ylim = c(38.025,38.25)
+  )+
+  ggtitle( label = "2018 SAV (July-Oct)")
+
+#make 2017 map
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+  #plot stations with point size set to veg volume per effort
+  geom_sf(data= sav17, color= "red",  aes(size= ml_per_min))+ 
+  #crop area to just marsh
+  coord_sf( 
+    xlim =c(-122.15, -121.85)
+    ,ylim = c(38.025,38.25)
+  )+
+  ggtitle( label = "2017 SAV (July-Oct)")
+
+#make 2016 map
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+  #plot stations with point size set to veg volume per effort
+  geom_sf(data= sav16, color= "red",  aes(size= ml_per_min))+ 
+  #crop area to just marsh
+  coord_sf( 
+    xlim =c(-122.15, -121.85)
+    ,ylim = c(38.025,38.25)
+  )+
+  ggtitle( label = "2016 SAV (July-Oct)")
+
+#make 2015 map
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+  #plot stations with point size set to veg volume per effort
+  geom_sf(data= sav15, color= "red",  aes(size= ml_per_min))+ 
+  #crop area to just marsh
+  coord_sf( 
+    xlim =c(-122.15, -121.85)
+    ,ylim = c(38.025,38.25)
+  )+
+  ggtitle( label = "2015 SAV (July-Oct)")
+
+#make 2014 map
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+  #plot stations with point size set to veg volume per effort
+  geom_sf(data= sav14, color= "red",  aes(size= ml_per_min))+ 
+  #crop area to just marsh
+  coord_sf( 
+    xlim =c(-122.15, -121.85)
+    ,ylim = c(38.025,38.25)
+  )+
+  ggtitle( label = "2014 SAV (July-Oct)")
+
+
+
 #stacked bar plot showing each plant taxon by station with years as facet
-#could lump plant taxa by life form (SAV, FAV) and/or station by region
-#could also look at seasonal abundances and/or just look at summer/fall months 
 #plot total veg abundance relative to SMSCGs
 
 
