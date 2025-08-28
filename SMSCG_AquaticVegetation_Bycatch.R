@@ -21,6 +21,7 @@ library(janitor) #function for data frame clean up
 library(EDIutils) #download EDI data
 library(sf) #working with spatial data
 library(deltamapr) #delta base maps
+library(ggrepel) #nonoverlapping point labels
 
 #additional data sets needed for analysis----------
 #survey effort: need to know SAV volume per unit survey effort (though maybe this is standardized)
@@ -70,6 +71,16 @@ teff <- read_csv(read_data_entity(packageId = "edi.1947.1", entityId= ucd_marsh_
 seff <- read_csv(read_data_entity(packageId = "edi.1947.1", entityId= ucd_marsh_fish_pkg$entityId[15])) %>% 
   clean_names() %>% 
   glimpse()
+
+#create data frame that categorizes station by region
+rgwq <- data.frame(
+  station = c(
+    "MZ1", "MZ2", "MZN3","MZ6"
+    ,"NS1","NS2","NS3", "DV1","DV2", "DV3"
+    ,"SUVOL","CO1", "CO2","SU1","SU2", "GR3","SB1","SB2","SB0_5","BY1","BY2", "BY3", "PT1","PT2","PT3"
+    , "SU4", "SU3","GY1", "GY2","GY3"),
+  region = c(rep("SE",4), rep("NE",6), rep("NW",15),rep("SW",5))
+)
 
 # Simplify and combine data sets--------------------
 
@@ -275,10 +286,18 @@ sum_veg_otr <- sample_catch_otr %>%
   summarise(tot_volume = sum(samp_volume)
             ,tot_duration = sum(tow_duration)
             ,.groups = 'drop') %>% 
-  #volume (ml) per trawl effort (min)
-  mutate(ml_per_min = tot_volume/tot_duration) %>% 
+  mutate(  
+    #volume (ml) per trawl effort (min)
+    ml_per_min = tot_volume/tot_duration
+    #split out longitude and latitude from geometry
+         ,longitude = st_coordinates(.)[,1],
+         latitude= st_coordinates(.)[,2]) %>% 
   arrange(year,station) %>% 
+  #add region categories
+  left_join(rgwq) %>% 
   glimpse()
+
+
 
 #confirm it only includes summer fall months
 #unique(sum_veg_otr$month)
@@ -452,9 +471,69 @@ ggplot()+
   ggtitle( label = "2014 SAV (July-Oct)")
 
 
+#make one map that shows SAV volume/min of trawling across all years
+
+sum_veg_otr_allyears <- sum_veg_otr %>% 
+  group_by(station,region,location,geometry,latitude,longitude) %>% 
+  summarise(all_volume = sum(tot_volume)
+            ,all_duration = sum(tot_duration,na.rm = T),.groups = 'drop') %>% 
+  mutate(all_ml_per_min = all_volume/all_duration) %>% 
+  arrange(-all_duration)
+#note: station SU2 has at least one NA for duration but it doesn't matter because no veg there ever
+
+#drop stations with low effort
+sum_veg_otr_allyears_higheff <- sum_veg_otr_allyears %>% 
+  #drop some stations that have less than 50 minutes of samples across the whole time period
+  #drops six stations, nearly all in NW region
+  filter(all_duration > 40) 
+
+#create list of stations with low effort
+stn_low_effort <- sum_veg_otr_allyears %>% 
+  filter(all_duration <= 40) %>% 
+  pull(station)
+#"MZN3"  "SUVOL" "SB0_5" "BY2"   "GR3"   "PT3"  
+
+#map showing all years
+ggplot()+
+  #plot waterways base layer
+  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+  #plot stations with point size set to veg volume per effort
+  geom_sf(data= sum_veg_otr_allyears_higheff, color= "red",  aes(size= all_ml_per_min))+ 
+  #add station names as labels and make sure they don't overlap each other or the points
+  geom_label_repel(data = sum_veg_otr_allyears_higheff, aes(x=longitude,y=latitude, label=station) #label the points
+                   #,nudge_x = -0.008, nudge_y = 0.008 #can specify the magnitude of nudges if necessary
+                   , size = 3 #adjust size and position relative to points
+                   ,inherit.aes = F #tells it to look at points not base layer
+  ) + 
+  #crop area to just marsh
+  coord_sf( 
+    xlim =c(-122.15, -121.85)
+    ,ylim = c(38.025,38.25)
+  )+
+  ggtitle( label = "2014-2024 (July - Oct)")
+
+#time series of SAV by region with error bars
+sum_veg_otr_rgyr <- sum_veg_otr %>% 
+  #drop geometry colum
+  st_drop_geometry() %>% 
+  #drop low effort stations
+  filter(!(station %in% stn_low_effort)) %>% 
+  group_by(region,year) %>%  
+  summarize(mean_ml_per_min = mean(ml_per_min,na.rm=T)
+            ,sd_ml_per_min = sd(ml_per_min,na.rm = T),.groups='drop')
+#NOTE: need to decide what to do about missing value for SU2
+#for now just drop this NA from dataset for plotting
+
+#plot data
+(plot_ts_rgyr <- ggplot(data = sum_veg_otr_rgyr, aes(x = year, y = mean_ml_per_min,color=region)) +
+    geom_point()+
+    geom_line())
+#add error bars
+#show on log scale?
 
 #stacked bar plot showing each plant taxon by station with years as facet
 #plot total veg abundance relative to SMSCGs
+
 
 
 
