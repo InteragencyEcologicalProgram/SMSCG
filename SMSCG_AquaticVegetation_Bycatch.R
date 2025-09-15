@@ -22,6 +22,7 @@ library(EDIutils) #download EDI data
 library(sf) #working with spatial data
 library(deltamapr) #delta base maps
 library(ggrepel) #nonoverlapping point labels
+library(plotrix) #standard error
 
 #additional data sets needed for analysis----------
 #survey effort: need to know SAV volume per unit survey effort (though maybe this is standardized)
@@ -158,6 +159,11 @@ spp_ft <- spp %>%
 #SAVSPP includes veg and algae
 #pickleweed (PICK) and sea purlane (SEPU) are not aquatic so drop them
 
+#create a list of the organism codes for veg
+#will be used to filter catch data
+veg_codes <- spp_ft %>% 
+pull(organism_code)
+
 #filter catch data to just include veg 
 catch_veg <- catch_ft %>% 
   filter(organism_code %in% veg_codes)
@@ -219,6 +225,20 @@ sample_catch <- sample_ft %>%
 #if using veg data from this survey method, need to reference habitat data set
 #need to see how often aquatic veg is recorded in this survey
 
+#look at beach seine data
+sample_catch_bsein <- sample_catch %>%
+  filter(method == "BSEIN"
+         & volume != 0
+         )
+
+bsein_stations <- sample_catch_bsein %>% 
+  distinct(station,location) %>% 
+  arrange(station)
+#14 stations with veg catch in at least some samples
+#veg starts showing up (or getting quantified) in 2021
+#no GPS coordinates
+#less sure about standardizing by effort for these
+
 #count number of samples per station and show whether they have GPS coordinates
 #hopefully, the ones without coordinates weren't a significant part of the samples
 sample_catch_stn_ct <- sample_catch %>% 
@@ -269,7 +289,7 @@ sfmonths <- c(7,8,9,10)
 
 #sum sav volume data by sample and calculate ml per min
 #no fav samples in dataset
-sum_veg_otr <- sample_catch_otr %>% 
+sum_veg_otr1 <- sample_catch_otr %>% 
   #focus just on summer-fall period (July-Oct)
   filter(month %in% sfmonths) %>% 
   #add zeros where no veg
@@ -281,8 +301,33 @@ sum_veg_otr <- sample_catch_otr %>%
   #add effort data
   #NOTE: only one NA for tow duration and it is for a sample with no veg volume so doesn't matter
   left_join(teff_ft) %>% 
+  #add region categories
+  left_join(rgwq) %>% 
+  glimpse()
+
+#how many samples per stations with vs without veg?
+station_sample_summary <- sum_veg_otr1 %>% 
+  st_drop_geometry() %>% 
+  mutate(pa = case_when(samp_volume > 0 ~ 1,
+                        TRUE ~ 0)) %>% 
+  group_by(region,station,pa) %>% 
+  summarise(n = n()) %>% 
+  arrange(region,station,pa) %>% 
+  pivot_wider(names_from = 'pa', values_from = n) %>%
+  select(region
+         ,station
+         ,absent = "0"
+         ,present = "1") %>% 
+  mutate(present = case_when(is.na(present) ~ 0,
+                        TRUE ~ present)
+         ,prop = present/(absent+present)
+         ) %>% 
+  glimpse()
+
+
+sum_veg_otr <- sum_veg_otr1 %>% 
   #let's just sum all veg volume across all summer fall months
-  group_by(year,station,location, geometry) %>% 
+  group_by(year,station,region,location, geometry) %>% 
   summarise(tot_volume = sum(samp_volume)
             ,tot_duration = sum(tow_duration)
             ,.groups = 'drop') %>% 
@@ -292,9 +337,7 @@ sum_veg_otr <- sample_catch_otr %>%
     #split out longitude and latitude from geometry
          ,longitude = st_coordinates(.)[,1],
          latitude= st_coordinates(.)[,2]) %>% 
-  arrange(year,station) %>% 
-  #add region categories
-  left_join(rgwq) %>% 
+  arrange(year,region,station) %>% 
   glimpse()
 
 
@@ -520,16 +563,17 @@ sum_veg_otr_rgyr <- sum_veg_otr %>%
   filter(!(station %in% stn_low_effort)) %>% 
   group_by(region,year) %>%  
   summarize(mean_ml_per_min = mean(ml_per_min,na.rm=T)
-            ,sd_ml_per_min = sd(ml_per_min,na.rm = T),.groups='drop')
+            ,se_ml_per_min = std.error(ml_per_min,na.rm = T),.groups='drop')
 #NOTE: need to decide what to do about missing value for SU2
 #for now just drop this NA from dataset for plotting
 
 #plot data
 (plot_ts_rgyr <- ggplot(data = sum_veg_otr_rgyr, aes(x = year, y = mean_ml_per_min,color=region)) +
     geom_point()+
-    geom_line())
-#add error bars
-#show on log scale?
+    geom_line())+
+  geom_errorbar(aes(ymin = mean_ml_per_min-se_ml_per_min, ymax = mean_ml_per_min+se_ml_per_min), width = 0.2)
+
+
 
 #stacked bar plot showing each plant taxon by station with years as facet
 #plot total veg abundance relative to SMSCGs
