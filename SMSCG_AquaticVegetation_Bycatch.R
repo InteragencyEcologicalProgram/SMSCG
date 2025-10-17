@@ -528,7 +528,8 @@ sum_veg_otr_allyears <- sum_veg_otr %>%
 sum_veg_otr_allyears_higheff <- sum_veg_otr_allyears %>% 
   #drop some stations that have less than 50 minutes of samples across the whole time period
   #drops six stations, nearly all in NW region
-  filter(all_duration > 40) 
+  filter(all_duration > 40) %>% 
+  arrange(-all_ml_per_min)
 
 #create list of stations with low effort
 stn_low_effort <- sum_veg_otr_allyears %>% 
@@ -563,7 +564,7 @@ sum_veg_otr_rgyr <- sum_veg_otr %>%
   filter(!(station %in% stn_low_effort)) %>% 
   group_by(region,year) %>%  
   summarize(mean_ml_per_min = mean(ml_per_min,na.rm=T)
-            ,se_ml_per_min = std.error(ml_per_min,na.rm = T),.groups='drop')
+            ,se_ml_per_min = std.error(ml_per_min,na.rm = T),.groups='drop') 
 #NOTE: need to decide what to do about missing value for SU2
 #for now just drop this NA from dataset for plotting
 
@@ -573,10 +574,43 @@ sum_veg_otr_rgyr <- sum_veg_otr %>%
     geom_line())+
   geom_errorbar(aes(ymin = mean_ml_per_min-se_ml_per_min, ymax = mean_ml_per_min+se_ml_per_min), width = 0.2)
 
+#high veg volume stations 
+high_veg <- c("MZ1", "MZ2", "MZ6")
+
+#subset data to just the SE stations
+sum_veg_otr_allyears_se <-sum_veg_otr1 %>% 
+  filter(station %in% high_veg) %>% 
+  mutate(ml_per_min = samp_volume/tow_duration,.after=tow_duration)
+#130 data points (3 stations x 4 months x ~10 years)
+
+#time series of SAV for SE region with error bars
+sum_veg_otr_yr_se <- sum_veg_otr_allyears_se %>% 
+  #drop geometry colum
+  st_drop_geometry() %>% 
+  group_by(year) %>%  
+  summarize(mean_ml_per_min = mean(ml_per_min,na.rm=T)
+            ,se_ml_per_min = std.error(ml_per_min,na.rm = T),.groups='drop') 
 
 
-#stacked bar plot showing each plant taxon by station with years as facet
-#plot total veg abundance relative to SMSCGs
+#strings for connecting letters in plot below
+years <- c(2014:2024)
+ml_per_min <- c(rep(50,6),150,50,50,450,300)
+connect_letters <- c(rep("A",6),"A,B","A","A","B","A,B")
+
+#plot data
+(plot_ts_yr_se <- ggplot(data = sum_veg_otr_yr_se, aes(x = year, y = mean_ml_per_min)) +
+    geom_point()+
+    geom_line())+
+  geom_errorbar(aes(ymin = mean_ml_per_min-se_ml_per_min, ymax = mean_ml_per_min+se_ml_per_min), width = 0.2)+
+  annotate("text", x=years, y=ml_per_min, label= connect_letters)
+
+#do overall test and make sure assumptions of normality, etc apply
+
+#multiple comparisons showing which years differ
+pairwise_results <- pairwise.t.test(sum_veg_otr_allyears_se$ml_per_min, sum_veg_otr_allyears_se$year, p.adjust.method = "fdr")
+
+
+
 
 
 
