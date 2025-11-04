@@ -578,19 +578,30 @@ sum_veg_otr_rgyr <- sum_veg_otr %>%
 high_veg <- c("MZ1", "MZ2", "MZ6")
 
 #subset data to just the SE stations
-sum_veg_otr_allyears_se <-sum_veg_otr1 %>% 
+sum_veg_otr_allyears_se1 <-sum_veg_otr1 %>% 
   filter(station %in% high_veg) %>% 
-  mutate(ml_per_min = samp_volume/tow_duration,.after=tow_duration)
+  mutate(ml_per_min = samp_volume/tow_duration,.after=tow_duration) %>% 
+  arrange(year,station,month)
 #130 data points (3 stations x 4 months x ~10 years)
+
+#drop geometry
+sum_veg_otr_allyears_se <- sum_veg_otr_allyears_se1 %>% 
+  #drop geometry colum
+  st_drop_geometry() 
 
 #time series of SAV for SE region with error bars
 sum_veg_otr_yr_se <- sum_veg_otr_allyears_se %>% 
-  #drop geometry colum
-  st_drop_geometry() %>% 
   group_by(year) %>%  
   summarize(mean_ml_per_min = mean(ml_per_min,na.rm=T)
             ,se_ml_per_min = std.error(ml_per_min,na.rm = T),.groups='drop') 
 
+#look at number of samples by station and year
+count <- sum_veg_otr_allyears_se %>% 
+  count(station,year)
+#data set nearly complete
+#one extra sample for MZ6 for 2021
+#one sample (sept) missing for all three stations in 2022
+#so with three missing data points for 2022, that is a quarter fewer data points
 
 #strings for connecting letters in plot below
 years <- c(2014:2024)
@@ -604,17 +615,75 @@ connect_letters <- c(rep("A",6),"A,B","A","A","B","A,B")
   geom_errorbar(aes(ymin = mean_ml_per_min-se_ml_per_min, ymax = mean_ml_per_min+se_ml_per_min), width = 0.2)+
   annotate("text", x=years, y=ml_per_min, label= connect_letters)
 
-#do overall test and make sure assumptions of normality, etc apply
+#library(rstatix) #stats
+#loading this package here because don't want select() from dplyr overridden
 
-#multiple comparisons showing which years differ
+# Assumptions of the t-test:
+# data points in the response are independent of one another
+# there are no outliers (i.e., extreme values)
+# the response data should be approximately normally distributed in each group
+# variance of the response variable should be equal between the groups
+
+#check for outliers
+# outliers <-sum_veg_otr_allyears_se %>% #specifies the data set
+#   group_by(year) %>% 
+#   identify_outliers(ml_per_min) #looks for outliers in the zooplankton density data
+#identified lots of data points as outliers; looks like a lot of the non-zero data points
+
+#check for normality
+# sum_veg_otr_allyears_se %>% #specifies the data set
+#   #group_by(as.factor(year)) %>% #not working
+#   shapiro_test(ml_per_min) #runs the Shapiro-Wilks normality test
+#fails normality test - = 1.71e-22
+
+# (plot_norm_qq <- ggplot(sum_veg_otr_allyears_se, aes(sample = ml_per_min))+
+#     stat_qq() + stat_qq_line()+
+#     facet_wrap(~year)
+# )
+#looks terrible
+
+#homogeneity of variances
+# sum_veg_otr_allyears_se %>% #specifies the data set
+# levene_test(ml_per_min~as.factor(year)) #conducts the test
+#failed test
+  
+#multiple comparisons using t-test showing which years differ
 pairwise_results <- pairwise.t.test(sum_veg_otr_allyears_se$ml_per_min, sum_veg_otr_allyears_se$year, p.adjust.method = "fdr")
+#failed all assumptions though so use non-parametric tests
+
+#try non-parametric tests
+#nparcomp package
+#nparcomp()
+
+library(nparcomp) #nonparametric multiple comparisons
+#loading the package here because it has a select() function that I don't
+#want overriding select() from dplyr
 
 
+a<-nparcomp(ml_per_min ~ year, data=sum_veg_otr_allyears_se
+            , asy.method = "mult.t"
+            ,type = "Tukey"
+            ,alternative = "two.sided"
+            ,plot.simci = F #makes plot with confidence intervals
+            , info = T)
+summary(a)
+#similarish results
+#comparisons among nearly all years are qualitatively the same
+#except 2023, parametric test shows 2023 different from most years
+#nonparametric show it only different from 2015 and 2016 (ie, years with basically all zeros)
 
+#MCTP is for multiple contrast tests
+#examples in original paper use this function
+a2<-mctp(ml_per_min ~ year, data=sum_veg_otr_allyears_se
+         , asy.method = "mult.t"
+            ,type = "Tukey"
+            ,alternative = "two.sided"
+            ,plot.simci = F #makes plot with confidence intervals
+            , info = T)
+summary(a2)
 
-
-
-
+#not sure what the difference is between these two functions
+#don't give same results
 
 
 
