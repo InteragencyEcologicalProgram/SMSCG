@@ -35,7 +35,7 @@ library(plotrix) #standard error
 #use EDIutils package to read in all file names and download the ones you want to use
 #https://docs.ropensci.org/EDIutils/index.html
 
-#list all data files from EMP benthic inverts EDI package
+#list all data files
 ucd_marsh_fish_pkg <- read_data_entity_names(packageId = "edi.1947.1")
 
 #catch data which includes vegetation bycatch data
@@ -275,6 +275,18 @@ sample_catch_otr <- sample_catch %>%
     ,year = year(date),.after = date) %>% 
   glimpse()
 
+#summer fall months to target
+sfmonths <- c(7,8,9,10)
+
+#which taxa are most abundant?
+#sum volumes across all samples 
+veg_abund <- sample_catch_otr %>% 
+  #focus just on summer-fall period (July-Oct)
+  filter(month %in% sfmonths) %>%
+  group_by(organism_code) %>% 
+  summarise(tot_vol = sum(volume)) %>% 
+  arrange(-tot_vol)
+
 #how many trawl stations are left?
 #these are all otter trawl samples since April 2014 with GPS coordinates
 #otr_stn_ct <- unique(sample_catch_otr$station)
@@ -283,9 +295,6 @@ sample_catch_otr <- sample_catch %>%
 #what is date range?
 #range(sample_catch_otr$date)
 #"2014-04-17 UTC" "2025-02-14 UTC"
-
-#summer fall months to target
-sfmonths <- c(7,8,9,10)
 
 #sum sav volume data by sample and calculate ml per min
 #no fav samples in dataset
@@ -304,6 +313,10 @@ sum_veg_otr1 <- sample_catch_otr %>%
   #add region categories
   left_join(rgwq) %>% 
   glimpse()
+
+#range of tow durations
+range(sum_veg_otr1$tow_duration,na.rm = T)
+# 2.5 10.0
 
 #how many samples per stations with vs without veg?
 station_sample_summary <- sum_veg_otr1 %>% 
@@ -370,148 +383,148 @@ st_crs(sum_veg_otr$geometry) #4326
 ww_delta_4326 <- st_transform(WW_Delta, crs = 4326)
 
 #make 2024 map
-ggplot()+
-  #plot waterways base layer
-  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
-  #plot stations with point size set to veg volume per effort
-  geom_sf(data= sav24, color= "red",  aes(size= ml_per_min))+ 
-  #crop area to just marsh
-  coord_sf( 
-    xlim =c(-122.15, -121.85)
-    ,ylim = c(38.025,38.25)
-  )+
-  ggtitle( label = "2024 SAV (July-Oct)")
-
-#make 2023 map
-ggplot()+
-  #plot waterways base layer
-  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
-  #plot stations with point size set to veg volume per effort
-  geom_sf(data= sav23, color= "red",  aes(size= ml_per_min))+ 
-  #crop area to just marsh
-  coord_sf( 
-    xlim =c(-122.15, -121.85)
-    ,ylim = c(38.025,38.25)
-  )+
-  ggtitle( label = "2023 SAV (July-Oct)")
-#NOTE: apparently one value missing, look into this
-
-#make 2022 map
-ggplot()+
-  #plot waterways base layer
-  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
-  #plot stations with point size set to veg volume per effort
-  geom_sf(data= sav22, color= "red",  aes(size= ml_per_min))+ 
-  #crop area to just marsh
-  coord_sf( 
-    xlim =c(-122.15, -121.85)
-    ,ylim = c(38.025,38.25)
-  )+
-  ggtitle( label = "2022 SAV (July-Oct)")
-
-#make 2021 map
-ggplot()+
-  #plot waterways base layer
-  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
-  #plot stations with point size set to veg volume per effort
-  geom_sf(data= sav21, color= "red",  aes(size= ml_per_min))+ 
-  #crop area to just marsh
-  coord_sf( 
-    xlim =c(-122.15, -121.85)
-    ,ylim = c(38.025,38.25)
-  )+
-  ggtitle( label = "2021 SAV (July-Oct)")
-
-#make 2020 map
-ggplot()+
-  #plot waterways base layer
-  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
-  #plot stations with point size set to veg volume per effort
-  geom_sf(data= sav20, color= "red",  aes(size= ml_per_min))+ 
-  #crop area to just marsh
-  coord_sf( 
-    xlim =c(-122.15, -121.85)
-    ,ylim = c(38.025,38.25)
-  )+
-  ggtitle( label = "2020 SAV (July-Oct)")
-
-#make 2019 map
-ggplot()+
-  #plot waterways base layer
-  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
-  #plot stations with point size set to veg volume per effort
-  geom_sf(data= sav19, color= "red",  aes(size= ml_per_min))+ 
-  #crop area to just marsh
-  coord_sf( 
-    xlim =c(-122.15, -121.85)
-    ,ylim = c(38.025,38.25)
-  )+
-  ggtitle( label = "2019 SAV (July-Oct)")
-
-#make 2018 map
-ggplot()+
-  #plot waterways base layer
-  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
-  #plot stations with point size set to veg volume per effort
-  geom_sf(data= sav18, color= "red",  aes(size= ml_per_min))+ 
-  #crop area to just marsh
-  coord_sf( 
-    xlim =c(-122.15, -121.85)
-    ,ylim = c(38.025,38.25)
-  )+
-  ggtitle( label = "2018 SAV (July-Oct)")
-
-#make 2017 map
-ggplot()+
-  #plot waterways base layer
-  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
-  #plot stations with point size set to veg volume per effort
-  geom_sf(data= sav17, color= "red",  aes(size= ml_per_min))+ 
-  #crop area to just marsh
-  coord_sf( 
-    xlim =c(-122.15, -121.85)
-    ,ylim = c(38.025,38.25)
-  )+
-  ggtitle( label = "2017 SAV (July-Oct)")
-
-#make 2016 map
-ggplot()+
-  #plot waterways base layer
-  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
-  #plot stations with point size set to veg volume per effort
-  geom_sf(data= sav16, color= "red",  aes(size= ml_per_min))+ 
-  #crop area to just marsh
-  coord_sf( 
-    xlim =c(-122.15, -121.85)
-    ,ylim = c(38.025,38.25)
-  )+
-  ggtitle( label = "2016 SAV (July-Oct)")
-
-#make 2015 map
-ggplot()+
-  #plot waterways base layer
-  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
-  #plot stations with point size set to veg volume per effort
-  geom_sf(data= sav15, color= "red",  aes(size= ml_per_min))+ 
-  #crop area to just marsh
-  coord_sf( 
-    xlim =c(-122.15, -121.85)
-    ,ylim = c(38.025,38.25)
-  )+
-  ggtitle( label = "2015 SAV (July-Oct)")
-
-#make 2014 map
-ggplot()+
-  #plot waterways base layer
-  geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
-  #plot stations with point size set to veg volume per effort
-  geom_sf(data= sav14, color= "red",  aes(size= ml_per_min))+ 
-  #crop area to just marsh
-  coord_sf( 
-    xlim =c(-122.15, -121.85)
-    ,ylim = c(38.025,38.25)
-  )+
-  ggtitle( label = "2014 SAV (July-Oct)")
+# ggplot()+
+#   #plot waterways base layer
+#   geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+#   #plot stations with point size set to veg volume per effort
+#   geom_sf(data= sav24, color= "red",  aes(size= ml_per_min))+ 
+#   #crop area to just marsh
+#   coord_sf( 
+#     xlim =c(-122.15, -121.85)
+#     ,ylim = c(38.025,38.25)
+#   )+
+#   ggtitle( label = "2024 SAV (July-Oct)")
+# 
+# #make 2023 map
+# ggplot()+
+#   #plot waterways base layer
+#   geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+#   #plot stations with point size set to veg volume per effort
+#   geom_sf(data= sav23, color= "red",  aes(size= ml_per_min))+ 
+#   #crop area to just marsh
+#   coord_sf( 
+#     xlim =c(-122.15, -121.85)
+#     ,ylim = c(38.025,38.25)
+#   )+
+#   ggtitle( label = "2023 SAV (July-Oct)")
+# #NOTE: apparently one value missing, look into this
+# 
+# #make 2022 map
+# ggplot()+
+#   #plot waterways base layer
+#   geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+#   #plot stations with point size set to veg volume per effort
+#   geom_sf(data= sav22, color= "red",  aes(size= ml_per_min))+ 
+#   #crop area to just marsh
+#   coord_sf( 
+#     xlim =c(-122.15, -121.85)
+#     ,ylim = c(38.025,38.25)
+#   )+
+#   ggtitle( label = "2022 SAV (July-Oct)")
+# 
+# #make 2021 map
+# ggplot()+
+#   #plot waterways base layer
+#   geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+#   #plot stations with point size set to veg volume per effort
+#   geom_sf(data= sav21, color= "red",  aes(size= ml_per_min))+ 
+#   #crop area to just marsh
+#   coord_sf( 
+#     xlim =c(-122.15, -121.85)
+#     ,ylim = c(38.025,38.25)
+#   )+
+#   ggtitle( label = "2021 SAV (July-Oct)")
+# 
+# #make 2020 map
+# ggplot()+
+#   #plot waterways base layer
+#   geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+#   #plot stations with point size set to veg volume per effort
+#   geom_sf(data= sav20, color= "red",  aes(size= ml_per_min))+ 
+#   #crop area to just marsh
+#   coord_sf( 
+#     xlim =c(-122.15, -121.85)
+#     ,ylim = c(38.025,38.25)
+#   )+
+#   ggtitle( label = "2020 SAV (July-Oct)")
+# 
+# #make 2019 map
+# ggplot()+
+#   #plot waterways base layer
+#   geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+#   #plot stations with point size set to veg volume per effort
+#   geom_sf(data= sav19, color= "red",  aes(size= ml_per_min))+ 
+#   #crop area to just marsh
+#   coord_sf( 
+#     xlim =c(-122.15, -121.85)
+#     ,ylim = c(38.025,38.25)
+#   )+
+#   ggtitle( label = "2019 SAV (July-Oct)")
+# 
+# #make 2018 map
+# ggplot()+
+#   #plot waterways base layer
+#   geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+#   #plot stations with point size set to veg volume per effort
+#   geom_sf(data= sav18, color= "red",  aes(size= ml_per_min))+ 
+#   #crop area to just marsh
+#   coord_sf( 
+#     xlim =c(-122.15, -121.85)
+#     ,ylim = c(38.025,38.25)
+#   )+
+#   ggtitle( label = "2018 SAV (July-Oct)")
+# 
+# #make 2017 map
+# ggplot()+
+#   #plot waterways base layer
+#   geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+#   #plot stations with point size set to veg volume per effort
+#   geom_sf(data= sav17, color= "red",  aes(size= ml_per_min))+ 
+#   #crop area to just marsh
+#   coord_sf( 
+#     xlim =c(-122.15, -121.85)
+#     ,ylim = c(38.025,38.25)
+#   )+
+#   ggtitle( label = "2017 SAV (July-Oct)")
+# 
+# #make 2016 map
+# ggplot()+
+#   #plot waterways base layer
+#   geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+#   #plot stations with point size set to veg volume per effort
+#   geom_sf(data= sav16, color= "red",  aes(size= ml_per_min))+ 
+#   #crop area to just marsh
+#   coord_sf( 
+#     xlim =c(-122.15, -121.85)
+#     ,ylim = c(38.025,38.25)
+#   )+
+#   ggtitle( label = "2016 SAV (July-Oct)")
+# 
+# #make 2015 map
+# ggplot()+
+#   #plot waterways base layer
+#   geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+#   #plot stations with point size set to veg volume per effort
+#   geom_sf(data= sav15, color= "red",  aes(size= ml_per_min))+ 
+#   #crop area to just marsh
+#   coord_sf( 
+#     xlim =c(-122.15, -121.85)
+#     ,ylim = c(38.025,38.25)
+#   )+
+#   ggtitle( label = "2015 SAV (July-Oct)")
+# 
+# #make 2014 map
+# ggplot()+
+#   #plot waterways base layer
+#   geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
+#   #plot stations with point size set to veg volume per effort
+#   geom_sf(data= sav14, color= "red",  aes(size= ml_per_min))+ 
+#   #crop area to just marsh
+#   coord_sf( 
+#     xlim =c(-122.15, -121.85)
+#     ,ylim = c(38.025,38.25)
+#   )+
+#   ggtitle( label = "2014 SAV (July-Oct)")
 
 
 #make one map that shows SAV volume/min of trawling across all years
@@ -520,7 +533,7 @@ sum_veg_otr_allyears <- sum_veg_otr %>%
   group_by(station,region,location,geometry,latitude,longitude) %>% 
   summarise(all_volume = sum(tot_volume)
             ,all_duration = sum(tot_duration,na.rm = T),.groups = 'drop') %>% 
-  mutate(all_ml_per_min = all_volume/all_duration) %>% 
+  mutate(sav_ml_per_min = all_volume/all_duration) %>% 
   arrange(-all_duration)
 #note: station SU2 has at least one NA for duration but it doesn't matter because no veg there ever
 
@@ -529,7 +542,7 @@ sum_veg_otr_allyears_higheff <- sum_veg_otr_allyears %>%
   #drop some stations that have less than 50 minutes of samples across the whole time period
   #drops six stations, nearly all in NW region
   filter(all_duration > 40) %>% 
-  arrange(-all_ml_per_min)
+  arrange(-sav_ml_per_min)
 
 #create list of stations with low effort
 stn_low_effort <- sum_veg_otr_allyears %>% 
@@ -542,7 +555,7 @@ ggplot()+
   #plot waterways base layer
   geom_sf(data= ww_delta_4326, fill= "skyblue3", color= "black") +
   #plot stations with point size set to veg volume per effort
-  geom_sf(data= sum_veg_otr_allyears_higheff, color= "red",  aes(size= all_ml_per_min))+ 
+  geom_sf(data= sum_veg_otr_allyears_higheff, color= "red",  aes(size= sav_ml_per_min))+ 
   #add station names as labels and make sure they don't overlap each other or the points
   geom_label_repel(data = sum_veg_otr_allyears_higheff, aes(x=longitude,y=latitude, label=station) #label the points
                    #,nudge_x = -0.008, nudge_y = 0.008 #can specify the magnitude of nudges if necessary
@@ -554,8 +567,13 @@ ggplot()+
     xlim =c(-122.15, -121.85)
     ,ylim = c(38.025,38.25)
   )+
-  ggtitle( label = "2014-2024 (July - Oct)")
+  #ggtitle( label = "2014-2024 (July - Oct)")
+  #drop axis labels
+  theme(axis.title = element_blank())
+#ggsave(file = "./SMSCG_SAV_UCD_Trawl_Map_AllYears.png",type ="cairo-png", scale=1.5, dpi=300)
 
+
+  
 #time series of SAV by region with error bars
 sum_veg_otr_rgyr <- sum_veg_otr %>% 
   #drop geometry colum
@@ -595,6 +613,17 @@ sum_veg_otr_yr_se <- sum_veg_otr_allyears_se %>%
   summarize(mean_ml_per_min = mean(ml_per_min,na.rm=T)
             ,se_ml_per_min = std.error(ml_per_min,na.rm = T),.groups='drop') 
 
+#summary stats
+#compare 2018 to the three high sav years
+# y18 <- sum_veg_otr_yr_se[5,2]
+# y20 <- sum_veg_otr_yr_se[7,2]
+# y23 <- sum_veg_otr_yr_se[10,2]
+# y24 <- sum_veg_otr_yr_se[11,2]
+
+# y20/y18 #5.056006
+# y23/y18 #18.1642
+# y24/y18 #11.00342
+
 #look at number of samples by station and year
 count <- sum_veg_otr_allyears_se %>% 
   count(station,year)
@@ -613,7 +642,10 @@ connect_letters <- c(rep("A",6),"A,B","A","A","B","A,B")
     geom_point()+
     geom_line())+
   geom_errorbar(aes(ymin = mean_ml_per_min-se_ml_per_min, ymax = mean_ml_per_min+se_ml_per_min), width = 0.2)+
-  annotate("text", x=years, y=ml_per_min, label= connect_letters)
+  annotate("text", x=years, y=ml_per_min, label= connect_letters)+
+  labs(x = "Year", y = "Mean SAV volume (mL) per trawl minute")+
+  theme_classic()
+#ggsave(file = "./SMSCG_SAV_UCD_Trawl_TimeSeries.png",type ="cairo-png", scale=1, dpi=300)
 
 #library(rstatix) #stats
 #loading this package here because don't want select() from dplyr overridden
