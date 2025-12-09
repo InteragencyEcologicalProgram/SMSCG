@@ -246,7 +246,7 @@ habitatwide = pivot_wider(HabitatPercent, id_cols = c(Region, Year, YT), names_f
 
 #write.csv(habitatwide, "Data/habitatwide.csv", row.names = FALSE)
 
-#make a nice version of the area by date plot
+#make a nice version of the area by date plot ###############################
 
 habarea2 = mutate(habarea, Zone = case_when(region %in% c("NE Suisun", 
                                                          "SE Suisun", "SW Suisun") ~ "Suisun Bay",
@@ -274,6 +274,19 @@ ggplot(habarea2, aes(x = time, y = LSZ*0.000247105, color = scenario))+ geom_lin
 
 #ggsave("HabatatTimeSeries100TAF.png", device = "png", width =8, height =6)
 
+########################################################
+#plot for synthesis report (no 100TAF) ###########################################
+ggplot(filter(habarea2, scenario != "60 days continuous, followed by 100 TAF"), aes(x = time, y = LSZ*0.000247105, color = scenario))+ geom_line(linewidth = 0.75)+
+  facet_grid(Zone~YT, scales = "free")+
+  theme_bw()+
+  scale_color_brewer(palette = "Dark2")+
+  ylab("Low Salinity Zone Area (acres)")+
+  xlab(NULL)+
+  theme(legend.position = "bottom", legend.direction = "vertical")
+
+
+Jultest = filter(habarea2, YT =="Above\nNormal", Zone == "Suisun Marsh") %>%
+  pivot_wider(names_from = scenario, values_from = LSZ)
 
 ######post hoc 2023########################################################################
 #check out this year's data
@@ -334,8 +347,8 @@ ggplot(filter(area2024, scenario != "Historical (SMSCG & X2)"), aes(x = date(tim
   facet_wrap(~region, nrow =2)+
   coord_cartesian(xlim = c(ymd("2024-07-01"), ymd("2024-11-1")),
                   ylim = c(0, 15000))+
-  scale_color_brewer(palette = "Set1", name = "Scenario", labels = c("No Action", "X2 only", "SMSCG only"))+
-  scale_fill_manual(values = c("grey", "lightblue"), name = "Action")+
+  scale_color_brewer(palette = "Set1", name = "Scenario", labels = c("No Action", "No SMSCG, X2", "SMSCG, No X2"))+
+  scale_fill_manual(values = c("grey", "lightblue"), labels = c("SMSCG", "X2"), name = "Action")+
   ylab("Low Salinity Zone \nArea (Acres)")+
   xlab(NULL)+
   theme_bw()
@@ -486,7 +499,7 @@ monthlyGain = habgain %>%
 
 ggplot(monthlyGain, aes(x = Month, y = Acres, fill = Scenario)) + geom_col(position = "dodge")+
   facet_wrap(~region)+ ylab("Increase in Acres")+
-  scale_fill_brewer(palette = "Set1", labels = c("Jul-Sep SMSCG", "September X2"))+
+  scale_fill_brewer(palette = "Set1", labels = c("SMSCG, No X2", "No SMSCG, X2"))+
   theme_bw()
 
 monthly2 = group_by(monthlyGain, Month, Scenario) %>%

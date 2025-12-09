@@ -150,11 +150,8 @@ ggplot()+
   theme_bw()+
   labs(x="Longitude",y="Latitude")
 
-<<<<<<< HEAD
+
 ggsave(file = "./Maps/SMSCG_WQ_Map_Plan_2025.png",device = "png", width = 7, height =5, dpi=300)
-=======
-#ggsave(file = "./Maps/SMSCG_WQ_Map_Plan_2024.png",type ="cairo-png", scale=2.05, dpi=300)
->>>>>>> 49c92f76f29abe07a803312cc42b8fcce04a423c
 
 
 #zoomed in map of grizzly bay
@@ -208,7 +205,7 @@ ggplot()+
 ggplot()+
   #plot waterways base layer
   geom_sf(data= WW_Delta, fill= "lightblue", color= "black") +
-   geom_sf(data= filter(stations, station %in% c("BDL", "GZB", "GZL", "GZM", "RVB", "NSL", "CSE")), 
+   geom_sf(data= filter(stations, station %in% c("BDL", "GZB", "GZL", "GZM", "RVB", "NSL", "CSE", "HUN")), 
            fill="red",shape = 21, color= "black",  size= 3.5)+
   #add point for SMSCG 
   geom_sf(data= smscg, fill = "blue", shape = 23, color= "black",  size= 4.5)+
@@ -218,7 +215,7 @@ ggplot()+
                    , size = 5 #adjust size and position relative to points
                    ,inherit.aes = F #tells it to look at points not base layer
   ) + 
-  geom_label_repel(data = filter(stations, station %in% c("BDL", "GZB", "GZL", "CSE", "GZM", "RVB", "NSL")), 
+  geom_label_repel(data = filter(stations, station %in% c("BDL", "GZB", "GZL", "CSE", "GZM", "RVB", "NSL", "HUN")), 
                    aes(x=longitude,y=latitude, label=station), #label the points
                    fill = "lemonchiffon",
                    #,nudge_x = 0.02, nudge_y = 0.02 #can specify the magnitude of nudges if necessary

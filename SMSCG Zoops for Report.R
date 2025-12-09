@@ -486,15 +486,16 @@ pseudo_lmm= as.data.frame (summary(pseudo_lmer2)$coefficients)
 write.csv(pseudo_lmm, "pseudo_lmm.csv", row.names = TRUE)
 
 
+4000*3.785*10000/1000000*2.61
 
 
 
+library(discretewq)
+chl = wq(Sources = c("EMP", "DOP", "NCRO", "USGS_CAWSC", "USGS_SFBS"))
+chl = filter(chl, Chlorophyll !=0)
 
+hist(chl$Chlorophyll)
+ggplot(chl, aes(x = Longitude,y = Chlorophyll)) + geom_point()
 
-
-
-
-
-
-
+ggplot(chl, aes(x = Date,y = Chlorophyll, color = Longitude)) + geom_point()
 

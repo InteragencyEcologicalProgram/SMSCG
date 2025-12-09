@@ -1,0 +1,57 @@
+Taxlifestage,EMP_Code,Carbon_weight_ug
+Acanthocyclops Adult,ACANTHO,3.36
+Acanthocyclops_UnID Adult,,3.36
+Acanthocyclops vernalis Adult,,3.36
+Acartia_UnID Adult,ACARTIA,2.98
+Acartia_UnID Juvenile,ACARJUV,1.3
+Acartiella sinensis Adult,ACARTELA,2.67
+Acartiella sinensis Juvenile,ASINEJUV,1.16
+Asplanchna_UnID Adult,ASPLANCH,0.3
+Bosmina longirostris Adult,BOSMINA,0.6
+Calanoida_UnID Adult,OTHCALAD,3
+Calanoida_UnID Juvenile,CALJUV,1.5
+Cirripedia_UnID Larva,BARNNAUP,3.8
+Cladocera_UnID Adult,OTHCLADO,1
+Copepoda_UnID Larva,COPNAUP,0.1
+Cyclopoida_UnID Adult,OTHCYCAD,3.3
+Cyclopoida_UnID Juvenile,OTHCYCJUV,1.6
+Daphnia_UnID Adult,DAPHNIA,4
+Daphniidae_UnID Adult,,1
+Decapoda_UnID Larva,CRABZOEA,3
+Diaphanosoma_UnID Adult,DIAPHAN,1
+Diaptomidae_UnID Adult,DIAPTOM,4
+Diaptomidae_UnID Juvenile,DIAPTJUV,2
+Eurytemora affinis Adult,EURYTEM,3
+Eurytemora affinis Juvenile,EURYJUV,1.4
+Eurytemora affinis Larva,EURYNAUP,0.1
+Eurytemora_UnID Larva,,0.1
+Harpacticoida_UnID Undifferentiated,HARPACT,1
+Keratella_UnID Adult,KERATELA,0.04
+Limnoithona sinensis Adult,LIMNOSINE,0.13
+Limnoithona tetraspina Adult,LIMNOTET,0.13
+Limnoithona_UnID Adult,LIMNOSPP,0.13
+Limnoithona_UnID Juvenile,LIMNOJUV,0.04
+Oithona davisae Adult,OITHDAV,0.2
+Oithona similis Adult,OITHSIM,0.2
+Oithona_UnID Adult,OITHSPP,0.2
+Oithona_UnID Juvenile,OITHJUV,0.07
+Polyarthra_UnID Adult,POLYARTH,0.28
+Pseudodiaptomus forbesi Adult,PDIAPFOR,2.66
+Pseudodiaptomus marinus Adult,PDIAPMAR,4.9
+Pseudodiaptomus_UnID Adult,,2.66
+Pseudodiaptomus_UnID Juvenile,,1.15
+Pseudodiaptomus forbesi Juvenile,PDIAPJUV,1.15
+Pseudodiaptomus_UnID Larva,PDIAPNAUP,0.1
+Rotifera_UnID Adult,OTHROT,0.1
+Sinocalanus doerrii Adult,SINOCAL,3.41
+Sinocalanus doerrii Larva,SINONAUP,0.07
+Sinocalanus_UnID Juvenile,,1.81
+Sinocalanus doerrii Juvenile,SINOCALJUV,1.81
+Sinocalanus_UnID Larva,,0.07
+Synchaeta bicornis Adult,SYNCH,0.12
+Synchaeta_UnID Adult,,0.12
+Tortanus_UnID Adult,TORTANUS,15.89
+Tortanus_UnID Juvenile,TORTJUV,7.95
+Trichocerca_UnID Adult,TRICHO,0.12
+Tortanus dextrilobatus Adult,,15.89
+Tortanus dextrilobatus Juvenile,,7.95
