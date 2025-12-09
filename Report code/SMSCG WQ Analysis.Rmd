@@ -20,56 +20,21 @@ library(RColorBrewer)
 
 ## 2 - Add SMSCG Data from EDI 
 
--Load in the SMSCG 2018-2022 water quality data from EDI
+-Load in the SMSCG 2018-2023 water quality data from EDI
 
 ```{r}
-df_SMSCG <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.876.7&entityid=aae1f07aefeb88eef5eea4c6f3dc1bf0")
+df_SMSCG <- read_csv("https://pasta.lternet.edu/package/data/eml/edi/876/8/aae1f07aefeb88eef5eea4c6f3dc1bf0")
 
-unique(df_SMSCG$year) #confirm that the data includes years 2018-2022
+unique(df_SMSCG$year) #confirm that the data includes years 2017-2023
+names(df_SMSCG)
 
-```
-
--Rename the column headers in df_SMSCG to get rid of the "/" because r can't recognize them
-```{r}
-colnames_new <- gsub('/','',colnames(df_SMSCG))
-colnames(df_SMSCG) <- colnames_new
-```
-
-
--Remove all WQA data from this file (not QC'd and doesn't include 2023)
-```{r}
-df_SMSCG <- subset(df_SMSCG, station == "MSL" | station == "GZL" | station == "MAL" | station == "RYC" | station == "TRB" | station == "HON" | station == "SSI" | station == "RVB") #only keeping the CEMP and FRP stations, except MSL because I don't have the QA/QC'd data (remove MSL if I get that data) 
 unique(df_SMSCG$station)
 ```
 
-
 ## 3 - Add CEMP Data
--Read in the 2017 CEMP data from EDI for the 6 stations of interest for this study
-```{r}
-df_GZL <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1177.5&entityid=bb661e9298f4c3c1aa3a875338c7c6a1")
-df_HON <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1177.5&entityid=b586a6a4876a934eca5d322e18a9cb87")
-df_MAL <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1177.5&entityid=aac477583e3dabc030891d2562352dac")
-df_RYC <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1177.5&entityid=97a2f884280cd5667c8e8f30b33d5bd8")
-df_RVB <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1177.5&entityid=9b6fbe82c12410604ec310048223ccbb")
-df_SSI <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.1177.5&entityid=24d51605899fc94c021ddc25d19a2982")
-```
+`
 
--Since they all have the same order of column headers, we can combine them into one data frame 
-```{r}
-df_CEMP_2017 <- bind_rows(df_GZL,df_HON,df_MAL,df_RYC,df_RVB,df_SSI) #adds all rows from the six data frames together into a single data frame
-unique(df_CEMP_2017$station) #ensure there are no other stations besides the six we want
-```
--Since we only want the 2017 data, we can remove all other data from df_CEMP_2017, but first we need to format the date
-```{r}
-df_CEMP_2017 <- df_CEMP_2017 %>% 
-  mutate(date_time = paste(date, time)) %>% #combine the date and time columns
-  mutate(year = year(date_time)) %>% #add a year column
-  filter(year == 2017) #remove everything that wasn't collected in 2017
-
-unique(df_CEMP_2017$year)
-```
-
--Add 2023 CEMP data
+-Add 2024 CEMP data
 ```{r}
 df_GZL_2023 <- read_csv("Data/GZL_2023_data.csv")
 df_HON_2023 <- read_csv("Data/HON_2023_data.csv")

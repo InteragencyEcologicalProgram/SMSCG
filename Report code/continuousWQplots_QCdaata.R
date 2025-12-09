@@ -8,6 +8,8 @@ library(janitor)
 library(cder)
 
 #upload teh data Morgan nicely organized for me
+#once Jamel does the 2025 data, replace it here. 
+
 WQdata = read_csv("Data/SMSCG_wq_data_2017-2024_final.csv")
 WQdaily = WQdata %>%
   mutate(Date = date(date_time_pst)) %>%
@@ -26,7 +28,7 @@ ggplot(filter(WQdaily, Analyte == "watertemperature", region == "Marsh"), aes(x 
   geom_line()+ geom_hline(yintercept = 25)+ geom_hline(yintercept = 22, linetype =2)
 
 # 
-# #upload all the data
+# #upload all the data - this was the orgional version where things weren't organized.
 # BDL17 = cdec_query("BDL", sensors = 100,
 #                  start.date = as.Date("2017-06-01"), end.date = as.Date("2017-10-31")) %>%
 #   filter(Value >1, Value < 30000) %>%
@@ -159,18 +161,21 @@ ggsave("plots/BDLsalinity.tiff", device = "tiff", width =6.5, height =4.5)
 ####################################################################
 #plot for report
 
-gatedates = data.frame(StartDate = c(ymd("2024-07-01"), ymd("2024-09-06"), ymd("2024-09-01"), ymd("2024-10-28")),
-                       EndDate = c(ymd("2024-08-29"), ymd("2024-09-30"), ymd("2024-09-30"), ymd("2024-11-04")),
-                       Type = c("SMSCG", "SMSCG", "X2@80km", "SMSCG"),
-                       xval = c(ymd("2024-07-15"), ymd("2024-09-06"), ymd("2024-09-01"), ymd("2024-10-20")),
-                       ynudge = c(0,-1, 1, 1))
+#start and stop dates for the SMSCGs - modify for year of interest
+
+gatedates = data.frame(StartDate = c(ymd("2025-06-23"), ymd("2025-09-05")),
+                         EndDate = c(ymd("2025-08-26"), ymd("2025-09-12")),
+                         Type = c("SMSCG", "SMSCG"),
+                         xval = c(ymd("2025-08-25"), ymd("2025-08-25")),
+                         ynudge =c(0, 0))
+
 
 yvals = data.frame(Analyte = c("Chlorophyll", "Salinity", "Temperature", "Turbidity"),
                    yval = c(11,8,25,95), yoff = c(0.08, 0.08, 0.015, 0.08))
 
 gatedates2 = cross_join(gatedates, yvals)
 
-
+#red line at 6 PSU salinity, 10 mg/L chlorophyll, 22 C temperature, and 12 NTU turbidity
  cuttoffs = data.frame(Analyte = c("Salinity", "Chlorophyll", "Temperature", "Turbidity"),
                        cutoff = c(6, 10, 22, 12))
 
@@ -179,7 +184,7 @@ WQdaily2 = mutate(WQdaily, region = factor(region, levels = c("Bay", "Marsh", "R
                                                 labels = c("Suisun Bay", "Suisun Marsh", "Sacramento River")),
                     Analyte2 = factor(Analyte, levels = c("fluorescence" , "salinity", "watertemperature", "turbidity"),
                                       labels = c("Chlorophyll ug/L", "Salinity PSU", "Temperature C", "Turbidity FNU"))) %>%
-  filter(year == 2024, DOY > 135, DOY <320)
+  filter(year == 2025, DOY > 135, DOY <320)
 
 cuttoffs$Analyte2 = factor(cuttoffs$Analyte, levels = c("Chlorophyll", "Salinity", "Temperature", "Turbidity"),
                            labels = c("Chlorophyll ug/L", "Salinity PSU", "Temperature C", "Turbidity FNU"))
@@ -196,11 +201,11 @@ ggplot(filter(WQdaily2, DOY >135, DOY < 320),  aes(x = Date, y = Value))+
   geom_hline(data = filter(cuttoffs, Analyte2 == "Chlorophyll ug/L"), aes(yintercept = cutoff), color = "grey",
              linetype =3, linewidth =1)+
 
-  coord_cartesian(xlim = c(ymd("2024-06-01"), ymd("2024-10-31")))+
+  coord_cartesian(xlim = c(ymd("2025-06-01"), ymd("2025-10-31")))+
   theme_bw()+
   ylab(NULL)
 
-ggsave("plots/AVGwq2024.png", device = "png", width =8, height =8)
+ggsave("plots/AVGwq2025.png", device = "png", width =8, height =8)
 
 #salinityonly
 mypal = c(brewer.pal(8, "Dark2"), brewer.pal(8, "Set3"))
@@ -208,76 +213,9 @@ ggplot(filter(WQmeanally, Analyte2 == "Salinity PSU"), aes(x = Date, y = Value))
   geom_line(aes(color = station))+
   scale_color_manual(values = mypal)+
   facet_grid(Analyte2~region, scales = "free_y")+
-  coord_cartesian(xlim = c(ymd("2023-06-01"), ymd("2023-10-31")))+
+  coord_cartesian(xlim = c(ymd("2025-06-01"), ymd("2025-10-31")))+
   theme_bw()+
   ylab(NULL)+
   theme(legend.position = "bottom")
 
 
-
-###############################################
-#focus in on temperature in Grizzly Bay
-
-grizz = filter(WQmeanally, station %in% c("GZL", "GZM", "GZB", "BDL"), Analyte == "watertemperature")
-
-ggplot(grizz, aes(x = Date, y = Value, color = station))+
-  geom_line()+
-  coord_cartesian(xlim = c(as.Date("2023-07-01"), as.Date("2023-09-30")),
-                  ylim = c(18, 25))+
-  ylab("Water Temperature C")+
-  xlab("Date - 2023")+
-  geom_hline(yintercept = 22, linetype = 2)+
-  #geom_hline(yintercept = 25, linetype =2, color = "red")+
-  theme_bw()
-
-#now salinity
-
-grizzsal = filter(WQdaily2, station %in% c("GZL", "GZM", "GZB", "BDL", "TRB"), Analyte == "salinity")
-
-ggplot(grizzsal, aes(x = Date, y = Value, color = station))+
-  geom_line()+
-  coord_cartesian(xlim = c(as.Date("2024-06-01"), as.Date("2024-10-31")))+
-  ylab("Salinity")+
-  xlab("Date - 2024")+
-  geom_hline(yintercept = 6, linetype = 2)+
-  theme_bw()+
-  ggtitle("Salinity in Grizzly Bay - Summer 2024")
-  
-
-########################################
-#plot for smelt cage report
-
-
-BDLRVBph = cdec_query(c("BDL", "RVB"), sensors = c(62),
-                start.date = as.Date("2023-08-20"), end.date =  as.Date("2023-10-20")) %>%
-  filter(Duration == "E") %>%
-  select(station = StationID, datetime = DateTime, SensorType, Value) %>%
-  mutate(station = case_when(station == "RVB" ~ "Rio Vista",
-                             station == "BDL" ~ "Belden's Landing"),
-         Analyte2 = "pH")
-
-
-BDLRVB = filter(reallyallthedata, station %in% c("Beldons Landing", "RVB"),
-                datetime > ymd_hm("2023-08-25 00:00"), datetime < ymd_hm("2023-10-20 00:00")) %>%
-  mutate(Analyte2 = factor(Analyte, levels = c("fluorescence" , "Salinity", "watertemperature", "turbidity", "pH"),
-                           labels = c("Chlorophyll ug/L", "Salinity PSU", "Temperature C", "Turbidity FNU", "pH")),
-         station = case_when(station == "RVB" ~ "Rio Vista",
-                             station == "Beldons Landing" ~ "Belden's Landing")) %>%
-  bind_rows(BDLRVBph)
-
-
-ggplot(BDLRVB, aes(x = datetime, y = Value))+
-  geom_line(aes(color = station))+
-  facet_wrap(~Analyte2, scales = "free", nrow =3)+
-  scale_color_manual(values = c( "#1B9E77" , "#7570B3"))+
-  ylab(NULL)+xlab("Date")+
-  theme(legend.position = "bottom")
-
-###################################
-
-#plot trb and grizzly sondes to see if temperature are accurate
-
-grizztrb = filter(WQdaily2, station %in% c("GZB", "GZL", "TRB"), Analyte == "watertemperature")
-
-ggplot(grizztrb, aes(x = Date, y = Value, color = station)) + geom_line()+
-  ylab("Water Temperature (C)") + xlab("Date - 2024") + theme_bw()
