@@ -77,4 +77,4 @@ edsm_comb <- list_df %>%
   glimpse()
 
 #export data for publishing on EDI
-#write_csv(edsm_comb,"./EDI/data_output/EDSM_2018-2024_SummerFall_DSM.csv")
+#write_csv(edsm_comb,"./EDI/data_output/EDSM_2017-2024_SummerFall_DSM.csv")
