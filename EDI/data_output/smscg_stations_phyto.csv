@@ -5,8 +5,8 @@ FMWT,FMWT_519,-121.94725,38.07378,Honker Bay - 2200 yards N. of Simmons Point,FM
 FMWT,FMWT_602,-122.04183,38.11783,Grizzly Bay - 2500 yds NE. at 20 from Garnet Point,FMWT_602,602,22952.74655,BAY,1,2021,NA
 STN,STN_519,-121.9596944,38.07230556,"Honker Bay, W end at Dolphin",STN_519,519,13976.58055,BAY,1,2022,NA
 STN,STN_602,-122.0461944,38.114,Grizzly Bay NE of Suisun Slough at Dolphin,STN_602,602,22929.38299,BAY,1,2021,NA
-EMP,EMP_EZ2,NA,NA,"Floating entrapment zone station, taken where bottom EC is approximately 2000 uS/cm",EMP_NZEZ2,NZEZ2,NA,FLO,1,2020,NA
-EMP,EMP_EZ6,NA,NA,"Floating entrapment zone station, taken where bottom EC is approximately 6000 uS/cm",EMP_NZEZ6,NZEZ6,NA,FLO,1,2020,NA
+EMP,EMP_EZ2,NA,NA,"Floating entrapment zone station, taken where bottom EC is approximately 2000 uS/cm",EMP_NZEZ2,NZEZ2,NA,FLO,1,2018,NA
+EMP,EMP_EZ6,NA,NA,"Floating entrapment zone station, taken where bottom EC is approximately 6000 uS/cm",EMP_NZEZ6,NZEZ6,NA,FLO,1,2018,NA
 EMP,EMP_NZ032,-122.020833,38.170278,Montezuma Slough 2nd bend from mouth,EMP_NZ032,606,21440.9359,MAR,1,2018,NA
 EMP,EMP_NZS42,-122.0472222,38.18055556,Suisun Slough at mouth of Volanti Slough,EMP_NZS42,NZS42,23982.41212,MAR,1,2018,NA
 FMWT,FMWT_605,-122.05738,38.14853,West end of Montezuma Slough near Joice Island,FMWT_605,605,25824.46745,MAR,1,2020,NA
