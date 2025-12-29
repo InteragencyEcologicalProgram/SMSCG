@@ -58,6 +58,7 @@ wq_ft <- wq %>%
   arrange(station,date_time_pst) %>% 
   glimpse()
 
-#write data file for publishing on EDI
+#write data file to sharepoint for publishing on EDI
+#don't try to push data set itself to GitHub because it is too big and will create an error
 #use write_excel_csv() because write_csv() will mess up date-time by converting to UTC 
 #write_excel_csv(wq_ft,file = paste0(sharepoint_path,"./SMSCG_wq_data_2017-2024_final_edi.csv"))
