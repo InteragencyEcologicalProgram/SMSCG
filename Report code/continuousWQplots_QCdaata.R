@@ -18,7 +18,7 @@ WQdaily = WQdata %>%
   filter(!Analyte %in% c("ph", "dissolvedoxygen", "spc", "spc_milli")) %>%
   group_by(Date, station, year, region, group, water_year_type, Analyte) %>%
   summarize(Value = mean(Value, na.rm =T)) %>%
-  mutate(DOY = yday(Date),YT = case_when(year == 2024 ~ "2024",
+  mutate(DOY = yday(Date),YT = case_when(year == 2025 ~ "2025",
                         TRUE ~ water_year_type), YT = factor(YT, levels = c("critically dry", "dry", "below normal", "above average", "wet", "2024"),
                                        labels = c("critical", "dry", "below normal", "above normal", "wet", "2024")),
          )
