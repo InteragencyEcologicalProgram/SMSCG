@@ -8,7 +8,7 @@
 #https://www.fws.gov/lodi/juvenile_fish_monitoring_program/jfmp_index.htm
 
 #EDSM already has a repository on EDI with all their data
-#https://portal.edirepository.org/nis/mapbrowse?scope=edi&identifier=415&revision=10
+#https://portal.edirepository.org/nis/mapbrowse?scope=edi&identifier=415&revision=12
 
 #This code creates the subset relevant to the SMSCG action
 #Years: 2017 and later
@@ -17,10 +17,14 @@
 
 #required packages
 library(tidyverse)
-library(lubridate)
+library(EDIutils) #download EDI data
 
-#get EDSM kodiak trawl data from EDI
-edsm_main<-read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.415.10&entityid=4d7de6f0a38eff744a009a92083d37ae") %>% 
+#use EDIutils package to read in all file names and download the ones you want to use
+#https://docs.ropensci.org/EDIutils/index.html
+
+#list all data files from EMP benthic inverts EDI package
+edsm_pkg <- read_data_entity_names(packageId = "edi.415.12")
+edsm_main <- read_csv(read_data_entity(packageId = "edi.415.12", entityId= edsm_pkg$entityId[2])) %>% 
   glimpse()
 
 #filter to just the needed years, months, regions, and columns
@@ -73,4 +77,4 @@ edsm_comb <- list_df %>%
   glimpse()
 
 #export data for publishing on EDI
-#write_csv(edsm_comb,"./EDI/data_output/EDSM_2018-2023_SummerFall_DSM.csv")
+#write_csv(edsm_comb,"./EDI/data_output/EDSM_2017-2024_SummerFall_DSM.csv")

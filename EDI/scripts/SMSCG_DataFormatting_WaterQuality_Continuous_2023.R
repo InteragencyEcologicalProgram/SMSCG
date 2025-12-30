@@ -1,13 +1,12 @@
 #Suisun Marsh Salinity Control Gate
 #Continuous water quality data
 #Final QAQC and formatting for EDI
-#updates dataset with 2023 data
+#updates dataset 
 
 
 #required packages
 library(tidyverse) #suite of data science tools
 library(janitor) #tools for data cleaning
-library(lubridate) #working with dates
 
 #read in the data
 #NOTE: this file was too big for github; it's now on the SMSCG sharepoint site instead
@@ -15,32 +14,50 @@ library(lubridate) #working with dates
 sharepoint_path <- normalizePath(
   file.path(
     Sys.getenv("USERPROFILE"),
-    "California Department of Water Resources/SMSCG - Summer Action - Data Package 2023"
+    "California Department of Water Resources/SMSCG - Summer Action - Data Package 2024"
   )
 ) 
 
 #full WQ data set
-wq<-read_csv(file = paste0(sharepoint_path,"./SMSCG_wq_data_2017-2023_clean.csv")) %>% 
-  arrange(date_time_pst,station) %>% 
+wq<-read_csv(file = paste0(sharepoint_path,"./SMSCG WQ Data 2025.csv")) %>% 
   glimpse()
 #everything looks good
 
 #station metadata tables to combine
-wqm<-read_csv(file = paste0(sharepoint_path,"./smscg_stations_wq_updated.csv")) %>% 
-  glimpse()
-
-wqg<-read_csv(file = paste0(sharepoint_path,"./wq_stations_regions_group.csv")) %>% 
-  glimpse()
-
-#integrate the two metadata files
-wqmeta <-left_join(wqm,wqg) %>% 
-  #move group up closer to front
-  relocate(group,.after=station) %>% 
-  glimpse()
+# wqm<-read_csv(file = paste0(sharepoint_path,"./smscg_stations_wq_updated.csv")) %>% 
+#   glimpse()
+# 
+# wqg<-read_csv(file = paste0(sharepoint_path,"./wq_stations_regions_group.csv")) %>% 
+#   glimpse()
+# 
+# #integrate the two metadata files
+# wqmeta <-left_join(wqm,wqg) %>% 
+#   #move group up closer to front
+#   relocate(group,.after=station) %>% 
+#   glimpse()
 
 #write data file for publishing on EDI
 #write_csv(wqmeta,file = paste0(sharepoint_path,"./smscg_stations_wq_combined.csv"))
 
+#look at what all is included in data file for stations, dates, analytes
+wq_check <- wq %>% 
+  mutate(year = year(time),.after = time) %>% 
+  arrange(cdec_code,time) %>% 
+  glimpse()
+
+#what years 
+unique(wq_check$year)
+#this is just 2024, so add this to previous dataset
+
+#what dates
+range(wq_check$time)
+#"2024-01-01 00:00:00 UTC" "2024-12-31 23:45:00 UTC"
+#so full year of 2024 which is good
+
+#what stations?
+unique(wq_check$cdec_code)
+#included: "BDL" "CSE" "GOD" "GZB" "GZM" "HUN" "MSL" "NSL" "VOL"
+#missing: FRP and CEMP stations
 
 #make a few minor edits
 #correct time zone
