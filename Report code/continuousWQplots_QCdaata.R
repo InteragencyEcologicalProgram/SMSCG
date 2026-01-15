@@ -10,21 +10,22 @@ library(cder)
 #upload teh data Morgan nicely organized for me
 #once Jamel does the 2025 data, replace it here. 
 
-WQdata = read_csv("Data/SMSCG_wq_data_2017-2024_final.csv")
+WQdata = read_csv("Data/SMSCG_wq_data_2017-2025_final.csv")
 WQdaily = WQdata %>%
   mutate(Date = date(date_time_pst)) %>%
-  pivot_longer(cols = c(turbidity, watertemperature, spc,  dissolvedoxygen, fluorescence,
-                        ph), names_to = "Analyte", values_to = "Value") %>%
-  filter(!Analyte %in% c("ph", "dissolvedoxygen", "spc", "spc_milli")) %>%
+  mutate(Salinity = ec2pss(SpC, 25)) %>%
+  select(-SpC) %>%
+  pivot_longer(cols = c(Turbidity, WaterTemperature, Salinity,  Fluorescence), names_to = "Analyte", values_to = "Value") %>%
   group_by(Date, station, year, region, group, water_year_type, Analyte) %>%
   summarize(Value = mean(Value, na.rm =T)) %>%
   mutate(DOY = yday(Date),YT = case_when(year == 2025 ~ "2025",
-                        TRUE ~ water_year_type), YT = factor(YT, levels = c("critically dry", "dry", "below normal", "above average", "wet", "2024"),
-                                       labels = c("critical", "dry", "below normal", "above normal", "wet", "2024")),
+                        TRUE ~ water_year_type), YT = factor(YT, levels = c("critically dry", "dry", "below normal", 
+                                                                            "above normal", "wet", "2025"),
+                                       labels = c("critical", "dry", "below normal", "above normal", "wet", "2025")),
          )
 
 
-ggplot(filter(WQdaily, Analyte == "watertemperature", region == "Marsh"), aes(x = Date, y = Value, color = station))+
+ggplot(filter(WQdaily, Analyte == "WaterTemperature", region == "Marsh"), aes(x = Date, y = Value, color = station))+
   geom_line()+ geom_hline(yintercept = 25)+ geom_hline(yintercept = 22, linetype =2)
 
 # 
@@ -141,12 +142,12 @@ ggplot(filter(WQdaily, Analyte == "watertemperature", region == "Marsh"), aes(x 
 #                      labels = c("Critical", "Dry", "Below Normal", "Wet", "2023"))) %>%
 #   mutate(Salinity = ec2pss(SC/1000, 25))
 
-bdlwq = filter(WQdaily, station == "BDL", Analyte == "salinity")
+bdlwq = filter(WQdaily, station == "BDL", Analyte == "Salinity")
 
 ggplot(bdlwq, aes(x = DOY, y = Value, color = YT, group = year, linewidth = as.factor(year)))+
   geom_line()+
-  scale_linewidth_manual(values = c(rep(.7, 7), 1.4), guide = NULL)+
-  scale_color_manual(values = c("orangered", "orange", "gold3","blue", "black"), name = "Year Type")+
+  scale_linewidth_manual(values = c(rep(.7, 8), 1.4), guide = NULL)+
+  scale_color_manual(values = c("orangered", "orange", "gold3","green4", "blue", "black"), name = "Year Type")+
   scale_x_continuous(breaks = c(152, 182, 213, 244, 274, 305), labels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))+
   theme_bw()+
   geom_hline(yintercept = 6, color = "grey", linetype =2)+
@@ -182,7 +183,7 @@ gatedates2 = cross_join(gatedates, yvals)
 
 WQdaily2 = mutate(WQdaily, region = factor(region, levels = c("Bay", "Marsh", "River"), 
                                                 labels = c("Suisun Bay", "Suisun Marsh", "Sacramento River")),
-                    Analyte2 = factor(Analyte, levels = c("fluorescence" , "salinity", "watertemperature", "turbidity"),
+                    Analyte2 = factor(Analyte, levels = c("Fluorescence" , "Salinity", "WaterTemperature", "Turbidity"),
                                       labels = c("Chlorophyll ug/L", "Salinity PSU", "Temperature C", "Turbidity FNU"))) %>%
   filter(year == 2025, DOY > 135, DOY <320)
 
