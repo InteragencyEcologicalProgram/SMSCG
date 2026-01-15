@@ -60,10 +60,15 @@ wq_ft <- wq %>%
   glimpse()
 
 #does TRB have fluorescence now?
-# wq_trb_f <- wq_ft %>% 
-#   filter(station == "TRB" & !is.na(fluorescence_ugL)) %>% 
-#   arrange(date_time_pst)
+wq_trb_f <- wq_ft %>%
+  filter(station == "TRB" 
+         #& !is.na(fluorescence_ugL)
+         ) %>%
+  arrange(date_time_pst)
 #station does have this data type
+
+#date range for TRB
+range(wq_trb_f$date_time_pst)
 
 #write data file to sharepoint for publishing on EDI
 #don't try to push data set itself to GitHub because it is too big and will create an error
