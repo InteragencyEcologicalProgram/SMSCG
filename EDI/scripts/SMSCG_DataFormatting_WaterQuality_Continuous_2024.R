@@ -1,7 +1,7 @@
 #Suisun Marsh Salinity Control Gate
 #Continuous water quality data
 #Final QAQC and formatting for EDI
-#updates dataset 
+#updates dataset for 2024
 
 #Note: this is based on the WQ file that Morgan Battey created for making the graphs in the 2024 report
 
@@ -11,6 +11,7 @@ library(janitor) #tools for data cleaning
 
 #read in the data
 #NOTE: this file was too big for github; it's now on the SMSCG sharepoint site instead
+#make sure you don't try to save a copy of this data file to GitHub because it's too big
 # Define path on SharePoint site 
 sharepoint_path <- normalizePath(
   file.path(
@@ -57,6 +58,17 @@ wq_ft <- wq %>%
   ) %>% 
   arrange(station,date_time_pst) %>% 
   glimpse()
+
+#does TRB have fluorescence now?
+wq_trb_f <- wq_ft %>%
+  filter(station == "TRB" 
+         #& !is.na(fluorescence_ugL)
+         ) %>%
+  arrange(date_time_pst)
+#station does have this data type
+
+#date range for TRB
+range(wq_trb_f$date_time_pst)
 
 #write data file to sharepoint for publishing on EDI
 #don't try to push data set itself to GitHub because it is too big and will create an error
