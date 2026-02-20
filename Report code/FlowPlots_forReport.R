@@ -2,11 +2,12 @@
 
 library(tidyverse)
 library(cder)
+library(wql)
 
 #Plot Delta Outflow
 load("data/Dayflow_allw2024.RData")
 wytype = read_csv("data/wateryeartypes.csv") 
-
+dfw25 <- read_csv("Data/Dayflow_allw2025.csv") 
 
 #how does outflow in spring of a dry year look compared to summer/fall of a dry year?
 
@@ -83,7 +84,7 @@ ggplot(DFw2025, aes(x = DOY, y = OUT, group = as.factor(Year), color = YT,
                      labels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))+
   theme(legend.position = "bottom", legend.margin = margin(t=0, r = 0, b = 0, l = 0))
 
-ggsave("plots/NDOI2025.tiff", device = "tiff", width =6.5, height =4.5)
+#ggsave("plots/NDOI2025.tiff", device = "tiff", width =6.5, height =4.5)
 
 #now get export data ######################################
 # 
@@ -117,23 +118,47 @@ ggplot(DFw2025, aes(x = DOY, y = CVP+SWP, group = as.factor(Year),
   scale_x_continuous(breaks = c(152, 182, 213, 244, 274, 305), labels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))+
   theme(legend.position = "bottom", legend.margin = margin(t=0, r = 0, b = 0, l = 0))
 
-ggsave("plots/exports2025.tiff", device = "tiff", width =6.5, height =4.5)
+#ggsave("plots/exports2025.tiff", device = "tiff", width =6.5, height =4.5)
 
 #now the plot of X2 ##################################
 
-#data not on dayflow yet
-X2 = cdec_query("CX2", sensors = 145,
-                start.date = as.Date("2024-09-30"), end.date =  as.Date("2025-11-01"))
+#format 2025 Dayflow data in prep for combining with the rest of the dataset
+#Note this ends 9/30/2025
+Dayflow2025 <- dfw25 %>% 
+  mutate(DOY = yday(Date)
+         , YT = case_when(Year == 2024 ~"Above Normal",Year == 2025 ~ "2025")) %>% 
+  #keep just the needed columns
+  select(Year
+         ,Month = Mo 
+         ,Date
+         ,DOY
+         ,YT
+         ,OUT
+         ,X2
+         ,CVP
+         ,SWP) %>% 
+  glimpse()
 
-X2 = mutate(X2, X2 = case_when(DataFlag == "v" & DateTime > ymd_hm("2025-07-01 11:11")~ 81,
-                               TRUE~ Value), Date = as.Date(DateTime), Month = month(Date),
-            Year = year(Date), YT = case_when(Year == 2024 ~"Above Normal",
-                                              Year == 2025 ~ "2025"),
-            DOY = yday(Date))
+
+#data not on dayflow yet for October 2025 so grab from CDEC
+X2 = cdec_query("CX2", sensors = 145,
+                start.date = as.Date("2025-10-01"), end.date =  as.Date("2025-11-01"))
+
+X2f = X2 %>% 
+  mutate(X2, X2 = case_when(DataFlag == "v" 
+                               #& DateTime > ymd_hm("2025-07-01 11:11")
+                              ~ 81, TRUE~ Value)
+  , Date = as.Date(DateTime), Month = month(Date)
+  ,Year = year(Date)
+  , YT = case_when(Year == 2024 ~"Above Normal",Year == 2025 ~ "2025")
+  ,DOY = yday(Date)) %>% 
+  glimpse()
 
 #combine with dayflow
-X2w2025 = bind_rows(DFw2025, X2)  %>%
-  filter(!is.na(X2), Month %in% c(6:10), Date != "2025-09-25") %>%
+X2w2025 = bind_rows(DFw2025, Dayflow2025, X2f) %>% 
+  filter(!is.na(X2), Month %in% c(6:10)
+         #, Date != "2025-09-25"
+         ) %>%
   mutate(YT = factor(YT, levels =  c("Critical", "Dry", "Below Normal", "Above Normal", "Wet", "2025")))
 #what was the monthly average X2 in year year and month?
 
@@ -141,7 +166,7 @@ monthlyx2 = mutate(X2w2025, Month = month(Date)) %>%
   group_by(Year, Month) %>%
   summarize(X2 = mean(X2, na.rm = T))
 
-write.csv(monthlyx2, "outputs/monthlyx2.csv")
+#write.csv(monthlyx2, "outputs/monthlyx2.csv")
 
 ggplot(X2w2025, aes(x = DOY, y = X2, group = as.factor(Year), 
                     color = YT, linewidth = as.factor(Year))) + 
@@ -160,7 +185,7 @@ ggplot(X2w2025, aes(x = DOY, y = X2, group = as.factor(Year),
   theme(legend.position = "bottom", legend.margin = margin(t=0, r = 0, b = 0, l = 0))
 
 
-ggsave("plots/X22025.tiff", device = "tiff", width =6.5, height =4.5)
+#ggsave("plots/X22025.tiff", device = "tiff", width =6.5, height =4.5)
 
 
 ######################################################################
@@ -191,7 +216,7 @@ ggplot(BDLdaily, aes(x = DOY, y = Salinity, group = as.factor(Year), color = YT,
   geom_hline(yintercept = 6, linetype =2, color = "green")+
   theme(legend.position = "bottom")
 
-ggsave("plots/BDLsalinity2025.tiff", device = "tiff", width =6.5, height =4.5)
+#ggsave("plots/BDLsalinity2025.tiff", device = "tiff", width =6.5, height =4.5)
 
 
 #now longer dataset with all the year types
