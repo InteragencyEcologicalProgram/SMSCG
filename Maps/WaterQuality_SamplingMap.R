@@ -98,6 +98,9 @@ region_focal <- subregions_4326 %>%
   group_by(Region_smscg) %>% 
   summarise(SQM = sum(SQM), do_union = TRUE)
 
+#write shapefile of SMSCG regions
+st_write(region_focal, "Maps/smscg_regions.shp")
+
 #remake map with SMSCG regions  
 (map_region_focal<-ggplot()+
     #CDFW Delta waterways
