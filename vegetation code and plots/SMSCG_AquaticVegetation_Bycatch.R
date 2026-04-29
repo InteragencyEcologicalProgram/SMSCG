@@ -287,6 +287,15 @@ veg_abund <- sample_catch_otr %>%
   summarise(tot_vol = sum(volume)) %>% 
   arrange(-tot_vol)
 
+#which taxa are most abundant in 2024?
+#sum volumes across all samples 
+veg_abund24 <- sample_catch_otr %>% 
+  #focus just on summer-fall period (July-Oct) and 2024
+  filter(month %in% sfmonths & year ==2024) %>%
+  group_by(organism_code) %>% 
+  summarise(tot_vol = sum(volume)) %>% 
+  arrange(-tot_vol)
+
 #how many trawl stations are left?
 #these are all otter trawl samples since April 2014 with GPS coordinates
 #otr_stn_ct <- unique(sample_catch_otr$station)
