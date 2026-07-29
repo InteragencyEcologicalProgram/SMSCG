@@ -15,6 +15,8 @@ smelt = mutate(smelt, ymin = case_when(ymin <1 ~1,
                                        TRUE ~ymin))
 
 ggplot(smelt, aes(x = Year, y = Mean_of_nHats)) +
+  annotate("rect", xmin = 2021.5, xmax = 2025.5, ymin = 0, ymax = 500000, fill = "orange", alpha = 0.2)+
+  annotate("text", x = 2023.5, y = 300000, label = "Smelt Supplementation")+
   geom_point(size = 2)+
   geom_errorbar(aes(ymin = ymin, ymax = ymax), width = 0.6)+
   scale_y_log10()+
@@ -23,7 +25,7 @@ ggplot(smelt, aes(x = Year, y = Mean_of_nHats)) +
                      minor_breaks = NULL)+
   theme_bw()
 
-ggsave("Plots/AnnualSmeltPlot.tiff", device = "tiff", width =5, height =5)
+ggsave("Plots/AnnualSmeltPlot.tiff", device = "tiff", width =6, height =5)
 
 #now plot catch of Delta Smelt in Suisun Marsh through the years
 catch = read_excel("Data/Running Delta Smelt Catch.xlsx", sheet = "Delta Smelt Catch Data")

@@ -13,7 +13,7 @@ library(cder)
 WQdata = read_csv("Data/SMSCG_wq_data_2017-2025_final.csv")
 WQdaily = WQdata %>%
   mutate(Date = date(date_time_pst)) %>%
-  mutate(Salinity = ec2pss(SpC, 25)) %>%
+  mutate(Salinity = ec2pss(SpC/1000, 25)) %>%
   select(-SpC) %>%
   pivot_longer(cols = c(Turbidity, WaterTemperature, Salinity,  Fluorescence), names_to = "Analyte", values_to = "Value") %>%
   group_by(Date, station, year, region, group, water_year_type, Analyte) %>%
@@ -27,6 +27,9 @@ WQdaily = WQdata %>%
 
 ggplot(filter(WQdaily, Analyte == "WaterTemperature", region == "Marsh"), aes(x = Date, y = Value, color = station))+
   geom_line()+ geom_hline(yintercept = 25)+ geom_hline(yintercept = 22, linetype =2)
+
+ggplot(filter(WQdaily, Analyte == "Salinity", region == "Marsh"), aes(x = Date, y = Value, color = station))+
+  geom_line()+ geom_hline(yintercept = 6)
 
 # 
 # #upload all the data - this was the orgional version where things weren't organized.

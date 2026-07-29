@@ -1,7 +1,7 @@
-#Water quality time series plots for 2025.
+#Water quality time series plots for 2026.
 #this is the in-progress data, not QAQC'd
 
-#Rosemary Hartman last updated 12/9/2025
+#Rosemary Hartman last updated 2026-5-21
 
 library(tidyverse)
 library(lubridate)
@@ -11,6 +11,7 @@ library(wql)
 library(RColorBrewer)
 library(readxl)
 library(cder)
+library(zoo)
 
 #water year assignments
 yrs = read_csv("data/wtryrtype.csv")
@@ -18,7 +19,7 @@ yrs = read_csv("data/wtryrtype.csv")
 #Plot of X2, based on CDEC ###################################
 #x2 plot
 X2 = cdec_query("CX2", sensors = 145,
-                start.date = as.Date("2016-06-01"), end.date =  as.Date("2025-11-01"))
+                start.date = as.Date("2016-06-01"), end.date =  today())
 
 X2 = mutate(X2, X2km = case_when(DataFlag == "v" & DateTime > ymd_hm("2023-07-01 11:11")~ 81,
             TRUE~ Value))
@@ -38,46 +39,50 @@ ggplot(X2, aes(x = DOY, y = Value, color = as.factor(Year))) +
   scale_x_continuous(breaks = c(152, 182, 213, 244, 274, 305), labels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))
   
 
-ggplot(filter(X2, Year ==2025, X2km >65), aes(x = DOY, y = X2km)) +
+ggplot(filter(X2, Year ==2026, X2km >65), aes(x = DOY, y = X2km)) +
   geom_point(aes(color = DataFlag))+ geom_line()+
   
-  coord_cartesian(xlim = c(150, 277), ylim = c(65, 85))+
-  scale_x_continuous(breaks = c(152, 182, 213, 244, 274, 305), labels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))+
+  coord_cartesian(xlim = c(100, 205), ylim = c(65, 85))+
+  scale_x_continuous(breaks = c(120,152, 182), labels = c("May", "Jun", "Jul"))+
   ylab("X2")+
   xlab("Date")+
   scale_color_manual(values = c("black", "red"), labels = c("Value", ">81km"))+
   theme_bw()
-#huh, that's odd
 
 #what about Dleta outflow and inflow and stuff?
-Outflow2025 = cdec_query("DTO",23, durations = "D", start.date = as.Date("2025-6-01"), as.Date("2025-10-31")) %>%
+Outflow2026 = cdec_query("DTO",23, durations = "D", start.date = as.Date("2026-5-01"), today()) %>%
   rename(Date = DateTime, OUT = Value) %>%
-  select(Date, OUT) 
+  select(Date, OUT) #%>%
+  #filter(OUT >0)
 
-ggplot(Outflow2025, aes(x = Date, y = OUT))+ geom_line() + geom_point()+ 
+ggplot(Outflow2026, aes(x = Date, y = OUT))+ geom_line() + geom_point()+ 
   ylab("Outflow (CFS) from CDEC station DTO")
-#some glitches, Ian says they were errors
+
 
 #########monthly update stuff ####################################################################################
 #plot the most recent months of data real quick
 
 WQ = cdec_query(c("GZB", "GZM", "GZL", "BDL", "NSL", "RVB",  "HUN", "CSE"), 
-                sensors = c(100, 25, 27, 28),
-                start.date = as.Date("2025-06-01"), end.date =  as.Date("2025-11-01"))
+                sensors = c(100, 25, 27, 28, 324),
+                start.date = as.Date("2026-05-01"), end.date =  today())
+unique(WQ$SensorType)
 str(WQ)
+
+
 
 ggplot(WQ, aes(x = DateTime, y = Value, color = StationID)) + facet_wrap(~SensorType, scales = "free_y")+
   geom_line()+
-  geom_vline(xintercept = ymd_hm("2025-06-23 09:50"))+
+  #geom_vline(xintercept = ymd_hm("2025-06-23 09:50"))+
   scale_color_brewer(palette = "Dark2")+theme_bw()
 
-WQx = mutate(WQ, Value2 = case_when(SensorNumber == 100 ~ ec2pss(Value/1000, 25),
+
+WQx = mutate(WQ, Value2 = case_when(SensorNumber %in% c(100, 324) ~ ec2pss(Value/1000, 25),
                                SensorNumber == 25 ~ (Value - 32)*5/9,
                                #SensorNumber == 25 & Value >30 ~ NA,
                                SensorNumber == 25 & Value <40 ~ NA,
             TRUE~ Value),
-            Analyte = factor(SensorType, levels = c("EL COND", "CHLORPH", "TEMP W", "TURB W"), 
-                             labels = c("Salinity", "Chlorophyll", "Temperature", "Turbidity"))) %>%
+            Analyte = factor(SensorType, levels = c("EL COND", "CHLORPH", "TEMP W", "TURB W", "SPC @25C"), 
+                             labels = c("Salinity", "Chlorophyll", "Temperature", "Turbidity", "Salinity"))) %>%
   filter(Value2 >0, !(SensorNumber ==25 & Value2>26),
          !(SensorNumber ==25 & Value<60),
          !(SensorNumber ==25 & Value>90), 
@@ -94,7 +99,14 @@ ggplot(WQx, aes(x = DateTime, y = Value2, color = StationID)) +
   geom_hline(data = cuttoffs, aes(yintercept = cutoff), color = "red", linetype =2)+
   facet_wrap(~Analyte, scales = "free_y")+
    theme_bw()   #+
-  #coord_cartesian(xlim = c(ymd_hms("2024-06-01 00:00:00"), now()))
+
+#15-minute data
+ggplot(filter(WQx, StationID == "BDL"), aes(x = DateTime, y = Value2, color = StationID)) + 
+  geom_line()+
+  geom_hline(data = cuttoffs, aes(yintercept = cutoff), color = "red", linetype =2)+
+  facet_wrap(~Analyte, scales = "free_y")+
+  theme_bw()   #+
+#coord_cartesian(xlim = c(ymd_hms("2024-06-01 00:00:00"), now()))
 
 
 #Do daily means instead
@@ -103,48 +115,75 @@ WQmean = WQx %>%
   group_by(Date, StationID, SensorType, Analyte) %>%
   summarize(Value = mean(Value, na.rm = T), Value2 = mean(Value2, na.rm = T))
 
-
+bdltest = filter(WQ, SensorType == "SPC @25C", StationID == "BDL")
 
 ###############################################################################################
-#BDL salinity to match the modeling graph
+#BDL salinity
 
 ggplot(filter(WQmean, StationID == "BDL", Analyte== "Salinity"), aes(x = Date, y = Value2))+
-  geom_line()+
-  ylab("psu")+
+  geom_line()+geom_point()+
+  ylab("Daily average salinity at BDL")+
   theme_bw()
 
 ggplot(filter(WQx, StationID == "BDL", Analyte== "Salinity"), aes(x = ObsDate, y = Value2))+
   geom_line()+
-  ylab("psu")+
+  ylab("salinity at BDL")+
   theme_bw()
 
-#grab the modeled salinity
-library(janitor)
-BDL2017 = read_csv("data/bdl_salinity_2017.csv") %>%
-  clean_names()
+ggplot(filter(WQmean, StationID %in% c("BDL", "NSL", "HUN"), Analyte== "Salinity"), 
+       aes(x = Date, y = Value2, color = StationID))+
+  geom_line()+
+  ylab("Daily average salinity")+
+  theme_bw()
 
-BDLmean = BDL2017 %>%
-  mutate(Date = date(date), DOY = yday(Date)) %>%
-  group_by(Date, DOY) %>%
-  summarize(Value2 = mean(x100taf_15aug, na.rm = T)) %>%
-  mutate(StationID = "Modeled BDL Salinity")
+#threeday rolling average
+library(zoo)
 
-WQwmodel = bind_rows(BDLmean, filter(WQmean, StationID == "BDL", Analyte== "Salinity")) %>%
-  mutate(DOY = yday(Date))
+BDLroll = filter(WQmean, StationID == "BDL", Analyte== "Salinity")
+  
+BDLroll$threeday =  rollmean(BDLroll$Value2, 3, fill = NA, align = "right")
 
-ggplot(WQwmodel, aes(x = DOY, y = Value2, color = StationID, linetype = StationID))+
-  geom_line(size = 1)+
-  coord_cartesian(ylim = c(0,5.2))+
-  ylab("Salinity at Belden's Landing (PSU)")+
-  coord_cartesian(xlim = c(152,310))+
-  theme_bw()+ xlab("Date")+
-  scale_x_continuous(breaks = c(152, 182, 213, 244, 274, 305), labels = c("Jun", "Jul", "Aug", "Sep", "Oct", "Nov"))+
-  scale_color_manual(values = c("black", "blue"), labels = c("Observed Value", "Modeled Value") )+
-  scale_linetype_manual(values = c(1, 2), labels = c("Observed Value", "Modeled Value") )+
-  theme(legend.position = "bottom")
+ggplot(filter(BDLroll, Date != today()), aes(x = Date, y = threeday))+
+  geom_line()+
+  ylab("3 day rolling ave salinity at BDL")+
+  theme_bw()+
+  geom_hline(yintercept = 4, linetype =2, color = "red")
+
+ggplot(filter(WQx, StationID == "BDL"), aes(x = ObsDate, y = Value2))+
+  geom_point()+
+  theme_bw()+
+  geom_hline(yintercept = 4, linetype =2, color = "red")+
+  geom_vline(xintercept = now(), color = "blue")+
+  annotate("text", x = now(), y = 4, label = "today", angle = 90)+
+  ylab("salinity")+
+  facet_wrap(~Analyte)
 
 
-ggsave("plots/BDL2023v2017model.tiff", device = "tiff", width =6.5, height =4.5)
+ggplot(filter(BDLroll, Date != today()), aes(x = Date, y = Value2))+
+  geom_line()+
+  ylab("3 day rolling ave salinity at BDL")+
+  theme_bw()+
+  geom_hline(yintercept = 4, linetype =2, color = "red")
+
+BDL2 = cdec_query(c( "BDL"), durations = "D",
+                  sensors = c(100, 25, 27, 28, 324),
+                  start.date = as.Date("2026-05-01"), end.date =  today()) %>%
+  mutate(Value2 =ec2pss(Value/1000, 25), Date = date(ObsDate))
+BDL2$threeday =  rollmean(BDL2$Value2, 3, fill = NA, align = "right")
+
+
+ggplot(filter(BDL2, Date != today()), aes(x = Date, y = threeday))+
+  geom_line()+
+  ylab("3 day rolling ave salinity at BDL")+
+  theme_bw()+
+  geom_hline(yintercept = 4, linetype =2, color = "red")
+
+ggplot(filter(BDL2, Date != today()), aes(x = Date, y = Value2))+
+  geom_line()+
+  ylab("Daily ave salinity at BDL")+
+  theme_bw()+
+  geom_hline(yintercept = 4, linetype =2, color = "red")
+
 
 ########################################################################################
 
@@ -161,16 +200,22 @@ gatedates25 = data.frame(StartDate = c(ymd("2025-06-23"), ymd("2025-09-05")),
                          xval = c(ymd("2025-08-25"), ymd("2025-08-25")),
                          ynudge =c(0, 0))
 
+gatedates26 = data.frame(StartDate = c(ymd("2026-07-01")),
+                         EndDate = c(today()),
+                         Type = c("SMSCG"),
+                         xval = c(ymd("2026-07-07")),
+                         ynudge =c(0, 0))
+
 yvals = data.frame(Analyte = c("Chlorophyll", "Salinity", "Temperature", "Turbidity"),
                    yval = c(11,8,25,95), yoff = c(0.08, 0.08, 0.015, 0.08))
 
-gatedates2 = cross_join(gatedates25, yvals)
+gatedates2 = cross_join(gatedates26, yvals)
 
 #plot for monthly update #######################################
-ggplot(filter(WQmean, Date != ymd("2025-09-24")),
-       aes(x = Date, y = Value2, color = StationID)) + 
-   geom_rect(data = gatedates25, aes(ymin = -Inf, ymax = Inf,xmin = StartDate, xmax = EndDate,
-                                   fill = Type), inherit.aes = FALSE, alpha = 0.4)+
+ggplot(filter(WQmean, Date != today()),
+        aes(x = Date, y = Value2, color = StationID)) + 
+    geom_rect(data = gatedates26, aes(ymin = -Inf, ymax = Inf,xmin = StartDate, xmax = EndDate,
+                                    fill = Type), inherit.aes = FALSE, alpha = 0.3)+
 scale_fill_manual(values = c("grey60", "tan1"), name = "Action\nPeriod")+
  geom_hline(data = cuttoffs, aes(yintercept = cutoff), color = "red", 
              linetype =2, linewidth =1)+
@@ -179,9 +224,35 @@ scale_fill_manual(values = c("grey60", "tan1"), name = "Action\nPeriod")+
  #geom_text(data = gatedates2, aes(y = yval+yoff*yval*ynudge,x = xval, label = Type), 
         #    inherit.aes = FALSE, hjust =0)
 
-filter(WQmean, Date == ymd("2025-09-16"))
 
-ggsave("plots/ContWQ_2025.tiff", width = 8, height =6, device = "tiff")
+ggsave("plots/ContWQ_2026.tiff", width =10, height =6, device = "tiff")
+
+##########plots for Lenny #####################
+
+cuttoffs2 = data.frame(Analyte = c("Salinity", "Temperature", "Temperature", "Temperature"),
+                      cutoff = c(6,  22,25, 20),
+                      Type = c("Max Good Habitat", "Max Good Habitat", "Lethal", "Offramp"))
+
+lennyWQ = filter(WQmean, StationID %in% c("RVB", "BDL", "GZL"), Analyte %in% c("Salinity", "Temperature")) %>%
+  group_by(StationID, Analyte) %>%
+  mutate(RollValue = rollmean(Value2, 3, na.pad =T)) %>%
+  ungroup()
+
+ggplot(lennyWQ,
+       aes(x = Date, y = RollValue, color = StationID)) + 
+  geom_rect(data = gatedates26, aes(ymin = -Inf, ymax = Inf,xmin = StartDate, xmax = EndDate),
+            inherit.aes = FALSE, alpha = 0.3, fill = "grey")+
+  geom_hline(data = cuttoffs2, aes(yintercept = cutoff, linetype = Type), linewidth =1)+
+  geom_text(data = cuttoffs2, aes(x = ymd("2026-05-01"), y = cutoff+.1, label = Type), 
+            inherit.aes = F, vjust =0, hjust =0)+
+  geom_text(data = filter(cuttoffs2, Type == "Max Good Habitat"), 
+            aes(x = ymd("2026-07-05"), y = cutoff+.1, label = "SMSCG Operations"), 
+            inherit.aes = F, vjust =0, hjust =0, angle = 90)+
+  facet_wrap(~Analyte, scales = "free_y")+
+  scale_linetype(guide = NULL)+
+  scale_color_manual(values = c("salmon", "green3", "blue"), labels = c("Belden's Landing", "Grizzly Bay", "Rio Vista"))+
+  geom_line( linewidth =1)   + theme_bw() +ylab("Three Day Rolling Average") +
+xlab(NULL)
 
 #version with specific conductance for landowners ################################
 #6ppt is similar about 10600 uS/mm
@@ -447,3 +518,14 @@ ggplot(filter(turbyears, Yr_type !=2023), aes(x = DOWY, y = Value, color = Yr_ty
   geom_line(data=filter(turbyears, Yr_type == "2023"), linewidth = 1, color = "black")+
   scale_x_continuous(breaks = c(60, 120, 180, 212, 250, 280, 310, 340), labels = c("Jan", "Mar", "May", "Jun", "Jul", "Aug", "Sep", "Oct"))+
   ylab(NULL)+xlab("Day of Year")+ theme_bw()
+
+
+#water velocity ##########################
+
+velocity = cdec_query(c("GZB", "GZM", "GZL", "BDL", "NSL", "RVB",  "HUN", "CSE"), 
+                sensors = 21,
+                start.date = as.Date("2025-05-01"), end.date =  today())
+
+vel = mutate(velocity, Velocity = Value/3.281)
+
+ggplot(vel, aes(x = ObsDate,y = Velocity)) + geom_line()

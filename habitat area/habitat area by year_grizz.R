@@ -274,6 +274,21 @@ ggplot(habarea2, aes(x = time, y = LSZ*0.000247105, color = scenario))+ geom_lin
 
 #ggsave("HabatatTimeSeries100TAF.png", device = "png", width =8, height =6)
 
+######2026 scenarios #################################
+#above and below normal, 7-7 and 60 days
+habarea2026  = filter(habarea2, YT %in% c("Below\nNormal", "Above\nNormal"),
+                      scenario %in% c("base", "60 days, 7 days-on/ 7 days-off", "60 days continuous"))
+
+ggplot(habarea2026, aes(x = time, y = LSZ*0.000247105, color = scenario))+ geom_line(linewidth = 0.75)+
+  facet_grid(Zone~YT, scales = "free")+
+  theme_bw()+
+  scale_color_brewer(palette = "Dark2")+
+  ylab("Low Salinity Zone Area (acres)")+
+  xlab(NULL)+
+  theme(legend.position = "bottom", legend.direction = "vertical")
+
+ggsave("plots/HabatatTimeSeries2026.png", device = "png", width =8, height =6)
+
 ########################################################
 #plot for synthesis report (no 100TAF) ###########################################
 ggplot(filter(habarea2, scenario != "60 days continuous, followed by 100 TAF"), aes(x = time, y = LSZ*0.000247105, color = scenario))+ geom_line(linewidth = 0.75)+
